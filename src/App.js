@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { createBrowserRouter } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
+import HomePage from "./pages/Home";
+import RootLayout from "./pages/RootLayout";
+import ErrorPage from "./pages/Error";
+import Authentication, { action as authAction } from "./pages/Authentication";
+import { action as logoutAction } from "./pages/Logout";
+import { checkTokenLoader, accessTokenLoader } from "./util/auth";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    id: "root",
+    loader: accessTokenLoader,
+    children: [
+      { index: true, element: <HomePage /> },
+      // 사용자 인증
+      { path: "/auth", element: <Authentication />, action: authAction },
+      { path: "/logout", action: logoutAction },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
