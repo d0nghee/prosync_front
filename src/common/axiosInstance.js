@@ -9,38 +9,27 @@ const axiosInstance = axios.create({
   },
 });
 
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//     config.headers["Authorization"] = localStorage.getItem("accessToken");
-//     config.headers["Refresh"] = localStorage.getItem("refreshToken");
-//     return config;
-//   },
-//   (error) => {
-//     console.log("error", error.response);
-//     return Promise.reject(error);
-//   }
-// );
-
 axiosInstance.interceptors.response.use(
   (response) => {
     const accessToken = response.headers["authorization"];
     const refreshToken = response.headers["refresh"];
     if (accessToken) {
-      console.log("-- access token 재발급 --");
+      console.log("-- access token 발급 --");
       localStorage.setItem("accessToken", accessToken);
     }
     if (refreshToken) {
-      console.log("로그인 성공!");
+      console.log("-- refresh token 발급 --");
       localStorage.setItem("refreshToken", refreshToken);
     }
+    //토큰 만료 상태 코드
+    if (response.status === 401) {
+      localStorage.setItem("accessToken", "EXPIRED");
+    }
+
     return response;
   },
   (error) => {
-    console.log(error);
-    //토큰 만료 상태 코드
-    if (error.response.status === 401) {
-      localStorage.setItem("accessToken", "EXPIRED");
-    }
+    console.log(error.response.data);
     return Promise.reject(error);
   }
 );

@@ -24,10 +24,16 @@ export async function action({ request }) {
 
   axiosInstance
     .post(`/${mode}`, authData)
-    .then(function (response) {})
+    .then(function (response) {
+      // TODO: 로컬 저장소에 회원 아이디 저장
+      // localStorage.setItem("memberId", response.data.memberId);
+    })
     .catch(function (error) {
       // 에러 처리
-      console.log(error.response);
     });
-  return redirect("/");
+
+  if (mode === "login") {
+    return redirect("/");
+  }
+  return redirect("/auth?mode=login");
 }

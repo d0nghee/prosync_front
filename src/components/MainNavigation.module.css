@@ -1,0 +1,57 @@
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    max-width: 80rem;
+    padding: 1rem;
+}
+
+.list {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    align-items: center;
+    font-weight: bolder;
+}
+
+.title {
+    font-size: 2rem;
+}
+
+.list a {
+    text-decoration: none;
+    color: black;
+}
+
+.list a:hover, .list a:active {
+    color: #8338ec;
+}
+
+.list input {
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 16rem;
+    margin-left: 10rem;
+    background-color: white;
+    border: 1px solid black;
+}
+
+.icon {
+    width: 2rem
+}
+
+.user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user span {
+    font-weight: 2rem;
+}
+
+.user img {
+    width: 3rem;
+}
