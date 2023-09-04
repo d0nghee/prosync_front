@@ -24,8 +24,6 @@ export async function action({ request }) {
   axiosInstance
     .post(`/${mode}`, authData)
     .then(function (response) {
-      // TODO: 로컬 저장소에 회원 아이디 저장
-      // localStorage.setItem("memberId", response.data.memberId);
       console.log(response);
       const accessToken = response.headers["authorization"];
       const refreshToken = response.headers["refresh"];
@@ -39,6 +37,15 @@ export async function action({ request }) {
     })
     .catch(function (error) {
       // 에러 처리
+      console.log(error);
+      if (error.response.status === 401) {
+        alert('아이디 또는 비밀번호를 잘못 입력했습니다. 다시 확인해주세요.');
+        //TODO: 리다이렉트 안됨 확인.
+        return redirect('/auth?mode=login');
+      }
+      if (error.response.status === 500) {
+        return;
+      }
     });
 
   if (mode === "login") {

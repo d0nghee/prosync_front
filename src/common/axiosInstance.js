@@ -38,10 +38,8 @@ axiosInstance.interceptors.response.use(
     console.log(error.response.data);
     const originalRequest = error.config;
     const accessToken = error.response.headers.authorization;
-    console.log("new token ==", accessToken);
 
     if (accessToken) {
-      console.log("new token", accessToken);
       originalRequest.headers.authorization = accessToken;
       localStorage.setItem("accessToken", accessToken);
       return axiosInstance(originalRequest);
@@ -53,8 +51,5 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-function updateToken(newToken) {
-  localStorage.setItem("accessToken", newToken);
-}
 
 export default axiosInstance;

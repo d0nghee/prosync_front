@@ -1,11 +1,13 @@
 
 .header {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin: auto;
     max-width: 100%;
-    background-color: black;
+    background-color: #007f5f;
     box-sizing: border-box;
+    flex-direction: row;
+    padding: 0 20rem;
 }
 
 .list {
@@ -26,7 +28,7 @@
 }
 
 .list a:hover, .list a:active {
-    color: #8338ec;
+    color: #fedc97;
 }
 
 .list input {

@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { NavLink, Form, useRouteLoaderData, Link } from "react-router-dom";
-import { styled } from "styled-components";
 import axiosInstance from "../common/axiosInstance";
 import classes from "./MainNavigation.module.css";
 import Button from "./Button";
@@ -27,6 +26,7 @@ export default function MainNavigation() {
           console.log(response);
           setUserProfileImage(response.data.profileImage);
           setUserName(response.data.name);
+          localStorage.setItem('profile', response.data.profileImage);
         })
         .catch((error) => {
           console.log("유저 프로필 get 요청 에러 발생", error);
@@ -63,13 +63,13 @@ export default function MainNavigation() {
           {/* 로그인 전 */}
           {!isLoggedIn && (
             <li>
-              <NavLink to="/auth?mode=signup">회원가입</NavLink>
+              <NavLink to="/auth?mode=signup">signup</NavLink>
             </li>
           )}
 
           {!isLoggedIn && (
             <li>
-              <NavLink to="/auth?mode=login">로그인</NavLink>
+              <NavLink to="/auth?mode=login">login</NavLink>
             </li>
           )}
           {isLoggedIn && (

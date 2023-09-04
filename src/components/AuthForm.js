@@ -11,7 +11,7 @@ export default function AuthForm() {
 
   return (
     <main className={classes.signup}>
-      {!isLogin && <img src={SignupImage} alt="회원가입이미지"></img>}
+      {!isLogin && <img src={SignupImage} alt="회원가입이미지" style={{height:'800px'}}/>}
       <Form method="post">
         <h1>Prosync</h1>
         <h2>{isLogin ? "로그인" : "회원가입"}</h2>
