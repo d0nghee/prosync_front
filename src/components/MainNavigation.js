@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { NavLink, Form, useRouteLoaderData } from "react-router-dom";
+import { NavLink, Form, useRouteLoaderData, Link } from "react-router-dom";
 import { styled } from "styled-components";
 import axiosInstance from "../common/axiosInstance";
 import classes from "./MainNavigation.module.css";
@@ -53,10 +53,12 @@ export default function MainNavigation() {
             </li>
           )}
           {isLoggedIn && (
-            <li className={classes.user}>
-              <img src={userProfileImage} alt="" />
-              <span>{`${userName}님`}</span>
-            </li>
+            <Link to="user/profile">
+              <li className={classes.user}>
+                <img src={userProfileImage} alt="" />
+                <span>{`${userName}님`}</span>
+              </li>
+            </Link>
           )}
           {/* 로그인 전 */}
           {!isLoggedIn && (

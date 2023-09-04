@@ -6,6 +6,9 @@ import ErrorPage from "./pages/Error";
 import Authentication, { action as authAction } from "./pages/Authentication";
 import { action as logoutAction } from "./pages/Logout";
 import { checkTokenLoader, accessTokenLoader } from "./util/auth";
+import UserProfile, {
+  action as userProfileEditAction,
+} from "./pages/UserProfile";
 
 const router = createBrowserRouter([
   {
@@ -17,8 +20,18 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       // 사용자 인증
-      { path: "/auth", element: <Authentication />, action: authAction },
-      { path: "/logout", action: logoutAction },
+      { path: "auth", element: <Authentication />, action: authAction },
+      { path: "logout", action: logoutAction },
+      {
+        path: "user",
+        children: [
+          {
+            path: "profile",
+            element: <UserProfile />,
+            action: userProfileEditAction,
+          },
+        ],
+      },
     ],
   },
 ]);

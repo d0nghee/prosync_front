@@ -2,7 +2,6 @@ import React from "react";
 import { Form, useNavigation, useSearchParams, Link } from "react-router-dom";
 import SignupImage from "../assets/img/signup.jpg";
 import classes from "./AuthForm.module.css";
-import Button from "./Button";
 
 export default function AuthForm() {
   const [searchPaarams] = useSearchParams();

@@ -2,7 +2,7 @@
     cursor:pointer;
     font: inherit;
     border:none;
-    background-color: #b18fcf;
+    background-color: #4361ee;
     color:white;
     padding: 0.75rem 2rem;
     display: flex;
@@ -10,11 +10,13 @@
     align-items: center;
     border-radius: 25px;
     font-weight: bold;
-    width: 10rem;
+    width: 8rem;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .button:hover, .button:active {
-    background-color: #a563cc8c;
+    background-color: #788ad9;
 }
 
 .bump {

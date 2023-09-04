@@ -12,7 +12,6 @@ export async function action({ request }) {
   let mode = searchParams.get("mode") || "login";
 
   if (mode === "signup") {
-    console.log("test");
     mode = "members";
   }
 
@@ -27,6 +26,16 @@ export async function action({ request }) {
     .then(function (response) {
       // TODO: 로컬 저장소에 회원 아이디 저장
       // localStorage.setItem("memberId", response.data.memberId);
+      console.log(response);
+      const accessToken = response.headers["authorization"];
+      const refreshToken = response.headers["refresh"];
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      }
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+        window.location.reload();
+      }
     })
     .catch(function (error) {
       // 에러 처리
