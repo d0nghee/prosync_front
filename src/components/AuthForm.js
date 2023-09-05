@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, useNavigation, useSearchParams, Link } from "react-router-dom";
-import SignupImage from "../assets/img/signup.jpg";
+import SignupImage from "../assets/images/signup.jpg";
 import classes from "./AuthForm.module.css";
 
 export default function AuthForm() {
@@ -11,7 +11,13 @@ export default function AuthForm() {
 
   return (
     <main className={classes.signup}>
-      {!isLogin && <img src={SignupImage} alt="회원가입이미지" style={{height:'800px'}}/>}
+      {!isLogin && (
+        <img
+          src={SignupImage}
+          alt="회원가입이미지"
+          style={{ height: "1000px" }}
+        />
+      )}
       <Form method="post">
         <h1>Prosync</h1>
         <h2>{isLogin ? "로그인" : "회원가입"}</h2>

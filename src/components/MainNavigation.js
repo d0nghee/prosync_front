@@ -1,38 +1,15 @@
 import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 import { NavLink, Form, useRouteLoaderData, Link } from "react-router-dom";
-import axiosInstance from "../common/axiosInstance";
 import classes from "./MainNavigation.module.css";
 import Button from "./Button";
-import NotiImage from "../assets/img/noti_icon.png";
+import NotiImage from "../assets/images/noti_icon.png";
+import { getCookie } from "../util/cookies";
 
 export default function MainNavigation() {
-  // TODO: 로그인 직후 네비바 변경
   const isLoggedIn = Boolean(useRouteLoaderData("root"));
-  const [userProfileImage, setUserProfileImage] = useState("");
-  const [userName, setUserName] = useState("");
 
-  useEffect(() => {
-    getUserProfile();
-  }, []);
-
-  const getUserProfile = () => {
-    console.log(isLoggedIn);
-    if (isLoggedIn) {
-      axiosInstance
-        .get("/members")
-        .then((response) => {
-          console.log(response);
-          setUserProfileImage(response.data.profileImage);
-          setUserName(response.data.name);
-          localStorage.setItem('profile', response.data.profileImage);
-        })
-        .catch((error) => {
-          console.log("유저 프로필 get 요청 에러 발생", error);
-        });
-    }
-  };
+  const profile = getCookie("profile");
+  const name = getCookie("name");
 
   return (
     <header className={classes.header}>
@@ -55,8 +32,8 @@ export default function MainNavigation() {
           {isLoggedIn && (
             <Link to="user/profile">
               <li className={classes.user}>
-                <img src={userProfileImage} alt="" />
-                <span>{`${userName}님`}</span>
+                <img src={profile} alt="" />
+                <span>{`${name}님`}</span>
               </li>
             </Link>
           )}

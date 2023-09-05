@@ -1,7 +1,8 @@
 import { redirect } from "react-router-dom";
+import { getCookie } from "./cookies";
 
 export function accessTokenLoader() {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = getCookie("accessToken");
 
   if (!accessToken) {
     return null;
@@ -13,7 +14,7 @@ export function accessTokenLoader() {
 export function checkTokenLoader() {
   const accessToken = accessTokenLoader();
   if (!accessToken) {
-    return redirect("/auth");
+    return redirect("/auth?mode=login");
   }
   return null;
 }

@@ -29,6 +29,7 @@ const router = createBrowserRouter([
             path: "profile",
             element: <UserProfile />,
             action: userProfileEditAction,
+            loader: checkTokenLoader,
           },
         ],
       },

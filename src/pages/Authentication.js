@@ -1,7 +1,8 @@
 import React from "react";
-import axiosInstance from "../common/axiosInstance";
 import AuthForm from "../components/AuthForm";
 import { redirect } from "react-router-dom";
+import { setCookie } from "../util/cookies";
+import { getApi, postApi } from "../util/api";
 
 export default function Authentication() {
   return <AuthForm />;
@@ -21,32 +22,30 @@ export async function action({ request }) {
     password: data.get("password"),
   };
 
-  axiosInstance
-    .post(`/${mode}`, authData)
-    .then(function (response) {
-      console.log(response);
-      const accessToken = response.headers["authorization"];
-      const refreshToken = response.headers["refresh"];
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
+  await postApi(`/${mode}`, authData)
+    .then(async (response) => {
+      const headers = response.headers;
+      const access = await headers.authorization;
+      console.log(access);
+      const refresh = await headers.refresh;
+      console.log(access, "access");
+      if (access && refresh) {
+        setCookie("accessToken", access, { path: "/" });
+        setCookie("refreshToken", refresh, { path: "/" });
       }
-      if (refreshToken) {
-        localStorage.setItem("refreshToken", refreshToken);
-        window.location.reload();
+      return response.status;
+    })
+    .then(async (status) => {
+      if (status === 200) {
+        await getApi("/members")
+          .then(async (response) => {
+            setCookie("profile", response.data.profileImage, { path: "/" });
+            setCookie("name", response.data.name, { path: "/" });
+          })
+          .catch((error) => console.log(error));
       }
     })
-    .catch(function (error) {
-      // 에러 처리
-      console.log(error);
-      if (error.response.status === 401) {
-        alert('아이디 또는 비밀번호를 잘못 입력했습니다. 다시 확인해주세요.');
-        //TODO: 리다이렉트 안됨 확인.
-        return redirect('/auth?mode=login');
-      }
-      if (error.response.status === 500) {
-        return;
-      }
-    });
+    .catch(async (error) => {});
 
   if (mode === "login") {
     return redirect("/");
