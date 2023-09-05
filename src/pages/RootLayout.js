@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { Outlet, useLoaderData, useSubmit } from "react-router-dom";
-import MainNavigation from "../components/MainNavigation";
+import MainNavigation from "../components/common/MainNavigation";
 
 export default function RootLayout() {
   const token = useLoaderData();

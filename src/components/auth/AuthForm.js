@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, useNavigation, useSearchParams, Link } from "react-router-dom";
-import SignupImage from "../assets/images/signup.jpg";
+import SignupImage from "../../assets/images/signup.jpg";
 import classes from "./AuthForm.module.css";
 
 export default function AuthForm() {

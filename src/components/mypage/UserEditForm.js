@@ -1,8 +1,8 @@
 import React from "react";
 import { Form } from "react-router-dom";
 import classes from "./UserEditForm.module.css";
-import Button from "./Button";
-import { getCookie } from "../util/cookies";
+import Button from "../common/Button";
+import { getCookie } from "../../util/cookies";
 
 export default function UserEditForm() {
   const profileImage = getCookie("profile");

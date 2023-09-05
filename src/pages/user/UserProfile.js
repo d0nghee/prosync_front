@@ -1,8 +1,8 @@
 import React from "react";
 import { redirect } from "react-router-dom";
-import UserEditForm from "../components/UserEditForm";
-import { patchApi } from "../util/api";
-import { setCookie } from "../util/cookies";
+import UserEditForm from "../../components/mypage/UserEditForm";
+import { patchApi } from "../../util/api";
+import { setCookie } from "../../util/cookies";
 
 export default function UserProfile() {
   return <UserEditForm />;
