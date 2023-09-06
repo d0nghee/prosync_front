@@ -1,10 +1,7 @@
 import { redirect } from "react-router-dom";
-import { removeCookie } from "../../util/cookies";
+import { removeUserCookie } from "../../util/cookies";
 
 export function action() {
-  removeCookie("accessToken");
-  removeCookie("refreshToken");
-  removeCookie("profile");
-  removeCookie("name");
+  removeUserCookie();
   return redirect("/auth?mode=login");
 }

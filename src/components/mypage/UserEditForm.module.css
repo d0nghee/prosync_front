@@ -5,12 +5,12 @@ form {
   max-width: 1000px;
   margin: 0 auto;
   height: 100%;
-  
 }
 
 form > div {
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
 }
 
 form > div > label {

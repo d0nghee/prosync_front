@@ -13,3 +13,10 @@ export function getCookie(name) {
 export function removeCookie(name) {
   return cookies.remove(name);
 }
+
+export function removeUserCookie() {
+  removeCookie("accessToken");
+  removeCookie("refreshToken");
+  removeCookie("profile");
+  removeCookie("name");
+}

@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-around;
     max-width: 100%;
-    background-color: green;
+    background-color: #2f3e46;
     box-sizing: border-box;
     flex-direction: row;
     padding: 0 20rem;
