@@ -2,8 +2,8 @@ import React from "react";
 import { NavLink, Form, useRouteLoaderData, Link } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 import Button from "./Button";
-import NotiImage from "../assets/images/noti_icon.png";
-import { getCookie } from "../util/cookies";
+import NotiImage from "../../assets/images/noti_icon.png";
+import { getCookie } from "../../util/cookies";
 
 export default function MainNavigation() {
   const isLoggedIn = Boolean(useRouteLoaderData("root"));

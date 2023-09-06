@@ -44,7 +44,7 @@ axiosInstance.interceptors.response.use(
       if (newToken) {
         originalRequest.headers.authorization = newToken;
         setCookie("accessToken", newToken, { path: "/" });
-        return await axiosInstance(originalRequest);
+        return axiosInstance(originalRequest);
       } else if (error.response.status === 401 && accessToken) {
         //토큰 만료 상태 코드
         setCookie("accessToken", "EXPIRED", { path: "/" });

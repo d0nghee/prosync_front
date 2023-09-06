@@ -1,8 +1,8 @@
 import React from "react";
-import AuthForm from "../components/AuthForm";
+import AuthForm from "../../components/auth/AuthForm";
 import { redirect } from "react-router-dom";
-import { setCookie } from "../util/cookies";
-import { getApi, postApi } from "../util/api";
+import { setCookie } from "../../util/cookies";
+import { getApi, postApi } from "../../util/api";
 
 export default function Authentication() {
   return <AuthForm />;
@@ -26,9 +26,7 @@ export async function action({ request }) {
     .then(async (response) => {
       const headers = response.headers;
       const access = await headers.authorization;
-      console.log(access);
       const refresh = await headers.refresh;
-      console.log(access, "access");
       if (access && refresh) {
         setCookie("accessToken", access, { path: "/" });
         setCookie("refreshToken", refresh, { path: "/" });

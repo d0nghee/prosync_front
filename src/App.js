@@ -2,13 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import { RouterProvider } from "react-router-dom";
 import HomePage from "./pages/Home";
 import RootLayout from "./pages/RootLayout";
-import ErrorPage from "./pages/Error";
-import Authentication, { action as authAction } from "./pages/Authentication";
-import { action as logoutAction } from "./pages/Logout";
+import ErrorPage from "./pages/auth/Error";
+import Authentication, {
+  action as authAction,
+} from "./pages/auth/Authentication";
+import { action as logoutAction } from "./pages/auth/Logout";
 import { checkTokenLoader, accessTokenLoader } from "./util/auth";
 import UserProfile, {
   action as userProfileEditAction,
-} from "./pages/UserProfile";
+} from "./pages/user/UserProfile";
 
 const router = createBrowserRouter([
   {
