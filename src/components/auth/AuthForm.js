@@ -1,7 +1,6 @@
 import React from "react";
 import { Form, useNavigation, useSearchParams, Link } from "react-router-dom";
 import SignupImage from "../../assets/images/signup.jpg";
-import classes from "./AuthForm.module.css";
 
 export default function AuthForm() {
   const [searchPaarams] = useSearchParams();
@@ -10,7 +9,7 @@ export default function AuthForm() {
   const isSubmitting = navigation.state === "submitting";
 
   return (
-    <main className={classes.signup}>
+    <main>
       {!isLogin && (
         <img
           src={SignupImage}

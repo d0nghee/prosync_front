@@ -9,7 +9,7 @@ export default function TasksList({ tasks }) {
       <Header>
         <input type="checkbox" />
         <div>
-          <span>Task title</span>
+          <span>Title</span>
           <span>Assignees</span>
           <span>Last Updated</span>
           <span>Status</span>
@@ -61,6 +61,7 @@ const Header = styled.div`
 
   div > span {
     flex: 1;
+    margin-right: 5rem;
   }
 
   div > span:nth-child(1) {
@@ -94,15 +95,20 @@ const ContentLink = styled(Link)`
     background-color: #f0f0f0;
     color: #007bff;
     border-radius: 1.5rem;
-    padding: 0 2rem;
   }
 
   div {
     display: inline-block;
     flex: 1;
+    margin-right: 1rem;
   }
 
   div:nth-child(1) {
     flex: 1.5;
+  }
+
+  div:nth-child(4) {
+    flex: 0.7;
+    margin-right: 5rem;
   }
 `;

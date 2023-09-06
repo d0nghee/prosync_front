@@ -1,3 +1,4 @@
+import { async } from "q";
 import axiosInstance from "./axiosInstancs";
 
 const getApi = async (url, data) => {

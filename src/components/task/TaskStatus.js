@@ -5,9 +5,7 @@ export default function TaskStatus({ color, name }) {
   return <Badge color={color}>{name}</Badge>;
 }
 
-const Badge = styled.span`
-  display: inline-block;
-  width: 150px;
+const Badge = styled.div`
   height: 50px;
   border-radius: 30px;
   background-color: ${(props) => props.color || "#007bff"};
