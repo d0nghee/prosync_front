@@ -7,7 +7,7 @@ export default function TasksList({ tasks }) {
       <ul>
         {tasks.data.map((task) => (
           <li key={task.taskId}>
-            <Link to={task.taskId}>
+            <Link to={`${task.taskId}`}>
               <div>
                 <h2>{task.title}</h2>
                 <div>

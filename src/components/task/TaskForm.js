@@ -1,9 +1,12 @@
 import React from "react";
-import { redirect, Form } from "react-router-dom";
+import { redirect, Form, useNavigate } from "react-router-dom";
 import axiosInstance from "../../util/axiosInstancs";
-import CustomCalendar from "../common/Calendar";
 
 export default function TaskForm({ method, task }) {
+  const navigate = useNavigate();
+  const cancelHandler = () => {
+    navigate("..");
+  };
   return (
     <Form method={method}>
       <p>
@@ -50,11 +53,17 @@ export default function TaskForm({ method, task }) {
         <label htmlFor="taskStatus">Progress</label>
         <div>{task ? task.taskStatus : ""}</div>
       </p>
+      <div>
+        <button type="button" onClick={cancelHandler}>
+          취소
+        </button>
+        <button>저장</button>
+      </div>
     </Form>
   );
 }
 
-export async function loader({ request, params }) {
+export async function action({ request, params }) {
   const method = request.method;
   const projectId = params.projectId;
 
@@ -81,9 +90,7 @@ export async function loader({ request, params }) {
     data: taskData,
   })
     .then((response) => {
-      if (response.status === 200 || response.status === 201) {
-        return response;
-      }
+      return response;
     })
     .catch((error) => console.log(error));
 

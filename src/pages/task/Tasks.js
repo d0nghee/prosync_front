@@ -1,7 +1,7 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import { getApi } from "../../util/api";
-import TasksList from "./TasksList";
+import TasksList from "../../components/task/TasksList";
 
 export default function Tasks() {
   const data = useLoaderData();

@@ -1,14 +1,14 @@
 import { useSubmit, Link } from "react-router-dom";
-import { getApi } from "../../util/api";
 
 export default function Task({ task }) {
-  //   const taskDeleteHandler = () => {
-  //     const submit = useSubmit();
-  //     const proceed = window.confirm("정말 삭제하시겠습니까?");
-  //     if (proceed) {
-  //       submit(null, { method: "DELETE" });
-  //     }
-  //   };
+  //TODO: useSubmit으로 삭제 요청
+  const submit = useSubmit();
+  const taskDeleteHandler = () => {
+    const proceed = window.confirm("정말 삭제하시겠습니까?");
+    if (proceed) {
+      submit(null, null);
+    }
+  };
 
   return (
     <div>
@@ -21,7 +21,7 @@ export default function Task({ task }) {
       <div>{task.createdAt}</div>
       <menu>
         <Link to="edit">수정</Link>
-        {/* <button onClick={taskDeleteHandler}>삭제</button> */}
+        <button onClick={taskDeleteHandler}>삭제</button>
       </menu>
     </div>
   );
