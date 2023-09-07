@@ -20,9 +20,6 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
 import { action as manipulateTaskAction } from "./components/task/TaskForm";
-import TaskStatusList, {
-  loader as taskStatusLoader,
-} from "./pages/task/TaskStatusList";
 
 const router = createBrowserRouter([
   {
@@ -57,11 +54,6 @@ const router = createBrowserRouter([
             children: [
               // tasks //
               { index: true },
-              {
-                path: "task-status",
-                element: <TaskStatusList />,
-                loader: taskStatusLoader,
-              },
               {
                 path: "tasks",
                 element: <TasksRoot />,

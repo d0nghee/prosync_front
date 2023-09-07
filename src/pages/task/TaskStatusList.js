@@ -1,15 +1,40 @@
-import { getApi } from "../../util/api";
 import TaskStatus from "../../components/task/TaskStatus";
-import { useLoaderData } from "react-router";
 import { styled } from "styled-components";
 
+export default function TaskStatusList({ taskStatusList, updateTaskStatus }) {
+  return (
+    <StatusBox>
+      <p>Apply status to this task</p>
+      <Filter type="text" placeholder="Filter status" />
+      <StatusItems>
+        {taskStatusList.map((taskStatus) => (
+          <div
+            key={taskStatus.taskStatusId}
+            onClick={() =>
+              updateTaskStatus({
+                id: taskStatus.taskStatusId,
+                name: taskStatus.taskStatus,
+                color: taskStatus.color,
+              })
+            }
+          >
+            <TaskStatus color={taskStatus.color} name={taskStatus.taskStatus} />
+          </div>
+        ))}
+      </StatusItems>
+      <button>edit status</button>
+    </StatusBox>
+  );
+}
+
 const StatusBox = styled.div`
-  width: 250px;
+  width: 220px;
   max-height: 500px;
   border: 1px solid #dad7cd;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  margin-top: 5px;
 
   button {
     height: 40px;
@@ -51,29 +76,3 @@ const Filter = styled.input`
   border-radius: 15px;
   border-color: #dad7cd;
 `;
-
-export default function TaskStatusList() {
-  const data = useLoaderData();
-  const taskStatusList = data.data;
-
-  return (
-    <StatusBox>
-      <p>Apply status to this task</p>
-      <Filter type="text" placeholder="Filter status" />
-      <StatusItems>
-        {taskStatusList.data.map((taskStatus) => (
-          <div key={taskStatus.taskStatusId}>
-            <TaskStatus color={taskStatus.color} name={taskStatus.taskStatus} />
-          </div>
-        ))}
-      </StatusItems>
-      <button>edit status</button>
-    </StatusBox>
-  );
-}
-
-export async function loader({ params }) {
-  const projectId = params.projectId;
-  const response = await getApi(`/projects/${projectId}/task-status`);
-  return response;
-}

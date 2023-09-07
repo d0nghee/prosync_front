@@ -1,16 +1,47 @@
 import { useDispatch, useSelector } from "react-redux";
-import { redirect, Form, useNavigate } from "react-router-dom";
+import { redirect, Form, useNavigate, useParams } from "react-router-dom";
 import { calendarActions } from "../../redux/calendar-slice";
 import axiosInstance from "../../util/axiosInstancs";
 import MyCalendar from "../common/Calendar";
 import moment from "moment/moment";
 import * as t from "./TaskForm.style";
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import ReactQuill from "react-quill";
+import { useEffect, useState } from "react";
+import { getApi } from "../../util/api";
+
 import "react-quill/dist/quill.snow.css";
+import TaskStatus from "../task/TaskStatus";
+import TaskStatusList from "../../pages/task/TaskStatusList";
 
 export default function TaskForm({ method, task }) {
+  // 해당 프로젝트의 task status 목록 호출
+  const params = useParams();
+  const projectId = params.projectId;
+  const [taskStatusList, setTaskStatusList] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const response = await getApi(`/projects/${projectId}/task-status`);
+      const status = await response.data.data;
+      setTaskStatusList(status);
+    })();
+  }, []);
+
+  const [showStatusList, setShowStatusList] = useState(false);
+  const [taskStatus, setTaskStatus] = useState({
+    id: task.taskStatusId,
+    name: task.taskStatus,
+    color: task.color,
+  });
+
+  const statusListChangeHandler = () => {
+    setShowStatusList((prv) => !prv);
+  };
+
+  const updateTaskStatus = (newStatus) => {
+    setTaskStatus(newStatus);
+  };
+
+  // 취소 버튼
   const navigate = useNavigate();
   const cancelHandler = () => {
     navigate("..");
@@ -18,9 +49,8 @@ export default function TaskForm({ method, task }) {
 
   // 마크다운
   const [editorHtml, setEditorHtml] = useState("");
-  const [markdownText, setMarkdownText] = useState("");
-
   const handleEditorChange = (html) => {
+    console.log(html);
     setEditorHtml(html);
   };
 
@@ -46,89 +76,99 @@ export default function TaskForm({ method, task }) {
 
   return (
     <Form method={method}>
-      <div>
-        <label htmlFor="title">제목</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          required
-          defaultValue={task ? task.title : ""}
-        />
-      </div>
-      {/* detail입력 - 마크다운 & 편집기 지원 */}
-      <t.TaskCard>
-        <h2>Write</h2>
-        <div>
-          <label htmlFor="detail" />
-          <ReactQuill
-            id="detail"
-            name="detail"
-            value={editorHtml ? editorHtml : task ? task.detail : ""}
-            onChange={handleEditorChange}
-          />
-          {/* <input
-            type="text"
-            id="detail"
-            name="detail"
-            placeholder="상세 내용을 입력하세요."
-            defaultValue={task ? task.detail : ""}
-            onChange={handleInputChange}
-          /> */}
-        </div>
-      </t.TaskCard>
-      <t.TaskCard>
-        <h2>Preview</h2>
-        <div>
-          <ReactMarkdown>{markdownText}</ReactMarkdown>
-        </div>
-      </t.TaskCard>
-      <div>
-        <label htmlFor="classification">Classification</label>
-        <input
-          type="text"
-          id="classification"
-          name="classification"
-          defaultValue={task ? task.classification : ""}
-        />
-      </div>
-      <div>
-        <label htmlFor="period">Task Period</label>
-        <div>
-          <label htmlFor="startDate"></label>
-          <input
-            id="startDate"
-            name="startDate"
-            type="text"
-            disabled={true}
-            value={startDate ? startDate : task ? task.startDate : ""}
-          />
-        </div>
-        <div>
-          <label htmlFor="endDate"></label>
-          <input
-            id="endDate"
-            name="endDate"
-            type="text"
-            disabled={true}
-            value={endDate ? endDate : task ? task.endDate : ""}
-          />
-        </div>
-        <button type="button" onClick={toggleCalendar}>
-          날짜수정
-        </button>
-        {show && <MyCalendar changeDate={changeDateHandler} />}
-      </div>
-      <div>
-        <label htmlFor="taskStatus">Progress</label>
-        <div>{task ? task.taskStatus : ""}</div>
-      </div>
-      <div>
-        <button type="button" onClick={cancelHandler}>
-          취소
-        </button>
-        <button>저장</button>
-      </div>
+      <t.TaskArea>
+        <t.MainTask>
+          <div>
+            <label htmlFor="title"></label>
+            <t.TaskTitle
+              type="text"
+              id="title"
+              name="title"
+              required
+              defaultValue={task ? task.title : ""}
+            />
+          </div>
+          <div>
+            <h2>Write</h2>
+            <div>
+              <label htmlFor="detail" />
+              <t.MarkdownInput
+                theme="snow"
+                id="detail"
+                name="detail"
+                value={editorHtml ? editorHtml : task ? task.detail : ""}
+                onChange={handleEditorChange}
+              />
+            </div>
+          </div>
+          <div>
+            <button type="button" onClick={cancelHandler}>
+              취소
+            </button>
+            <button>저장</button>
+          </div>
+        </t.MainTask>
+
+        <t.SideTask>
+          <div>
+            <t.SideName>Classification</t.SideName>
+            <t.SideInput
+              type="text"
+              id="classification"
+              name="classification"
+              defaultValue={task ? task.classification : ""}
+            />
+          </div>
+          <t.Container>
+            <t.SideName>Task Period</t.SideName>
+            <t.Period>
+              <div>
+                <label htmlFor="startDate"></label>
+                <t.DateInput
+                  id="startDate"
+                  name="startDate"
+                  type="text"
+                  value={startDate ? startDate : task ? task.startDate : ""}
+                  onClick={toggleCalendar}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label htmlFor="endDate"></label>
+                <t.DateInput
+                  id="endDate"
+                  name="endDate"
+                  type="text"
+                  value={endDate ? endDate : task ? task.endDate : ""}
+                  onClick={toggleCalendar}
+                  readOnly
+                />
+              </div>
+            </t.Period>
+            <t.CalendarWrapper show={show.toString()}>
+              {show && <MyCalendar changeDate={changeDateHandler} />}
+            </t.CalendarWrapper>
+          </t.Container>
+          <div>
+            <t.SideName>Task Status</t.SideName>
+            <div onClick={statusListChangeHandler}>
+              {task && (
+                <TaskStatus
+                  color={taskStatus.color}
+                  name={taskStatus.name}
+                  width="100px"
+                />
+              )}
+            </div>
+            {showStatusList && (
+              <TaskStatusList
+                taskStatusList={taskStatusList}
+                updateTaskStatus={updateTaskStatus}
+              />
+            )}
+          </div>
+        </t.SideTask>
+      </t.TaskArea>
     </Form>
   );
 }
@@ -146,7 +186,7 @@ export async function action({ request, params }) {
     url += `/task-status/${params.taskStatusId}`;
   }
 
-  //TODO: date 값 확인
+  //TODO: detail
   const taskData = {
     classification: data.get("classification"),
     title: data.get("title"),
@@ -154,6 +194,7 @@ export async function action({ request, params }) {
     seq: data.get("seq"),
     startDate: data.get("startDate"),
     endDate: data.get("endDate"),
+    //TODO: 밖의 state 전달하는 방법은 ?
   };
 
   await axiosInstance(url, {
