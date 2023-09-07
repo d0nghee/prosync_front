@@ -48,6 +48,8 @@ axiosInstance.interceptors.response.use(
       } else if (error.response.status === 401 && accessToken) {
         //토큰 만료 상태 코드
         setCookie("accessToken", "EXPIRED", { path: "/" });
+      } else if (error.response.status === 401) {
+        // TODO: 비로그인 사용자가 권한 필요한 곳에 방문했을때 처리 (로그인 화면으로..)
       }
     }
     return Promise.reject(error);

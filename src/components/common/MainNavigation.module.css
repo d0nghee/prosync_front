@@ -6,7 +6,7 @@
     background-color: #2f3e46;
     box-sizing: border-box;
     flex-direction: row;
-    padding: 0 20rem;
+    padding: 1rem 20rem;
 }
 
 .list {

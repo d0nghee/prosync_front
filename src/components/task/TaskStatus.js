@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 
 export default function TaskStatus({ color, name }) {
-  console.log(name);
   return <Badge color={color}>{name}</Badge>;
 }
 

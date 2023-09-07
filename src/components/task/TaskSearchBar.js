@@ -1,6 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
-import { AiOutlineSearch } from 'react-icons/ai';
+import React from "react";
+import styled from "styled-components";
 
 export default function TaskSearchBar() {
   return (
@@ -12,7 +11,7 @@ export default function TaskSearchBar() {
       />
     </SearchContainer>
   );
-} 
+}
 
 const SearchContainer = styled.div`
   display: flex;

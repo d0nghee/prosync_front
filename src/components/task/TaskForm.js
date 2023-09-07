@@ -1,9 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { redirect, Form, useNavigate } from "react-router-dom";
-import { calendarActions } from "../../redux/store/calendar-slice";
+import { calendarActions } from "../../redux/calendar-slice";
 import axiosInstance from "../../util/axiosInstancs";
 import MyCalendar from "../common/Calendar";
 import moment from "moment/moment";
+import * as t from "./TaskForm.style";
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function TaskForm({ method, task }) {
   const navigate = useNavigate();
@@ -11,6 +16,15 @@ export default function TaskForm({ method, task }) {
     navigate("..");
   };
 
+  // 마크다운
+  const [editorHtml, setEditorHtml] = useState("");
+  const [markdownText, setMarkdownText] = useState("");
+
+  const handleEditorChange = (html) => {
+    setEditorHtml(html);
+  };
+
+  // 캘린더
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.calendar.startDate);
   const endDate = useSelector((state) => state.calendar.endDate);
@@ -42,6 +56,33 @@ export default function TaskForm({ method, task }) {
           defaultValue={task ? task.title : ""}
         />
       </div>
+      {/* detail입력 - 마크다운 & 편집기 지원 */}
+      <t.TaskCard>
+        <h2>Write</h2>
+        <div>
+          <label htmlFor="detail" />
+          <ReactQuill
+            id="detail"
+            name="detail"
+            value={editorHtml ? editorHtml : task ? task.detail : ""}
+            onChange={handleEditorChange}
+          />
+          {/* <input
+            type="text"
+            id="detail"
+            name="detail"
+            placeholder="상세 내용을 입력하세요."
+            defaultValue={task ? task.detail : ""}
+            onChange={handleInputChange}
+          /> */}
+        </div>
+      </t.TaskCard>
+      <t.TaskCard>
+        <h2>Preview</h2>
+        <div>
+          <ReactMarkdown>{markdownText}</ReactMarkdown>
+        </div>
+      </t.TaskCard>
       <div>
         <label htmlFor="classification">Classification</label>
         <input
@@ -52,16 +93,7 @@ export default function TaskForm({ method, task }) {
         />
       </div>
       <div>
-        <label htmlFor="detail">detail</label>
-        <input
-          type="text"
-          id="detail"
-          name="detail"
-          placeholder="상세 내용을 입력하세요."
-          defaultValue={task ? task.detail : ""}
-        />
-      </div>
-      <div>
+        <label htmlFor="period">Task Period</label>
         <div>
           <label htmlFor="startDate"></label>
           <input
