@@ -1,7 +1,11 @@
-import TaskStatus from "../../components/task/TaskStatus";
+import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
 
-export default function TaskStatusList({ taskStatusList, updateTaskStatus }) {
+export default function TaskStatusList({
+  taskStatusList,
+  updateTaskStatus,
+  showList,
+}) {
   return (
     <StatusBox>
       <p>Apply status to this task</p>

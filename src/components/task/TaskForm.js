@@ -1,5 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { redirect, Form, useNavigate, useParams } from "react-router-dom";
+import {
+  redirect,
+  Form,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from "react-router-dom";
 import { calendarActions } from "../../redux/calendar-slice";
 import axiosInstance from "../../util/axiosInstancs";
 import MyCalendar from "../common/Calendar";
@@ -10,35 +16,64 @@ import { getApi } from "../../util/api";
 
 import "react-quill/dist/quill.snow.css";
 import TaskStatus from "../task/TaskStatus";
-import TaskStatusList from "../../pages/task/TaskStatusList";
+import TaskStatusList from "./TaskStatusList";
+import { useRef } from "react";
+import { AiFillCaretDown } from "react-icons/ai";
 
 export default function TaskForm({ method, task }) {
   // 해당 프로젝트의 task status 목록 호출
   const params = useParams();
   const projectId = params.projectId;
   const [taskStatusList, setTaskStatusList] = useState();
+  const submit = useSubmit();
+
+  const classificationRef = useRef();
+  const titleRef = useRef();
+  const startDateRef = useRef();
+  const endDateRef = useRef();
+
+  const [showStatusList, setShowStatusList] = useState(false);
+
+  const [taskStatus, setTaskStatus] = useState({
+    id: task ? task.taskStatusId : "",
+    name: task ? task.taskStatus : "",
+    color: task ? task.color : "",
+  });
+
+  const statusBoxChangeHandler = () => {
+    setShowStatusList((prv) => !prv);
+  };
+
+  const updateTaskStatus = (newStatus) => {
+    setTaskStatus(newStatus);
+  };
 
   useEffect(() => {
     (async () => {
       const response = await getApi(`/projects/${projectId}/task-status`);
       const status = await response.data.data;
       setTaskStatusList(status);
+
+      if (task) {
+        dispatch(calendarActions.changeStartDate(task.startDate));
+        dispatch(calendarActions.changeEndDate(task.endDate));
+      }
     })();
   }, []);
 
-  const [showStatusList, setShowStatusList] = useState(false);
-  const [taskStatus, setTaskStatus] = useState({
-    id: task.taskStatusId,
-    name: task.taskStatus,
-    color: task.color,
-  });
-
-  const statusListChangeHandler = () => {
-    setShowStatusList((prv) => !prv);
-  };
-
-  const updateTaskStatus = (newStatus) => {
-    setTaskStatus(newStatus);
+  const saveHandler = () => {
+    // detail 수정시 업데이트 안됨
+    submit(
+      {
+        taskStatusId: taskStatus.id,
+        detail: editorHtml,
+        classification: classificationRef.current.value,
+        title: titleRef.current.value,
+        startDate: startDateRef.current.value,
+        endDate: endDateRef.current.value,
+      },
+      { method: method }
+    );
   };
 
   // 취소 버튼
@@ -50,15 +85,14 @@ export default function TaskForm({ method, task }) {
   // 마크다운
   const [editorHtml, setEditorHtml] = useState("");
   const handleEditorChange = (html) => {
-    console.log(html);
     setEditorHtml(html);
   };
 
   // 캘린더
   const dispatch = useDispatch();
-  const startDate = useSelector((state) => state.calendar.startDate);
-  const endDate = useSelector((state) => state.calendar.endDate);
-  const show = useSelector((state) => state.calendar.show);
+  let startDate = useSelector((state) => state.calendar.startDate);
+  let endDate = useSelector((state) => state.calendar.endDate);
+  let show = useSelector((state) => state.calendar.show);
 
   const changeDateHandler = (event) => {
     dispatch(
@@ -86,6 +120,8 @@ export default function TaskForm({ method, task }) {
               name="title"
               required
               defaultValue={task ? task.title : ""}
+              ref={titleRef}
+              placeholder="제목을 입력하세요"
             />
           </div>
           <div>
@@ -98,6 +134,7 @@ export default function TaskForm({ method, task }) {
                 name="detail"
                 value={editorHtml ? editorHtml : task ? task.detail : ""}
                 onChange={handleEditorChange}
+                placeholder="업무 내용을 입력하세요"
               />
             </div>
           </div>
@@ -105,7 +142,7 @@ export default function TaskForm({ method, task }) {
             <button type="button" onClick={cancelHandler}>
               취소
             </button>
-            <button>저장</button>
+            <button onClick={saveHandler}>저장</button>
           </div>
         </t.MainTask>
 
@@ -117,6 +154,8 @@ export default function TaskForm({ method, task }) {
               id="classification"
               name="classification"
               defaultValue={task ? task.classification : ""}
+              ref={classificationRef}
+              placeholder="내용을 입력하세요"
             />
           </div>
           <t.Container>
@@ -130,6 +169,7 @@ export default function TaskForm({ method, task }) {
                   type="text"
                   value={startDate ? startDate : task ? task.startDate : ""}
                   onClick={toggleCalendar}
+                  ref={startDateRef}
                   readOnly
                 />
               </div>
@@ -141,6 +181,7 @@ export default function TaskForm({ method, task }) {
                   type="text"
                   value={endDate ? endDate : task ? task.endDate : ""}
                   onClick={toggleCalendar}
+                  ref={endDateRef}
                   readOnly
                 />
               </div>
@@ -151,15 +192,20 @@ export default function TaskForm({ method, task }) {
           </t.Container>
           <div>
             <t.SideName>Task Status</t.SideName>
-            <div onClick={statusListChangeHandler}>
-              {task && (
+            <t.TaskStatusBox onClick={statusBoxChangeHandler}>
+              {taskStatus.id ? (
                 <TaskStatus
                   color={taskStatus.color}
                   name={taskStatus.name}
                   width="100px"
                 />
+              ) : (
+                <t.ChooseStatusComment>
+                  업무 상태를 선택하세요.
+                </t.ChooseStatusComment>
               )}
-            </div>
+              <AiFillCaretDown size="27px" color="#6c757d" />
+            </t.TaskStatusBox>
             {showStatusList && (
               <TaskStatusList
                 taskStatusList={taskStatusList}
@@ -183,18 +229,16 @@ export async function action({ request, params }) {
   if (method === "PATCH") {
     url = `/tasks/${params.taskId}`;
   } else if (method === "POST") {
-    url += `/task-status/${params.taskStatusId}`;
+    url += `/task-status/${data.get("taskStatusId")}`;
   }
 
-  //TODO: detail
   const taskData = {
     classification: data.get("classification"),
     title: data.get("title"),
     detail: data.get("detail"),
-    seq: data.get("seq"),
     startDate: data.get("startDate"),
     endDate: data.get("endDate"),
-    //TODO: 밖의 state 전달하는 방법은 ?
+    taskStatusId: Number(data.get("taskStatusId")),
   };
 
   await axiosInstance(url, {

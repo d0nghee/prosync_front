@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import moment from "moment";
 
 const calendarSlice = createSlice({
   name: "calendar",
-  initialState: { show: false, startDate: null, endDate: null },
+  initialState: {
+    show: false,
+    startDate: moment().format("YYYY-MM-DD"),
+    endDate: moment().format("YYYY-MM-DD"),
+  },
   reducers: {
     changeStartDate(state, action) {
       state.startDate = action.payload;

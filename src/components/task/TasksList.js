@@ -11,7 +11,7 @@ export default function TasksList({ tasks }) {
   const view = params.get("view") || "table";
 
   return (
-    <div>
+    <ViewListArea>
       <Header>
         <input type="checkbox" />
         <div>
@@ -25,9 +25,13 @@ export default function TasksList({ tasks }) {
       {view === "board" && <BoardViewList tasks={tasks} />}
       {view === "table" && <TableViewList tasks={tasks} />}
       {view === "roadmap" && <RoadmapViewList tasks={tasks} />}
-    </div>
+    </ViewListArea>
   );
 }
+
+const ViewListArea = styled.div`
+  margin-bottom: 5rem;
+`;
 
 const Header = styled.div`
   width: 85rem;

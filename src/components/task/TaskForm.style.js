@@ -77,3 +77,22 @@ export const CalendarWrapper = styled.div`
   left: 0;
   display: ${(props) => (props.show ? "block" : "none")};
 `;
+
+export const TaskStatusBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  div {
+    flex: 2;
+  }
+`;
+
+export const ChooseStatusComment = styled.div`
+  height: 50px;
+  font-size: 18x;
+  min-width: 100px;
+  text-align: center;
+  line-height: 50px;
+  max-width: 150px;
+`;

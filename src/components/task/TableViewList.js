@@ -25,7 +25,7 @@ export default function TableViewList({ tasks }) {
                 image={task.taskMembers[0].profileImage}
               />
             ) : (
-              <div>담당자 없음</div>
+              <div>none</div>
             )}
             {/* TODO: 담당자 클릭시 담당자 체크박스 목록 */}
             {showAssignees &&
@@ -79,6 +79,7 @@ const ContentLink = styled(Link)`
     display: inline-block;
     flex: 1;
     margin-right: 1rem;
+    overflow: hidden;
   }
 
   div:nth-child(2) {
