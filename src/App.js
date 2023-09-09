@@ -68,6 +68,7 @@ const router = createBrowserRouter([
                         index: true,
                         element: <TaskDetail />,
                         action: deleteTaskAction,
+                        id: 'task-delete'
                       },
                       {
                         path: "edit",
