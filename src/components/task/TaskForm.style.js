@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 
 export const MarkdownInput = styled(ReactQuill)`
   .ql-editor {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     line-height: 1.5;
     height: 500px;
 
@@ -64,7 +64,7 @@ export const TaskArea = styled.div`
 
 export const SideName = styled.div`
   margin-bottom: 1.2rem;
-  font-size: 1.1rem;
+  font-weight: bold;
 `;
 
 export const Container = styled.div`
