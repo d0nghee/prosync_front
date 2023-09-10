@@ -1,35 +1,39 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 import TaskStatus from "./TaskStatus";
+import { useDispatch } from "react-redux";
+import { checkboxActions } from "../../redux/reducers/checkbox-slice";
+import BoardViewList from "./BoardViewList";
+import TableViewList from "./TableViewList";
+import RoadmapViewList from "./RoadmapViewList";
+import { useLocation } from "react-router-dom";
 
 export default function TasksList({ tasks }) {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const view = params.get("view") || "table";
+
   //TODO: 체크박스 로직 추가하기
+  const dispatch = useDispatch();
+  const toggleCheckbox = (id) => {
+    dispatch(checkboxActions.toggleCheckbox(id));
+  };
+
   return (
     <div>
       <Header>
-        <input type="checkbox" />
-        <div>
-          <span>Title</span>
-          <span>Assignees</span>
-          <span>Last Updated</span>
-          <span>Status</span>
-          <span>Classification</span>
-        </div>
+        <input type="checkbox" onChange={() => toggleCheckbox(0)} />
+        <Title>
+          <div>Title</div>
+          <div>Assignees</div>
+          <div>Last Updated</div>
+          <div>Status</div>
+          <div>Classification</div>
+        </Title>
       </Header>
-      {tasks.data.map((task) => (
-        <Item key={task.taskId}>
-          <input type="checkbox" />
-          <ContentLink to={`${task.taskId}`}>
-            <div>{task.title}</div>
-            <div>
-              {task.startDate} - {task.endDate}
-            </div>
-            <div>{task.modifiedAt}</div>
-            <TaskStatus color={task.color} name={task.taskStatus} />
-            <div>{task.classification}</div>
-          </ContentLink>
-        </Item>
-      ))}
+      {view === "board" && <BoardViewList tasks={tasks} />}
+      {view === "table" && <TableViewList tasks={tasks} />}
+      {view === "roadmap" && <RoadmapViewList tasks={tasks} />}
     </div>
   );
 }
@@ -48,23 +52,24 @@ const Header = styled.div`
   input {
     width: 20px;
   }
+`;
+
+const Title = styled.div`
+  display: flex;
+  width: 100%;
+  border-radius: 1rem;
+  margin: 0 0.5rem;
+  padding: 0 1rem;
+  align-items: center;
 
   div {
-    display: flex;
-    width: 83rem;
-    border-radius: 1rem;
-    margin: 0 0.5rem;
-    padding: 0 1rem;
-    display: flex;
-    align-items: center;
-  }
-
-  div > span {
+    display: inline-block;
     flex: 1;
-    margin-right: 5rem;
+    margin-right: 1rem;
+    overflow: hidden;
   }
 
-  div > span:nth-child(1) {
+  div:nth-child(1) {
     flex: 1.5;
   }
 `;

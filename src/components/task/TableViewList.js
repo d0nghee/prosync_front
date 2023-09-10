@@ -3,21 +3,40 @@ import ProfileCard from "../common/ProfileCard";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { styled } from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { checkboxActions } from "../../redux/reducers/checkbox-slice";
 
 export default function TableViewList({ tasks }) {
   const [showAssignees, setShowAssignees] = useState(false);
+  const dispatch = useDispatch();
 
   const showHandler = () => {
     setShowAssignees((prv) => !prv);
+  };
+
+  useEffect(() => {
+    tasks.data.map((task) => {
+      dispatch(checkboxActions.addCheckbox(task.taskId));
+    });
+  }, [tasks]);
+
+  // 체크박스
+  const checkboxes = useSelector((state) => state.checkboxes);
+  const toggleCheckbox = (id) => {
+    dispatch(checkboxActions.toggleCheckbox(id));
   };
 
   return (
     <>
       {tasks.data.map((task) => (
         <Item key={task.taskId}>
-          <input type="checkbox" />
-          <ContentLink to={`${task.taskId}`}>
-            <div>{task.title}</div>
+          <input type="checkbox" onChange={() => toggleCheckbox(task.taskId)} />
+          <Contents>
+            <Link to={`${task.taskId}`}>
+              <div>{task.title} </div>
+            </Link>
+
             {task.taskMembers.length !== 0 ? (
               <ProfileCard
                 key={task.taskMembers[0].memberId}
@@ -27,6 +46,7 @@ export default function TableViewList({ tasks }) {
             ) : (
               <div>none</div>
             )}
+
             {/* TODO: 담당자 클릭시 담당자 체크박스 목록 */}
             {showAssignees &&
               task.taskMembers.map((member) => (
@@ -36,10 +56,20 @@ export default function TableViewList({ tasks }) {
                   image={member.profileImage}
                 />
               ))}
-            <div>{task.modifiedAt}</div>
-            <TaskStatus color={task.color} name={task.taskStatus} />
-            <div>{task.classification}</div>
-          </ContentLink>
+
+            <Link to={`${task.taskId}`}>
+              <div>{task.modifiedAt}</div>
+            </Link>
+
+            <Link to={`${task.taskId}`}>
+              <div>
+                <TaskStatus color={task.color} name={task.taskStatus} />
+              </div>
+            </Link>
+            <Link>
+              <div>{task.classification} </div>
+            </Link>
+          </Contents>
         </Item>
       ))}
     </>
@@ -56,10 +86,13 @@ const Item = styled.div`
   input {
     width: 20px;
   }
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;
 
-//TODO: LINK
-const ContentLink = styled(Link)`
+const Contents = styled.div`
   display: flex;
   width: 83rem;
   border-radius: 1rem;
@@ -69,32 +102,15 @@ const ContentLink = styled(Link)`
   display: flex;
   align-items: center;
 
-  &:hover {
-    background-color: #f0f0f0;
-    color: #007bff;
-    border-radius: 1.5rem;
-  }
-
-  div {
+  div,
+  a {
     display: inline-block;
     flex: 1;
     margin-right: 1rem;
     overflow: hidden;
   }
 
-  div:nth-child(2) {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  div:nth-child(1) {
+  a:nth-child(1) {
     flex: 1.5;
-  }
-
-  div:nth-child(4) {
-    flex: 0.7;
-    margin-right: 5rem;
   }
 `;

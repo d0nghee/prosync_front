@@ -6,7 +6,7 @@ import {
   useParams,
   useSubmit,
 } from "react-router-dom";
-import { calendarActions } from "../../redux/calendar-slice";
+import { calendarActions } from "../../redux/reducers/calendar-slice";
 import axiosInstance from "../../util/axiosInstancs";
 import MyCalendar from "../common/Calendar";
 import moment from "moment/moment";
@@ -19,6 +19,7 @@ import TaskStatus from "../task/TaskStatus";
 import TaskStatusList from "./TaskStatusList";
 import { useRef } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
+import ProfileCard from "../common/ProfileCard";
 
 export default function TaskForm({ method, task }) {
   // 해당 프로젝트의 task status 목록 호출
@@ -62,7 +63,6 @@ export default function TaskForm({ method, task }) {
   }, []);
 
   const saveHandler = () => {
-    // detail 수정시 업데이트 안됨
     submit(
       {
         taskStatusId: taskStatus.id,
@@ -147,6 +147,11 @@ export default function TaskForm({ method, task }) {
         </t.MainTask>
 
         <t.SideTask>
+          <div>
+            <t.SideName>Assignees</t.SideName>
+            {/* TODO: 업무담당자 조회 API 공통화 후 작업 ? */}
+            {/* <ProfileCard key={memberId} name={name} image={profileImage} /> */}
+          </div>
           <div>
             <t.SideName>Classification</t.SideName>
             <t.SideInput
