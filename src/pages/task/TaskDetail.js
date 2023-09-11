@@ -2,15 +2,11 @@ import { redirect, useRouteLoaderData } from "react-router-dom";
 import { deleteApi, getApi } from "../../util/api";
 import Task from "../../components/task/Task";
 
-
 export default function TaskDetail() {
   const data = useRouteLoaderData("task-details");
   const task = data.data.data;
 
-
-  return (
-    <Task task={task}/>
-  );
+  return <Task task={task} />;
 }
 
 export async function loader({ params }) {

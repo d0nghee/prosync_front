@@ -3,59 +3,74 @@ import ProfileCard from "../common/ProfileCard";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { styled } from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { checkboxActions } from "../../redux/reducers/checkbox-slice";
+import TaskMemberList from "./TaskMemberList";
 
 export default function TableViewList({ tasks }) {
   const [showAssignees, setShowAssignees] = useState(false);
   const dispatch = useDispatch();
 
-  const showHandler = () => {
+  const showMembers = () => {
     setShowAssignees((prv) => !prv);
+    console.log(showAssignees);
   };
 
   useEffect(() => {
-    tasks.data.map((task) => {
+    tasks.data.forEach((task) => {
       dispatch(checkboxActions.addCheckbox(task.taskId));
     });
-  }, [tasks]);
+  }, []);
 
-  // 체크박스
-  const checkboxes = useSelector((state) => state.checkboxes);
   const toggleCheckbox = (id) => {
     dispatch(checkboxActions.toggleCheckbox(id));
   };
 
   return (
     <>
+      <Header>
+        <input
+          type="checkbox"
+          onChange={() => dispatch(checkboxActions.toggleAllItems())}
+        />
+        <Title>
+          <div>Title</div>
+          <div>Assignees</div>
+          <div>Last Updated</div>
+          <div>Status</div>
+          <div>Classification</div>
+        </Title>
+      </Header>
       {tasks.data.map((task) => (
         <Item key={task.taskId}>
-          <input type="checkbox" onChange={() => toggleCheckbox(task.taskId)} />
+          <input
+            type="checkbox"
+            onChange={() => toggleCheckbox({ id: task.taskId })}
+          />
           <Contents>
             <Link to={`${task.taskId}`}>
               <div>{task.title} </div>
             </Link>
 
             {task.taskMembers.length !== 0 ? (
-              <ProfileCard
-                key={task.taskMembers[0].memberId}
-                name={task.taskMembers[0].name}
-                image={task.taskMembers[0].profileImage}
-              />
+              <div onClick={showMembers}>
+                <ProfileCard
+                  key={task.taskMembers[0].memberId}
+                  name={task.taskMembers[0].name}
+                  image={task.taskMembers[0].profileImage}
+                />
+              </div>
             ) : (
               <div>none</div>
             )}
 
-            {/* TODO: 담당자 클릭시 담당자 체크박스 목록 */}
-            {showAssignees &&
-              task.taskMembers.map((member) => (
-                <ProfileCard
-                  key={member.memberId}
-                  name={member.name}
-                  image={member.profileImage}
-                />
-              ))}
+            {/* TODO: 담당자 api 요청 추가 */}
+            {task.taskMembers.length !== 0 && showAssignees && (
+              <TaskMemberWrapper>
+                <TaskMemberList taskMembers={task.taskMembers} />
+              </TaskMemberWrapper>
+            )}
 
             <Link to={`${task.taskId}`}>
               <div>{task.modifiedAt}</div>
@@ -75,6 +90,42 @@ export default function TableViewList({ tasks }) {
     </>
   );
 }
+
+const Header = styled.div`
+  width: 85rem;
+  height: 5rem;
+  margin: 0;
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  font-weight: bold;
+
+  input {
+    width: 20px;
+  }
+`;
+
+const Title = styled.div`
+  display: flex;
+  width: 100%;
+  border-radius: 1rem;
+  margin: 0 0.5rem;
+  padding: 0 1rem;
+  align-items: center;
+
+  div {
+    display: inline-block;
+    flex: 1;
+    margin-right: 1rem;
+    overflow: hidden;
+  }
+
+  div:nth-child(1) {
+    flex: 1.5;
+  }
+`;
 
 const Item = styled.div`
   width: 85rem;
@@ -101,6 +152,7 @@ const Contents = styled.div`
   height: 8rem;
   display: flex;
   align-items: center;
+  position: relative;
 
   div,
   a {
@@ -113,4 +165,13 @@ const Contents = styled.div`
   a:nth-child(1) {
     flex: 1.5;
   }
+`;
+
+const TaskMemberWrapper = styled.div`
+  position: absolute;
+  top: 80px;
+  left: 320px;
+  z-index: 1;
+  width: 250px;
+  padding: 1rem;
 `;

@@ -1,29 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  checkboxes: [{ id: 0, checked: false }],
+  allChecked: false,
+};
+
 const checkboxSlice = createSlice({
   name: "checkbox",
-  initialState: {
-    checkboxes: [{ id: 0, checked: false }],
-  },
+  initialState,
   reducers: {
     addCheckbox(state, action) {
-      const newCheckbox = {
-        id: action.payload,
-        checked: false,
-      };
-
-      return { checkboxes: [...state.checkboxes, newCheckbox] };
+      console.log("add box");
+      state.checkboxes.push({ id: action.payload, checked: false });
     },
     toggleCheckbox(state, action) {
-      // console.log(action.payload);
-      // if (action.payload === 0) {
-      //   state.checkboxes.map((one) => ({
-      //     ...one, checked: one[]
-      //   }))
-      // }
-      state.checkboxes.map((one) =>
-        one.id === action.payload ? { ...one, checked: !one.checked } : one
-      );
+      console.log("toggle one check box");
+      const checkedId = action.payload.id;
+      const items = state.checkboxes;
+      items.forEach((one, idx) => {
+        if (one["id"] === checkedId) {
+          state.checkboxes[idx].checked = !state.checkboxes[idx].checked;
+        }
+      });
+    },
+    toggleAllItems(state) {
+      console.log("toggle all check boxes");
+      const allChecked = !state.allChecked;
+      state.checkboxes.forEach((item, idx) => {
+        state.checkboxes[idx].checked = allChecked;
+      });
+      state.allChecked = allChecked;
     },
   },
 });
