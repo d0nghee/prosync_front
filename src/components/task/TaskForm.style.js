@@ -14,7 +14,7 @@ export const MarkdownInput = styled(ReactQuill)`
 `;
 
 export const TaskTitle = styled.input`
-  height: 50px;
+  max-height: 100px;
   width: 100%;
   font-size: 1.2rem;
   padding: 1rem;
@@ -45,6 +45,7 @@ export const SideTask = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  max-width: 240px;
 `;
 
 export const SideInput = styled.input`

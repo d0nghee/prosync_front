@@ -50,7 +50,7 @@ export default function Task({ task, taskMembers }) {
           </div>
           <div>
             <t.SideName>Classification</t.SideName>
-            <div>{task.classification}</div>
+            <Text>{task.classification}</Text>
           </div>
           <div>
             <t.SideName>Task Period</t.SideName>
@@ -83,11 +83,12 @@ const DetailArea = styled.div`
 `;
 
 const TaskTitle = styled.h2`
-  height: 50px;
-  width: 100%;
+  max-height: 100px;
+  width: 800px;
   font-size: 1.2rem;
   border-bottom: 1px solid #dad7cd;
   padding: 1rem 0.2rem;
+  overflow: auto;
 `;
 
 const TaskDetails = styled.div`
@@ -99,3 +100,7 @@ const TaskDetails = styled.div`
   overflow: auto;
   border-radius: 0.2rem;
 `;
+
+const Text = styled.div`
+  overflow: hidden;
+`

@@ -22,11 +22,11 @@ a {
 
 /* 스크롤바 */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #888; 
+  background-color: #a19b9b; 
   border-radius: 6px; 
 }
 
