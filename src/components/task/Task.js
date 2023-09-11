@@ -2,8 +2,10 @@ import { useSubmit, Link } from "react-router-dom";
 import * as t from "./TaskForm.style";
 import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
+import { useEffect, useState } from "react";
+import { getApi } from "../../util/api";
 
-export default function Task({ task }) {
+export default function Task({ task, taskMembers }) {
   const submit = useSubmit();
   const taskDeleteHandler = () => {
     const proceed = window.confirm("정말 삭제하시겠습니까?");
@@ -11,6 +13,17 @@ export default function Task({ task }) {
       submit(null, { method: "DELETE", name: "task-delete" });
     }
   };
+
+  const [assignees, setAssignees] = useState();
+  useEffect(() => {
+    (async () => {
+      const response = await getApi(`members`);
+      const members = await response.data.data;
+      setAssignees(members);
+    })();
+  }, []);
+
+  console.log(assignees, "member");
 
   return (
     <DetailArea>
@@ -30,6 +43,11 @@ export default function Task({ task }) {
           </div>
         </t.MainTask>
         <t.SideTask>
+          <div>
+            {/* TODO: 업무 담당자 조회 추가 */}
+            <t.SideName>Assignees</t.SideName>
+            <div>test</div>
+          </div>
           <div>
             <t.SideName>Classification</t.SideName>
             <div>{task.classification}</div>

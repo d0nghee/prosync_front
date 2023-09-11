@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { checkboxActions } from "../../redux/reducers/checkbox-slice";
 import TaskMemberList from "./TaskMemberList";
+import { AiFillCaretDown } from "react-icons/ai";
 
 export default function TableViewList({ tasks }) {
   const [showAssignees, setShowAssignees] = useState(false);
@@ -58,6 +59,7 @@ export default function TableViewList({ tasks }) {
                   name={task.taskMembers[0].name}
                   image={task.taskMembers[0].profileImage}
                 />
+                <AiFillCaretDown size="27px" color="#6c757d" />
               </div>
             ) : (
               <div>none</div>
