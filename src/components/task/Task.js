@@ -4,12 +4,11 @@ import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
 
 export default function Task({ task }) {
-  //TODO: useSubmit으로 삭제 요청
   const submit = useSubmit();
   const taskDeleteHandler = () => {
     const proceed = window.confirm("정말 삭제하시겠습니까?");
     if (proceed) {
-      submit(null, { method: "DELETE", name: 'task-delete' });
+      submit(null, { method: "DELETE", name: "task-delete" });
     }
   };
 
@@ -21,7 +20,9 @@ export default function Task({ task }) {
           <div>{task.createdAt}</div>
           <div>
             <h2>Details</h2>
-            <TaskDetails dangerouslySetInnerHTML={{__html: `${task.detail}`}}/>
+            <TaskDetails
+              dangerouslySetInnerHTML={{ __html: `${task.detail}` }}
+            />
           </div>
           <div>
             <Link to="edit">수정</Link>
@@ -42,7 +43,11 @@ export default function Task({ task }) {
           <div>
             <t.SideName>Task Status</t.SideName>
             <t.TaskStatusBox>
-              <TaskStatus color={task.color} name={task.taskStatus} width="100px"/>
+              <TaskStatus
+                color={task.color}
+                name={task.taskStatus}
+                width="100px"
+              />
             </t.TaskStatusBox>
           </div>
         </t.SideTask>
@@ -57,7 +62,7 @@ const DetailArea = styled.div`
   max-width: 1000px;
   margin: 0 auto;
   height: 100%;
-`
+`;
 
 const TaskTitle = styled.h2`
   height: 50px;
@@ -65,7 +70,7 @@ const TaskTitle = styled.h2`
   font-size: 1.2rem;
   border-bottom: 1px solid #dad7cd;
   padding: 1rem 0.2rem;
-`
+`;
 
 const TaskDetails = styled.div`
   font-size: 1.05rem;
@@ -75,4 +80,4 @@ const TaskDetails = styled.div`
   padding: 0 1rem;
   overflow: auto;
   border-radius: 0.2rem;
-`
+`;

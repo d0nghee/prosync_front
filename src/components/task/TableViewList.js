@@ -18,10 +18,9 @@ export default function TableViewList({ tasks }) {
   };
 
   useEffect(() => {
-    tasks.data.forEach((task) => {
-      dispatch(checkboxActions.addCheckbox(task.taskId));
-    });
-  }, []);
+    const taskIds = tasks.data.map((task) => task.taskId);
+    dispatch(checkboxActions.addCheckbox(taskIds));
+  }, [tasks]);
 
   const toggleCheckbox = (id) => {
     dispatch(checkboxActions.toggleCheckbox(id));

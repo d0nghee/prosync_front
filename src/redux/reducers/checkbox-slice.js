@@ -9,9 +9,15 @@ const checkboxSlice = createSlice({
   name: "checkbox",
   initialState,
   reducers: {
-    addCheckbox(state, action) {
+    addCheckbox(state = initialState, action) {
       console.log("add box");
-      state.checkboxes.push({ id: action.payload, checked: false });
+      if (action.payload) {
+        state.checkboxes = [{ id: 0, checked: false }];
+        state.allChecked = false;
+        action.payload.forEach((id) =>
+          state.checkboxes.push({ id, checked: false })
+        );
+      }
     },
     toggleCheckbox(state, action) {
       console.log("toggle one check box");

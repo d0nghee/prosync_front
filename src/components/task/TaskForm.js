@@ -251,9 +251,13 @@ export async function action({ request, params }) {
     data: taskData,
   })
     .then((response) => {
+      if (response.status === 200 || response.status === 201) {
+        console.log("success");
+        redirect(`/projects/${projectId}/tasks`);
+      }
       return response;
     })
     .catch((error) => console.log(error));
-
+  console.log("redirect");
   return redirect(`/projects/${projectId}/tasks`);
 }

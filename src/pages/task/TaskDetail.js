@@ -4,6 +4,7 @@ import Task from "../../components/task/Task";
 
 export default function TaskDetail() {
   const data = useRouteLoaderData("task-details");
+  console.log(data);
   const task = data.data.data;
 
   return <Task task={task} />;

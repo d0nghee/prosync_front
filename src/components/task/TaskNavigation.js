@@ -1,12 +1,7 @@
 import { useSelector } from "react-redux";
-import {
-  NavLink,
-  useSearchParams,
-  Form,
-  useNavigate,
-  Link,
-} from "react-router-dom";
+import { NavLink, useSearchParams, useNavigate, Link } from "react-router-dom";
 import { styled } from "styled-components";
+import { deleteApi } from "../../util/api";
 
 export default function TaskNavigation() {
   const [searchPaarams] = useSearchParams();
@@ -23,9 +18,8 @@ export default function TaskNavigation() {
       }
     });
     if (checkedItems.length > 1) {
-      alert("수정은 한건만 가능합니다.");
+      alert("수정은 한건만 선택이 가능합니다.");
     } else if (checkedItems.length === 1) {
-      //TODO: 이동 안함 확인하기 - loader 문제인듯
       const taskId = checkedItems[0];
       navigate(`${taskId}/edit`);
     } else {
@@ -41,11 +35,21 @@ export default function TaskNavigation() {
       }
     });
     if (checkedItems.length > 1) {
-      window.confirm(`${checkedItems.length}건을 모두 삭제하시겠습니까?`);
+      const proceed = window.confirm(
+        `${checkedItems.length}건을 모두 삭제하시겠습니까?`
+      );
+      if (proceed) {
+        checkedItems.forEach((id) => {
+          deleteApi(`tasks/${id}`);
+        });
+      }
     } else {
-      window.confirm("1건을 삭제하시겠습니까?");
+      const proceed = window.confirm("1건을 삭제하시겠습니까?");
+      if (proceed) {
+        const taskId = checkedItems[0];
+        deleteApi(`tasks/${taskId}`);
+      }
     }
-    //TODO: 삭제 API 추가
   };
 
   return (
@@ -66,14 +70,13 @@ export default function TaskNavigation() {
         {view !== "board" && view !== "roadmap" && (
           <Buttons>
             <div>
-              <NewButton to="new">신규</NewButton>
+              <NewButton to="new">생성</NewButton>
             </div>
             <ActionButton color="#4361ee" onClick={updateHandler}>
-              <Form>수정</Form>
+              수정
             </ActionButton>
-
             <ActionButton color="red" onClick={deleteHandler}>
-              <Form>삭제</Form>
+              삭제
             </ActionButton>
           </Buttons>
         )}
