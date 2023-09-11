@@ -88,7 +88,7 @@ export default function TaskNavigation() {
 const TaskNav = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 45rem;
+  gap: 44rem;
   width: 85rem;
   height: 5rem;
 `;

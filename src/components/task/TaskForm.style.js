@@ -95,4 +95,5 @@ export const ChooseStatusComment = styled.div`
   text-align: center;
   line-height: 50px;
   max-width: 150px;
+  font-size: 0.8rem;
 `;
