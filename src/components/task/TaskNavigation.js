@@ -12,11 +12,11 @@ export default function TaskNavigation() {
 
   const updateHandler = () => {
     const checkedItems = [];
-    checkboxes.forEach((element) => {
-      if (element.checked) {
-        checkedItems.push(element.id);
+    for (const id in checkboxes) {
+      if (checkboxes[id].checked) {
+        checkedItems.push(id);
       }
-    });
+    }
     if (checkedItems.length > 1) {
       alert("수정은 한건만 선택이 가능합니다.");
     } else if (checkedItems.length === 1) {
@@ -29,11 +29,11 @@ export default function TaskNavigation() {
 
   const deleteHandler = () => {
     const checkedItems = [];
-    checkboxes.forEach((element) => {
-      if (element.checked) {
-        checkedItems.push(element.id);
+    for (const id in checkboxes) {
+      if (checkboxes[id].checked) {
+        checkedItems.push(id);
       }
-    });
+    }
     if (checkedItems.length > 1) {
       const proceed = window.confirm(
         `${checkedItems.length}건을 모두 삭제하시겠습니까?`

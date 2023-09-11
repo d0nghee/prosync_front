@@ -14,25 +14,25 @@ export default function TableViewList({ tasks }) {
 
   const showMembers = () => {
     setShowAssignees((prv) => !prv);
-    console.log(showAssignees);
   };
 
   useEffect(() => {
     const taskIds = tasks.data.map((task) => task.taskId);
     dispatch(checkboxActions.addCheckbox(taskIds));
-  }, [tasks]);
+  }, [dispatch, tasks]);
 
-  const toggleCheckbox = (id) => {
+  const toggleCheckbox = (id, e) => {
     dispatch(checkboxActions.toggleCheckbox(id));
+  };
+
+  const toggleAllCheck = (event) => {
+    dispatch(checkboxActions.toggleAllItems());
   };
 
   return (
     <>
       <Header>
-        <input
-          type="checkbox"
-          onChange={() => dispatch(checkboxActions.toggleAllItems())}
-        />
+        <input type="checkbox" onChange={toggleAllCheck} />
         <Title>
           <div>Title</div>
           <div>Assignees</div>
@@ -45,13 +45,12 @@ export default function TableViewList({ tasks }) {
         <Item key={task.taskId}>
           <input
             type="checkbox"
-            onChange={() => toggleCheckbox({ id: task.taskId })}
+            onChange={(e) => toggleCheckbox({ id: task.taskId }, e)}
           />
           <Contents>
             <Link to={`${task.taskId}`}>
               <div>{task.title} </div>
             </Link>
-
             {task.taskMembers.length !== 0 ? (
               <div onClick={showMembers}>
                 <ProfileCard
