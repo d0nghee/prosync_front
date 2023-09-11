@@ -3,8 +3,8 @@ import { Form, useNavigation, useSearchParams, Link } from "react-router-dom";
 import SignupImage from "../../assets/images/signup.jpg";
 
 export default function AuthForm() {
-  const [searchPaarams] = useSearchParams();
-  const isLogin = searchPaarams.get("mode") === "login";
+  const [searchParams] = useSearchParams();
+  const isLogin = searchParams.get("mode") === "login";
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 

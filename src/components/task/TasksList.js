@@ -1,12 +1,11 @@
 import BoardViewList from "./BoardViewList";
 import TableViewList from "./TableViewList";
 import RoadmapViewList from "./RoadmapViewList";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function TasksList({ tasks }) {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const view = params.get("view") || "table";
+  const [searchParams] = useSearchParams();
+  const view = searchParams.get("view") || "table";
 
   return (
     <div>
