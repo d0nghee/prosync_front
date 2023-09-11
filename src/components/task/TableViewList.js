@@ -7,14 +7,19 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { checkboxActions } from "../../redux/reducers/checkbox-slice";
 import TaskMemberList from "./TaskMemberList";
-import { AiFillCaretDown } from "react-icons/ai";
 
 export default function TableViewList({ tasks }) {
-  const [showAssignees, setShowAssignees] = useState(false);
+  const [showAssignees, setShowAssignees] = useState();
   const dispatch = useDispatch();
 
-  const showMembers = () => {
-    setShowAssignees((prv) => !prv);
+  const showMembers = (id) => {
+    setShowAssignees((prv) => {
+      if (id === prv) {
+        return undefined;
+      } else {
+        return id;
+      }
+    });
   };
 
   useEffect(() => {
@@ -53,20 +58,19 @@ export default function TableViewList({ tasks }) {
               <div>{task.title} </div>
             </Link>
             {task.taskMembers.length !== 0 ? (
-              <div onClick={showMembers}>
+              <Assignee onClick={() => showMembers(task.taskId)}>
                 <ProfileCard
                   key={task.taskMembers[0].memberId}
                   name={task.taskMembers[0].name}
                   image={task.taskMembers[0].profileImage}
                 />
-                <AiFillCaretDown size="27px" color="#6c757d" />
-              </div>
+              </Assignee>
             ) : (
               <div>none</div>
             )}
 
             {/* TODO: 담당자 api 요청 추가 */}
-            {task.taskMembers.length !== 0 && showAssignees && (
+            {task.taskMembers.length !== 0 && showAssignees === task.taskId && (
               <TaskMemberWrapper>
                 <TaskMemberList taskMembers={task.taskMembers} />
               </TaskMemberWrapper>
@@ -175,3 +179,13 @@ const TaskMemberWrapper = styled.div`
   width: 250px;
   padding: 1rem;
 `;
+
+const Assignee = styled.div`
+  display: flex;  
+
+
+  & > div {
+    display: flex;
+    width: 80%;
+  }
+`

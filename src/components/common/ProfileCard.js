@@ -1,10 +1,13 @@
 import { styled } from "styled-components";
+import { AiFillCaretDown } from "react-icons/ai";
+
 
 export default function ProfileCard({ name, image }) {
   return (
     <ProfileContainer>
       {image && <ProfileImage src={image} alt={image} />}
       {name && <div>{name}</div>}
+      <AiFillCaretDown size="20px" color="#6c757d" />
     </ProfileContainer>
   );
 }
