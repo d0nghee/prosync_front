@@ -1,4 +1,4 @@
-import { redirect, useRouteLoaderData } from "react-router-dom";
+import { redirect, useRouteLoaderData, json } from "react-router-dom";
 import { deleteApi, getApi } from "../../util/api";
 import Task from "../../components/task/Task";
 
@@ -12,6 +12,15 @@ export default function TaskDetail() {
 export async function loader({ params }) {
   const taskId = params.taskId;
   const response = await getApi(`/tasks/${taskId}`);
+  if (
+    response.response &&
+    (response.response.status === 500 || response.response.status === 404)
+  ) {
+    throw json(
+      { status: response.response.status },
+      { message: response.response.data.resultCode }
+    );
+  }
   return response;
 }
 

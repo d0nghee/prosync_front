@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useParams, json } from "react-router-dom";
 import { getApi } from "../../util/api";
 import TasksList from "../../components/task/TasksList";
 import TaskNavigation from "../../components/task/TaskNavigation";
@@ -27,6 +27,7 @@ export default function Tasks() {
           search: keyword,
         },
       });
+
       const tasks = await response.data;
       setTaskList(tasks);
     })();
@@ -44,6 +45,12 @@ export default function Tasks() {
 export async function loader({ params }) {
   const projectId = params.projectId;
   const response = await getApi(`/projects/${projectId}/tasks`);
+  //TODO: 오류처리
+  console.log("response", response);
+  if (response.status === 500) {
+    console.log("500 error");
+    throw json({ status: 500 });
+  }
   return response;
 }
 
