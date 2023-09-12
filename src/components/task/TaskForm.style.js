@@ -1,6 +1,14 @@
 import { styled } from "styled-components";
 import ReactQuill from "react-quill";
 
+export const FormArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 100%;
+`;
+
 export const MarkdownInput = styled(ReactQuill)`
   .ql-editor {
     font-size: 1.05rem;

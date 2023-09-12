@@ -16,6 +16,7 @@ export async function loader({ params }) {
     response.response &&
     (response.response.status === 500 || response.response.status === 404)
   ) {
+    //TODO:재확인
     throw json(
       { status: response.response.status },
       { message: response.response.data.resultCode }

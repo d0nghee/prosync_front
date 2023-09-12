@@ -1,15 +1,23 @@
 import { useSelector } from "react-redux";
-import { NavLink, useSearchParams, useNavigate, Link } from "react-router-dom";
+import {
+  NavLink,
+  useSearchParams,
+  useNavigate,
+  Link,
+  useParams,
+} from "react-router-dom";
 import { styled } from "styled-components";
-import { deleteApi } from "../../util/api";
+import { deleteApi, getApi } from "../../util/api";
 
-export default function TaskNavigation() {
+export default function TaskNavigation({ updateList }) {
   const [searchPaarams] = useSearchParams();
   const view = searchPaarams.get("view") || "table";
   const navigate = useNavigate();
+  const params = useParams();
 
   const checkboxes = useSelector((state) => state.checkbox.checkboxes);
 
+  //TODO: 공통 로직 공통화하기 (?)
   const updateHandler = () => {
     const checkedItems = [];
     for (const id in checkboxes) {
@@ -40,14 +48,24 @@ export default function TaskNavigation() {
       );
       if (proceed) {
         checkedItems.forEach((id) => {
-          deleteApi(`tasks/${id}`);
+          (async () => {
+            await deleteApi(`tasks/${id}`);
+            const response = await getApi(`projects/${params.projectId}/tasks`);
+            const tasks = await response.data.data;
+            updateList(tasks);
+          })();
         });
       }
     } else if (checkedItems.length === 1) {
       const proceed = window.confirm("1건을 삭제하시겠습니까?");
       if (proceed) {
         const taskId = checkedItems[0];
-        deleteApi(`tasks/${taskId}`);
+        (async () => {
+          await deleteApi(`tasks/${taskId}`);
+          const response = await getApi(`projects/${params.projectId}/tasks`);
+          const tasks = await response.data;
+          updateList(tasks);
+        })();
       }
     } else {
       alert("선택 대상이 없습니다.");

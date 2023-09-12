@@ -1,35 +1,92 @@
 import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
+import { useState } from "react";
+import { deleteApi } from "../../util/api";
 
 export default function TaskStatusList({
   taskStatusList,
   updateTaskStatus,
-  showList,
+  onRemove,
+  showStatusModal,
 }) {
+  const [editStatus, setEditState] = useState(false);
+  const editStatusHandler = () => {
+    setEditState((prv) => !prv);
+  };
+
+  const deleteTaskStatus = (statusId) => {
+    (async () => {
+      const response = await deleteApi(`task-status/${statusId}`);
+      if (response.response && response.response.status === 409) {
+        alert("업무상태를 사용하는 업무가 존재합니다.");
+      } else {
+        const proceed = window.confirm("정말 삭제하시겠습니까?");
+        if (proceed) {
+          onRemove(statusId);
+        }
+      }
+    })();
+  };
+
   return (
     <StatusBox>
       <p>Apply status to this task</p>
-      <Filter type="text" placeholder="Filter status" />
       <StatusItems>
         {taskStatusList.map((taskStatus) => (
-          <div
-            key={taskStatus.taskStatusId}
-            onClick={() =>
-              updateTaskStatus({
-                id: taskStatus.taskStatusId,
-                name: taskStatus.taskStatus,
-                color: taskStatus.color,
-              })
-            }
-          >
-            <TaskStatus color={taskStatus.color} name={taskStatus.taskStatus} />
-          </div>
+          <OneBox key={taskStatus.taskStatusId}>
+            <div
+              onClick={() =>
+                updateTaskStatus({
+                  id: taskStatus.taskStatusId,
+                  name: taskStatus.taskStatus,
+                  color: taskStatus.color,
+                })
+              }
+            >
+              <TaskStatus
+                color={taskStatus.color}
+                name={taskStatus.taskStatus}
+              />
+            </div>
+            {editStatus ? (
+              <div onClick={() => deleteTaskStatus(taskStatus.taskStatusId)}>
+                X
+              </div>
+            ) : (
+              ""
+            )}
+          </OneBox>
         ))}
       </StatusItems>
-      <button>edit status</button>
+      <Buttons>
+        <button type="button" onClick={editStatusHandler}>
+          {editStatus ? "완료" : "수정"}
+        </button>
+        {editStatus ? (
+          <button type="button" onClick={showStatusModal}>
+            추가
+          </button>
+        ) : undefined}
+      </Buttons>
     </StatusBox>
   );
 }
+
+//TODO : CSS STYLE 변경
+const Buttons = styled.div`
+  display: flex;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+  button {
+    height: 100%;
+    font-size: 20px;
+    overflow: hidden;
+    background-color: white;
+    border-color: #dad7cd;
+    width: 100%;
+  }
+`;
 
 const StatusBox = styled.div`
   width: 220px;
@@ -39,15 +96,6 @@ const StatusBox = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 5px;
-
-  button {
-    height: 40px;
-    font-size: 20px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    background-color: white;
-    border-color: #dad7cd;
-  }
 
   p {
     font-weight: bold;
@@ -63,7 +111,7 @@ const StatusItems = styled.div`
   border-bottom: 1px solid gray;
 
   div {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 
   div:hover {
@@ -72,11 +120,16 @@ const StatusItems = styled.div`
   }
 `;
 
-const Filter = styled.input`
-  height: 45px;
-  padding: 10px;
-  font-size: 1rem;
-  margin: 10px 10px 0px 10px;
-  border-radius: 15px;
-  border-color: #dad7cd;
+const OneBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  div:nth-child(1) {
+    flex: 10;
+  }
+
+  div:nth-child(2) {
+    flex: 1;
+  }
 `;

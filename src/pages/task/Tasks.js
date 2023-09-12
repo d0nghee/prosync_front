@@ -33,10 +33,14 @@ export default function Tasks() {
     })();
   }, [keyword, params.projectId]);
 
+  const updateList = (list) => {
+    setTaskList(list);
+  };
+
   return (
     <TaskView>
       <TaskSearchBar updateSearch={changeKeywordHandler} />
-      <TaskNavigation />
+      <TaskNavigation updateList={updateList} />
       <TasksList tasks={taskList} />
     </TaskView>
   );
@@ -46,7 +50,6 @@ export async function loader({ params }) {
   const projectId = params.projectId;
   const response = await getApi(`/projects/${projectId}/tasks`);
   //TODO: 오류처리
-  console.log("response", response);
   if (response.status === 500) {
     console.log("500 error");
     throw json({ status: 500 });

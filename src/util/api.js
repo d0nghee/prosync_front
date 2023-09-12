@@ -57,4 +57,22 @@ const postFileApi = async (data) => {
   }
 };
 
+const postTaskStatus = async ({ taskStatus, color, seq }, projectId) => {
+  const postData = {
+    taskStatus,
+    color,
+    seq,
+  };
+
+  const response = await postApi(
+    `/projects/${projectId}/task-status`,
+    postData
+  );
+
+  if (response.status === 201) {
+    alert("등록 완료되었습니다.");
+  }
+};
+
 export { postApi, getApi, patchApi, deleteApi };
+export { postTaskStatus };

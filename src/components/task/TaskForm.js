@@ -20,6 +20,7 @@ import TaskStatusList from "./TaskStatusList";
 import { useRef } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import ProfileCard from "../common/ProfileCard";
+import NewTaskStatus from "../../pages/task/NewTaskStatus";
 
 export default function TaskForm({ method, task }) {
   // 해당 프로젝트의 task status 목록 호출
@@ -60,7 +61,14 @@ export default function TaskForm({ method, task }) {
         dispatch(calendarActions.changeEndDate(task.endDate));
       }
     })();
-  }, []);
+  }, [projectId, task]);
+
+  // 업무 상태리스트 업데이트
+  const onRemove = (id) => {
+    setTaskStatusList((prv) =>
+      prv.filter((status) => status.taskStatusId !== id)
+    );
+  };
 
   const saveHandler = () => {
     submit(
@@ -108,119 +116,135 @@ export default function TaskForm({ method, task }) {
     dispatch(calendarActions.toggleCalendar());
   };
 
-  return (
-    <Form method={method}>
-      <t.TaskArea>
-        <t.MainTask>
-          <div>
-            <label htmlFor="title"></label>
-            <t.TaskTitle
-              type="text"
-              id="title"
-              name="title"
-              required
-              defaultValue={task ? task.title : ""}
-              ref={titleRef}
-              placeholder="제목을 입력하세요"
-            />
-          </div>
-          <div>
-            <h2>Write</h2>
-            <div>
-              <label htmlFor="detail" />
-              <t.MarkdownInput
-                theme="snow"
-                id="detail"
-                name="detail"
-                value={editorHtml ? editorHtml : task ? task.detail : ""}
-                onChange={handleEditorChange}
-                placeholder="업무 내용을 입력하세요"
-              />
-            </div>
-          </div>
-          <div>
-            <button type="button" onClick={cancelHandler}>
-              취소
-            </button>
-            <button onClick={saveHandler}>저장</button>
-          </div>
-        </t.MainTask>
+  //업무 상태 모달
+  const [showModal, setShowModal] = useState(false);
 
-        <t.SideTask>
-          <div>
-            <t.SideName>Assignees</t.SideName>
-            {/* TODO: 업무담당자 조회 API 공통화 후 작업 ? */}
-            {/* <ProfileCard key={memberId} name={name} image={profileImage} /> */}
-          </div>
-          <div>
-            <t.SideName>Classification</t.SideName>
-            <t.SideInput
-              type="text"
-              id="classification"
-              name="classification"
-              defaultValue={task ? task.classification : ""}
-              ref={classificationRef}
-              placeholder="내용을 입력하세요"
-            />
-          </div>
-          <t.Container>
-            <t.SideName>Task Period</t.SideName>
-            <t.Period>
+  const showStatusModal = () => {
+    setShowModal((prv) => !prv);
+  };
+
+  return (
+    <>
+      {showModal && <NewTaskStatus onClose={showStatusModal} />}
+      <t.FormArea>
+        <Form method={method}>
+          <t.TaskArea>
+            <t.MainTask>
               <div>
-                <label htmlFor="startDate"></label>
-                <t.DateInput
-                  id="startDate"
-                  name="startDate"
+                <label htmlFor="title"></label>
+                <t.TaskTitle
                   type="text"
-                  value={startDate ? startDate : task ? task.startDate : ""}
-                  onClick={toggleCalendar}
-                  ref={startDateRef}
-                  readOnly
+                  id="title"
+                  name="title"
+                  required
+                  defaultValue={task ? task.title : ""}
+                  ref={titleRef}
+                  placeholder="제목을 입력하세요"
                 />
               </div>
               <div>
-                <label htmlFor="endDate"></label>
-                <t.DateInput
-                  id="endDate"
-                  name="endDate"
+                <h2>Write</h2>
+                <div>
+                  <label htmlFor="detail" />
+                  <t.MarkdownInput
+                    theme="snow"
+                    id="detail"
+                    name="detail"
+                    value={editorHtml ? editorHtml : task ? task.detail : ""}
+                    onChange={handleEditorChange}
+                    placeholder="업무 내용을 입력하세요"
+                  />
+                </div>
+              </div>
+              <div>
+                <button type="button" onClick={cancelHandler}>
+                  취소
+                </button>
+                <button onClick={saveHandler} type="button">
+                  저장
+                </button>
+              </div>
+            </t.MainTask>
+
+            <t.SideTask>
+              <div>
+                <t.SideName>Assignees</t.SideName>
+                {/* TODO: 업무담당자 조회 API 공통화 후 작업 ? */}
+                {/* <ProfileCard key={memberId} name={name} image={profileImage} /> */}
+              </div>
+              <div>
+                <t.SideName>Classification</t.SideName>
+                <t.SideInput
                   type="text"
-                  value={endDate ? endDate : task ? task.endDate : ""}
-                  onClick={toggleCalendar}
-                  ref={endDateRef}
-                  readOnly
+                  id="classification"
+                  name="classification"
+                  defaultValue={task ? task.classification : ""}
+                  ref={classificationRef}
+                  placeholder="내용을 입력하세요"
                 />
               </div>
-            </t.Period>
-            <t.CalendarWrapper show={show.toString()}>
-              {show && <MyCalendar changeDate={changeDateHandler} />}
-            </t.CalendarWrapper>
-          </t.Container>
-          <div>
-            <t.SideName>Task Status</t.SideName>
-            <t.TaskStatusBox onClick={statusBoxChangeHandler}>
-              {taskStatus.id ? (
-                <TaskStatus
-                  color={taskStatus.color}
-                  name={taskStatus.name}
-                  width="100px"
-                />
-              ) : (
-                <t.ChooseStatusComment>
-                  업무 상태를 선택하세요.
-                </t.ChooseStatusComment>
-              )}
-              <AiFillCaretDown size="27px" color="#6c757d" />
-            </t.TaskStatusBox>
-            {showStatusList && (
-              <TaskStatusList
-                taskStatusList={taskStatusList}
-                updateTaskStatus={updateTaskStatus}
-              />
-            )}
-          </div>
-        </t.SideTask>
-      </t.TaskArea>
-    </Form>
+              <t.Container>
+                <t.SideName>Task Period</t.SideName>
+                <t.Period>
+                  <div>
+                    <label htmlFor="startDate"></label>
+                    <t.DateInput
+                      id="startDate"
+                      name="startDate"
+                      type="text"
+                      value={startDate ? startDate : task ? task.startDate : ""}
+                      onClick={toggleCalendar}
+                      ref={startDateRef}
+                      readOnly
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="endDate"></label>
+                    <t.DateInput
+                      id="endDate"
+                      name="endDate"
+                      type="text"
+                      value={endDate ? endDate : task ? task.endDate : ""}
+                      onClick={toggleCalendar}
+                      ref={endDateRef}
+                      readOnly
+                    />
+                  </div>
+                </t.Period>
+                <t.CalendarWrapper show={show.toString()}>
+                  {show && <MyCalendar changeDate={changeDateHandler} />}
+                </t.CalendarWrapper>
+              </t.Container>
+              <div>
+                <t.SideName>Task Status</t.SideName>
+                <t.TaskStatusBox onClick={statusBoxChangeHandler}>
+                  {taskStatus.id ? (
+                    <TaskStatus
+                      color={taskStatus.color}
+                      name={taskStatus.name}
+                      width="100px"
+                    />
+                  ) : (
+                    <t.ChooseStatusComment>
+                      업무 상태를 선택하세요.
+                    </t.ChooseStatusComment>
+                  )}
+                  <AiFillCaretDown size="27px" color="#6c757d" />
+                </t.TaskStatusBox>
+                {showStatusList && (
+                  <TaskStatusList
+                    onRemove={onRemove}
+                    taskStatusList={taskStatusList}
+                    updateTaskStatus={updateTaskStatus}
+                    showStatusModal={showStatusModal}
+                  />
+                )}
+              </div>
+            </t.SideTask>
+          </t.TaskArea>
+        </Form>
+      </t.FormArea>
+    </>
   );
 }
 
@@ -246,18 +270,13 @@ export async function action({ request, params }) {
     taskStatusId: Number(data.get("taskStatusId")),
   };
 
-  await axiosInstance(url, {
+  const response = await axiosInstance(url, {
     method: method,
     data: taskData,
-  })
-    .then((response) => {
-      if (response.status === 200 || response.status === 201) {
-        console.log("success");
-        redirect(`/projects/${projectId}/tasks`);
-      }
-      return response;
-    })
-    .catch((error) => console.log(error));
-  console.log("redirect");
-  return redirect(`/projects/${projectId}/tasks`);
+  });
+
+  if (response.data) {
+    const taskId = await response.data.data.taskId;
+    return redirect(`/projects/${projectId}/tasks/${taskId}`);
+  }
 }
