@@ -13,7 +13,6 @@ export default function RootLayout() {
     }
 
     if (token === "EXPIRED") {
-      alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
       submit(null, { action: "/logout", method: "post" });
     }
   }, [token, submit]);

@@ -11,12 +11,12 @@ export function getCookie(name) {
 }
 
 export function removeCookie(name) {
-  return cookies.remove(name);
+  return cookies.remove(name, { path: "/" });
 }
 
 export function removeUserCookie() {
   removeCookie("accessToken");
-  removeCookie("refreshToken");
+  setCookie("refreshToken", "", { maxAge: 0 });
   removeCookie("profile");
   removeCookie("name");
 }

@@ -3,5 +3,5 @@ import { removeUserCookie } from "../../util/cookies";
 
 export function action() {
   removeUserCookie();
-  return redirect("/auth?mode=login");
+  return redirect("/");
 }

@@ -23,8 +23,6 @@ export default function Task({ task, taskMembers }) {
     })();
   }, []);
 
-  console.log(assignees, "member");
-
   return (
     <DetailArea>
       <t.TaskArea>
@@ -103,4 +101,4 @@ const TaskDetails = styled.div`
 
 const Text = styled.div`
   overflow: hidden;
-`
+`;

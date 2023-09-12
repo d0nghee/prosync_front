@@ -29,7 +29,12 @@ export async function action({ request }) {
       const refresh = await headers.refresh;
       if (access && refresh) {
         setCookie("accessToken", access, { path: "/" });
-        setCookie("refreshToken", refresh, { path: "/" });
+        setCookie("refreshToken", refresh, {
+          path: "/",
+          maxAge: 60 * 60 * 24 * 30,
+          // secure: true,
+          // httpOnly: true,
+        }); // 유효기간 30일
       }
       return response.status;
     })
