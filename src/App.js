@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { RouterProvider } from "react-router-dom";
 import HomePage from "./pages/Home";
 import RootLayout from "./pages/RootLayout";
-import ErrorPage from "./pages/auth/Error";
+import ErrorPage from "./pages/Error";
 import Authentication, {
   action as authAction,
 } from "./pages/auth/Authentication";

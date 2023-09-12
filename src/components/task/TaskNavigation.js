@@ -43,12 +43,14 @@ export default function TaskNavigation() {
           deleteApi(`tasks/${id}`);
         });
       }
-    } else {
+    } else if (checkedItems.length === 1) {
       const proceed = window.confirm("1건을 삭제하시겠습니까?");
       if (proceed) {
         const taskId = checkedItems[0];
         deleteApi(`tasks/${taskId}`);
       }
+    } else {
+      alert("선택 대상이 없습니다.");
     }
   };
 
