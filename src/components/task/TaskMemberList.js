@@ -40,6 +40,8 @@ const MemberBoxes = styled.div`
 
   & > div:last-child {
     margin-bottom: 0;
+    border: none;
+    padding-bottom: 0;
   }
 
 `;

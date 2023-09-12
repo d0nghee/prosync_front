@@ -13,18 +13,39 @@ import moment from "moment/moment";
 import * as t from "./TaskForm.style";
 import { useEffect, useState } from "react";
 import { getApi } from "../../util/api";
-
 import "react-quill/dist/quill.snow.css";
 import TaskStatus from "../task/TaskStatus";
 import TaskStatusList from "./TaskStatusList";
 import { useRef } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
-import ProfileCard from "../common/ProfileCard";
 import NewTaskStatus from "../../pages/task/NewTaskStatus";
+import TaskMemberList from "./TaskMemberList";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
-export default function TaskForm({ method, task }) {
-  // 해당 프로젝트의 task status 목록 호출
+export default function TaskForm({ method, task}) {
+
+  const [assignees, setAssignees] = useState();
+  const [projectMembers, setProjectMembers] = useState();
   const params = useParams();
+  const [showProjectMembers, setshowProjectMembers] = useState(false);
+
+
+  //TODO: REDUX로 관리하기
+  useEffect(() => {
+    (async () => {
+      if (method === 'PATCH') {
+        const taskMemberRes = await getApi(`/tasks/${params.taskId}/members`);
+        const members = await taskMemberRes.data.data;
+        setAssignees(members);
+      }      
+      const projectMemberRes = await getApi(`/projects/${params.projectId}/members`);
+      const projectMembers = await projectMemberRes.data.data;
+      setProjectMembers(projectMembers);
+    })();
+  }, []);
+
+
+  // 해당 프로젝트의 task status 목록 호출
   const projectId = params.projectId;
   const [taskStatusList, setTaskStatusList] = useState();
   const submit = useSubmit();
@@ -168,10 +189,12 @@ export default function TaskForm({ method, task }) {
 
             <t.SideTask>
               <div>
-                <t.SideName>Assignees</t.SideName>
+                <t.SideName>Assignees <AiOutlineUserAdd size="25px" onClick={() =>setshowProjectMembers((prv) => !prv)}/></t.SideName>
                 {/* TODO: 업무담당자 조회 API 공통화 후 작업 ? */}
-                {/* <ProfileCard key={memberId} name={name} image={profileImage} /> */}
+                {assignees && <TaskMemberList taskMembers={assignees} />}
               </div>
+              {/* 프로젝트 멤버 */}
+              {showProjectMembers && <TaskMemberList taskMembers={projectMembers}/>}
               <div>
                 <t.SideName>Classification</t.SideName>
                 <t.SideInput

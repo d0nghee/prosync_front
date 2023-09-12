@@ -1,13 +1,16 @@
-import { useSubmit, Link, useNavigate } from "react-router-dom";
+import { useSubmit, Link, useNavigate, useParams } from "react-router-dom";
 import * as t from "./TaskForm.style";
 import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import { getApi } from "../../util/api";
+import TaskMemberList from "./TaskMemberList";
 
-export default function Task({ task, taskMembers }) {
+export default function Task({ task }) {
   const submit = useSubmit();
   const navigate = useNavigate();
+  const params = useParams();
+  
   const taskDeleteHandler = () => {
     const proceed = window.confirm("정말 삭제하시겠습니까?");
     if (proceed) {
@@ -15,13 +18,16 @@ export default function Task({ task, taskMembers }) {
     }
   };
 
+  //TODO: USESTATE로 해야할지?
   const [assignees, setAssignees] = useState();
+
   useEffect(() => {
     (async () => {
-      const response = await getApi(`members`);
-      const members = await response.data.data;
+      const taskMemberRes = await getApi(`/tasks/${params.taskId}/members`);
+      const members = await taskMemberRes.data.data;
       setAssignees(members);
     })();
+    
   }, []);
 
   return (
@@ -49,7 +55,7 @@ export default function Task({ task, taskMembers }) {
             <div>
               {/* TODO: 업무 담당자 조회 추가 */}
               <t.SideName>Assignees</t.SideName>
-              <div>test</div>
+              <TaskMemberList taskMembers={assignees}/>
             </div>
             <div>
               <t.SideName>Classification</t.SideName>
