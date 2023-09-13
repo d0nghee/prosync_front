@@ -94,7 +94,7 @@ const DetailArea = styled.div`
 
 const TaskTitle = styled.h2`
   max-height: 100px;
-  width: 800px;
+  width: 100%;
   font-size: 1.2rem;
   border-bottom: 1px solid #dad7cd;
   padding: 1rem 0.2rem;

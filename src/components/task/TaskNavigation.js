@@ -3,7 +3,6 @@ import {
   NavLink,
   useSearchParams,
   useNavigate,
-  Link,
   useParams,
 } from "react-router-dom";
 import { styled } from "styled-components";
@@ -92,7 +91,7 @@ export default function TaskNavigation({ updateList }) {
           <Buttons>
             <NaviButton type="button" name="생성" color="#4361ee" fontColor="white" onClick={() => navigate('new')}/>
             <NaviButton type="button" name="수정" color="#4361ee" fontColor="white" onClick={updateHandler}/>
-            <NaviButton type="button" name="삭제" color="#aa998f" fontColor="white" onClick={deleteHandler}/>
+            <NaviButton type="button" name="삭제" color="#c0c0c0" fontColor="white" onClick={deleteHandler}/>
           </Buttons>
         )}
       </TaskNav>
@@ -145,32 +144,3 @@ const Buttons = styled.div`
   align-items: center;
 `;
 
-const ActionButton = styled.button`
-  cursor: pointer;
-  background-color: #4361ee;
-  padding: 15px 20px;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  width: 70px;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const NewButton = styled(Link)`
-  cursor: pointer;
-  background-color: #4361ee;
-  padding: 15px 20px;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  width: 70px;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;

@@ -43,17 +43,14 @@ export const MainTask = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
-  div {
-    width: 800px;
-  }
+  width: 70%;
 `;
 
 export const SideTask = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
-  max-width: 240px;
+  width: 240px;
 
   & > div {
     border-bottom: 1px solid #dad7cd;
@@ -73,7 +70,7 @@ export const TaskArea = styled.div`
   display: flex;
   flex-direction: row;
   gap: 5rem;
-  width: 1200px;
+  width: 1500px;
   margin: 20px 0;
 `;
 
