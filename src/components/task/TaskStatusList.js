@@ -28,21 +28,21 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
     })();
   };
 
+  const statusClickHandler = (taskStatus) => {
+    updateTaskStatus({
+      taskStatusId: taskStatus.taskStatusId,
+      taskStatus: taskStatus.taskStatus,
+      color: taskStatus.color,
+    });
+  };
+
   return (
     <StatusBox>
       <p>Apply status to this task</p>
       <StatusItems>
         {statusList.map((taskStatus) => (
           <OneBox key={taskStatus.taskStatusId}>
-            <div
-              onClick={() =>
-                updateTaskStatus({
-                  id: taskStatus.taskStatusId,
-                  name: taskStatus.taskStatus,
-                  color: taskStatus.color,
-                })
-              }
-            >
+            <div onClick={() => statusClickHandler(taskStatus)}>
               <TaskStatus
                 color={taskStatus.color}
                 name={taskStatus.taskStatus}

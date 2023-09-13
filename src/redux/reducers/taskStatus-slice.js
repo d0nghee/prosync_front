@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// taskStatusId, taskStatus, color,
 const taskStatusSlice = createSlice({
-  name: "task-status-list",
+  name: "taskStatus",
   initialState: {
     show: false,
     list: [],

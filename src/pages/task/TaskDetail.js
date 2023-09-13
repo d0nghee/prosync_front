@@ -5,8 +5,9 @@ import Task from "../../components/task/Task";
 export default function TaskDetail() {
   const data = useRouteLoaderData("task-details");
   const task = data.data.data;
+  const taskMembers = data.data.taskMembers;
 
-  return <Task task={task} />;
+  return <Task task={task} taskMembers={taskMembers} />;
 }
 
 export async function loader({ params }) {

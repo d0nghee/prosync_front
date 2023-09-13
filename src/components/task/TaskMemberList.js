@@ -2,19 +2,23 @@ import React from "react";
 import { styled } from "styled-components";
 import ProfileCard from "../common/ProfileCard";
 
-export default function TaskMemberList({ taskMembers }) {
+export default function TaskMemberList({ taskMembers, isCheckList }) {
   return (
-    <MemberBoxes>
-      {taskMembers &&
-        taskMembers.map((member) => (
-          <ProfileCard
-            key={member.memberProjectId}
-            id={member.memberProjectId}
-            name={member.name}
-            image={member.profileImage}
-          />
-        ))}
-    </MemberBoxes>
+    <>
+      <MemberBoxes>
+        {taskMembers &&
+          taskMembers.map((member) => (
+            <div key={member.memberProjectId}>
+              {isCheckList && <input type="checkbox" />}
+              <ProfileCard
+                id={member.memberProjectId}
+                name={member.name}
+                image={member.profileImage}
+              />
+            </div>
+          ))}
+      </MemberBoxes>
+    </>
   );
 }
 
@@ -43,5 +47,4 @@ const MemberBoxes = styled.div`
     border: none;
     padding-bottom: 0;
   }
-
 `;

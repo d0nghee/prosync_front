@@ -72,6 +72,7 @@ const postTaskStatusApi = async ({ taskStatus, color, seq }, projectId) => {
 
   if (response.status === 201) {
     alert("등록 완료되었습니다.");
+    return await response.data.data.taskStatusId;
   }
 };
 
@@ -99,6 +100,23 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
   }
 };
 
+// 프로젝트 회원
+const getProjectMembersApi = async (projectId) => {
+  const response = await getApi(`/projects/${projectId}/members`);
+
+  if (response.status === 200) {
+    return await response.data.data;
+  }
+};
+
+// 업무 담당자
+const getTaskMembersApi = async (taskId) => {
+  const response = await getApi(`/tasks/${taskId}/members`);
+  if (response.status === 200) {
+    return await response.data.data;
+  }
+};
+
 export { postApi, getApi, patchApi, deleteApi };
 export {
   postTaskStatusApi,
@@ -106,3 +124,4 @@ export {
   deleteTaskStatusApi,
   patchTaskStatusApi,
 };
+export { getProjectMembersApi, getTaskMembersApi };

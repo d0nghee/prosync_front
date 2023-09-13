@@ -15,13 +15,22 @@ export default function NewTaskStatus({ onClose }) {
     const color = event.target[1].value;
     const taskStatus = event.target[0].value;
     const seq = 0;
-    const taskStatusId = postTaskStatusApi(
-      { taskStatus, color, seq },
-      params.projectId
-    );
-    dispatch(
-      taskStatusActions.addStatus({ id: taskStatusId, taskStatus, color })
-    );
+    (async () => {
+      const taskStatusId = await postTaskStatusApi(
+        { taskStatus, color, seq },
+        params.projectId
+      );
+      if (taskStatusId) {
+        dispatch(
+          taskStatusActions.addStatus({
+            taskStatusId,
+            taskStatus,
+            color,
+          })
+        );
+      }
+    })();
+
     onClose();
   };
 

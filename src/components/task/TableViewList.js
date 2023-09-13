@@ -109,6 +109,10 @@ const Header = styled.div`
   input {
     width: 20px;
   }
+
+  input[type="checkbox"]:checked {
+    background-color: #48cae4;
+  }
 `;
 
 const Title = styled.div`

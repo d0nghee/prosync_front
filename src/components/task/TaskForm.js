@@ -12,7 +12,7 @@ import MyCalendar from "../common/Calendar";
 import moment from "moment/moment";
 import * as t from "./TaskForm.style";
 import { useEffect, useState } from "react";
-import { getApi, getTaskStatusApi } from "../../util/api";
+import { getTaskStatusApi, getProjectMembersApi } from "../../util/api";
 import "react-quill/dist/quill.snow.css";
 import TaskStatus from "../task/TaskStatus";
 import TaskStatusList from "./TaskStatusList";
@@ -23,65 +23,56 @@ import TaskMemberList from "./TaskMemberList";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
 
-export default function TaskForm({ method, task }) {
-  const [assignees, setAssignees] = useState();
+export default function TaskForm({ method, task, taskMembers }) {
   const [projectMembers, setProjectMembers] = useState();
   const params = useParams();
   const [showProjectMembers, setshowProjectMembers] = useState(false);
 
-  //TODO: REDUX로 관리하기
+  //TODO: 프로젝트 회원 전역 관리하기
   useEffect(() => {
     (async () => {
-      if (method === "PATCH") {
-        const taskMemberRes = await getApi(`/tasks/${params.taskId}/members`);
-        const members = await taskMemberRes.data.data;
-        setAssignees(members);
-      }
-      const projectMemberRes = await getApi(
-        `/projects/${params.projectId}/members`
-      );
-      const projectMembers = await projectMemberRes.data.data;
-      setProjectMembers(projectMembers);
+      setProjectMembers(await getProjectMembersApi(params.projectId));
     })();
   }, []);
 
   // 해당 프로젝트의 task status 목록 호출
-  const projectId = params.projectId;
   const submit = useSubmit();
 
   const classificationRef = useRef();
   const titleRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
+  const detailRef = useRef();
 
   const showStatusList = useSelector((state) => state.taskStatus.show);
 
   const [taskStatus, setTaskStatus] = useState({
-    id: task ? task.taskStatusId : "",
-    name: task ? task.taskStatus : "",
+    taskStatusId: task ? task.taskStatusId : "",
+    taskStatus: task ? task.taskStatus : "",
     color: task ? task.color : "",
   });
 
   const updateTaskStatus = (newStatus) => {
-    setTaskStatus(newStatus);
+    setTaskStatus((prv) => ({ ...prv, ...newStatus }));
   };
 
   useEffect(() => {
     (async () => {
-      dispatch(taskStatusActions.setList(await getTaskStatusApi(projectId)));
+      dispatch(
+        taskStatusActions.setList(await getTaskStatusApi(params.projectId))
+      );
 
       if (task) {
         dispatch(calendarActions.changeStartDate(task.startDate));
         dispatch(calendarActions.changeEndDate(task.endDate));
       }
     })();
-  }, [projectId, task]);
-
+  }, [params.projectId, task]);
   const saveHandler = () => {
     submit(
       {
-        taskStatusId: taskStatus.id,
-        detail: editorHtml,
+        taskStatusId: taskStatus.taskStatusId,
+        detail: detailRef.current.value,
         classification: classificationRef.current.value,
         title: titleRef.current.value,
         startDate: startDateRef.current.value,
@@ -95,12 +86,6 @@ export default function TaskForm({ method, task }) {
   const navigate = useNavigate();
   const cancelHandler = () => {
     navigate("..");
-  };
-
-  // 마크다운
-  const [editorHtml, setEditorHtml] = useState("");
-  const handleEditorChange = (html) => {
-    setEditorHtml(html);
   };
 
   // 캘린더
@@ -153,8 +138,8 @@ export default function TaskForm({ method, task }) {
                     theme="snow"
                     id="detail"
                     name="detail"
-                    value={editorHtml ? editorHtml : task ? task.detail : ""}
-                    onChange={handleEditorChange}
+                    value={task ? task.detail : ""}
+                    ref={detailRef}
                     placeholder="업무 내용을 입력하세요"
                   />
                 </div>
@@ -172,18 +157,27 @@ export default function TaskForm({ method, task }) {
             <t.SideTask>
               <div>
                 <t.SideName>
-                  Assignees{" "}
+                  Assignees
                   <AiOutlineUserAdd
                     size="25px"
                     onClick={() => setshowProjectMembers((prv) => !prv)}
                   />
                 </t.SideName>
-                {/* TODO: 업무담당자 조회 API 공통화 후 작업 ? */}
-                {assignees && <TaskMemberList taskMembers={assignees} />}
+                {/* 업무 담당자 */}
+                {taskMembers && taskMembers.length > 0 ? (
+                  <TaskMemberList taskMembers={taskMembers} />
+                ) : (
+                  <div onClick={() => setshowProjectMembers((prv) => !prv)}>
+                    업무 담당자를 등록하세요
+                  </div>
+                )}
               </div>
               {/* 프로젝트 멤버 */}
               {showProjectMembers && (
-                <TaskMemberList taskMembers={projectMembers} />
+                <TaskMemberList
+                  taskMembers={projectMembers}
+                  isCheckList="true"
+                />
               )}
               <div>
                 <t.SideName>Classification</t.SideName>
@@ -233,10 +227,10 @@ export default function TaskForm({ method, task }) {
                 <t.TaskStatusBox
                   onClick={() => dispatch(taskStatusActions.toggleList())}
                 >
-                  {taskStatus.id ? (
+                  {taskStatus.taskStatusId ? (
                     <TaskStatus
                       color={taskStatus.color}
-                      name={taskStatus.name}
+                      name={taskStatus.taskStatus}
                       width="100px"
                     />
                   ) : (
