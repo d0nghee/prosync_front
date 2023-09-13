@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink, Form, useRouteLoaderData, Link } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
-import Button from "./Button";
 import { getCookie } from "../../util/cookies";
 import ProfileCard from "./ProfileCard";
 
@@ -42,7 +41,7 @@ export default function MainNavigation() {
             <li>
               <Form action="/logout" method="post">
                 {/* 컴포넌트 */}
-                <Button buttonName="로그아웃" />
+                <button>로그아웃</button>
               </Form>
             </li>
           )}

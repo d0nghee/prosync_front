@@ -106,3 +106,16 @@ export const ChooseStatusComment = styled.div`
   max-width: 150px;
   font-size: 0.8rem;
 `;
+
+export const BackDrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+export const ButtonArea = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;

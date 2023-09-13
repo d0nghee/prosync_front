@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-export default function Modal({ children, onClose }) {
+export default function Modal({ children, onClose, type }) {
   return (
     <>
       <BackDrop onClick={onClose} />
@@ -16,7 +16,7 @@ const BackDrop = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1;
+  z-index: 2;
 `;
 
 const StatusModal = styled.dialog`
@@ -25,5 +25,6 @@ const StatusModal = styled.dialog`
   bax-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   padding: 1rem;
   overflow: hidden;
-  z-index: 1;
+  z-index: 2;
+  border: none;
 `;

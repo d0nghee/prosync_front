@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deleteTaskStatusApi } from "../../util/api";
 import { useDispatch, useSelector } from "react-redux";
 import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
+import Modal from "./Modal";
 
 export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);
@@ -91,11 +92,11 @@ const Buttons = styled.div`
 const StatusBox = styled.div`
   width: 220px;
   max-height: 500px;
-  border: 1px solid #dad7cd;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  margin-top: 5px;
+  border: 1px solid #333;
+  padding: 1rem;
 
   p {
     font-weight: bold;

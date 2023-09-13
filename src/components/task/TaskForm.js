@@ -22,6 +22,8 @@ import NewTaskStatus from "../../pages/task/NewTaskStatus";
 import TaskMemberList from "./TaskMemberList";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
+import SimpleTaskMemberList from "../task/SimpleTaskMemberList";
+import NaviButton from "../common/Button";
 
 export default function TaskForm({ method, task, taskMembers }) {
   const [projectMembers, setProjectMembers] = useState();
@@ -92,7 +94,7 @@ export default function TaskForm({ method, task, taskMembers }) {
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.calendar.startDate);
   const endDate = useSelector((state) => state.calendar.endDate);
-  const show = useSelector((state) => state.calendar.show);
+  const showCalendar = useSelector((state) => state.calendar.show);
 
   const calendarHandler = (event) => {
     const startDate = moment(event[0]).format("YYYY-MM-DD");
@@ -113,6 +115,11 @@ export default function TaskForm({ method, task, taskMembers }) {
 
   return (
     <>
+      {showCalendar && (
+        <t.BackDrop
+          onClick={() => dispatch(calendarActions.toggleCalendar())}
+        />
+      )}
       {showModal && <NewTaskStatus onClose={showStatusModal} />}
       <t.FormArea>
         <Form method={method}>
@@ -144,14 +151,16 @@ export default function TaskForm({ method, task, taskMembers }) {
                   />
                 </div>
               </div>
-              <div>
-                <button type="button" onClick={cancelHandler}>
-                  취소
-                </button>
-                <button onClick={saveHandler} type="button">
-                  저장
-                </button>
-              </div>
+              <t.ButtonArea>
+                <NaviButton type="button" onClick={cancelHandler} name="취소" />
+                <NaviButton
+                  type="button"
+                  onClick={saveHandler}
+                  name="저장"
+                  color="#3a86ff"
+                  fontColor="white"
+                />
+              </t.ButtonArea>
             </t.MainTask>
 
             <t.SideTask>
@@ -165,7 +174,8 @@ export default function TaskForm({ method, task, taskMembers }) {
                 </t.SideName>
                 {/* 업무 담당자 */}
                 {taskMembers && taskMembers.length > 0 ? (
-                  <TaskMemberList taskMembers={taskMembers} />
+                  // <TaskMemberList taskMembers={taskMembers} />
+                  <SimpleTaskMemberList taskMembers={taskMembers} />
                 ) : (
                   <div onClick={() => setshowProjectMembers((prv) => !prv)}>
                     업무 담당자를 등록하세요
@@ -218,9 +228,11 @@ export default function TaskForm({ method, task, taskMembers }) {
                     />
                   </div>
                 </t.Period>
-                <t.CalendarWrapper show={show.toString()}>
-                  {show && <MyCalendar changeDate={calendarHandler} />}
-                </t.CalendarWrapper>
+                {showCalendar && (
+                  <t.CalendarWrapper show={showCalendar.toString()}>
+                    <MyCalendar changeDate={calendarHandler} />
+                  </t.CalendarWrapper>
+                )}
               </t.Container>
               <div>
                 <t.SideName>Task Status</t.SideName>
@@ -241,10 +253,16 @@ export default function TaskForm({ method, task, taskMembers }) {
                   <AiFillCaretDown size="27px" color="#6c757d" />
                 </t.TaskStatusBox>
                 {showStatusList && (
-                  <TaskStatusList
-                    updateTaskStatus={updateTaskStatus}
-                    showStatusModal={showStatusModal}
-                  />
+                  <>
+                    <TaskStatusList
+                      updateTaskStatus={updateTaskStatus}
+                      showStatusModal={showStatusModal}
+                    />
+                    {/* TODO */}
+                    {/* <t.BackDrop
+                      onClick={() => dispatch(taskStatusActions.toggleList())}
+                    /> */}
+                  </>
                 )}
               </div>
             </t.SideTask>

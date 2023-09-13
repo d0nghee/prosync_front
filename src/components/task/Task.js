@@ -1,8 +1,10 @@
-import { useSubmit, Link, useNavigate } from "react-router-dom";
+import { useSubmit, useNavigate } from "react-router-dom";
 import * as t from "./TaskForm.style";
 import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
 import TaskMemberList from "./TaskMemberList";
+import SimpleTaskMemberList from "./SimpleTaskMemberList";
+import NaviButton from "../common/Button";
 
 export default function Task({ task, taskMembers }) {
   const submit = useSubmit();
@@ -18,9 +20,7 @@ export default function Task({ task, taskMembers }) {
   return (
     <>
       <DetailArea>
-        <BackButton type="button" onClick={() => navigate("..")}>
-          BACK
-        </BackButton>
+        <NaviButton name="BACK" type="button" onClick={() => navigate("..")} />
         <t.TaskArea>
           <t.MainTask>
             <TaskTitle>{task.title}</TaskTitle>
@@ -31,17 +31,29 @@ export default function Task({ task, taskMembers }) {
                 dangerouslySetInnerHTML={{ __html: `${task.detail}` }}
               />
             </div>
-            <div>
-              <Link to="edit">수정</Link>
-              <button onClick={taskDeleteHandler}>삭제</button>
-            </div>
+            <ButtonArea>
+              <NaviButton
+                type="button"
+                name="수정"
+                color="#3a86ff"
+                fontColor="white"
+                to="edit"
+                onClick={() => navigate("edit")}
+              />
+              <NaviButton
+                type="submit"
+                name="삭제"
+                onClick={taskDeleteHandler}
+              />
+            </ButtonArea>
           </t.MainTask>
           <t.SideTask>
             <div>
               <t.SideName>Assignees</t.SideName>
               {taskMembers.length > 0 ? (
-                <TaskMemberList taskMembers={taskMembers} />
+                <SimpleTaskMemberList taskMembers={taskMembers} />
               ) : (
+                // <TaskMemberList taskMembers={taskMembers} />
                 <div>지정된 담당자가 없습니다.</div>
               )}
             </div>
@@ -71,16 +83,6 @@ export default function Task({ task, taskMembers }) {
     </>
   );
 }
-const BackButton = styled.button`
-  background-color: #d9d9d9;
-  border: none;
-  padding: 1rem;
-  position: sticky;
-  font-size: 1rem;
-  border-radius: 5px;
-  color: #555;
-  width: 80px;
-`;
 
 const DetailArea = styled.div`
   display: flex;
@@ -111,4 +113,9 @@ const TaskDetails = styled.div`
 
 const Text = styled.div`
   overflow: hidden;
+`;
+
+const ButtonArea = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
