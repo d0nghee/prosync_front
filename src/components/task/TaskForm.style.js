@@ -52,15 +52,21 @@ export const MainTask = styled.div`
 export const SideTask = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 3rem;
   max-width: 240px;
+
+  & > div {
+    border-bottom: 1px solid #dad7cd;
+    padding-bottom: 1rem
+  }
 `;
 
 export const SideInput = styled.input`
   width: 100%;
   height: 40px;
-  padding: 1rem;
+  padding: 5px;
   font-size: 1rem;
+  border: none;
 `;
 
 export const TaskArea = styled.div`
