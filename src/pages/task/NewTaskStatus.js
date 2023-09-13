@@ -38,11 +38,11 @@ export default function NewTaskStatus({ onClose }) {
     <Modal onClose={onClose}>
       <Box onSubmit={submitHandler}>
         <Item>
-          <label htmlFor="name">이름</label>
-          <NameInput type="text" id="name" name="name" required />
+          <label htmlFor="name">status</label>
+          <NameInput type="text" id="name" name="name" required placeholder="업무상태를 입력하세요."/>
         </Item>
         <Item>
-          <label htmlFor="color">색상</label>
+          <label htmlFor="color">color</label>
           <ColorInput type="color" name="color" id="color" required />
         </Item>
         <Buttons>
@@ -58,7 +58,7 @@ export default function NewTaskStatus({ onClose }) {
 
 const Box = styled.form`
   background-color: white;
-  padding: 1rem 2rem;
+  padding: 1rem;
   width: 30rem;
   height: 20rem;
   display: flex;
@@ -73,24 +73,24 @@ const Item = styled.p`
   label {
     font-size: 1.5rem;
     margin-right: 1rem;
-    color: #555;
+    color: #6d6a75;
+    font-weight: bold;
   }
 `;
 
 const NameInput = styled.input`
-  border-radius: 10px;
-  border: 1px solid #555;
-  height: 45px;
+  border:none;
+  border-bottom: 1px solid #cad2c5;
+  height: 40px;
   padding: 10px;
   font-size: 1.2rem;
 `;
 
 const ColorInput = styled.input`
-  border-radius: 10px;
+  border-radius: 5px;
   height: 40px;
-  width: 40%;
+  width: 30%;
   border: 1px solid #555;
-  padding: 2px 3px;
   background: transparent;
   vertical-align: middle;
   cursor: pointer;
@@ -98,15 +98,15 @@ const ColorInput = styled.input`
 
 const Buttons = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   justify-content: flex-end;
   height: 3rem;
   font-weight: bold;
 
   button {
     width: 5rem;
-    border-radius: 10px;
-    background-color: #4361ee;
+    border-radius: 2rem;
+    background-color: #6d6a75;
     color: white;
     border: none;
     font-size: 1rem;
@@ -114,7 +114,7 @@ const Buttons = styled.div`
 
   button:nth-child(1) {
     background-color: white;
-    border: 1px solid #4361ee;
-    color: #4361ee;
+    border: 1px solid #6d6a75;
+    color: #6d6a75;
   }
 `;

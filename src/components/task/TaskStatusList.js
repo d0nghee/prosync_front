@@ -4,7 +4,6 @@ import { useState } from "react";
 import { deleteTaskStatusApi } from "../../util/api";
 import { useDispatch, useSelector } from "react-redux";
 import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
-import Modal from "./Modal";
 
 export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);

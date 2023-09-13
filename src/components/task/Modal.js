@@ -27,4 +27,5 @@ const StatusModal = styled.dialog`
   overflow: hidden;
   z-index: 2;
   border: none;
+  top: 350px;
 `;
