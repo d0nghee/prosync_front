@@ -178,7 +178,7 @@ export default function TaskForm({ method, task, taskMembers }) {
                   <SimpleTaskMemberList taskMembers={taskMembers} />
                 ) : (
                   <div onClick={() => setshowProjectMembers((prv) => !prv)}>
-                    업무 담당자를 등록하세요
+                    업무 담당자를 등록하세요.
                   </div>
                 )}
               </div>

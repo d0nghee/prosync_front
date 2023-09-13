@@ -20,7 +20,7 @@ export default function Task({ task, taskMembers }) {
   return (
     <>
       <DetailArea>
-        <NaviButton name="BACK" type="button" onClick={() => navigate("..")} />
+        <NaviButton name="목록" type="button" onClick={() => navigate("..")} />
         <t.TaskArea>
           <t.MainTask>
             <TaskTitle>{task.title}</TaskTitle>
@@ -117,5 +117,5 @@ const Text = styled.div`
 
 const ButtonArea = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 0.7rem;
 `;

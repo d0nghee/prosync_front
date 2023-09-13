@@ -19,4 +19,8 @@ const Button = styled.button`
   border-radius: 5px;
   color: ${(props) => props.fontColor || "#555"};
   width: 80px;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;

@@ -117,5 +117,5 @@ export const BackDrop = styled.div`
 
 export const ButtonArea = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 0.7rem;
 `;

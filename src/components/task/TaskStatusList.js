@@ -4,6 +4,11 @@ import { useState } from "react";
 import { deleteTaskStatusApi } from "../../util/api";
 import { useDispatch, useSelector } from "react-redux";
 import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
+import { RiDeleteBin6Line } from 'react-icons/ri'
+import { BsCheck } from 'react-icons/bs'
+import { FiEdit2 } from 'react-icons/fi'
+
+
 
 export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);
@@ -49,58 +54,60 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
               />
             </div>
             {editStatus ? (
-              <div onClick={() => deleteTaskStatus(taskStatus.taskStatusId)}>
-                X
-              </div>
-            ) : (
-              ""
-            )}
+              <RiDeleteBin6Line onClick={() => deleteTaskStatus(taskStatus.taskStatusId)} size="20px"/>
+            ): <BsCheck onClick={() => statusClickHandler(taskStatus)}  size="20px"/>}
           </OneBox>
         ))}
       </StatusItems>
       <Buttons>
         <button type="button" onClick={editStatusHandler}>
-          {editStatus ? "완료" : "수정"}
+          {editStatus ? "done" : <span><FiEdit2/>edit</span>}
         </button>
-        {editStatus ? (
+        {editStatus && 
           <button type="button" onClick={showStatusModal}>
-            추가
+            add
           </button>
-        ) : undefined}
+        }
       </Buttons>
     </StatusBox>
   );
 }
 
-//TODO : CSS STYLE 변경
 const Buttons = styled.div`
   display: flex;
+  overflow: hidden;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 
   button {
     height: 100%;
-    font-size: 20px;
+    font-size: 1rem;
+    padding: 5px;
     overflow: hidden;
     background-color: white;
-    border-color: #dad7cd;
+    border: none;
     width: 100%;
+    font-weight: bold;
+  }
+
+  button:nth-child(2) {
+    border-left: 1px solid gray;
   }
 `;
 
 const StatusBox = styled.div`
-  width: 220px;
+  width: 250px;
   max-height: 500px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  border: 1px solid #333;
-  padding: 1rem;
+  border: 1px solid #c0c0c0;
+  margin-top: 3px;
 
   p {
     font-weight: bold;
     text-align: center;
-    margin: 5px 0;
+    margin-bottom: 0;
   }
 `;
 
@@ -116,7 +123,6 @@ const StatusItems = styled.div`
 
   div:hover {
     transform: scale(1.05);
-    opacity: 0.7;
   }
 `;
 

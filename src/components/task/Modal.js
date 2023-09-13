@@ -4,7 +4,7 @@ export default function Modal({ children, onClose, type }) {
   return (
     <>
       <BackDrop onClick={onClose} />
-      <StatusModal open={true}>{children}</StatusModal>,
+      <StatusModal open={true}>{children}</StatusModal>
     </>
   );
 }

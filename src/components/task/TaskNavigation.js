@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { styled } from "styled-components";
 import { deleteApi, getApi } from "../../util/api";
+import NaviButton from "../common/Button";
 
 export default function TaskNavigation({ updateList }) {
   const [searchPaarams] = useSearchParams();
@@ -89,15 +90,9 @@ export default function TaskNavigation({ updateList }) {
         </TaskFilter>
         {view !== "board" && view !== "roadmap" && (
           <Buttons>
-            <div>
-              <NewButton to="new">생성</NewButton>
-            </div>
-            <ActionButton color="#4361ee" onClick={updateHandler}>
-              수정
-            </ActionButton>
-            <ActionButton color="red" onClick={deleteHandler}>
-              삭제
-            </ActionButton>
+            <NaviButton type="button" name="생성" color="#4361ee" fontColor="white" onClick={() => navigate('new')}/>
+            <NaviButton type="button" name="수정" color="#4361ee" fontColor="white" onClick={updateHandler}/>
+            <NaviButton type="button" name="삭제" color="#aa998f" fontColor="white" onClick={deleteHandler}/>
           </Buttons>
         )}
       </TaskNav>
@@ -146,7 +141,7 @@ const NavItem = styled(NavLink)`
 
 const Buttons = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
   align-items: center;
 `;
 
