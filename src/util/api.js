@@ -57,7 +57,8 @@ const postFileApi = async (data) => {
   }
 };
 
-const postTaskStatus = async ({ taskStatus, color, seq }, projectId) => {
+// 업무 상태
+const postTaskStatusApi = async ({ taskStatus, color, seq }, projectId) => {
   const postData = {
     taskStatus,
     color,
@@ -74,5 +75,34 @@ const postTaskStatus = async ({ taskStatus, color, seq }, projectId) => {
   }
 };
 
+const getTaskStatusApi = async (projectId) => {
+  const response = await getApi(`/projects/${projectId}/task-status`);
+
+  if (response.status === 200) {
+    console.log("업무 상태 조회");
+    return await response.data.data;
+  }
+};
+
+const deleteTaskStatusApi = async (taskStatusId) => {
+  console.log("업무 상태 삭제");
+  return await deleteApi(`/task-status/${taskStatusId}`);
+};
+
+const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
+  const patchData = { color, seq, taskStatus };
+  const response = await patchApi(`/task-status/${taskStatusId}`, patchData);
+
+  if (response.status === 200) {
+    console.log("업무 상태 수정");
+    return await response.data.data;
+  }
+};
+
 export { postApi, getApi, patchApi, deleteApi };
-export { postTaskStatus };
+export {
+  postTaskStatusApi,
+  getTaskStatusApi,
+  deleteTaskStatusApi,
+  patchTaskStatusApi,
+};

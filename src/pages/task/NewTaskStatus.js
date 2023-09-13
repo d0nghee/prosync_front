@@ -2,17 +2,26 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Modal from "../../components/task/Modal";
-import { postTaskStatus } from "../../util/api";
+import { postTaskStatusApi } from "../../util/api";
+import { useDispatch } from "react-redux";
+import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
 
 export default function NewTaskStatus({ onClose }) {
   const params = useParams();
+  const dispatch = useDispatch();
 
   const submitHandler = (event) => {
     event.preventDefault();
     const color = event.target[1].value;
     const taskStatus = event.target[0].value;
     const seq = 0;
-    postTaskStatus({ taskStatus, color, seq }, params.projectId);
+    const taskStatusId = postTaskStatusApi(
+      { taskStatus, color, seq },
+      params.projectId
+    );
+    dispatch(
+      taskStatusActions.addStatus({ id: taskStatusId, taskStatus, color })
+    );
     onClose();
   };
 

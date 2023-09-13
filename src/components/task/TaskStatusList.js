@@ -1,28 +1,28 @@
 import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
 import { useState } from "react";
-import { deleteApi } from "../../util/api";
+import { deleteTaskStatusApi } from "../../util/api";
+import { useDispatch, useSelector } from "react-redux";
+import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
 
-export default function TaskStatusList({
-  taskStatusList,
-  updateTaskStatus,
-  onRemove,
-  showStatusModal,
-}) {
+export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);
   const editStatusHandler = () => {
     setEditState((prv) => !prv);
   };
 
+  const dispatch = useDispatch();
+  const statusList = useSelector((state) => state.taskStatus.list);
+
   const deleteTaskStatus = (statusId) => {
     (async () => {
-      const response = await deleteApi(`task-status/${statusId}`);
+      const response = await deleteTaskStatusApi(statusId);
       if (response.response && response.response.status === 409) {
         alert("업무상태를 사용하는 업무가 존재합니다.");
       } else {
         const proceed = window.confirm("정말 삭제하시겠습니까?");
         if (proceed) {
-          onRemove(statusId);
+          dispatch(taskStatusActions.removeStatus(statusId));
         }
       }
     })();
@@ -32,7 +32,7 @@ export default function TaskStatusList({
     <StatusBox>
       <p>Apply status to this task</p>
       <StatusItems>
-        {taskStatusList.map((taskStatus) => (
+        {statusList.map((taskStatus) => (
           <OneBox key={taskStatus.taskStatusId}>
             <div
               onClick={() =>

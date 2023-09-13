@@ -181,11 +181,10 @@ const TaskMemberWrapper = styled.div`
 `;
 
 const Assignee = styled.div`
-  display: flex;  
-
+  display: flex;
 
   & > div {
     display: flex;
     width: 80%;
   }
-`
+`;

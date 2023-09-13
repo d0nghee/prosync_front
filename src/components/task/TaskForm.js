@@ -12,7 +12,7 @@ import MyCalendar from "../common/Calendar";
 import moment from "moment/moment";
 import * as t from "./TaskForm.style";
 import { useEffect, useState } from "react";
-import { getApi } from "../../util/api";
+import { getApi, getTaskStatusApi } from "../../util/api";
 import "react-quill/dist/quill.snow.css";
 import TaskStatus from "../task/TaskStatus";
 import TaskStatusList from "./TaskStatusList";
@@ -21,33 +21,32 @@ import { AiFillCaretDown } from "react-icons/ai";
 import NewTaskStatus from "../../pages/task/NewTaskStatus";
 import TaskMemberList from "./TaskMemberList";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
 
-export default function TaskForm({ method, task}) {
-
+export default function TaskForm({ method, task }) {
   const [assignees, setAssignees] = useState();
   const [projectMembers, setProjectMembers] = useState();
   const params = useParams();
   const [showProjectMembers, setshowProjectMembers] = useState(false);
 
-
   //TODO: REDUX로 관리하기
   useEffect(() => {
     (async () => {
-      if (method === 'PATCH') {
+      if (method === "PATCH") {
         const taskMemberRes = await getApi(`/tasks/${params.taskId}/members`);
         const members = await taskMemberRes.data.data;
         setAssignees(members);
-      }      
-      const projectMemberRes = await getApi(`/projects/${params.projectId}/members`);
+      }
+      const projectMemberRes = await getApi(
+        `/projects/${params.projectId}/members`
+      );
       const projectMembers = await projectMemberRes.data.data;
       setProjectMembers(projectMembers);
     })();
   }, []);
 
-
   // 해당 프로젝트의 task status 목록 호출
   const projectId = params.projectId;
-  const [taskStatusList, setTaskStatusList] = useState();
   const submit = useSubmit();
 
   const classificationRef = useRef();
@@ -55,7 +54,7 @@ export default function TaskForm({ method, task}) {
   const startDateRef = useRef();
   const endDateRef = useRef();
 
-  const [showStatusList, setShowStatusList] = useState(false);
+  const showStatusList = useSelector((state) => state.taskStatus.show);
 
   const [taskStatus, setTaskStatus] = useState({
     id: task ? task.taskStatusId : "",
@@ -63,19 +62,13 @@ export default function TaskForm({ method, task}) {
     color: task ? task.color : "",
   });
 
-  const statusBoxChangeHandler = () => {
-    setShowStatusList((prv) => !prv);
-  };
-
   const updateTaskStatus = (newStatus) => {
     setTaskStatus(newStatus);
   };
 
   useEffect(() => {
     (async () => {
-      const response = await getApi(`/projects/${projectId}/task-status`);
-      const status = await response.data.data;
-      setTaskStatusList(status);
+      dispatch(taskStatusActions.setList(await getTaskStatusApi(projectId)));
 
       if (task) {
         dispatch(calendarActions.changeStartDate(task.startDate));
@@ -83,13 +76,6 @@ export default function TaskForm({ method, task}) {
       }
     })();
   }, [projectId, task]);
-
-  // 업무 상태리스트 업데이트
-  const onRemove = (id) => {
-    setTaskStatusList((prv) =>
-      prv.filter((status) => status.taskStatusId !== id)
-    );
-  };
 
   const saveHandler = () => {
     submit(
@@ -119,18 +105,14 @@ export default function TaskForm({ method, task}) {
 
   // 캘린더
   const dispatch = useDispatch();
-  let startDate = useSelector((state) => state.calendar.startDate);
-  let endDate = useSelector((state) => state.calendar.endDate);
-  let show = useSelector((state) => state.calendar.show);
+  const startDate = useSelector((state) => state.calendar.startDate);
+  const endDate = useSelector((state) => state.calendar.endDate);
+  const show = useSelector((state) => state.calendar.show);
 
-  const changeDateHandler = (event) => {
-    dispatch(
-      calendarActions.changeStartDate(moment(event[0]).format("YYYY-MM-DD"))
-    );
-    dispatch(
-      calendarActions.changeEndDate(moment(event[1]).format("YYYY-MM-DD"))
-    );
-    dispatch(calendarActions.toggleCalendar());
+  const calendarHandler = (event) => {
+    const startDate = moment(event[0]).format("YYYY-MM-DD");
+    const endDate = moment(event[1]).format("YYYY-MM-DD");
+    dispatch(calendarActions.changeDatesAndShow({ startDate, endDate }));
   };
 
   const toggleCalendar = () => {
@@ -189,12 +171,20 @@ export default function TaskForm({ method, task}) {
 
             <t.SideTask>
               <div>
-                <t.SideName>Assignees <AiOutlineUserAdd size="25px" onClick={() =>setshowProjectMembers((prv) => !prv)}/></t.SideName>
+                <t.SideName>
+                  Assignees{" "}
+                  <AiOutlineUserAdd
+                    size="25px"
+                    onClick={() => setshowProjectMembers((prv) => !prv)}
+                  />
+                </t.SideName>
                 {/* TODO: 업무담당자 조회 API 공통화 후 작업 ? */}
                 {assignees && <TaskMemberList taskMembers={assignees} />}
               </div>
               {/* 프로젝트 멤버 */}
-              {showProjectMembers && <TaskMemberList taskMembers={projectMembers}/>}
+              {showProjectMembers && (
+                <TaskMemberList taskMembers={projectMembers} />
+              )}
               <div>
                 <t.SideName>Classification</t.SideName>
                 <t.SideInput
@@ -235,12 +225,14 @@ export default function TaskForm({ method, task}) {
                   </div>
                 </t.Period>
                 <t.CalendarWrapper show={show.toString()}>
-                  {show && <MyCalendar changeDate={changeDateHandler} />}
+                  {show && <MyCalendar changeDate={calendarHandler} />}
                 </t.CalendarWrapper>
               </t.Container>
               <div>
                 <t.SideName>Task Status</t.SideName>
-                <t.TaskStatusBox onClick={statusBoxChangeHandler}>
+                <t.TaskStatusBox
+                  onClick={() => dispatch(taskStatusActions.toggleList())}
+                >
                   {taskStatus.id ? (
                     <TaskStatus
                       color={taskStatus.color}
@@ -256,8 +248,6 @@ export default function TaskForm({ method, task}) {
                 </t.TaskStatusBox>
                 {showStatusList && (
                   <TaskStatusList
-                    onRemove={onRemove}
-                    taskStatusList={taskStatusList}
                     updateTaskStatus={updateTaskStatus}
                     showStatusModal={showStatusModal}
                   />
