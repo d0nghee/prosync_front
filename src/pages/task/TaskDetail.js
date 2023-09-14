@@ -5,8 +5,9 @@ import Task from "../../components/task/Task";
 export default function TaskDetail() {
   const data = useRouteLoaderData("task-details");
   const task = data.data.data;
+  const taskMembers = data.data.taskMembers;
 
-  return <Task task={task} />;
+  return <Task task={task} taskMembers={taskMembers} />;
 }
 
 export async function loader({ params }) {
@@ -16,6 +17,7 @@ export async function loader({ params }) {
     response.response &&
     (response.response.status === 500 || response.response.status === 404)
   ) {
+    //TODO:재확인
     throw json(
       { status: response.response.status },
       { message: response.response.data.resultCode }

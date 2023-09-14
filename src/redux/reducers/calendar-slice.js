@@ -18,6 +18,12 @@ const calendarSlice = createSlice({
     toggleCalendar(state) {
       state.show = !state.show;
     },
+    changeDatesAndShow(state, action) {
+      const { startDate, endDate } = action.payload;
+      state.startDate = startDate;
+      state.endDate = endDate;
+      state.show = !state.show;
+    },
   },
 });
 
