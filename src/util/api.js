@@ -1,5 +1,7 @@
 import axiosInstance from "./axiosInstancs";
 
+
+
 const getApi = async (url, data) => {
   try {
     const res = await axiosInstance.get(url, data);

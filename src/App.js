@@ -20,6 +20,10 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
 import { action as manipulateTaskAction } from "./components/task/TaskForm";
+import NotificationRoot from "./pages/notification/NotificationRoot";
+import PersonalNotification from "./pages/notification/PersonalNotification";
+import ProjectNotification from './pages/notification/ProjectNotification';
+
 
 const router = createBrowserRouter([
   {
@@ -85,6 +89,24 @@ const router = createBrowserRouter([
                 ],
               },
             ],
+          },
+        ],
+      },
+
+      // notification
+      {
+        path: 'notificationList',
+        element: <NotificationRoot />,
+        children: [
+          {
+            index: true,
+            id: 'personal-noti',
+            element: <PersonalNotification />
+          },
+          {
+            path:'projects/:projectId',
+            id: 'project-noti',
+            element: <ProjectNotification/>,
           },
         ],
       },
