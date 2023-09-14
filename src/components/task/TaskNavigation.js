@@ -1,15 +1,23 @@
 import { useSelector } from "react-redux";
-import { NavLink, useSearchParams, useNavigate, Link } from "react-router-dom";
+import {
+  NavLink,
+  useSearchParams,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { styled } from "styled-components";
-import { deleteApi } from "../../util/api";
+import { deleteApi, getApi } from "../../util/api";
+import NaviButton from "../common/Button";
 
-export default function TaskNavigation() {
+export default function TaskNavigation({ updateList }) {
   const [searchPaarams] = useSearchParams();
   const view = searchPaarams.get("view") || "table";
   const navigate = useNavigate();
+  const params = useParams();
 
   const checkboxes = useSelector((state) => state.checkbox.checkboxes);
 
+  //TODO: 공통 로직 공통화하기 (?)
   const updateHandler = () => {
     const checkedItems = [];
     for (const id in checkboxes) {
@@ -40,14 +48,24 @@ export default function TaskNavigation() {
       );
       if (proceed) {
         checkedItems.forEach((id) => {
-          deleteApi(`tasks/${id}`);
+          (async () => {
+            await deleteApi(`tasks/${id}`);
+            const response = await getApi(`projects/${params.projectId}/tasks`);
+            const tasks = await response.data.data;
+            updateList(tasks);
+          })();
         });
       }
     } else if (checkedItems.length === 1) {
       const proceed = window.confirm("1건을 삭제하시겠습니까?");
       if (proceed) {
         const taskId = checkedItems[0];
-        deleteApi(`tasks/${taskId}`);
+        (async () => {
+          await deleteApi(`tasks/${taskId}`);
+          const response = await getApi(`projects/${params.projectId}/tasks`);
+          const tasks = await response.data;
+          updateList(tasks);
+        })();
       }
     } else {
       alert("선택 대상이 없습니다.");
@@ -71,15 +89,27 @@ export default function TaskNavigation() {
         </TaskFilter>
         {view !== "board" && view !== "roadmap" && (
           <Buttons>
-            <div>
-              <NewButton to="new">생성</NewButton>
-            </div>
-            <ActionButton color="#4361ee" onClick={updateHandler}>
-              수정
-            </ActionButton>
-            <ActionButton color="red" onClick={deleteHandler}>
-              삭제
-            </ActionButton>
+            <NaviButton
+              type="button"
+              name="생성"
+              color="#4361ee"
+              fontcolor="white"
+              onClick={() => navigate("new")}
+            />
+            <NaviButton
+              type="button"
+              name="수정"
+              color="#4361ee"
+              fontcolor="white"
+              onClick={updateHandler}
+            />
+            <NaviButton
+              type="button"
+              name="삭제"
+              color="#c0c0c0"
+              fontcolor="white"
+              onClick={deleteHandler}
+            />
           </Buttons>
         )}
       </TaskNav>
@@ -90,7 +120,7 @@ export default function TaskNavigation() {
 const TaskNav = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 44rem;
+  gap: 43rem;
   width: 85rem;
   height: 5rem;
 `;
@@ -128,36 +158,6 @@ const NavItem = styled(NavLink)`
 
 const Buttons = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
   align-items: center;
-`;
-
-const ActionButton = styled.button`
-  cursor: pointer;
-  background-color: #4361ee;
-  padding: 15px 20px;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  width: 70px;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const NewButton = styled(Link)`
-  cursor: pointer;
-  background-color: #4361ee;
-  padding: 15px 20px;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  width: 70px;
-
-  &:hover {
-    opacity: 0.8;
-  }
 `;

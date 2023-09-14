@@ -1,6 +1,5 @@
 import React from "react";
 import { Form } from "react-router-dom";
-import classes from "./UserEditForm.module.css";
 import Button from "../common/Button";
 import { getCookie } from "../../util/cookies";
 
@@ -20,23 +19,13 @@ export default function UserEditForm() {
       <Form method="patch">
         <div>
           <label htmlFor="name">이름</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            className={classes.username_input}
-          />
+          <input type="text" id="name" name="name" />
         </div>
         <div>
           <label htmlFor="intro">소개글</label>
-          <textarea
-            type="text"
-            id="intro"
-            name="intro"
-            className={classes.user_intro_input}
-          />
+          <textarea type="text" id="intro" name="intro" />
         </div>
-        <div className={classes.buttons}>
+        <div>
           <Button buttonName="수정" type="submit" />
           <Button buttonName="취소" type="button" />
         </div>

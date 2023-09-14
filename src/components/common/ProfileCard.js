@@ -7,7 +7,7 @@ export default function ProfileCard({ name, image }) {
     <ProfileContainer>
       {image && <ProfileImage src={image} alt={image} />}
       {name && <div>{name}</div>}
-      <AiFillCaretDown size="20px" color="#6c757d" />
+      {/* <AiFillCaretDown size="20px" color="#6c757d" /> */}
     </ProfileContainer>
   );
 }

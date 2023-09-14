@@ -33,7 +33,9 @@ export default function PageContent({ title, message }) {
                 />
               </svg>
 
-              <Link to="..">Go back</Link>
+              <Link to=".." relative="path">
+                Go back
+              </Link>
             </button>
 
             <Link
