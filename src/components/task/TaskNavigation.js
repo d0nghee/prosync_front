@@ -89,9 +89,27 @@ export default function TaskNavigation({ updateList }) {
         </TaskFilter>
         {view !== "board" && view !== "roadmap" && (
           <Buttons>
-            <NaviButton type="button" name="생성" color="#4361ee" fontColor="white" onClick={() => navigate('new')}/>
-            <NaviButton type="button" name="수정" color="#4361ee" fontColor="white" onClick={updateHandler}/>
-            <NaviButton type="button" name="삭제" color="#c0c0c0" fontColor="white" onClick={deleteHandler}/>
+            <NaviButton
+              type="button"
+              name="생성"
+              color="#4361ee"
+              fontcolor="white"
+              onClick={() => navigate("new")}
+            />
+            <NaviButton
+              type="button"
+              name="수정"
+              color="#4361ee"
+              fontcolor="white"
+              onClick={updateHandler}
+            />
+            <NaviButton
+              type="button"
+              name="삭제"
+              color="#c0c0c0"
+              fontcolor="white"
+              onClick={deleteHandler}
+            />
           </Buttons>
         )}
       </TaskNav>
@@ -102,7 +120,7 @@ export default function TaskNavigation({ updateList }) {
 const TaskNav = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 44rem;
+  gap: 43rem;
   width: 85rem;
   height: 5rem;
 `;
@@ -143,4 +161,3 @@ const Buttons = styled.div`
   gap: 0.8rem;
   align-items: center;
 `;
-

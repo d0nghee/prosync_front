@@ -1,9 +1,9 @@
 import { styled } from "styled-components";
 
-export default function NaviButton({ name, type, onClick, color, fontColor }) {
+export default function NaviButton({ name, type, onClick, color, fontcolor }) {
   return (
     <>
-      <Button type={type} onClick={onClick} color={color} fontColor={fontColor}>
+      <Button type={type} onClick={onClick} color={color} fontcolor={fontcolor}>
         {name}
       </Button>
     </>
@@ -17,7 +17,7 @@ const Button = styled.button`
   position: sticky;
   font-size: 1rem;
   border-radius: 5px;
-  color: ${(props) => props.fontColor || "#555"};
+  color: ${(props) => props.fontcolor || "#555"};
   width: 80px;
 
   &:hover {

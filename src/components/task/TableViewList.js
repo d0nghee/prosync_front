@@ -40,11 +40,11 @@ export default function TableViewList({ tasks }) {
       <Header>
         <input type="checkbox" onChange={toggleAllCheck} />
         <Title>
-          <div>Title</div>
-          <div>Assignees</div>
-          <div>Last Updated</div>
-          <div>Status</div>
-          <div>Classification</div>
+          <div>제목</div>
+          <div>담당자</div>
+          <div>최근 수정일자</div>
+          <div>업무상태</div>
+          <div>분류</div>
         </Title>
       </Header>
       {tasks.data.map((task) => (
@@ -69,7 +69,6 @@ export default function TableViewList({ tasks }) {
               <div>none</div>
             )}
 
-            {/* TODO: 담당자 api 요청 추가 */}
             {task.taskMembers.length !== 0 && showAssignees === task.taskId && (
               <TaskMemberWrapper>
                 <TaskMemberList taskMembers={task.taskMembers} />

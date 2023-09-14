@@ -39,7 +39,13 @@ export default function NewTaskStatus({ onClose }) {
       <Box onSubmit={submitHandler}>
         <Item>
           <label htmlFor="name">status</label>
-          <NameInput type="text" id="name" name="name" required placeholder="업무상태를 입력하세요."/>
+          <NameInput
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="업무상태를 입력하세요."
+          />
         </Item>
         <Item>
           <label htmlFor="color">color</label>
@@ -79,7 +85,7 @@ const Item = styled.p`
 `;
 
 const NameInput = styled.input`
-  border:none;
+  border: none;
   border-bottom: 1px solid #cad2c5;
   height: 40px;
   padding: 10px;

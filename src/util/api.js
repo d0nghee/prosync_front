@@ -117,6 +117,23 @@ const getTaskMembersApi = async (taskId) => {
   }
 };
 
+const postTaskMember = async (taskId, projectMemberIds) => {
+  const response = await postApi(`/tasks/${taskId}/members`, projectMemberIds);
+  if (response.status === 201) {
+    return await response.data.data;
+  }
+};
+
+const deleteTaskMember = async (taskId, projectMemberIds) => {
+  const response = await deleteApi(
+    `/tasks/${taskId}/members`,
+    projectMemberIds
+  );
+  if (response.status === 204) {
+    console.log("회원 삭제 성공");
+  }
+};
+
 export { postApi, getApi, patchApi, deleteApi };
 export {
   postTaskStatusApi,
@@ -124,4 +141,5 @@ export {
   deleteTaskStatusApi,
   patchTaskStatusApi,
 };
-export { getProjectMembersApi, getTaskMembersApi };
+export { getProjectMembersApi };
+export { getTaskMembersApi, postTaskMember, deleteTaskMember };

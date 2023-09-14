@@ -1,10 +1,9 @@
 import { styled } from "styled-components";
 import ReactQuill from "react-quill";
 
-export const FormArea = styled.div`
+export const TaskContents = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1000px;
   margin: 0 auto;
   height: 100%;
 `;
@@ -13,7 +12,7 @@ export const MarkdownInput = styled(ReactQuill)`
   .ql-editor {
     font-size: 1.05rem;
     line-height: 1.5;
-    height: 500px;
+    height: 650px;
 
     a {
       text-decoration: underline;
@@ -50,11 +49,11 @@ export const SideTask = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
-  width: 240px;
+  width: 280px;
 
   & > div {
     border-bottom: 1px solid #dad7cd;
-    padding-bottom: 1rem
+    padding-bottom: 1rem;
   }
 `;
 
@@ -69,9 +68,8 @@ export const SideInput = styled.input`
 export const TaskArea = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 5rem;
-  width: 1500px;
   margin: 20px 0;
+  justify-content: space-between;
 `;
 
 export const SideName = styled.div`
@@ -83,9 +81,10 @@ export const Container = styled.div`
   position: relative;
 `;
 
-export const CalendarWrapper = styled.div`
+export const Wrapper = styled.div`
+  z-index: 1;
   position: absolute;
-  top: 83px;
+  top: ${(props) => props.top};
   left: 0;
   display: ${(props) => (props.show ? "block" : "none")};
 `;
@@ -116,9 +115,26 @@ export const BackDrop = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 `;
 
 export const ButtonArea = styled.div`
   display: flex;
   gap: 0.7rem;
+  justify-content: flex-end;
+`;
+
+export const Modal = styled.dialog`
+  border: 1px solid black;
+`;
+
+export const TaskTotal = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+
+  & > div {
+    width: 1400px;
+    margin: 0 auto;
+  }
 `;

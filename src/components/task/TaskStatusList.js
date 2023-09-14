@@ -4,11 +4,9 @@ import { useState } from "react";
 import { deleteTaskStatusApi } from "../../util/api";
 import { useDispatch, useSelector } from "react-redux";
 import { taskStatusActions } from "../../redux/reducers/taskStatus-slice";
-import { RiDeleteBin6Line } from 'react-icons/ri'
-import { BsCheck } from 'react-icons/bs'
-import { FiEdit2 } from 'react-icons/fi'
-
-
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { BsCheck } from "react-icons/bs";
+import { FiEdit2 } from "react-icons/fi";
 
 export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);
@@ -54,20 +52,35 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
               />
             </div>
             {editStatus ? (
-              <RiDeleteBin6Line onClick={() => deleteTaskStatus(taskStatus.taskStatusId)} size="20px"/>
-            ): <BsCheck onClick={() => statusClickHandler(taskStatus)}  size="20px"/>}
+              <RiDeleteBin6Line
+                onClick={() => deleteTaskStatus(taskStatus.taskStatusId)}
+                size="20px"
+              />
+            ) : (
+              <BsCheck
+                onClick={() => statusClickHandler(taskStatus)}
+                size="20px"
+              />
+            )}
           </OneBox>
         ))}
       </StatusItems>
       <Buttons>
         <button type="button" onClick={editStatusHandler}>
-          {editStatus ? "done" : <span><FiEdit2/>edit</span>}
+          {editStatus ? (
+            "done"
+          ) : (
+            <span>
+              <FiEdit2 />
+              edit
+            </span>
+          )}
         </button>
-        {editStatus && 
+        {editStatus && (
           <button type="button" onClick={showStatusModal}>
             add
           </button>
-        }
+        )}
       </Buttons>
     </StatusBox>
   );

@@ -2,7 +2,6 @@ import { useSubmit, useNavigate } from "react-router-dom";
 import * as t from "./TaskForm.style";
 import TaskStatus from "./TaskStatus";
 import { styled } from "styled-components";
-import TaskMemberList from "./TaskMemberList";
 import SimpleTaskMemberList from "./SimpleTaskMemberList";
 import NaviButton from "../common/Button";
 
@@ -19,67 +18,72 @@ export default function Task({ task, taskMembers }) {
 
   return (
     <>
-      <DetailArea>
-        <NaviButton name="목록" type="button" onClick={() => navigate("..")} />
-        <t.TaskArea>
-          <t.MainTask>
-            <TaskTitle>{task.title}</TaskTitle>
-            <div>{task.createdAt}</div>
-            <div>
-              <h2>Details</h2>
-              <TaskDetails
-                dangerouslySetInnerHTML={{ __html: `${task.detail}` }}
-              />
-            </div>
-            <ButtonArea>
-              <NaviButton
-                type="button"
-                name="수정"
-                color="#3a86ff"
-                fontColor="white"
-                to="edit"
-                onClick={() => navigate("edit")}
-              />
-              <NaviButton
-                type="submit"
-                name="삭제"
-                onClick={taskDeleteHandler}
-              />
-            </ButtonArea>
-          </t.MainTask>
-          <t.SideTask>
-            <div>
-              <t.SideName>Assignees</t.SideName>
-              {taskMembers.length > 0 ? (
-                <SimpleTaskMemberList taskMembers={taskMembers} />
-              ) : (
-                // <TaskMemberList taskMembers={taskMembers} />
-                <div>지정된 담당자가 없습니다.</div>
-              )}
-            </div>
-            <div>
-              <t.SideName>Classification</t.SideName>
-              <Text>{task.classification}</Text>
-            </div>
-            <div>
-              <t.SideName>Task Period</t.SideName>
+      <t.TaskTotal>
+        <DetailArea>
+          <NaviButton
+            name="목록"
+            type="button"
+            onClick={() => navigate("..")}
+          />
+          <TaskTitle>{task.title}</TaskTitle>
+          <t.TaskArea>
+            <t.MainTask>
+              <div>{task.createdAt}</div>
               <div>
-                {task.startDate} - {task.endDate}
-              </div>
-            </div>
-            <div>
-              <t.SideName>Task Status</t.SideName>
-              <t.TaskStatusBox>
-                <TaskStatus
-                  color={task.color}
-                  name={task.taskStatus}
-                  width="100px"
+                <TaskDetails
+                  dangerouslySetInnerHTML={{ __html: `${task.detail}` }}
                 />
-              </t.TaskStatusBox>
-            </div>
-          </t.SideTask>
-        </t.TaskArea>
-      </DetailArea>
+              </div>
+              <ButtonArea>
+                <NaviButton
+                  type="button"
+                  name="수정"
+                  color="#4361ee"
+                  fontcolor="white"
+                  to="edit"
+                  onClick={() => navigate("edit")}
+                />
+                <NaviButton
+                  type="submit"
+                  name="삭제"
+                  onClick={taskDeleteHandler}
+                />
+              </ButtonArea>
+            </t.MainTask>
+            <t.SideTask>
+              <div>
+                <t.SideName>담당자</t.SideName>
+                {taskMembers.length > 0 ? (
+                  <SimpleTaskMemberList taskMembers={taskMembers} />
+                ) : (
+                  // <TaskMemberList taskMembers={taskMembers} />
+                  <div>지정된 담당자가 없습니다.</div>
+                )}
+              </div>
+              <div>
+                <t.SideName>분류</t.SideName>
+                <Text>{task.classification}</Text>
+              </div>
+              <div>
+                <t.SideName>기간</t.SideName>
+                <div>
+                  {task.startDate} - {task.endDate}
+                </div>
+              </div>
+              <div>
+                <t.SideName>업무상태</t.SideName>
+                <t.TaskStatusBox>
+                  <TaskStatus
+                    color={task.color}
+                    name={task.taskStatus}
+                    width="100px"
+                  />
+                </t.TaskStatusBox>
+              </div>
+            </t.SideTask>
+          </t.TaskArea>
+        </DetailArea>
+      </t.TaskTotal>
     </>
   );
 }
@@ -87,7 +91,6 @@ export default function Task({ task, taskMembers }) {
 const DetailArea = styled.div`
   display: flex;
   flex-direction: column;
-  width: 1000px;
   margin: 0 auto;
   height: 100%;
 `;
@@ -95,7 +98,7 @@ const DetailArea = styled.div`
 const TaskTitle = styled.h2`
   max-height: 100px;
   width: 100%;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   border-bottom: 1px solid #dad7cd;
   padding: 1rem 0.2rem;
   overflow: auto;
@@ -104,7 +107,7 @@ const TaskTitle = styled.h2`
 const TaskDetails = styled.div`
   font-size: 1.05rem;
   line-height: 1.5;
-  height: 500px;
+  height: 650px;
   border: 1px solid #dad7cd;
   padding: 0 1rem;
   overflow: auto;
@@ -118,4 +121,5 @@ const Text = styled.div`
 const ButtonArea = styled.div`
   display: flex;
   gap: 0.7rem;
+  justify-content: flex-end;
 `;
