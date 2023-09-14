@@ -21,6 +21,7 @@ import TaskDetail, {
 } from './pages/task/TaskDetail';
 import { action as manipulateTaskAction } from './components/task/TaskForm';
 import Test from './TestComponent';
+import NewProject from './pages/project/NewProject';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
       // projects //
       {
         path: 'projects',
+        element: <NewProject />,
         children: [
           {
             path: ':projectId',
@@ -94,8 +96,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  // return <RouterProvider router={router} />;
-  return <Test></Test>;
+  return <RouterProvider router={router} />;
+  // return <Test></Test>;
 }
 
 export default App;

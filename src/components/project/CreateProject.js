@@ -1,12 +1,18 @@
 import styled from 'styled-components';
+import { useNavigate, redirect } from 'react-router-dom';
+import { useState } from 'react';
+import { postApi } from '../../util/api';
 
 const ProjectContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 700px;
   padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
-
 const Input = styled.input`
   padding: 8px;
   margin-bottom: 10px;
@@ -25,7 +31,6 @@ const TextArea = styled.textarea`
   border-left: none;
   border-bottom: 2px solid #5b67ca;
   height: 300px;
-  rows: 4;
 `;
 
 const Label = styled.label`
@@ -73,35 +78,115 @@ const DateContainer = styled.div`
   justify-content: center;
 `;
 
-function ProjectCreationComponent() {
+// TODO: 폼에 이미지 입력 받을 수 있게 하기
+function CreateProject() {
+  // 프로젝트 생성 데이터
+  const [projectData, setProjectData] = useState({
+    title: '',
+    intro: '',
+    startDate: '',
+    endDate: '',
+    isPublic: true,
+    projectImage: 'default Image',
+  });
+
+  async function newProjectHandler() {
+    try {
+      const response = await postApi('/projects', projectData);
+
+      if (response.status === 200 || response.status === 201) {
+        console.log('success');
+        navigate('/');
+      } else {
+        console.log(projectData);
+        console.log('실패');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    console.log('navigate');
+    navigate('..');
+  }
+
+  // 취소 버튼
+  const navigate = useNavigate();
+  const cancelHandler = () => {
+    navigate('..');
+  };
+
+  // 입력 값 변경시 호출 되는 핸들러
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'isPublic') {
+      setProjectData((Data) => ({
+        ...Data,
+        [name]: value === 'true' ? true : false,
+      }));
+    } else {
+      setProjectData((Data) => ({ ...Data, [name]: value }));
+    }
+  };
+
   return (
     <ProjectContainer>
       <Label>프로젝트명</Label>
-      <Input type="text" />
+      <Input
+        type="text"
+        name="title"
+        value={projectData.title}
+        onChange={handleInputChange}
+      />
 
       <Label>프로젝트 기간</Label>
       <DateContainer>
-        <Input type="date" />
-        <Input type="date" />
+        <Input
+          type="date"
+          name="startDate"
+          value={projectData.startDate}
+          onChange={handleInputChange}
+        />
+        <Input
+          type="date"
+          name="endDate"
+          value={projectData.endDate}
+          onChange={handleInputChange}
+        />
       </DateContainer>
 
       <Label>프로젝트 소개</Label>
-      <TextArea />
+      <TextArea
+        name="intro"
+        value={projectData.intro}
+        onChange={handleInputChange}
+      />
 
       <CheckboxContainer>
         <Label>
-          <Radio name="visibility" value="public" />
+          <Radio
+            name="isPublic"
+            value="1"
+            checked={projectData.isPublic}
+            onChange={handleInputChange}
+          />
           Public
         </Label>
         <Label>
-          <Radio name="visibility" value="private" />
+          <Radio
+            name="isPublic"
+            value="0"
+            checked={!projectData.isPublic}
+            onChange={handleInputChange}
+          />
           Private
         </Label>
       </CheckboxContainer>
-      <Button>생성</Button>
-      <Button cancel>취소</Button>
+      <Button onClick={newProjectHandler}>생성</Button>
+      <Button cancel onClick={cancelHandler}>
+        취소
+      </Button>
     </ProjectContainer>
   );
 }
 
-export default ProjectCreationComponent;
+export default CreateProject;
