@@ -79,8 +79,7 @@ const PersonalNotification = () => {
       <>
       <NotificationSearchBar
         onConditionChangeHandler={onConditionChangeHandler}/>
-      {!isLoading && ( <><NotificationList notiPageList={notificationPageList} 
-      ON/>
+      {!isLoading && ( <><NotificationList notiPageList={notificationPageList} onConditionChangeHandler={onConditionChangeHandler}/>
       <Pagination pageInfo={notificationPageInfo} pageCount={5} searchCondition={searchCondition} onConditionChangeHandler={onConditionChangeHandler}/></>)}
       {isLoading && (<Loading>데이터를 로딩중입니다. 잠시만 기다려주세요.</Loading>)}
     </>
