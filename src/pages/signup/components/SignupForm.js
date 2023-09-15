@@ -1,22 +1,22 @@
 import React from "react";
-import { InputContent, LabelContent } from "../../css/LoginStyle";
+import { InputContent, LabelContent } from "../../../css/LoginStyle";
 import {
   DivContainer,
   Page,
   SideContent,
   SideImage,
   Image,
-} from "../../css/SignupStyle";
-import Button from "../button/Button";
-import signupImage from "../../util/signup.png";
+} from "../../../css/SignupStyle";
+import Button from "../../../components/button/Button";
+import signupImage from "../../../util/signup.png";
 import DoubleCheck from "./DoubleCheck";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setModalButtons, setModalMessage, setVerifiedPassword } from "../../redux/signupSlice";
-import Popup from '../popup/Popup'
+import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setModalButtons, setModalMessage, setVerifiedPassword } from "../../../redux/reducers/signupSlice";
+import Popup from '../../../components/popup/Popup'
 import ConfrimButton from './ConfirmButton'
-import {axiosInstance} from '../../util/axios/axiosInstances'
+import {axiosInstance} from '../../../util/axios/axiosInstances'
 
 
 export default function SignupForm() {

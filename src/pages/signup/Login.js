@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import LoginForm from "./components/loginForm";
 import { LoginButtonContainer } from "../../css/LoginStyle";
-import { setLoggedIn, setLoginFormData } from "../../redux/loginSlice";
+import { setLoggedIn, setLoginFormData } from "../../redux/reducers/loginSlice";
 import axiosInstance from "../../util/axios/axiosInstances";
 import { setCookie } from "../../util/cookies";
 

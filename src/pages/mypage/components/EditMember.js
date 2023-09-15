@@ -1,11 +1,10 @@
 import React from 'react'
-
-import Button from '../button/Button'
-import Popup from '../popup/Popup'
+import Button from '../../../components/button/Button'
+import Popup from '../../../components/popup/Popup'
 import ProfileImage from './ProfileImage'
-import { CustomDiv, Label, InputText, InputTextArea } from '../../css/MyPageStyle'
+import { CustomDiv, Label, InputText, InputTextArea } from '../../../css/MyPageStyle'
 import { useDispatch, useSelector } from 'react-redux'
-import { setMemberInfo } from '../../redux/mypageSlice'
+import { setMemberInfo } from '../../../redux/reducers/mypageSlice'
 
 export default function EditMember() {
 
@@ -15,6 +14,9 @@ export default function EditMember() {
 
   const handleChange = (e) => {
     dispatch(setMemberInfo({
+      [e.target.name] : e.target.value,
+      [e.target.name] : e.target.value,
+      [e.target.name] : e.target.value,
       [e.target.name] : e.target.value,
     }));
 
