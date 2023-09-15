@@ -1,7 +1,11 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { RouterProvider } from 'react-router-dom';
-import HomePage from './pages/Home';
-import RootLayout from './pages/RootLayout';
+
+import SignUp from '../src/pages/signup/SignUp'
+import Login from "./pages/signup/Login";
+import Error from '../src/pages/Error'
+import Home from '../src/pages/signup/Home'
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import RootLayout from "./pages/RootLayout";
+import MyPage from "./pages/mypage/MyPage";
 import ErrorPage from './pages/Error';
 import Authentication, {
   action as authAction,
@@ -35,10 +39,17 @@ const router = createBrowserRouter([
     id: 'root',
     loader: accessTokenLoader,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element : <Home />},
+      { path: '/login', element: <Login />, errorElement : <Error /> },
+      { path: '/signup', element: <SignUp /> },
+      { path: '/mypage', element: <MyPage /> },
       // 사용자 인증
       { path: 'auth', element: <Authentication />, action: authAction },
       { path: 'logout', action: logoutAction },
+            { path: '/', element : <Home />},
+      { path: '/login', element: <Login />, errorElement : <Error /> },
+      { path: '/signup', element: <SignUp /> },
+      { path: '/mypage', element: <MyPage /> },
       // users //
       {
         path: 'user',
