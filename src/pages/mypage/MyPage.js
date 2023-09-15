@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
-import EditMember from '../components/mypage/EditMember'
-import EditPassword from '../components/mypage/EditPassword'
-import Myproject from '../components/mypage/MyProject'
-import BookMark from '../components/mypage/BookMark'
-import SideMenu from '../components/side/SideMenu'
-import MypageDefault from '../components/mypage/MypageDefault'
-import { GridContainer, Header, Content, Footer } from '../css/MyPageStyle'
+import EditMember from '../../components/mypage/EditMember'
+import EditPassword from '../../components/mypage/EditPassword'
+import Myproject from '../../components/mypage/MyProject'
+import BookMark from '../../components/mypage/BookMark'
+import SideMenu from './components/SideMenu'
+import MypageDefault from '../../components/mypage/MypageDefault'
+import { GridContainer, Header, Content, Footer } from '../../css/MyPageStyle'
 import { useDispatch, useSelector } from 'react-redux'
-import axiosInstance from '../util/axios/axiosInstances'
+import axiosInstance from '../../util/axios/axiosInstances'
 
 
 export default function MyPage() {

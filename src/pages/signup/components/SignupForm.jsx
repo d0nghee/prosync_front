@@ -16,6 +16,7 @@ import axios from "axios";
 import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setModalButtons, setModalMessage, setVerifiedPassword } from "../../redux/signupSlice";
 import Popup from '../popup/Popup'
 import ConfrimButton from './ConfirmButton'
+import {axiosInstance} from '../../util/axios/axiosInstances'
 
 
 export default function SignupForm() {
@@ -56,6 +57,8 @@ export default function SignupForm() {
         })
       );
     }
+
+    console.log(signup.formData);
   };
 
   const handleCreateButtonClick = () => {
@@ -63,23 +66,25 @@ export default function SignupForm() {
     axios.post('http://localhost:8080/api/v1/members', signup.formData)
         .then(() => {
             dispatch(setIsConfirmModalOpen(true));
-            dispatch(setModalMessage("success"));
-            dispatch(setModalButtons({
+            dispatch(setModalMessage("SUCCESS"));
+            dispatch(setModalButtons([
+              {
                 label : "확인",
                 onClick : () => {
                     dispatch(setIsConfirmModalOpen(false));
                     navi('/login');
                 }
-            }));
+            }
+          ]));
         }).catch(() => {
           dispatch(setIsConfirmModalOpen(true));
           dispatch(setModalMessage("빈 칸 없이 입력해주세요."));
-          dispatch(setModalButtons({
+          dispatch(setModalButtons([{
             label : "확인",
             onClick : () => {
               dispatch(setIsConfirmModalOpen(false));
             }
-          }))
+          }]))
         });
 
   }
@@ -102,20 +107,30 @@ export default function SignupForm() {
   }
 
   const handleIdCheckButtonClick = async () => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/v1/idcheck', {
-        email: signup.formData.email,
-      });
-      
-      if (response.data === false) {   // 중복 이메일 없음
-        dispatch(setIsEmailValid(true));
-      }
-    } catch (error) {
-      console.error('에러 발생:', error);
-      throw error;
-    }
 
+    axios.post("http://localhost:8080/api/v1/idcheck", signup.formData ,{
+      headers : {
+        "Content-Type" : "application/json",
+      },
+    })
+    .then((res) => {
+      console.log(res.data);
+      if ( res.data === false ) {
+        dispatch(setIsEmailValid(true));
+      } else {
+        dispatch(setIsConfirmModalOpen(true));
+        dispatch(setModalMessage("중복입니다."));
+        dispatch(setModalButtons([
+          {label : "확인",
+          onClick : () => {
+            dispatch(setIsConfirmModalOpen(false));
+          }
+          }
+        ]))
+      }
+    })
   }
+
 
   return (
     <>
@@ -129,6 +144,7 @@ export default function SignupForm() {
           <DivContainer>
             <InputContent
               onChange={handleInputChange}
+              readOnly={signup.isEmailValid}
               type="email"
               name="email"
               id="email"

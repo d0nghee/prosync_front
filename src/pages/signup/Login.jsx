@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import CustomButton from "../components/button/Button";
+import CustomButton from "../../components/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import LoginForm from "../components/login/loginForm";
-import { LoginButtonContainer } from "../css/LoginStyle";
-import { setLoggedIn, setLoginFormData } from "../redux/loginSlice";
-import axiosInstance from "../util/axios/axiosInstances";
-import { setCookie } from "../util/cookies";
+import LoginForm from "./components/loginForm";
+import { LoginButtonContainer } from "../../css/LoginStyle";
+import { setLoggedIn, setLoginFormData } from "../../redux/loginSlice";
+import axiosInstance from "../../util/axios/axiosInstances";
+import { setCookie } from "../../util/cookies";
 
 
 export default function Login() {

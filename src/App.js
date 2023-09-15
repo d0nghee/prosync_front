@@ -1,12 +1,12 @@
 import { Provider } from "react-redux";
 import SignUp from "./pages/SignUp";
-import store from './redux/module/store'
-import Login from "./pages/Login";
+import stores from './redux/module/stores'
+import Login from "./pages/signup/Login";
 import Error from '../src/pages/Error'
 import Home from '../src/pages/Home'
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
-import MyPage from "./pages/MyPage";
+import MyPage from "./pages/mypage/MyPage";
 
 const router = createBrowserRouter([
   {
@@ -20,16 +20,15 @@ const router = createBrowserRouter([
       { path: '/mypage', element: <MyPage /> },
     ]
   },
-
 ]);
 
 
 function App() {
 
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
-    </Provider>
+      <RouterProvider router={router}>
+        
+      </RouterProvider>
   );
 }
 

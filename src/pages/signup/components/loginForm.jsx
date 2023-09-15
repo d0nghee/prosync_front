@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FormContainer, InputContent, LabelContent } from '../../css/LoginStyle'
+import { FormContainer, InputContent, LabelContent } from '../../../css/LoginStyle'
 
 export default function loginForm(props) {
 

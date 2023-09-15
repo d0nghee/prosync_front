@@ -9,8 +9,8 @@ const rootReducer = {
     mypage : mypageSlice,
 };
 
-export const store = configureStore({
+export const stores = configureStore({
     reducer : rootReducer,
 })
 
-export default store;
+export default stores;

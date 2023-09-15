@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { SideBar, SideMenuDetail, List, ListItem, ListItemButton } from '../../css/MyPageStyle'
+import { SideBar, SideMenuDetail, List, ListItem, ListItemButton } from '../../../css/MyPageStyle'
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedComponent } from '../../redux/mypageSlice';
+import { setSelectedComponent } from '../../../redux/mypageSlice';
 
 
 export default function SideMenu() {
