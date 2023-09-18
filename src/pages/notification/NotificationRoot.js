@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom"
+import SideBar from "../../components/common/SideBar";
 
-const NotificationRoot = () => {
+const NotificationRoot = ({subject}) => {
   return (
     <>
-    <div>내 알림</div>
+    <SideBar/>
     <Outlet/>
     </>
   )

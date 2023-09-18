@@ -22,7 +22,7 @@ margin-top: 10%;
 
 const PersonalNotification = () => {
   const [searchCondition, setSearchCondition] 
-  = useState({notiCode: '',
+  = useState({code: '',
     startDate: '',
     endDate: '',
     content: '',
@@ -46,7 +46,7 @@ const PersonalNotification = () => {
       
 
       console.log("useEffect에서 데이터 요청함");
-      const response = await getApi(`/notificationList?notiCode=${searchCondition.notiCode}&startDate=${searchCondition.startDate}&endDate=${searchCondition.endDate}&content=${searchCondition.content}&size=${searchCondition.size}&page=${searchCondition.page}`);
+      const response = await getApi(`/notificationList?notiCode=${searchCondition.code}&startDate=${searchCondition.startDate}&endDate=${searchCondition.endDate}&content=${searchCondition.content}&size=${searchCondition.size}&page=${searchCondition.page}`);
       console.log(response);
       console.log(response.status);
       if (
