@@ -62,7 +62,7 @@ export default function SignupForm() {
   };
 
   const handleCreateButtonClick = () => {
-    
+    if (signup.formData !== ''){
     axios.post('http://localhost:8080/api/v1/members', signup.formData)
         .then(() => {
             dispatch(setIsConfirmModalOpen(true));
@@ -86,7 +86,7 @@ export default function SignupForm() {
             }
           }]))
         });
-
+      }
   }
 
   const handleCancelButtonClick = () => {

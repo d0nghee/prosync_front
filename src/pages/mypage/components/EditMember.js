@@ -12,6 +12,7 @@ export default function EditMember() {
   const mypage = useSelector(state => state.mypage);
 
 
+  console.log('mypage2 :' + mypage.selectedComponent);
   const handleChange = (e) => {
     dispatch(setMemberInfo({
       [e.target.name] : e.target.value,
@@ -20,7 +21,6 @@ export default function EditMember() {
       [e.target.name] : e.target.value,
     }));
 
-    console.log(mypage.memberInfo);
   }
 
   const handleFileChange = (e) => {
@@ -45,11 +45,11 @@ export default function EditMember() {
       </CustomDiv>
       <CustomDiv>
         <Label>이름 입력 : &nbsp;</Label>
-        <InputText type='text' name='name' id='name' onChange={ handleChange }></InputText>
+        <InputText type='text' name='name' id='name' onChange={ handleChange } />
       </CustomDiv>
       <CustomDiv>
         <Label>소개글 입력 :&nbsp;</Label>
-        <InputTextArea name='intro' id='intro' onChange={ handleChange } ></InputTextArea>
+        <InputTextArea name='intro' id='intro' onChange={ handleChange } />
       </CustomDiv>
       <CustomDiv style={{ justifyContent: 'center' }}>
         <Button

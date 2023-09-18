@@ -5,16 +5,13 @@ import Error from '../src/pages/Error'
 import Home from '../src/pages/signup/Home'
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
-import MyPage from "./pages/mypage/MyPage";
+import MyPage from '../src/pages/mypage/MyPage'
 import ErrorPage from './pages/Error';
 import Authentication, {
   action as authAction,
 } from './pages/auth/Authentication';
 import { action as logoutAction } from './pages/auth/Logout';
 import { checkTokenLoader, accessTokenLoader } from './util/auth';
-import UserProfile, {
-  action as userProfileEditAction,
-} from './pages/user/UserProfile';
 import Tasks, { loader as tasksLoader } from './pages/task/Tasks';
 import TasksRoot from './pages/task/TasksRoot';
 import EditTask from './pages/task/EditTask';
@@ -24,7 +21,6 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from './pages/task/TaskDetail';
 import { action as manipulateTaskAction } from './components/task/TaskForm';
-import Test from './TestComponent';
 import NewProject from './pages/project/NewProject';
 import NotificationRoot from "./pages/notification/NotificationRoot";
 import PersonalNotification from "./pages/notification/PersonalNotification";
@@ -39,35 +35,27 @@ const router = createBrowserRouter([
     id: 'root',
     loader: accessTokenLoader,
     children: [
-      { index: true, element : <Home />},
-      { path: '/login', element: <Login />, errorElement : <Error /> },
-      { path: '/signup', element: <SignUp /> },
-      { path: '/mypage', element: <MyPage /> },
+      { index: true, element: <Home /> },
       // 사용자 인증
-      { path: 'auth', element: <Authentication />, action: authAction },
+      { path: '/', element: <Home /> },
+      { path: 'auth', element: <Authentication />, },
       { path: 'logout', action: logoutAction },
-            { path: '/', element : <Home />},
-      { path: '/login', element: <Login />, errorElement : <Error /> },
+      { path: '/login', element: <Login />, errorElement: <Error /> },
       { path: '/signup', element: <SignUp /> },
-      { path: '/mypage', element: <MyPage /> },
       // users //
       {
-        path: 'user',
-        children: [
-          {
-            path: 'profile',
-            element: <UserProfile />,
-            action: userProfileEditAction,
-            loader: checkTokenLoader,
-          },
-        ],
+        path: '/user/profile',
+        element: <MyPage />,
+        loader: checkTokenLoader,
+
       },
       // projects //
       {
         path: 'projects',
         children: [
           { index: true, element: <NewProject /> },
-          {  path: ':projectId',
+          {
+            path: ':projectId',
             children: [
               // tasks //
               { index: true },
@@ -117,9 +105,9 @@ const router = createBrowserRouter([
             element: <PersonalNotification />
           },
           {
-            path:'projects/:projectId',
+            path: 'projects/:projectId',
             id: 'project-noti',
-            element: <ProjectNotification/>,
+            element: <ProjectNotification />,
           },
         ],
       },

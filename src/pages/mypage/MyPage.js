@@ -6,7 +6,9 @@ import EditPassword from './components/EditPassword'
 import { GridContainer, Header, Content, Footer } from '../../css/MyPageStyle'
 import { useDispatch, useSelector } from 'react-redux'
 import SideMenu from './components/SideMenu'
-import axiosInstance from '../../util/axios/axiosInstances'
+import { patchApi } from '../../util/api'
+import { setCookie } from '../../util/cookies'
+import { redirect } from 'react-router-dom'
 
 
 export default function MyPage() {
@@ -14,10 +16,11 @@ export default function MyPage() {
   const mypage = useSelector(state => state.mypage);
   const dispatch = useDispatch();
 
+  console.log('mypage: '+mypage.selectedComponent);
+  
 
 
   useEffect(() => {
-
     // axiosInstance.get('/members')
     // .then((response) => {
     //   console.log(response.data.email);

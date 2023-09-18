@@ -21,9 +21,9 @@ export default function MainNavigation() {
             <input type="text" placeholder="프로젝트 검색" />
           </li>
           {isLoggedIn && (
-            <Link to="user/profile">
+            <NavLink to="/user/profile">
               <ProfileCard name={name} image={profile} />
-            </Link>
+            </NavLink>
           )}
           {/* 로그인 전 */}
           {!isLoggedIn && (

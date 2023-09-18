@@ -10,11 +10,11 @@ export default function ProfileImage(props) {
     const dispatch = useDispatch();
     const mypage = useSelector(state => state.mypage);
 
-    
+
 
     return (
-        <input type>
-            <FaUser size='90'></FaUser>
-        </input>
+        <img src='https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png'>
+
+        </img>
     )
 }

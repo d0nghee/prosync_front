@@ -8,11 +8,13 @@ import { LoginButtonContainer } from "../../css/LoginStyle";
 import { setLoggedIn, setLoginFormData } from "../../redux/reducers/loginSlice";
 import axiosInstance from "../../util/axios/axiosInstances";
 import { setCookie } from "../../util/cookies";
+import { getApi } from "../../util/api";
 
 
 export default function Login() {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
+  const signup = useSelector(state => state.signup)
   const navi = useNavigate();
 
 
@@ -43,22 +45,36 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    
+
     axiosInstance.post("/login", login.loginFormData)
-    .then(async (response) => {
-      const header = response.headers;
-      const access = await header.authorization;
-      const refresh = await header.refresh;
+      .then(async (response) => {
+        const header = response.headers;
+        const access = await header.authorization;
+        const refresh = await header.refresh;
 
-      if (access && refresh) {
-        setCookie("accessToken", access, { path : "/"});
-        setCookie("refreshToken", refresh, { path : "/"});
-      }
+        if (access && refresh) {
+          setCookie("accessToken", access, { path: "/" });
+          setCookie("refreshToken", refresh, { path: "/" });
+        }
+        navi("/");
+        return response.status;
+      }).then((status) => {
+        if (status === 200) {
+          getApi("/members")
+            .then(async (res) => {
+              console.log("요청 : ", res.data)
+              setCookie("profile", res.data.profileImage, { path: "/" });
+              setCookie("name", res.data.name, { path: "/" });
+            })
+            .catch(() => {
+              alert('로그인 실패');
+            })
+        }
 
-      navi("/");
-      return response.status;
-      
-    })
+      })
+      .catch(() => {
+        alert('로그인 실패');
+      })
   };
 
   const handleSignup = () => {
