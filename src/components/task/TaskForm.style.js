@@ -23,8 +23,10 @@ export const MarkdownInput = styled(ReactQuill)`
 export const TaskTitle = styled.input`
   max-height: 100px;
   width: 100%;
-  font-size: 1.2rem;
-  padding: 1rem;
+  font-size: 2.5rem;
+  padding: 1rem 0;
+  border: none;
+  outline: none;
 `;
 
 export const DateInput = styled.input`
@@ -63,6 +65,7 @@ export const SideInput = styled.input`
   padding: 5px;
   font-size: 1rem;
   border: none;
+  outline: none;
 `;
 
 export const TaskArea = styled.div`
@@ -75,6 +78,9 @@ export const TaskArea = styled.div`
 export const SideName = styled.div`
   margin-bottom: 1.2rem;
   font-weight: bold;
+
+  .logo {
+  }
 `;
 
 export const Container = styled.div`
@@ -122,6 +128,7 @@ export const ButtonArea = styled.div`
   display: flex;
   gap: 0.7rem;
   justify-content: flex-end;
+  margin-bottom: 1rem;
 `;
 
 export const Modal = styled.dialog`
@@ -137,4 +144,17 @@ export const TaskTotal = styled.div`
     width: 1400px;
     margin: 0 auto;
   }
+`;
+
+export const DetailArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  height: 100%;
+`;
+
+export const TopNav = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #dad7cd;
 `;

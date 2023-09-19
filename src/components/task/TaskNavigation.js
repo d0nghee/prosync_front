@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   NavLink,
   useSearchParams,
@@ -8,12 +8,14 @@ import {
 import { styled } from "styled-components";
 import { deleteApi, getApi } from "../../util/api";
 import NaviButton from "../common/Button";
+import { taskListAction } from "../../redux/reducers/taskList-slice";
 
-export default function TaskNavigation({ updateList }) {
+export default function TaskNavigation() {
   const [searchPaarams] = useSearchParams();
   const view = searchPaarams.get("view") || "table";
   const navigate = useNavigate();
   const params = useParams();
+  const dispatch = useDispatch();
 
   const checkboxes = useSelector((state) => state.checkbox.checkboxes);
 
@@ -52,7 +54,7 @@ export default function TaskNavigation({ updateList }) {
             await deleteApi(`tasks/${id}`);
             const response = await getApi(`projects/${params.projectId}/tasks`);
             const tasks = await response.data.data;
-            updateList(tasks);
+            dispatch(taskListAction.setTaskList(tasks));
           })();
         });
       }
@@ -64,7 +66,7 @@ export default function TaskNavigation({ updateList }) {
           await deleteApi(`tasks/${taskId}`);
           const response = await getApi(`projects/${params.projectId}/tasks`);
           const tasks = await response.data;
-          updateList(tasks);
+          dispatch(taskListAction.setTaskList(tasks));
         })();
       }
     } else {
@@ -91,7 +93,7 @@ export default function TaskNavigation({ updateList }) {
           <Buttons>
             <NaviButton
               type="button"
-              name="생성"
+              name="신규"
               color="#4361ee"
               fontcolor="white"
               onClick={() => navigate("new")}

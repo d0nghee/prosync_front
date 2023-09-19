@@ -1,46 +1,44 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { RouterProvider } from 'react-router-dom';
-import HomePage from './pages/Home';
-import RootLayout from './pages/RootLayout';
-import ErrorPage from './pages/Error';
+import { createBrowserRouter } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
+import HomePage from "./pages/Home";
+import RootLayout from "./pages/RootLayout";
+import ErrorPage from "./pages/Error";
 import Authentication, {
   action as authAction,
-} from './pages/auth/Authentication';
-import { action as logoutAction } from './pages/auth/Logout';
-import { checkTokenLoader, accessTokenLoader } from './util/auth';
+} from "./pages/auth/Authentication";
+import { action as logoutAction } from "./pages/auth/Logout";
+import { checkTokenLoader, accessTokenLoader } from "./util/auth";
 import UserProfile, {
   action as userProfileEditAction,
-} from './pages/user/UserProfile';
-import Tasks, { loader as tasksLoader } from './pages/task/Tasks';
-import TasksRoot from './pages/task/TasksRoot';
-import EditTask from './pages/task/EditTask';
-import NewTask from './pages/task/NewTask';
+} from "./pages/user/UserProfile";
+import Tasks from "./pages/task/Tasks";
+import TasksRoot from "./pages/task/TasksRoot";
+import EditTask from "./pages/task/EditTask";
+import NewTask from "./pages/task/NewTask";
 import TaskDetail, {
-  loader as taskDetailLoader,
   action as deleteTaskAction,
-} from './pages/task/TaskDetail';
-import { action as manipulateTaskAction } from './components/task/TaskForm';
-import Test from './TestComponent';
-import NewProject from './pages/project/NewProject';
+} from "./pages/task/TaskDetail";
+import Test from "./TestComponent";
+import NewProject from "./pages/project/NewProject";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
-    id: 'root',
+    id: "root",
     loader: accessTokenLoader,
     children: [
       { index: true, element: <HomePage /> },
       // 사용자 인증
-      { path: 'auth', element: <Authentication />, action: authAction },
-      { path: 'logout', action: logoutAction },
+      { path: "auth", element: <Authentication />, action: authAction },
+      { path: "logout", action: logoutAction },
       // users //
       {
-        path: 'user',
+        path: "user",
         children: [
           {
-            path: 'profile',
+            path: "profile",
             element: <UserProfile />,
             action: userProfileEditAction,
             loader: checkTokenLoader,
@@ -49,41 +47,38 @@ const router = createBrowserRouter([
       },
       // projects //
       {
-        path: 'projects',
-        element: <NewProject />,
+        path: "projects",
         children: [
+          { index: true, element: <NewProject /> },
           {
-            path: ':projectId',
+            path: ":projectId",
             children: [
               // tasks //
               { index: true },
               {
-                path: 'tasks',
+                path: "tasks",
                 element: <TasksRoot />,
                 children: [
-                  { index: true, element: <Tasks />, loader: tasksLoader },
+                  { index: true, element: <Tasks /> },
                   {
-                    path: ':taskId',
-                    id: 'task-details',
-                    loader: taskDetailLoader,
+                    path: ":taskId",
+                    id: "task-details",
                     children: [
                       {
                         index: true,
                         element: <TaskDetail />,
                         action: deleteTaskAction,
-                        id: 'task-delete',
+                        id: "task-delete",
                       },
                       {
-                        path: 'edit',
+                        path: "edit",
                         element: <EditTask />,
-                        action: manipulateTaskAction,
                       },
                     ],
                   },
                   {
-                    path: 'new',
+                    path: "new",
                     element: <NewTask />,
-                    action: manipulateTaskAction,
                   },
                 ],
               },

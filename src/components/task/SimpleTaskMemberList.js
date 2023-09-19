@@ -3,13 +3,12 @@ import { styled } from "styled-components";
 export default function SimpleTaskMemberList({ taskMembers }) {
   return (
     <SimpleBox>
-      {taskMembers &&
-        taskMembers.map((member) => (
-          <UserBox key={member.memberProjectId}>
-            <UserName>{member.name}</UserName>
-            <ProfileImage src={member.profileImage} />
-          </UserBox>
-        ))}
+      {taskMembers.map((member) => (
+        <UserBox key={member.memberProjectId}>
+          <UserName>{member.name}</UserName>
+          <ProfileImage src={member.profileImage} />
+        </UserBox>
+      ))}
     </SimpleBox>
   );
 }

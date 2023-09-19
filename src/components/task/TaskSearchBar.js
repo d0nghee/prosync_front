@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function TaskSearchBar({ updateSearch }) {
+export default function TaskSearchBar({ updateSearch, onChangePage }) {
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       updateSearch(event.target.value);
+      onChangePage(1);
     }
   };
 
@@ -35,4 +36,5 @@ const SearchInput = styled.input`
   color: #333;
   font-size: 16px;
   width: 85rem;
+  outline: none;
 `;

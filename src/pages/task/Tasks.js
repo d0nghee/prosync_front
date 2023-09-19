@@ -1,64 +1,61 @@
 import React from "react";
-import { useLoaderData, useParams, json } from "react-router-dom";
-import { getApi } from "../../util/api";
+import { useParams } from "react-router-dom";
 import TasksList from "../../components/task/TasksList";
 import TaskNavigation from "../../components/task/TaskNavigation";
 import TaskSearchBar from "../../components/task/TaskSearchBar";
 import { styled } from "styled-components";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getTasks } from "../../redux/reducers/taskList-slice";
+import { useSelector } from "react-redux";
 
 export default function Tasks() {
-  const data = useLoaderData();
-  let tasks = data.data;
+  const dispatch = useDispatch();
+  const taskList = useSelector((state) => state.taskList.list);
+
   const params = useParams();
   const [keyword, setKeyword] = useState(null);
-  const [taskList, setTaskList] = useState(tasks);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tasks, setTasks] = useState();
+
+  const handleCurrentPage = (page) => {
+    setCurrentPage(page);
+  };
 
   const changeKeywordHandler = (value) => {
     setKeyword(value);
   };
 
   useEffect(() => {
-    // TODO: 처음 2번 요청되는 문제 해결
     (async () => {
-      const response = await getApi(`/projects/${params.projectId}/tasks`, {
-        params: {
+      dispatch(
+        getTasks(params.projectId, {
           search: keyword,
-        },
+          page: currentPage,
+        })
+      ).then((taskList) => {
+        setTasks(taskList.payload);
       });
-
-      const tasks = await response.data;
-      setTaskList(tasks);
     })();
-  }, [keyword, params.projectId]);
-
-  const updateList = (list) => {
-    setTaskList(list);
-  };
+  }, [dispatch, params.projectId, keyword, currentPage]);
 
   return (
     <TaskView>
-      <TaskSearchBar updateSearch={changeKeywordHandler} />
-      <TaskNavigation updateList={updateList} />
-      <TasksList tasks={taskList} />
+      <TaskSearchBar
+        updateSearch={changeKeywordHandler}
+        onChangePage={(value) => handleCurrentPage(value)}
+      />
+      <TaskNavigation />
+      <TasksList onChangePage={handleCurrentPage} tasks={tasks} />
     </TaskView>
   );
-}
-
-export async function loader({ params }) {
-  const projectId = params.projectId;
-  const response = await getApi(`/projects/${projectId}/tasks`);
-  //TODO: 오류처리
-  if (response.status === 500) {
-    console.log("500 error");
-    throw json({ status: 500 });
-  }
-  return response;
 }
 
 const TaskView = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 5rem;
 `;

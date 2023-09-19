@@ -30,9 +30,9 @@ const patchApi = async (url, data) => {
   }
 };
 
-const deleteApi = async (url) => {
+const deleteApi = async (url, data) => {
   try {
-    const res = await axiosInstance.delete(url);
+    const res = await axiosInstance.delete(url, data);
     return res;
   } catch (error) {
     console.error(error);
@@ -117,21 +117,48 @@ const getTaskMembersApi = async (taskId) => {
   }
 };
 
-const postTaskMember = async (taskId, projectMemberIds) => {
+const postTaskMemberApi = async (taskId, projectMemberIds) => {
   const response = await postApi(`/tasks/${taskId}/members`, projectMemberIds);
   if (response.status === 201) {
     return await response.data.data;
   }
 };
 
-const deleteTaskMember = async (taskId, projectMemberIds) => {
-  const response = await deleteApi(
-    `/tasks/${taskId}/members`,
-    projectMemberIds
-  );
+const deleteTaskMemberApi = async (taskId, projectMemberIds) => {
+  const response = await deleteApi(`/tasks/${taskId}/members`, {
+    data: projectMemberIds,
+  });
   if (response.status === 204) {
     console.log("회원 삭제 성공");
   }
+};
+
+// 업무
+const postTaskApi = async (projectId, taskStatusId, body) => {
+  const response = await postApi(
+    `/projects/${projectId}/tasks/task-status/${taskStatusId}`,
+    body
+  );
+  return await response.data.data.taskId;
+};
+
+const patchTaskApi = async (taskId, body) => {
+  const response = await patchApi(`/tasks/${taskId}`, body);
+  return await response.data.data.taskId;
+};
+
+const getTaskApi = async (taskId) => {
+  const response = await getApi(`/tasks/${taskId}`);
+  return await response.data;
+};
+
+const deleteTaskApi = async (taskId) => {
+  await deleteApi(`/tasks/${taskId}`);
+};
+
+const getTasksApi = async (projectId, params) => {
+  const response = await getApi(`/projects/${projectId}/tasks`, { params });
+  return await response.data;
 };
 
 export { postApi, getApi, patchApi, deleteApi };
@@ -142,4 +169,5 @@ export {
   patchTaskStatusApi,
 };
 export { getProjectMembersApi };
-export { getTaskMembersApi, postTaskMember, deleteTaskMember };
+export { getTaskMembersApi, postTaskMemberApi, deleteTaskMemberApi };
+export { postTaskApi, patchTaskApi, getTaskApi, deleteTaskApi, getTasksApi };

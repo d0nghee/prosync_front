@@ -1,29 +1,19 @@
-import { redirect, useRouteLoaderData, json } from "react-router-dom";
-import { deleteApi, getApi } from "../../util/api";
+import { redirect, useParams } from "react-router-dom";
+import { deleteApi, getTaskApi } from "../../util/api";
 import Task from "../../components/task/Task";
+import { useEffect, useState } from "react";
 
 export default function TaskDetail() {
-  const data = useRouteLoaderData("task-details");
-  const task = data.data.data;
-  const taskMembers = data.data.taskMembers;
+  const [task, setTask] = useState();
+  const params = useParams();
+  useEffect(() => {
+    (async () => {
+      const response = await getTaskApi(`${params.taskId}`);
+      setTask(response);
+    })();
+  }, [params.taskId]);
 
-  return <Task task={task} taskMembers={taskMembers} />;
-}
-
-export async function loader({ params }) {
-  const taskId = params.taskId;
-  const response = await getApi(`/tasks/${taskId}`);
-  if (
-    response.response &&
-    (response.response.status === 500 || response.response.status === 404)
-  ) {
-    //TODO:재확인
-    throw json(
-      { status: response.response.status },
-      { message: response.response.data.resultCode }
-    );
-  }
-  return response;
+  return <Task task={task} />;
 }
 
 export async function action({ params }) {
