@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstancs";
+import axiosInstance from './axiosInstancs';
 
 
 
@@ -17,7 +17,7 @@ const postApi = async (url, data) => {
     const res = await axiosInstance.post(url, data);
     return res;
   } catch (error) {
-    console.error(error, "error");
+    console.error(error, 'error');
     return error;
   }
 };
@@ -45,12 +45,12 @@ const deleteApi = async (url) => {
 //TODO : 확인
 const postFileApi = async (data) => {
   const formData = new FormData();
-  formData.append("files", data);
+  formData.append('files', data);
   try {
     await axiosInstance.post({
-      url: "/files",
+      url: '/files',
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
       data: formData,
     });
@@ -73,7 +73,7 @@ const postTaskStatusApi = async ({ taskStatus, color, seq }, projectId) => {
   );
 
   if (response.status === 201) {
-    alert("등록 완료되었습니다.");
+    alert('등록 완료되었습니다.');
     return await response.data.data.taskStatusId;
   }
 };
@@ -82,13 +82,13 @@ const getTaskStatusApi = async (projectId) => {
   const response = await getApi(`/projects/${projectId}/task-status`);
 
   if (response.status === 200) {
-    console.log("업무 상태 조회");
+    console.log('업무 상태 조회');
     return await response.data.data;
   }
 };
 
 const deleteTaskStatusApi = async (taskStatusId) => {
-  console.log("업무 상태 삭제");
+  console.log('업무 상태 삭제');
   return await deleteApi(`/task-status/${taskStatusId}`);
 };
 
@@ -97,7 +97,7 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
   const response = await patchApi(`/task-status/${taskStatusId}`, patchData);
 
   if (response.status === 200) {
-    console.log("업무 상태 수정");
+    console.log('업무 상태 수정');
     return await response.data.data;
   }
 };
@@ -132,7 +132,7 @@ const deleteTaskMember = async (taskId, projectMemberIds) => {
     projectMemberIds
   );
   if (response.status === 204) {
-    console.log("회원 삭제 성공");
+    console.log('회원 삭제 성공');
   }
 };
 

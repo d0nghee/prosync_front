@@ -51,7 +51,6 @@ function Roadmap() {
       endDate: '2023-03-20',
       description: 'Mid March task.',
     },
-
   ];
 
   const items = tasks.map((task) => ({

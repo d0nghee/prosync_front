@@ -1,11 +1,10 @@
-
-import SignUp from '../src/pages/signup/SignUp'
-import Login from "./pages/signup/Login";
-import Error from '../src/pages/Error'
-import Home from '../src/pages/signup/Home'
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import RootLayout from "./pages/RootLayout";
-import MyPage from "./pages/mypage/MyPage";
+import SignUp from '../src/pages/signup/SignUp';
+import Login from './pages/signup/Login';
+import Error from '../src/pages/Error';
+import Home from '../src/pages/signup/Home';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import RootLayout from './pages/RootLayout';
+import MyPage from './pages/mypage/MyPage';
 import ErrorPage from './pages/Error';
 import Authentication, {
   action as authAction,
@@ -24,12 +23,17 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from './pages/task/TaskDetail';
 import { action as manipulateTaskAction } from './components/task/TaskForm';
-import Test from './TestComponent';
+import { loader as projectLoader } from './pages/project/EditProject';
 import NewProject from './pages/project/NewProject';
-import NotificationRoot from "./pages/notification/NotificationRoot";
-import PersonalNotification from "./pages/notification/PersonalNotification";
+import NotificationRoot from './pages/notification/NotificationRoot';
+import PersonalNotification from './pages/notification/PersonalNotification';
 import ProjectNotification from './pages/notification/ProjectNotification';
 
+import EditProejct from './pages/project/EditProject';
+import ProjectList, {
+  loader as projectListLoader,
+} from './pages/project/ProjectList';
+import TaskRoadmapView from './components/task/TaskRoadmapView';
 
 const router = createBrowserRouter([
   {
@@ -39,15 +43,15 @@ const router = createBrowserRouter([
     id: 'root',
     loader: accessTokenLoader,
     children: [
-      { index: true, element : <Home />},
-      { path: '/login', element: <Login />, errorElement : <Error /> },
+      { index: true, element: <Home /> },
+      { path: '/login', element: <Login />, errorElement: <Error /> },
       { path: '/signup', element: <SignUp /> },
       { path: '/mypage', element: <MyPage /> },
       // 사용자 인증
       { path: 'auth', element: <Authentication />, action: authAction },
       { path: 'logout', action: logoutAction },
-            { path: '/', element : <Home />},
-      { path: '/login', element: <Login />, errorElement : <Error /> },
+      { path: '/', element: <Home /> },
+      { path: '/login', element: <Login />, errorElement: <Error /> },
       { path: '/signup', element: <SignUp /> },
       { path: '/mypage', element: <MyPage /> },
       // users //
@@ -66,8 +70,18 @@ const router = createBrowserRouter([
       {
         path: 'projects',
         children: [
-          { index: true, element: <NewProject /> },
-          {  path: ':projectId',
+          {
+            index: true,
+            id: 'projects',
+            element: <ProjectList />,
+            loader: projectListLoader,
+          },
+          { path: 'new', element: <NewProject /> },
+          {
+            id: 'project',
+            path: ':projectId',
+            element: <EditProejct />,
+            loader: projectLoader,
             children: [
               // tasks //
               { index: true },
@@ -114,12 +128,12 @@ const router = createBrowserRouter([
           {
             index: true,
             id: 'personal-noti',
-            element: <PersonalNotification />
+            element: <PersonalNotification />,
           },
           {
-            path:'projects/:projectId',
+            path: 'projects/:projectId',
             id: 'project-noti',
-            element: <ProjectNotification/>,
+            element: <ProjectNotification />,
           },
         ],
       },
@@ -129,7 +143,7 @@ const router = createBrowserRouter([
 
 function App() {
   return <RouterProvider router={router} />;
-  // return <Test></Test>;
+  // return <TaskRoadmapView />;
 }
 
 export default App;
