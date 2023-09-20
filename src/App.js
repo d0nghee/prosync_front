@@ -20,8 +20,13 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from './pages/task/TaskDetail';
 import { action as manipulateTaskAction } from './components/task/TaskForm';
-import Test from './TestComponent';
+import { loader as projectLoader } from './pages/project/EditProject';
 import NewProject from './pages/project/NewProject';
+import EditProejct from './pages/project/EditProject';
+import ProjectList, {
+  loader as projectListLoader,
+} from './pages/project/ProjectList';
+import TaskRoadmapView from './components/task/TaskRoadmapView';
 
 const router = createBrowserRouter([
   {
@@ -50,10 +55,19 @@ const router = createBrowserRouter([
       // projects //
       {
         path: 'projects',
-        element: <NewProject />,
         children: [
           {
+            index: true,
+            id: 'projects',
+            element: <ProjectList />,
+            loader: projectListLoader,
+          },
+          { path: 'new', element: <NewProject /> },
+          {
+            id: 'project',
             path: ':projectId',
+            element: <EditProejct />,
+            loader: projectLoader,
             children: [
               // tasks //
               { index: true },
@@ -97,7 +111,7 @@ const router = createBrowserRouter([
 
 function App() {
   return <RouterProvider router={router} />;
-  // return <Test></Test>;
+  // return <TaskRoadmapView />;
 }
 
 export default App;
