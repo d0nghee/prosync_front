@@ -1,7 +1,10 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { RouterProvider } from 'react-router-dom';
-import HomePage from './pages/Home';
+import SignUp from '../src/pages/signup/SignUp';
+import Login from './pages/signup/Login';
+import Error from '../src/pages/Error';
+import Home from '../src/pages/signup/Home';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import RootLayout from './pages/RootLayout';
+import MyPage from './pages/mypage/MyPage';
 import ErrorPage from './pages/Error';
 import Authentication, {
   action as authAction,
@@ -22,6 +25,10 @@ import TaskDetail, {
 import { action as manipulateTaskAction } from './components/task/TaskForm';
 import { loader as projectLoader } from './pages/project/EditProject';
 import NewProject from './pages/project/NewProject';
+import NotificationRoot from './pages/notification/NotificationRoot';
+import PersonalNotification from './pages/notification/PersonalNotification';
+import ProjectNotification from './pages/notification/ProjectNotification';
+
 import EditProejct from './pages/project/EditProject';
 import ProjectList, {
   loader as projectListLoader,
@@ -36,10 +43,17 @@ const router = createBrowserRouter([
     id: 'root',
     loader: accessTokenLoader,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <Home /> },
+      { path: '/login', element: <Login />, errorElement: <Error /> },
+      { path: '/signup', element: <SignUp /> },
+      { path: '/mypage', element: <MyPage /> },
       // 사용자 인증
       { path: 'auth', element: <Authentication />, action: authAction },
       { path: 'logout', action: logoutAction },
+      { path: '/', element: <Home /> },
+      { path: '/login', element: <Login />, errorElement: <Error /> },
+      { path: '/signup', element: <SignUp /> },
+      { path: '/mypage', element: <MyPage /> },
       // users //
       {
         path: 'user',
@@ -102,6 +116,24 @@ const router = createBrowserRouter([
                 ],
               },
             ],
+          },
+        ],
+      },
+
+      // notification
+      {
+        path: 'notificationList',
+        element: <NotificationRoot />,
+        children: [
+          {
+            index: true,
+            id: 'personal-noti',
+            element: <PersonalNotification />,
+          },
+          {
+            path: 'projects/:projectId',
+            id: 'project-noti',
+            element: <ProjectNotification />,
           },
         ],
       },
