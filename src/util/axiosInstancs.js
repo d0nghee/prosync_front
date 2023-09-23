@@ -1,8 +1,22 @@
 import axios from "axios";
 import { redirect } from "react-router-dom";
 import { setCookie, getCookie } from "./cookies";
+import { useDispatch, useSelector } from "react-redux";
+import { setEventSource, setIsConnected } from "../redux/reducers/eventSlice";
+import { store } from '../redux/store/index'
+import { connectSse, useSSE } from '../util/eventSource/useSse'
 
-const axiosInstance = axios.create({
+// const dispatch = () => {
+//   return useDispatch();
+// }
+
+// const selector = () => {
+//   return useSelector((state)=> state.event);
+// }
+
+
+
+export const axiosInstance = axios.create({
   baseURL: "http://localhost:8080/api/v1",
   headers: {
     "Content-Type": "application/json",
@@ -29,7 +43,82 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   async (response) => {
-    console.log(response);
+    // console.log(response);
+    // console.log(response.request.responseURL)
+    // const url = (response.request.responseURL).substr(28);
+    // console.log(url);
+
+
+    // if (url === "/removeToken") {
+
+    //   store.dispatch(setEventSource(null));
+
+    // } else if (url !== "/send_verification"
+    //   && url !== "/verify_code"
+    //   && url !== "/members"
+    //   && url !== "/idcheck"
+    //   && url !== "/login") {
+
+
+    //   let eventSource = store.getState().eventSource.eventSource;
+
+    //   if (!eventSource) {
+    //     console.log(localStorage.getItem('memberId'))
+    //     eventSource = connectSse(localStorage.getItem('memberId'));
+
+    //   }
+
+
+    //   eventSource.addEventListener("sse", function (event) {
+    //     console.log(event.data);
+
+    //     const data = JSON.parse(event.data);
+
+    //     (async () => {
+    //       // 브라우저 알림
+    //       const showNotification = () => {
+
+    //         const notification = new Notification('코드 봐줘', {
+    //           body: data.content
+    //         });
+
+    //         setTimeout(() => {
+    //           notification.close();
+    //         }, 10 * 1000);
+
+    //         notification.addEventListener('click', () => {
+    //           window.open(data.url, '_blank');
+    //         });
+    //       }
+
+    //       // 브라우저 알림 허용 권한
+    //       let granted = false;
+
+    //       if (Notification.permission === 'granted') {
+    //         granted = true;
+    //       } else if (Notification.permission !== 'denied') {
+    //         let permission = await Notification.requestPermission();
+    //         granted = permission === 'granted';
+    //       }
+
+    //       // 알림 보여주기
+    //       if (granted) {
+    //         showNotification();
+    //       }
+    //     })();
+    //   })
+
+    //   eventSource.addEventListener("error", function (event) {
+    //     if (event.target.readyState === EventSource.CLOSED) {
+    //       console.log("SSE closed");
+    //     } else if (event.target.readyState === EventSource.CONNECTING) {
+    //       console.log("SSE reconnecting");
+    //     } else {
+    //       console.error("SSE error:", event);
+    //     }
+    //   });
+    // }
+
     return response;
   },
   async (error) => {

@@ -18,8 +18,8 @@ const loginSlice = createSlice({
         setLoginFormData : (state, action) => {
             state.loginFormData = action.payload;
         },
-        setLoggedIn : (state, action) => {
-            state.isLoggedIn = action.payload;
+        setIsLoggedIn : (state) => {
+           state.isLoggedIn = !state.isLoggedIn; 
         }
        
     }
@@ -30,7 +30,7 @@ const loginSlice = createSlice({
 export const {
     
     setLoginFormData,
-    setLoggedIn
+    setIsLoggedIn,
 
 } = loginSlice.actions
 

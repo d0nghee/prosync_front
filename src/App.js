@@ -29,8 +29,11 @@ import NotificationSearchBar from './components/notification/NotificationSearchB
 import NotificationList from "./components/notification/NotificationList";
 import ProjectList from './components/notification/ProjectList';
 import ProjectLogPreview from './pages/notification/ProjectLogPreview';
+import { useEffect, useState } from "react";
+import Loading from "./components/common/Loading";
 
 const router = createBrowserRouter([
+
   {
     path: "/",
     element: <RootLayout />,
@@ -130,8 +133,17 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
-  // return <Test></Test>;
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <RouterProvider router={router} />
+  )
 }
 
 export default App;

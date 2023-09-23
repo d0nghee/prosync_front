@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { SideBar, SideMenuDetail, List, ListItem, ListItemButton } from '../../../css/MyPageStyle'
-import { useDispatch, useSelector } from 'react-redux';
+import { SideBar, SideMenuDetail, List, ListItem } from '../../../css/MyPageStyle'
+import { useDispatch } from 'react-redux';
 import { setSelectedComponent } from '../../../redux/reducers/mypageSlice';
+import LeaveButton from './LeaveButton';
 
 
 export default function SideMenu() {
 
     const dispatch = useDispatch();
-    const sidemenu = useSelector(state => state.mypage);
 
     const [isListVisible, setIsListVisible] = useState(false);
     const menuDetailRef = useRef(null);
@@ -44,21 +44,25 @@ export default function SideMenu() {
                     <List>
                         <ListItem>
                             <div onClick={() => handleMenuClick('InfoEdit')}>
-                                <ListItemButton >회원 정보 수정</ListItemButton>
+                               회원 정보 수정
                             </div>
                         </ListItem>
                         <ListItem>
                             <div onClick={() => handleMenuClick('BookMark')}>
-                                <ListItemButton>북마크 리스트</ListItemButton>
+                                북마크 리스트
                             </div>
                         </ListItem>
                         <ListItem>
                             <div onClick={() => handleMenuClick('MyProject')}>
-                                <ListItemButton>내 프로젝트</ListItemButton>
+                                내 프로젝트
                             </div>
                         </ListItem>
                     </List>
                 )}
+            </SideMenuDetail>
+
+            <SideMenuDetail>
+                <LeaveButton onClick={() => handleMenuClick('Leave')} />
             </SideMenuDetail>
 
 

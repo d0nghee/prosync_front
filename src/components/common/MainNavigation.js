@@ -3,13 +3,20 @@ import { NavLink, Form, useRouteLoaderData, Link } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 import { getCookie } from "../../util/cookies";
 import ProfileCard from "./ProfileCard";
+import { useDispatch } from "react-redux";
+import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+
 
 export default function MainNavigation() {
   const isLoggedIn = Boolean(useRouteLoaderData("root"));
+  const dispatch = useDispatch();
 
   const profile = getCookie("profile");
   const name = getCookie("name");
 
+  const handleButtonClick = () => {
+    dispatch(setIsLoggedIn());
+  }
   return (
     <header className={classes.header}>
       <nav>
@@ -41,7 +48,7 @@ export default function MainNavigation() {
             <li>
               <Form action="/logout" method="post">
                 {/* 컴포넌트 */}
-                <button>로그아웃</button>
+                <button onClick={handleButtonClick}>로그아웃</button>
               </Form>
             </li>
           )}

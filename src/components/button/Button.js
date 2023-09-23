@@ -2,7 +2,7 @@ import React from "react";
 
 
 function Button(props) {
-  const { onClick, label, color, backgroundColor, width, height, margin } = props;
+  const { disabled, onClick, label, color, backgroundColor, width, height, margin } = props;
 
   const buttonStyle = {
     width : width || '30%', //'30%',
@@ -17,7 +17,7 @@ function Button(props) {
   }
 
   return (
-   <button onClick={onClick} style={buttonStyle}>
+   <button onClick={onClick} style={buttonStyle} disabled={disabled}>
     {label}
    </button>
   );

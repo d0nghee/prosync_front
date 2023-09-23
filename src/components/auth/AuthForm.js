@@ -7,15 +7,14 @@ import Login from "../../pages/signup/Login";
 export default function AuthForm() {
   const [searchParams] = useSearchParams();
   const isLogin = searchParams.get("mode") === "login";
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+
 
   return (
     <main>
       {!isLogin && (
         <SignUp></SignUp>
       )}
-      <Login></Login>
+      {isLogin && (<Login></Login>)}
     </main>
   );
 }

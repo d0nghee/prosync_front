@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import axiosInstance from "../../util/axios/axiosInstances";
+import axiosInstance from "../../util/axiosInstancs";
 import { getCookie } from "../../util/cookies";
 function Home() {
 
