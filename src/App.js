@@ -27,11 +27,12 @@ import NewProject from "./pages/project/NewProject";
 import NotificationRoot from "./pages/notification/NotificationRoot";
 import PersonalNotification from "./pages/notification/PersonalNotification";
 import ProjectNotification from "./pages/notification/ProjectNotification";
-import Project from './components/notification/Project';
-import NotificationSearchBar from './components/notification/NotificationSearchBar';
+import Project from "./components/notification/Project";
 import NotificationList from "./components/notification/NotificationList";
-import ProjectList from './components/notification/ProjectList';
-import ProjectLogPreview from './pages/notification/ProjectLogPreview';
+import ProjectList from "./components/notification/ProjectList";
+import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
+import ProjectListContainer from "./pages/notification/ProjectListContainer";
+import Footer from "./components/common/Footer";
 
 const router = createBrowserRouter([
   {
@@ -111,7 +112,7 @@ const router = createBrowserRouter([
 
       // notification
       {
-        path: "notificationList",
+        path: "notification",
         element: <NotificationRoot />,
         children: [
           {
@@ -124,14 +125,10 @@ const router = createBrowserRouter([
             id: "project-noti",
             element: <ProjectNotification />,
             children: [
-              {index: true, element: (<ProjectLogPreview/>)},
+              { index: true, element: <ProjectLogPreview /> },
               {
                 path: ":projectId",
-                element: (
-                  <>
-                    <NotificationSearchBar />,<NotificationList />
-                  </>
-                ),
+                element: <ProjectListContainer />,
               },
             ],
           },
@@ -142,8 +139,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
-  // return <Test></Test>;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Footer/>
+    </>
+  );
 }
 
 export default App;
