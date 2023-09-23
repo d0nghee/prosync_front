@@ -79,14 +79,14 @@ const ModalBox = styled.div`
   }
 `;
 
-const Modal = ({ onClose, isReadNotiHandler }) => {
+const Modal = ({ onClose, notiUpdateHandler,isUpdateOrDelete }) => {
   return (
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
-        <h2>해당 알림들을 읽음처리하시겠습니까?</h2>
+        {isUpdateOrDelete==='UPDATE' ? <h2>해당 알림들을 읽음처리하시겠습니까?</h2> : <h2>해당 알림들을 삭제처리하시겠습니까?</h2> }
         <div>
           <button onClick={onClose}>No</button>
-          <button onClick={isReadNotiHandler}>Yes</button>
+          <button onClick={notiUpdateHandler}>Yes</button>
         </div>
       </ModalBox>
     </Overlay>

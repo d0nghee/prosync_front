@@ -1,8 +1,7 @@
-
-import SignUp from '../src/pages/signup/SignUp'
+import SignUp from "../src/pages/signup/SignUp";
 import Login from "./pages/signup/Login";
-import Error from '../src/pages/Error'
-import Home from '../src/pages/signup/Home'
+import Error from "../src/pages/Error";
+import Home from "../src/pages/signup/Home";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
 import MyPage from '../src/pages/mypage/MyPage'
@@ -19,20 +18,24 @@ import NewTask from './pages/task/NewTask';
 import TaskDetail, {
   loader as taskDetailLoader,
   action as deleteTaskAction,
-} from './pages/task/TaskDetail';
-import { action as manipulateTaskAction } from './components/task/TaskForm';
-import NewProject from './pages/project/NewProject';
+} from "./pages/task/TaskDetail";
+import { action as manipulateTaskAction } from "./components/task/TaskForm";
+import NewProject from "./pages/project/NewProject";
 import NotificationRoot from "./pages/notification/NotificationRoot";
 import PersonalNotification from "./pages/notification/PersonalNotification";
-import ProjectNotification from './pages/notification/ProjectNotification';
-
+import ProjectNotification from "./pages/notification/ProjectNotification";
+import Project from './components/notification/Project';
+import NotificationSearchBar from './components/notification/NotificationSearchBar';
+import NotificationList from "./components/notification/NotificationList";
+import ProjectList from './components/notification/ProjectList';
+import ProjectLogPreview from './pages/notification/ProjectLogPreview';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
-    id: 'root',
+    id: "root",
     loader: accessTokenLoader,
     children: [
       { index: true, element: <Home /> },
@@ -51,39 +54,39 @@ const router = createBrowserRouter([
       },
       // projects //
       {
-        path: 'projects',
+        path: "projects",
         children: [
           { index: true, element: <NewProject /> },
           {
-            path: ':projectId',
+            path: ":projectId",
             children: [
               // tasks //
               { index: true },
               {
-                path: 'tasks',
+                path: "tasks",
                 element: <TasksRoot />,
                 children: [
                   { index: true, element: <Tasks />, loader: tasksLoader },
                   {
-                    path: ':taskId',
-                    id: 'task-details',
+                    path: ":taskId",
+                    id: "task-details",
                     loader: taskDetailLoader,
                     children: [
                       {
                         index: true,
                         element: <TaskDetail />,
                         action: deleteTaskAction,
-                        id: 'task-delete',
+                        id: "task-delete",
                       },
                       {
-                        path: 'edit',
+                        path: "edit",
                         element: <EditTask />,
                         action: manipulateTaskAction,
                       },
                     ],
                   },
                   {
-                    path: 'new',
+                    path: "new",
                     element: <NewTask />,
                     action: manipulateTaskAction,
                   },
@@ -96,18 +99,29 @@ const router = createBrowserRouter([
 
       // notification
       {
-        path: 'notificationList',
+        path: "notificationList",
         element: <NotificationRoot />,
         children: [
           {
             index: true,
-            id: 'personal-noti',
-            element: <PersonalNotification />
+            id: "personal-noti",
+            element: <PersonalNotification />,
           },
           {
-            path: 'projects/:projectId',
-            id: 'project-noti',
+            path: "projects",
+            id: "project-noti",
             element: <ProjectNotification />,
+            children: [
+              {index: true, element: (<ProjectLogPreview/>)},
+              {
+                path: ":projectId",
+                element: (
+                  <>
+                    <NotificationSearchBar />,<NotificationList />
+                  </>
+                ),
+              },
+            ],
           },
         ],
       },

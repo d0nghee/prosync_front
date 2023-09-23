@@ -32,9 +32,9 @@ const patchApi = async (url, data) => {
   }
 };
 
-const deleteApi = async (url) => {
+const deleteApi = async (url,data) => {
   try {
-    const res = await axiosInstance.delete(url);
+    const res = await axiosInstance.delete(url,data);
     return res;
   } catch (error) {
     console.error(error);

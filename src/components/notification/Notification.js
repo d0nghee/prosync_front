@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { patchApi } from "../../util/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBellSlash,faBell } from "@fortawesome/free-solid-svg-icons";
 
 const arrayToTimeFormat = (array) => {
   const formattedDate = `${array[0]}-${String(array[1]).padStart(
@@ -62,10 +64,15 @@ const NotificationContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 3rem;
+  height: 3em;
+  width: 94rem;
   margin-bottom: -0.5%;
   cursor: pointer;
   position: relative;
+  border-bottom: 1px solid gray;
+  background-color: ${props => !props.read ? '#FDF5E6':null};
+  font-weight: ${props => !props.read ? '900' : 200};
+  color: ${props => !props.read ? 'black':'gray'};
 
   &:hover {
     background-color: wheat;
@@ -97,20 +104,24 @@ const NotificationContainer = styled.div`
     top: 0;
   }
 
-  & > div:nth-child(4) {
-    position: absolute;
-    left: 30rem;
-    top: 0.7rem;
-    width: 60%;
-    font-weight: 800;
+  & > label {
+    margin-right: 3%;
   }
 
   & > div:nth-child(5) {
     position: absolute;
+    left: 30rem;
+    top: 0.7rem;
+    width: 60%;
+   
+  }
+
+  & > div:nth-child(6) {
+    position: absolute;
     right: 1rem;
     width: 20%;
     top: 0.7rem;
-    font-weight: 800;
+   
   }
 `;
 
@@ -161,7 +172,7 @@ const Notification = ({ notification, onCheckboxChange }) => {
   });
 
   return (
-    <NotificationContainer onClick={handleMoveUrl}>
+    <NotificationContainer onClick={handleMoveUrl} read={notification.read}>
       <input
         type="checkbox"
         id={`checkbox-${notification.notificationTargetId}`}
@@ -172,6 +183,7 @@ const Notification = ({ notification, onCheckboxChange }) => {
         htmlFor={`checkbox-${notification.notificationTargetId}`}
         onClick={labelClickHandler}
       ></label>
+     {notification.read ? <FontAwesomeIcon icon={faBellSlash} /> : <FontAwesomeIcon icon={faBell} />}
       <Code color={color}>{notification.code}</Code>
       <div>{notification.content}</div>
       <div>{arrayToTimeFormat(notification.createdAt)}</div>

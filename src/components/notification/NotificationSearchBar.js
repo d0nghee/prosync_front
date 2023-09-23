@@ -72,7 +72,7 @@ const StyledForm = styled.form`
 `;
 
 const NotificationSearchBar = ({ onConditionChangeHandler }) => {
-  const notiCode = useRef();
+  const code = useRef();
   const startDate = useRef();
   const endDate = useRef();
   const content = useRef();
@@ -87,7 +87,7 @@ const NotificationSearchBar = ({ onConditionChangeHandler }) => {
 
 
     const postSearchCondition = {
-      notiCode: notiCode.current.value,
+      code: code.current.value,
       startDate: startDate.current.value,
       endDate: endDate.current.value,
       content: content.current.value,
@@ -103,7 +103,7 @@ const NotificationSearchBar = ({ onConditionChangeHandler }) => {
     <StyledForm method="post" onSubmit={handleSubmit}>
       <p>
         <div>알림 코드</div>
-        <select name="option" ref={notiCode}>
+        <select name="option" ref={code}>
           <option value="" disabled selected>
             원하시는 알림 정보를 선택하세요.
           </option>

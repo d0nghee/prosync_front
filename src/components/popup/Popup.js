@@ -1,10 +1,9 @@
 import { ModalBackground, ModalContent, ModalTitle, RedButton, BlueButton, ModalButton } from '../../css/popupStyle';
 
 
-
-
 function Popup(props) {
   const { isOpen, message, buttons } = props;
+
 
   const modalStyle = {
     width : '400px'
@@ -14,7 +13,6 @@ function Popup(props) {
     isOpen && (
       <ModalBackground>
         <ModalContent style={modalStyle}>
-
           <ModalTitle>{message}</ModalTitle>
 
           {buttons.map((button, index) => (
