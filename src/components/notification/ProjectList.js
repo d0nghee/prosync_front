@@ -4,9 +4,11 @@ import { useInView } from 'react-intersection-observer';
 import { getApi } from '../../util/api';
 import { useState, useEffect, useCallback } from 'react';
 import  styled  from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const StyledProjectList = styled.div`
-  max-height: 20rem;
+  width: 100%;
+  height: 100%;
   overflow-y: scroll;
   box-shadow: 5px 5px 5px;
   padding-bottom: 2%;
@@ -16,12 +18,21 @@ const StyledProjectList = styled.div`
   }
 `;
 
+
+const NoProject = styled.div`
+  margin-top: 70%;
+  font-size: larger;
+  font-weight: 900;
+  text-align: center;
+`
+
 const ProjectList = () => {
 
   const [ref, inView] = useInView();
   const [projects, setProjects] = useState([]);
   const [page,setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
+  const [selectedProject, setSelectedProject] = useState('');
 
   const projectFetch = useCallback(() => {
     getApi(`/projectlog/admin?page=${page}&size=4`)
@@ -40,10 +51,19 @@ const ProjectList = () => {
     }
   },[inView,page,maxPage,projectFetch]);
 
+  const navigate = useNavigate();
+
+  const projectLogFetchHandler = useCallback((projectId) => {
+
+    navigate("" + projectId);
+  }, []);
+
+ 
+
   return (
-    <StyledProjectList>
-    { projects.length>0 ? projects.map((project)=> {return <Project data={project}/>
-      }) : <div>ADMIN인 프로젝트가 존재하지 않습니다.</div>
+    <StyledProjectList onClick={(e) => e.stopPropagation()}>
+    { projects.length>0 ? projects.map((project)=> {return <Project key={project.projectId} data={project} onClick={() => {setSelectedProject(project.projectId);  projectLogFetchHandler(project.projectId)}} isSelected={selectedProject === project.projectId}/>
+      }) : <NoProject>ADMIN인 프로젝트가 존재하지 않습니다.</NoProject>
     }
     <div ref={ref}></div>
     </StyledProjectList>

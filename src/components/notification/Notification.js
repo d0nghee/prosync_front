@@ -1,21 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { patchApi } from "../../util/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBellSlash,faBell } from "@fortawesome/free-solid-svg-icons";
-
-const arrayToTimeFormat = (array) => {
-  const formattedDate = `${array[0]}-${String(array[1]).padStart(
-    2,
-    "0"
-  )}-${String(array[2]).padStart(2, "0")} ${String(array[3]).padStart(
-    2,
-    "0"
-  )}:${String(array[4]).padStart(2, "0")}:${String(array[5]).padStart(2, "0")}`;
-  return formattedDate;
-};
+import { faBellSlash, faBell } from "@fortawesome/free-solid-svg-icons";
 
 const selectColor = (code) => {
   const array = [
@@ -64,20 +53,16 @@ const NotificationContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 3em;
-  width: 94rem;
+  height: 3rem;
+  width: 100%;
   margin-bottom: -0.5%;
   cursor: pointer;
-  position: relative;
   border-bottom: 1px solid gray;
-  background-color: ${props => !props.read ? '#FDF5E6':null};
-  font-weight: ${props => !props.read ? '900' : 200};
-  color: ${props => !props.read ? 'black':'gray'};
-
-  &:hover {
-    background-color: wheat;
-    box-shadow: 5px 5px 5px;
-  }
+  background-color: ${(props) => (!props.read ? "#e8efed" : null)};
+  font-weight: ${(props) => (!props.read ? "900" : 200)};
+  color: ${(props) => (!props.read ? "black" : "gray")};
+  text-align: center;
+  position: relative;
 
   & input[type="checkbox"] {
     display: none;
@@ -85,21 +70,19 @@ const NotificationContainer = styled.div`
 
   & input[type="checkbox"] + label {
     display: inline-block;
-    width: 30px;
-    height: 30px;
+    width: 2%;
+    height: 60%;
     border: 3px solid #707070;
-    position: relative;
     cursor: pointer;
   }
 
   & input[type="checkbox"]:checked + label::after {
     content: "✔";
     color: blue;
-    font-size: 25px;
-    width: 30px;
-    height: 30px;
+    font-size: 23px;
+    width: 2%;
+    height: 60%;
     text-align: center;
-    position: absolute;
     left: 0;
     top: 0;
   }
@@ -109,20 +92,42 @@ const NotificationContainer = styled.div`
   }
 
   & > div:nth-child(5) {
-    position: absolute;
-    left: 30rem;
-    top: 0.7rem;
+    position: relative;
     width: 60%;
-   
+    text-align: start;
+    height: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  & > div:nth-child(6) {
-    position: absolute;
-    right: 1rem;
-    width: 20%;
-    top: 0.7rem;
-   
+  & > div:nth-child(5):hover {
+    font-weight: 900;
+    text-decoration: underline;
+    color: black;
   }
+
+  & > div:nth-child(7) {
+    width: 20%;
+    height: 60%;
+  }
+`;
+
+const Tooltip = styled.div`
+  display: ${(props) => (props.show ? "block" : "none")};
+  position: absolute;
+  top: -130%;
+  left: 40%;
+  background-color: #f9f9f9;
+  border: 1px solid gray;
+  padding: 10px;
+  z-index: 1000;
+  color: black;
+  font-weight: 900;
+  max-width: 70rem;
+  white-space: normal;
+  text-align: start;
+
 `;
 
 const Code = styled.div`
@@ -131,16 +136,43 @@ const Code = styled.div`
   color: white;
   font-weight: 800;
   border-radius: 10px;
-  width: 13%;
+  width: 18%;
   text-align: center;
-  position: absolute;
-  left: 10rem;
   height: 80%;
+  margin-left: 5%;
+  margin-right: 11%;
 `;
 
-const Notification = ({ notification, onCheckboxChange }) => {
+const Notification = ({ checked, notification, onCheckboxChange }) => {
   const navigate = useNavigate();
   const [isChecked, setIsChecked] = useState(false);
+  const textRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  
+
+  useEffect(() => {
+    setIsChecked(checked);
+  }, [checked]);
+
+  useEffect(() => {
+    const element = textRef.current;
+    if (element) {
+      setIsOverflowing(element.offsetWidth < element.scrollWidth);
+    }
+  }, [notification.content]);
+
+  const handleMouseEnter = () => {
+    if (isOverflowing) {
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isOverflowing) {
+      setShowTooltip(false);
+    }
+  };
 
   const checkBoxHandler = (e) => {
     e.stopPropagation();
@@ -183,10 +215,22 @@ const Notification = ({ notification, onCheckboxChange }) => {
         htmlFor={`checkbox-${notification.notificationTargetId}`}
         onClick={labelClickHandler}
       ></label>
-     {notification.read ? <FontAwesomeIcon icon={faBellSlash} /> : <FontAwesomeIcon icon={faBell} />}
+      {notification.read ? (
+        <FontAwesomeIcon icon={faBellSlash} />
+      ) : (
+        <FontAwesomeIcon icon={faBell} />
+      )}
       <Code color={color}>{notification.code}</Code>
-      <div>{notification.content}</div>
-      <div>{arrayToTimeFormat(notification.createdAt)}</div>
+      <div
+        ref={textRef}
+        data-content={notification.content}
+        onMouseEnter={isOverflowing ? handleMouseEnter : null}
+        onMouseLeave={isOverflowing ? handleMouseLeave : null}
+      >
+        {notification.content}
+      </div>
+      <Tooltip show={showTooltip}>{notification.content}</Tooltip>
+      <div>{notification.createdAt}</div>
     </NotificationContainer>
   );
 };
