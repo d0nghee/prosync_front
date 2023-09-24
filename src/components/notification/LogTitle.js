@@ -10,7 +10,7 @@ const TitleContainer = styled.div`
   position: relative;
   border-bottom: 1px solid black;
   color: blueviolet;
-  box-shadow: 5px 5px 5px black;
+  box-shadow: 2px 2px 2px black;
   font-weight: 900;
   border: #707070;
   font-size: larger;
@@ -21,21 +21,21 @@ const TitleContainer = styled.div`
   & > div:nth-child(1) {
     position: absolute;
     left: -3%;
-    top: 30%;
+    top: 40%;
     width: 20%;
   }
 
   & > div:nth-child(2) {
     position: absolute;
-    left: 30%;
-    top: 30%;
+    left: 35%;
+    top: 40%;
     width: 20%;
   }
 
   & > div:nth-child(3) {
     position: absolute;
     left: 77%;
-    top: 30%;
+    top: 40%;
     width: 20%;
   }
 

@@ -59,9 +59,9 @@ const StyledForm = styled.form`
 `;
 
 const Container = styled.div`
-  width: 30%;
+  width: ${props => props.isPersonal ? '30%' : '45%'};
   position: absolute;
-  left: 70%;
+  left: ${props => props.isPersonal ? '70%' : '55%'};
   height: 130%;
   border-radius: 20px;
   background-color: #e6ebf6;
@@ -153,7 +153,7 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
     }
 
     navigate(`${location.pathname}?${queryParams}`);
-  }, [content]);
+  }, [location,content]);
 
   const handleFormSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -191,7 +191,7 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
     navigate(`${location.pathname}?${queryParams.toString()}`);
     setIsFormOpen(false);
     setContent('');
-  }, [searchCondition]);
+  }, [location,searchCondition]);
 
   const onFormOpenChangeHandler = () => {
     setIsFormOpen((prevState) => !prevState);
@@ -220,6 +220,7 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
             <FontAwesomeIcon
               icon={faCaretUp}
               onClick={onFormOpenChangeHandler}
+              onMouseDown={(e)=>{e.stopPropagation()}}
             />
           ) : (
             <FontAwesomeIcon

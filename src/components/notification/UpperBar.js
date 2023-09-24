@@ -18,6 +18,7 @@ const Counter = styled.div`
   width: 40%;
   align-items: center;
   position: relative;
+  font-size: ${props => !props.isPersonal ? 'x-large':null };
 
   & > div:nth-child(1) {
     width: 30%;
@@ -110,9 +111,15 @@ const UpperBar = ({
             <div>검색 결과 : {count}</div>
           </Counter>
         )
-      ) : (
-        <Counter>{count} Logs</Counter>
-      )}
+      ) : ( !queryParams.get('code') &&
+      !queryParams.get('startDate')  &&
+      !queryParams.get('endDate')  &&
+      !queryParams.get('content')  &&
+      !queryParams.get('size')) ? (
+        <Counter>
+          <div>전체 로그</div>{count} Logs</Counter>
+      ) : <Counter>
+      <div>검색 결과</div>{count} Logs</Counter>}
       <SearchBar
         isPersonal={isPersonal}
         codeInformation={codeInformation}

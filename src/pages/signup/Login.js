@@ -7,7 +7,7 @@ import LoginForm from "./components/loginForm";
 import { LoginButtonContainer } from "../../css/LoginStyle";
 import { setIsLoggedIn, setLoginFormData } from "../../redux/reducers/loginSlice";
 import axiosInstance from "../../util/axiosInstancs";
-import { setCookie } from "../../util/cookies";
+import { getCookie, setCookie } from "../../util/cookies";
 import { getApi } from "../../util/api";
 import axios from "axios";
 import Popup from "../../components/popup/Popup";
@@ -68,75 +68,18 @@ export default function Login() {
 
         if (access && refresh) {
           setCookie("accessToken", access, { path: "/" });
-          setCookie("refreshToken", refresh, { path: "/" });
+          setCookie("refreshToken", refresh, { path: "/", maxAge: 60*60*24*30 });
         }
 
-
-        let eventSource = store.getState().eventSource.eventSource;
-
-        if (!eventSource) {
-          console.log(localStorage.getItem('memberId'))
-          eventSource = connectSse(localStorage.getItem('memberId'));
-        }
-
-
-        eventSource.addEventListener("sse", function (event) {
-          console.log(event.data);
-
-          const data = JSON.parse(event.data);
-
-          (async () => {
-            // 브라우저 알림
-            const showNotification = () => {
-
-              const notification = new Notification('코드 봐줘', {
-                body: data.content
-              });
-
-              setTimeout(() => {
-                notification.close();
-              }, 10 * 1000);
-
-              notification.addEventListener('click', () => {
-                window.open(data.url, '_blank');
-              });
-            }
-
-            // 브라우저 알림 허용 권한
-            let granted = false;
-
-            if (Notification.permission === 'granted') {
-              granted = true;
-            } else if (Notification.permission !== 'denied') {
-              let permission = await Notification.requestPermission();
-              granted = permission === 'granted';
-            }
-
-            // 알림 보여주기
-            if (granted) {
-              showNotification();
-            }
-          })();
-        })
-
-        eventSource.addEventListener("error", function (event) {
-          if (event.target.readyState === EventSource.CLOSED) {
-            console.log("SSE closed");
-          } else if (event.target.readyState === EventSource.CONNECTING) {
-            console.log("SSE reconnecting");
-          } else {
-            console.error("SSE error:", event);
-          }
-        });
 
         return response.status;
 
       }).then(() => {
         getApi("/members")
           .then(async (res) => {
-            localStorage.setItem('memberId', JSON.stringify(res.data.memberId));
-            setCookie("profile", res.data.profileImage, { path: "/" });
-            setCookie("name", res.data.name, { path: "/" });
+            setCookie("memberId", res.data.memberId, {path: "/", maxAge: 60*60*24*30})
+            setCookie("profile", res.data.profileImage, { path: "/", maxAge: 60*60*24*30 });
+            setCookie("name", res.data.name, { path: "/", maxAge: 60*60*24*30 });
             navi("/");
             dispatch(setIsLoggedIn(true));
           })
@@ -161,7 +104,7 @@ export default function Login() {
       )
       .catch(() => {
         dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage('잘 못된 정보를 입력하셨습니다.'));
+        dispatch(setModalMessage('잘못된 정보를 입력하셨습니다.'));
         dispatch(setModalButtons([
           {
             label: "확인", onClick: () => {

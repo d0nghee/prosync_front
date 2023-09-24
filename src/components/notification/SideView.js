@@ -3,12 +3,13 @@ import ProjectList from "./ProjectList";
 import { styled } from "styled-components";
 
 const Container = styled.div`
-  margin-left: 12%;
-  width: 20%;
+  margin-left: 13%;
+  width: 25%;
   display: flex;
   flex-direction: column;
-  height: 40rem;
+  height: 50rem;
   max-height: 100%;
+  min-height: 20rem;
 `;
 
 const Title = styled.div`

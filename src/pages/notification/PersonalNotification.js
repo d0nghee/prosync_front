@@ -123,7 +123,7 @@ const PersonalNotification = () => {
     const getNotiList = async () => {
       setIsLoading(true);
 
-      console.log("useEffect에서 데이터 요청함");
+      console.log("Notification 정보를 위해 useEffect에서 데이터 요청함");
       const response = await getApi(`notificationList?${queryParams.toString()}`);
       console.log(response);
       console.log(response.status);
@@ -185,6 +185,7 @@ const PersonalNotification = () => {
           <Pagination
             pageInfo={notificationPageInfo}
             pageCount={5}
+            isPersonal={true}
           />
         </>
       )}

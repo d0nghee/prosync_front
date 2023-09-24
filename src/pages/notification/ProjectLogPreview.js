@@ -10,7 +10,8 @@ const StylePreview = styled.div`
     display : flex;
     align-items: center;
     justify-content: center;
-    margin-left: 5%;
+    margin-left: 2%;
+    margin-right: 1%;
 `;
 
 const ProjectLogPreview = () => {

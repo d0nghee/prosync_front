@@ -7,6 +7,7 @@ export default function RootLayout() {
   const token = useLoaderData();
   const submit = useSubmit();
 
+  
   useEffect(() => {
     if (!token) {
       return;

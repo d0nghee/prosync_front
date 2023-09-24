@@ -39,8 +39,8 @@ export default function EditMember() {
       .then(() => {
         getApi("/members")
           .then(async (res) => {
-            setCookie("profile", res.data.profileImage, { path: "/" });
-            setCookie("name", res.data.name, { path: "/" });
+            setCookie("profile", res.data.profileImage, { path: "/", maxAge: 60*60*24*30 });
+            setCookie("name", res.data.name, { path: "/",maxAge: 60*60*24*30 });
             dispatch(setIsConfirmModalOpen(true));
             dispatch(setModalMessage('SUCCESS'));
             dispatch(setModalButtons([

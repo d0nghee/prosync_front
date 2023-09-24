@@ -15,7 +15,7 @@ const ProjectNotification = () => {
   return (
     <ProjectNotificationContainer>
       <SideView/>
-      {/* <Outlet /> */}
+      <Outlet />
     </ProjectNotificationContainer>
   );
 };

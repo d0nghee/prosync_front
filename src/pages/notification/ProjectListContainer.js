@@ -1,10 +1,11 @@
-import { React, useState, useEffect, useCallback } from "react";
+import { React, useState, useEffect} from "react";
 import { useParams, json } from "react-router-dom";
 import styled from "styled-components";
-import SearchBar from "../../components/notification/SearchBar";
 import Pagination from "./../../components/notification/Pagination";
 import { getApi } from "../../util/api";
-import ProjectLogList from './../../components/notification/ProjectLogList';
+import ProjectLogList from "./../../components/notification/ProjectLogList";
+import UpperBar from "./../../components/notification/UpperBar";
+import { useLocation } from "react-router-dom";
 
 const codeInformation = [
   {
@@ -89,22 +90,13 @@ const Container = styled.div`
   font-weight: 900;
   display: flex;
   flex-direction: column;
-  margin-left: 5%;
+  margin-left: 2%;
   padding: 0%;
-  margin-right: 0%;
+  margin-right: 1%;
 `;
 
 const ProjectListContainer = () => {
   const { projectId } = useParams();
-  const [searchCondition, setSearchCondition] = useState({
-    code: "",
-    startDate: "",
-    endDate: "",
-    content: "",
-    size: "",
-    page: "",
-  });
-
   const [logList, setLogList] = useState([]);
   const [logPageInfo, setLogPageInfo] = useState({
     page: "",
@@ -113,6 +105,8 @@ const ProjectListContainer = () => {
     totalPages: "",
   });
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -120,9 +114,9 @@ const ProjectListContainer = () => {
     const getLogList = async () => {
       setIsLoading(true);
 
-      console.log("useEffect에서 데이터 요청함");
+      console.log("Log 정보를 위해 useEffect에서 데이터 요청함");
       const response = await getApi(
-        `/projectlog/${projectId}?logCode=${searchCondition.code}&startDate=${searchCondition.startDate}&endDate=${searchCondition.endDate}&content=${searchCondition.content}&size=${searchCondition.size}&page=${searchCondition.page}`
+        `/projectlog/${projectId}?${queryParams.toString()}`
       );
       console.log(response);
       console.log(response.status);
@@ -142,33 +136,15 @@ const ProjectListContainer = () => {
     };
 
     getLogList();
-  }, [searchCondition, projectId]);
-
-  const onConditionChangeHandler = useCallback((postSearchCondition) => {
-    setSearchCondition(postSearchCondition);
-  }, []);
+  }, [location, projectId]);
 
   return (
     <Container>
-      <SearchBar
-        onConditionChangeHandler={onConditionChangeHandler}
-        isPersonal={false}
-        codeInformation={codeInformation}
-      ></SearchBar>
+      <UpperBar isPersonal={false} codeInformation={codeInformation} count={logPageInfo.totalElements} />
       {!isLoading && (
         <>
-          {
-            <ProjectLogList
-              logList={logList}
-            ></ProjectLogList>
-          }
-          <Pagination
-            pageInfo={logPageInfo}
-            pageCount={5}
-            searchCondition={searchCondition}
-            onConditionChangeHandler={onConditionChangeHandler}
-            isPersonal={false}
-          />
+          {<ProjectLogList logList={logList} />}
+          <Pagination pageInfo={logPageInfo} pageCount={5} isPersonal={false} />
         </>
       )}
       {isLoading && (

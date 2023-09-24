@@ -10,8 +10,9 @@ const StyledProjectList = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: scroll;
-  box-shadow: 5px 5px 5px;
   padding-bottom: 2%;
+  border: 2px solid gray;
+  border-radius: 10px;
 
   & > *:not(:nth-last-child(1)):not(:nth-last-child(2)) {
     margin-bottom: 1rem;

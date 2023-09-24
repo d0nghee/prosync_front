@@ -1,8 +1,6 @@
-import {React, useCallback} from "react";
+import { React, useCallback, useRef, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
-
-
 
 const selectColor = (code) => {
   const array = [
@@ -60,29 +58,53 @@ const LogContainer = styled.div`
   cursor: pointer;
   position: relative;
   border-bottom: 1px solid gray;
-  background-color: ${(props) => (!props.read ? "#FDF5E6" : null)};
-  font-weight: ${(props) => (!props.read ? "900" : 200)};
-  color: ${(props) => (!props.read ? "black" : "gray")};
+  font-weight: 900;
+  color: black;
 
   &:hover {
-    background-color: wheat;
-    box-shadow: 5px 5px 5px;
+    background-color: #f3f3f3;
   }
-
 
   & > div:nth-child(2) {
     position: absolute;
     left: 30%;
     top: 20%;
-    width: 60%;
+    width: 40%;
+    text-align: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  & > div:nth-child(3) {
+  & > div:nth-child(2):hover {
+    font-weight: 900;
+    text-decoration: underline;
+  }
+
+  & > div:nth-child(4) {
     position: absolute;
     left: 80%;
     top: 20%;
     width: 20%;
   }
+
+  
+`;
+
+const Tooltip = styled.div`
+  display: ${(props) => (props.show ? "block" : "none")};
+  position: absolute;
+  top: -130%;
+  left: 40%;
+  background-color: #f9f9f9;
+  border: 1px solid gray;
+  padding: 10px;
+  z-index: 1000;
+  color: black;
+  font-weight: 900;
+  max-width: 70rem;
+  white-space: normal;
+  text-align: start;
 
 `;
 
@@ -100,11 +122,32 @@ const Code = styled.div`
   padding-top: 1%;
 `;
 
-
 const Log = ({ log }) => {
   const { content, code, createdAt, url } = log;
   const color = selectColor(code);
   const navigate = useNavigate();
+  const textRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(() => {
+    const element = textRef.current;
+    if (element) {
+      setIsOverflowing(element.offsetWidth < element.scrollWidth);
+    }
+  }, [content]);
+
+  const handleMouseEnter = () => {
+    if (isOverflowing) {
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isOverflowing) {
+      setShowTooltip(false);
+    }
+  };
 
   const handleMoveUrl = useCallback(() => {
     navigate(url);
@@ -113,7 +156,15 @@ const Log = ({ log }) => {
   return (
     <LogContainer onClick={handleMoveUrl}>
       <Code color={color}>{code}</Code>
-      <div>{content}</div>
+      <div
+        ref={textRef}
+        data-content={content}
+        onMouseEnter={isOverflowing ? handleMouseEnter : null}
+        onMouseLeave={isOverflowing ? handleMouseLeave : null}
+      >
+        {content}
+      </div>
+      <Tooltip show={showTooltip}>{content}</Tooltip>
       <div>{createdAt}</div>
     </LogContainer>
   );
