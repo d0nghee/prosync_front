@@ -16,11 +16,12 @@ const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: white;
 `;
 
 const ProfileImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  disply: inline-block;
+  display: inline-block;
 `;
