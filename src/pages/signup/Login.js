@@ -80,6 +80,7 @@ export default function Login() {
             setCookie("memberId", res.data.memberId, {path: "/", maxAge: 60*60*24*30})
             setCookie("profile", res.data.profileImage, { path: "/", maxAge: 60*60*24*30 });
             setCookie("name", res.data.name, { path: "/", maxAge: 60*60*24*30 });
+            setCookie("email", res.data.email, { path: "/", maxAge: 60*60*24*30 });
             navi("/");
             dispatch(setIsLoggedIn(true));
           })
