@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { Outlet, useLoaderData, useSubmit } from "react-router-dom";
 import MainNavigation from "../components/common/MainNavigation";
+import Footer from "../components/common/Footer";
 
 export default function RootLayout() {
   const token = useLoaderData();
@@ -24,6 +25,7 @@ export default function RootLayout() {
       <main>
         <Outlet />
       </main>
-    </>
+      <Footer/>
+      </>
   );
 }

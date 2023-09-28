@@ -209,7 +209,8 @@ const Notification = ({ checked, notification, onCheckboxChange }) => {
         type="checkbox"
         id={`checkbox-${notification.notificationTargetId}`}
         checked={isChecked}
-        onClick={checkBoxHandler}
+        onChange={checkBoxHandler}
+        onClick={(e) => e.stopPropagation()}
       />
       <label
         htmlFor={`checkbox-${notification.notificationTargetId}`}

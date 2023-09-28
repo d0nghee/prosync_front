@@ -19,7 +19,10 @@ const Direction = styled.div`
   }
 `;
 
-const SidebarContainer = styled.div`
+const SidebarContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+  !["isOpen"].includes(prop)
+})`
   width: 12%;
   transform: ${(props) => (props.isOpen ? 'translateX(0%)' : 'translateX(-150%)')};
   transition: transform 0.5s ease-in-out;
@@ -37,8 +40,9 @@ const List = styled.ul.attrs({
   className: "list-unstyled",
 })``;
 
-const ListItem = styled.li.attrs({
-  className: "my-3",
+const ListItem = styled.li.withConfig({
+  shouldForwardProp: (prop) =>
+  !["isMenuItemHovered"].includes(prop)
 })`
   display: flex;
   align-items: center;
@@ -108,7 +112,7 @@ const MenuDivider = styled.div`
 `;
 
 //TODO: 페이지 따라 메뉴 내용 바꾸기
-function SideBar({}) {
+function SideBar({trigger}) {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -140,7 +144,7 @@ function SideBar({}) {
           { message: error.response.data.resultCode }
         );
       });
-  },[isSidebarOpen,location,notificationCount]);
+  },[isSidebarOpen,location,trigger]);
 
   useEffect(() => {
     const hideContextMenu = (e) => {

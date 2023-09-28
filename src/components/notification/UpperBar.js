@@ -3,13 +3,17 @@ import { styled } from "styled-components";
 import SearchBar from "./SearchBar";
 import { useLocation } from 'react-router-dom';
 
-const Container = styled.div`
+const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+  !["isPersonal"].includes(prop)
+})`
   display: flex;
   flex-direction: row;
   width: 100%;
   align-items: center;
   justify-content: space-between;
   position: relative;
+  margin-bottom: ${props => !props.isPersonal ? '1.5%':null };
 `;
 
 const Counter = styled.div`
@@ -45,18 +49,21 @@ const Counter = styled.div`
   }
 `;
 
-const Tooltip = styled.div`
+const Tooltip = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["show"].includes(prop)
+})`
   display: ${(props) => (props.show ? "block" : "none")};
   position: absolute;
   background-color: #f9f9f9;
-  top: -120%;
+  top: -100%;
   left: 35%;
-  padding: 10px;
   z-index: 1000;
   color: black;
   font-weight: 900;
   white-space: normal;
   text-align: start;
+  font-size: large;
 `;
 
 
@@ -67,7 +74,7 @@ const UpperBar = ({
   codeInformation,
   count,
   notReadCount,
-  AllRead,
+  AllRead
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const location = useLocation();
@@ -83,7 +90,7 @@ const UpperBar = ({
   };
 
   return (
-    <Container>
+    <Container isPersonal={isPersonal}>
       {isPersonal ? (
         !queryParams.get('code') &&
         !queryParams.get('startDate')  &&

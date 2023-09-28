@@ -86,7 +86,7 @@ const codeInformation = [
   },
 ];
 
-const PersonalNotification = () => {
+const PersonalNotification = ({handleTrigger}) => {
   const [notificationPageList, setNotificationPageList] = useState([]);
   const [notificationPageInfo, setNotificationPageInfo] = useState({
     page: "",
@@ -152,6 +152,7 @@ const PersonalNotification = () => {
         .then((response) => {
           if (response && response.status === 200) {
             setNotReadCount(response.data);
+            handleTrigger();
           }
         })
         .catch((error) => {
@@ -176,7 +177,8 @@ const PersonalNotification = () => {
         codeInformation={codeInformation} 
         notReadCount={notReadCount} 
         AllRead={AllRead}
-        count={notificationPageInfo.totalElements}/>
+        count={notificationPageInfo.totalElements}
+        handleTrigger={handleTrigger}/>
       {!isLoading && (
         <>
           <NotificationList

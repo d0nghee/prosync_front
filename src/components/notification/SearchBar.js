@@ -4,10 +4,12 @@ import {
   faMagnifyingGlass,
   faCaretUp,
   faCaretDown,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Button from "./../button/Button";
 
 const checkDateValidation = (startDate, endDate) => {
   console.log(startDate);
@@ -31,37 +33,136 @@ const checkDateValidation = (startDate, endDate) => {
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  background-color: white;
   justify-content: space-around;
-  background-color: gray;
+  align-items: center;
   border-radius: 10px;
-  border: 3px solid black;
+  box-shadow: 0px 0px 0.5px 0.5px gray;
   width: 100%;
   height: 20rem;
   position: absolute;
-  left: 0%;
-  top: 120%;
+  left: 0.5%;
+  top:  120%; 
   z-index: 1000;
-  text-align: center;
   padding: 1.5%;
+  font-size: medium;
+  font-weight: 600;
+  color: black;
+
 
   & > div {
     display: flex;
     flex-direction: row;
     width: 100%;
     height: 15%;
-    border: 1px solid black;
   }
 
-  & > div > div {
-    width: 25%;
+  & > .code {
+    & > div {
+      width: 20%;
+      padding-top: 1.5%;
+      padding-left: 3%;
+    }
+
+    & > select {
+      width: 80%;
+      border-radius: 10px;
+      border: 0.05px solid gray;
+      outline: none;
+    }
+
+    & > select:focus {
+      border: 0.05px solid rgb(127, 185, 242);
+    }
+  }
+
+  & > .period {
+    & > div {
+      width: 20%;
+      padding-top: 1.5%;
+      padding-left: 3%;
+    }
+
+    & > .period-container {
+      width: 80%;
+      display: flex;
+      flex-direction: row;
+      padding: 0%;
+      justify-content: space-between;
+      align-items: center;
+
+      & > input {
+        height: 100%;
+        width: 45%;
+        border-radius: 10px;
+        border: 0.05px solid gray;
+      }
+    }
+  }
+
+  & > .content {
+    & > div {
+      width: 20%;
+      padding-top: 1.5%;
+      padding-left: 3%;
+    }
+
+    & > input {
+      width: 80%;
+      border-radius: 10px;
+      border: 0.05px solid gray;
+      outline: none;
+      caret-color: rgb(127, 185, 242);
+      padding-left: 2%;
+    }
+
+    & > input:focus {
+      border: 0.05px solid rgb(127, 185, 242);
+    }
+  }
+
+  & > .size {
+    & > div {
+      width: 20%;
+      padding-top: 1.5%;
+      padding-left: 3%;
+    }
+
+    & > input {
+      width: 80%;
+      border-radius: 10px;
+      border: 0.05px solid gray;
+      outline: none;
+      caret-color: rgb(127, 185, 242);
+      padding-left: 2%;
+    }
+
+    & > input:focus {
+      border: 0.05px solid rgb(127, 185, 242);
+    }
+  }
+
+  & > .buttons {
+    width: 10%;
+
+    & > button {
+      width: 100%;
+      border-radius: 10px;
+      border: 0px;
+      color: white;
+      font-weight: 900;
+      background-color: rgb(146,146,148);
+      cursor: pointer;
+    }
   }
 `;
 
-const Container = styled.div`
-  width: ${props => props.isPersonal ? '30%' : '45%'};
+const Container = styled.div.attrs(props => ({
+  isPersonal: props.isPernal
+}))`
+  width: ${(props) => (props.isPersonal ? "45%" : "55%")};
   position: absolute;
-  left: ${props => props.isPersonal ? '70%' : '55%'};
+  left: ${(props) => (props.isPersonal ? "55%" : "45%")};
   height: 130%;
   border-radius: 20px;
   background-color: #e6ebf6;
@@ -111,20 +212,19 @@ const DetailButton = styled.div`
 `;
 
 const SearchBar = ({ isPersonal, codeInformation }) => {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [searchCondition, setSearchCondition] = useState({
-    code: '',
-    startDate: '',
-    endDate: '',
-    formContent: '',
-    size: '',
+    code: "",
+    startDate: "",
+    endDate: "",
+    formContent: "",
+    size: "",
   });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
- 
   useEffect(() => {
     const hideFormMenu = (e) => {
       if (isFormOpen) {
@@ -139,72 +239,74 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
     };
   }, [isFormOpen]);
 
- 
+  const handleContentSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-  const handleContentSubmit = useCallback(async (e) => {
-    e.preventDefault();
+      const queryParams = new URLSearchParams();
+      console.log("content");
+      console.log(content);
 
-    const queryParams = new URLSearchParams();
-    console.log('content')
-    console.log(content);
+      if (content) {
+        queryParams.set("content", content);
+      }
 
-    if (content) {
-      queryParams.set("content", content);
-    }
+      navigate(`${location.pathname}?${queryParams}`);
+    },
+    [location, content]
+  );
 
-    navigate(`${location.pathname}?${queryParams}`);
-  }, [location,content]);
+  const handleFormSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-  const handleFormSubmit = useCallback(async (e) => {
-    e.preventDefault();
+      const queryParams = new URLSearchParams();
 
-    const queryParams = new URLSearchParams();
+      if (
+        !checkDateValidation(searchCondition.startDate, searchCondition.endDate)
+      ) {
+        return;
+      }
 
-    
+      if (searchCondition.code) {
+        queryParams.set("code", searchCondition.code);
+      }
 
-    if (!checkDateValidation(searchCondition.startDate, searchCondition.endDate)) {
-      return;
-    }
+      if (searchCondition.startDate) {
+        queryParams.set("startDate", searchCondition.startDate);
+      }
 
-    if (searchCondition.code) {
-      queryParams.set("code", searchCondition.code);
-    }
+      if (searchCondition.endDate) {
+        queryParams.set("endDate", searchCondition.endDate);
+      }
 
-    if (searchCondition.startDate) {
-      queryParams.set("startDate", searchCondition.startDate);
-    }
+      if (searchCondition.formContent) {
+        queryParams.set("content", searchCondition.formContent);
+      }
 
-    if (searchCondition.endDate) {
-      queryParams.set("endDate", searchCondition.endDate);
-    }
+      if (searchCondition.size) {
+        queryParams.set("size", searchCondition.size);
+      }
 
-    if (searchCondition.formContent) {
-      queryParams.set("content", searchCondition.formContent);
-    }
-
-    if (searchCondition.size) {
-      queryParams.set("size", searchCondition.size);
-    }
-
-   
-
-    navigate(`${location.pathname}?${queryParams.toString()}`);
-    setIsFormOpen(false);
-    setContent('');
-  }, [location,searchCondition]);
+      navigate(`${location.pathname}?${queryParams.toString()}`);
+      setIsFormOpen(false);
+      setContent("");
+    },
+    [location, searchCondition]
+  );
 
   const onFormOpenChangeHandler = () => {
     setIsFormOpen((prevState) => !prevState);
   };
 
   return (
-    <Container>
+    <Container isPersonal={isPersonal}>
       <BarWrap>
         <Bar>
           <input
             type="text"
             placeholder="내용 검색"
-            value={content}
+            defaultValue={content}
             onChange={(e) => {
               setContent(e.target.value);
             }}
@@ -220,7 +322,9 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
             <FontAwesomeIcon
               icon={faCaretUp}
               onClick={onFormOpenChangeHandler}
-              onMouseDown={(e)=>{e.stopPropagation()}}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+              }}
             />
           ) : (
             <FontAwesomeIcon
@@ -237,9 +341,15 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
           isPersonal={isPersonal}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          <div>
+          <div className="code">
             <div>{isPersonal ? "알림 코드" : "로그 코드"}</div>
-            <select name="option" value={searchCondition.code} onChange={(e) => setSearchCondition({...searchCondition, code: e.target.value})}>
+            <select
+              name="option"
+              value={searchCondition.code}
+              onChange={(e) =>
+                setSearchCondition({ ...searchCondition, code: e.target.value })
+              }
+            >
               <option value="" disabled selected>
                 {isPersonal
                   ? "원하시는 알림 정보를 선택하세요."
@@ -255,22 +365,58 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
               })}
             </select>
           </div>
-          <div>
+          <div className="period">
             <div>기간</div>
-            <input type="date"  value={searchCondition.startDate} onChange={(e) => setSearchCondition({...searchCondition, startDate: e.target.value})}/>
-            <input type="date" value={searchCondition.endDate} onChange={(e) => setSearchCondition({...searchCondition, endDate: e.target.value})} />
+            <div className="period-container">
+              <input
+                type="date"
+                value={searchCondition.startDate}
+                onChange={(e) =>
+                  setSearchCondition({
+                    ...searchCondition,
+                    startDate: e.target.value,
+                  })
+                }
+              />
+              <FontAwesomeIcon icon={faMinus} />
+              <input
+                type="date"
+                value={searchCondition.endDate}
+                onChange={(e) =>
+                  setSearchCondition({
+                    ...searchCondition,
+                    endDate: e.target.value,
+                  })
+                }
+              />
+            </div>
           </div>
-          <div>
+          <div className="content">
             <div>내용</div>
-            <input type="text" placeholder="내용 검색" value={searchCondition.formContent} onChange={(e) => setSearchCondition({...searchCondition, formContent: e.target.value})}/>
+            <input
+              type="text"
+              placeholder="내용 검색"
+              defaultValue={searchCondition.formContent}
+              onChange={(e) =>
+                setSearchCondition({
+                  ...searchCondition,
+                  formContent: e.target.value,
+                })
+              }
+            />
           </div>
-          <div>
+          <div className="size">
             <div>페이지 사이즈</div>
-            <input type="text" value={searchCondition.size} onChange={(e) => setSearchCondition({...searchCondition, size: e.target.value})}/>
+            <input
+              type="text"
+              defaultValue={searchCondition.size}
+              onChange={(e) =>
+                setSearchCondition({ ...searchCondition, size: e.target.value })
+              }
+            />
           </div>
-          <div>
+          <div className="buttons">
             <button onClick={handleFormSubmit}>검색</button>
-            <button onClick={() => {setIsFormOpen(false)}}>취소</button>
           </div>
         </StyledForm>
       ) : null}

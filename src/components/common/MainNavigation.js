@@ -3,7 +3,8 @@ import {
   NavLink,
   Form,
   useRouteLoaderData,
-  useNavigate,useLocation
+  useNavigate,
+  useLocation,
 } from "react-router-dom";
 import { getCookie } from "../../util/cookies";
 import ProfileCard from "./ProfileCard";
@@ -24,6 +25,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "styled-components";
 import { useInView } from "react-intersection-observer";
+import ToastMessage from "./ToastMessage";
+import { useIsLoggedIn } from "./useIsLoggedIn";
 
 const Header = styled.header`
   display: flex;
@@ -147,7 +150,10 @@ const Header = styled.header`
   }
 `;
 
-const SideNavbar = styled.div`
+const SideNavbar = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["isManagedProjectSelected", "isBookMarkSelected", "show"].includes(prop),
+})`
   background-color: #f9f9f9;
   position: fixed;
   top: 0;
@@ -247,19 +253,19 @@ const SideNavbar = styled.div`
     width: 100%;
     height: 15%;
 
-   & > div {
-    display: flex;
+    & > div {
+      display: flex;
 
-    & > *:nth-child(1) {
-      margin-left: 5%;
-      margin-right: 5%;
-      margin-top: 18%;
-    }
+      & > *:nth-child(1) {
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 18%;
+      }
 
-    & > *:nth-child(2) {
-      margin-top: 20%;
+      & > *:nth-child(2) {
+        margin-top: 20%;
+      }
     }
-   }
   }
 `;
 
@@ -290,7 +296,9 @@ const SearchBar = styled.input`
   }
 `;
 
-const SearchBox = styled.ul`
+const SearchBox = styled.ul.withConfig({
+  shouldForwardProp: (prop) => !["searchBoxPosition", "show"].includes(prop),
+})`
   background-color: rgb(238, 242, 249);
   box-shadow: 2px 2px 8px gray;
   display: ${(props) => (props.show ? "flex" : "none")};
@@ -314,7 +322,9 @@ const SearchBox = styled.ul`
   }
 `;
 
-const SearchBoxItem = styled.li`
+const SearchBoxItem = styled.li.withConfig({
+  shouldForwardProp: (prop) => !["pointHover"].includes(prop),
+})`
   padding: 8px;
   background-color: white;
   border-radius: 10px;
@@ -394,18 +404,37 @@ export default function MainNavigation() {
     useState(false);
   const [isBookMarkSelected, setIsBookMarkSelected] = useState(false);
   const location = useLocation();
+  const [toasts, setToasts] = useState([]);
+  const [eventSource, setEventSource] = useState(null);
+  const profile = getCookie("profile");
+  const name = getCookie("name");
+  const email = getCookie("email");
+
+  const addToast = useCallback((data) => {
+    const id = new Date().getTime();
+    setToasts((prevToasts) => [...prevToasts, {id, data}]);
+
+    setTimeout(() => {
+      setToasts((prevToasts) => prevToasts.filter(toast => toast.id !== id))
+    }, 10000);
+  },[]);
+
+
+  let isLoggedIn = useIsLoggedIn(eventSource, setEventSource,addToast);
 
 
   useEffect(() => {
-    const isProjectsBookmark = location.pathname === '/projects' && location.search.includes("?bookmark=true");
-    const isMyProjects = location.pathname === '/my-projects';
+    const isProjectsBookmark =
+      location.pathname === "/projects" &&
+      location.search.includes("?bookmark=true");
+    const isMyProjects = location.pathname === "/my-projects";
 
-    if (!isProjectsBookmark && !isMyProjects ) {
+    if (!isProjectsBookmark && !isMyProjects) {
       console.log("지나감");
       setIsManagedProjectSelected(false);
       setIsBookMarkSelected(false);
     }
-  }, [location])
+  }, [location]);
 
   const onManageChangeHandler = () => {
     setIsManagedProjectSelected(true);
@@ -492,13 +521,6 @@ export default function MainNavigation() {
     }
   }, [showBox]);
 
-  const [eventSource, setEventSource] = useState(null);
-  let isLoggedIn = useIsLoggedIn(eventSource, setEventSource);
-
-  const profile = getCookie("profile");
-  const name = getCookie("name");
-  const email = getCookie("email");
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -582,6 +604,8 @@ export default function MainNavigation() {
     [isLoggedIn]
   );
 
+  
+
   return (
     <Header>
       <nav>
@@ -631,7 +655,7 @@ export default function MainNavigation() {
                   </div>
                   <div className="menu-footer">
                     <div>
-                      <FontAwesomeIcon icon={faFaceLaughSquint} size='2x'/>
+                      <FontAwesomeIcon icon={faFaceLaughSquint} size="2x" />
                       <div>Thank you for Inviting Site</div>
                     </div>
                   </div>
@@ -725,82 +749,9 @@ export default function MainNavigation() {
           )}
         </ul>
       </nav>
+      {toasts.map((toast, index) => (
+        <ToastMessage key={toast.id} data={toast.data} bottom={`${2 + index*10}rem`}/>
+      ))}
     </Header>
   );
-}
-
-function useIsLoggedIn(eventSource, setEventSource) {
-  const isLoggedIn = Boolean(useRouteLoaderData("root"));
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      if (!eventSource) {
-        console.log("여기 지나감");
-        const memberId = getCookie("memberId");
-        const newEventSource = new EventSource(
-          `http://localhost:8080/api/v1/subscribe/${memberId}`
-        );
-        setEventSource(newEventSource);
-
-        newEventSource.addEventListener("sse", (event) => {
-          console.log(event.data);
-
-          let data = JSON.parse(event.data);
-
-          if (!data.isCountMessage) {
-            data = data.notificationResponse;
-          }
-
-          (async () => {
-            // 브라우저 알림
-            const showNotification = () => {
-              const notification = new Notification("알림이 왔습니다", {
-                body: data.content,
-              });
-
-              setTimeout(() => {
-                notification.close();
-              }, 10 * 1000);
-
-              notification.addEventListener("click", () => {
-                window.open(data.url, "_blank");
-              });
-            };
-
-            // 브라우저 알림 허용 권한
-            let granted = false;
-
-            if (Notification.permission === "granted") {
-              granted = true;
-            } else if (Notification.permission !== "denied") {
-              let permission = await Notification.requestPermission();
-              granted = permission === "granted";
-            }
-
-            // 알림 보여주기
-            if (granted) {
-              showNotification();
-            }
-          })();
-        });
-
-        newEventSource.addEventListener("error", function (event) {
-          if (event.target.readyState === EventSource.CLOSED) {
-            console.log("SSE closed");
-          } else if (event.target.readyState === EventSource.CONNECTING) {
-            console.log("SSE reconnecting");
-          } else {
-            console.error("SSE error:", event);
-          }
-        });
-      }
-    } else {
-      if (eventSource) {
-        eventSource.close();
-        setEventSource(null);
-      }
-    }
-  }, [isLoggedIn]);
-
-  return isLoggedIn;
 }

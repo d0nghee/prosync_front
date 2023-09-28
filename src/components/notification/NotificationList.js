@@ -75,7 +75,6 @@ const NotificationList = ({ notiPageList}) => {
           console.log(response);
           if (response && response.status === 200) {
             setIsModalOpen(false);
-
             navigate(`${location.pathname}`);
           }
         })
@@ -86,9 +85,12 @@ const NotificationList = ({ notiPageList}) => {
           );
         });
     } else {
-      if (selectedTargetIds.length === 0) {
+      console.log('검사중');
+      console.log(selectedTargetIds);
+      if (selectedTargetIds.size === 0) {
         alert("0개의 알림을 선택하셨습니다. 1개 이상의 알림을 선택해주세요.");
         setIsModalOpen(false);
+        return;
       }
   
   

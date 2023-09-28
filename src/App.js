@@ -29,9 +29,9 @@ import NotificationList from "./components/notification/NotificationList";
 import ProjectList from "./components/notification/ProjectList";
 import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
 import ProjectListContainer from "./pages/notification/ProjectListContainer";
-import Footer from "./components/common/Footer";
 import { useEffect, useState } from "react";
 import Loading from "./components/common/Loading";
+import Footer from "./components/common/Footer";
 
 const router = createBrowserRouter([
 
@@ -140,10 +140,7 @@ function App() {
   return isLoading ? (
     <Loading />
   ) : (
-    <>
     <RouterProvider router={router} />
-    <Footer/>
-    </>
   )
 }
 
