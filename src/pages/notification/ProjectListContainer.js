@@ -1,11 +1,13 @@
-import { React, useState, useEffect} from "react";
-import { useParams, json } from "react-router-dom";
+import { React, useState, useEffect } from "react";
+import { useParams, json, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Pagination from "./../../components/notification/Pagination";
 import { getApi } from "../../util/api";
 import ProjectLogList from "./../../components/notification/ProjectLogList";
 import UpperBar from "./../../components/notification/UpperBar";
 import { useLocation } from "react-router-dom";
+import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { tryFunc } from "../../util/tryFunc";
 
 const codeInformation = [
   {
@@ -107,40 +109,55 @@ const ProjectListContainer = () => {
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const fetchLogList = async () => {
+    const response = await getApi(
+      `/projectlog/${projectId}?${queryParams.toString()}`
+    );
+    return response.data;
+  };
+
+  const onFetchLogListSuccess = (data) => {
+    console.log('로그 리스트 들고오기 성공 : '+data)
+    setLogList(data.data);
+    setLogPageInfo(data.pageInfo);
+    setIsLoading(false);
+  }
+
+  const onFetchLogListErrorHandler = {
+    500: (error) => {
+      console.error("Server Error:", error);
+      alert("서버에서 오류가 발생했습니다.");
+    },
+    401: (error) => {
+      console.log(error.response.status);
+      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
+      setIsLoggedIn(false);
+      navigate(
+        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+      );
+    },
+    default: (error) => {
+      console.error("Unknown error:", error);
+      alert("로그 목록을 가져오는 중 오류가 발생하였습니다.");
+    },
+  }
 
   useEffect(() => {
-    const getLogList = async () => {
-      setIsLoading(true);
-
-      console.log("Log 정보를 위해 useEffect에서 데이터 요청함");
-      const response = await getApi(
-        `/projectlog/${projectId}?${queryParams.toString()}`
-      );
-      console.log(response);
-      console.log(response.status);
-      if (
-        response.response &&
-        (response.response.status === 500 || response.response.status === 404)
-      ) {
-        throw json(
-          { status: response.response.status },
-          { message: response.response.data.resultCode }
-        );
-      }
-
-      setLogList(response.data.data);
-      setLogPageInfo(response.data.pageInfo);
-      setIsLoading(false);
-    };
-
-    getLogList();
+    setIsLoading(true);
+    console.log("Log 정보를 위해 useEffect에서 데이터 요청함");
+    tryFunc(fetchLogList, onFetchLogListSuccess, onFetchLogListErrorHandler)();    
   }, [location, projectId]);
 
   return (
     <Container>
-      <UpperBar isPersonal={false} codeInformation={codeInformation} count={logPageInfo.totalElements} />
+      <UpperBar
+        isPersonal={false}
+        codeInformation={codeInformation}
+        count={logPageInfo.totalElements}
+      />
       {!isLoading && (
         <>
           {<ProjectLogList logList={logList} />}

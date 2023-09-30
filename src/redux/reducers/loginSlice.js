@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getCookie } from "../../util/cookies";
 
 
 const initialState = {
@@ -6,7 +7,7 @@ const initialState = {
         email : '',
         password : '',
     },
-    isLoggedIn : false,
+    isLoggedIn: !!getCookie("accessToken"),
 }
 
 
@@ -18,8 +19,8 @@ const loginSlice = createSlice({
         setLoginFormData : (state, action) => {
             state.loginFormData = action.payload;
         },
-        setIsLoggedIn : (state) => {
-           state.isLoggedIn = !state.isLoggedIn; 
+        setIsLoggedIn : (state, action) => {
+           state.isLoggedIn = action.payload;
         }
        
     }

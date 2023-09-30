@@ -5,8 +5,7 @@ import { getCookie } from '../../util/cookies';
 
 
 
-export function useIsLoggedIn(eventSource, setEventSource,addToast) {
-    const isLoggedIn = Boolean(useRouteLoaderData("root"));
+export function useIsLoggedIn(isLoggedIn,eventSource, setEventSource,addToast) {
   
     useEffect(() => {
   
@@ -14,7 +13,7 @@ export function useIsLoggedIn(eventSource, setEventSource,addToast) {
   
       if (isLoggedIn) {
         if (!eventSource) {
-          console.log("여기 지나감");
+          console.log('eventSource')
           const memberId = getCookie("memberId");
           const newEventSource = new EventSource(
             `http://localhost:8080/api/v1/subscribe/${memberId}`
@@ -59,5 +58,4 @@ export function useIsLoggedIn(eventSource, setEventSource,addToast) {
       }
     }, [isLoggedIn]);
   
-    return isLoggedIn;
   }

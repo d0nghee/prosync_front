@@ -27,6 +27,8 @@ import { styled } from "styled-components";
 import { useInView } from "react-intersection-observer";
 import ToastMessage from "./ToastMessage";
 import { useIsLoggedIn } from "./useIsLoggedIn";
+import { useSelector } from "react-redux";
+import { tryFunc } from "../../util/tryFunc";
 
 const Header = styled.header`
   display: flex;
@@ -385,7 +387,6 @@ const SearchBoxItem = styled.li.withConfig({
 `;
 
 export default function MainNavigation() {
-  const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const [searchList, setSearchList] = useState([]);
   const [showBox, setShowBox] = useState(false);
@@ -409,31 +410,40 @@ export default function MainNavigation() {
   const profile = getCookie("profile");
   const name = getCookie("name");
   const email = getCookie("email");
+  const memberId = getCookie("memberId");
+  const [profileUpdate, setProfileUpdate] = useState(false);
+
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
+  const navigate = useNavigate();
 
   const addToast = useCallback((data) => {
     const id = new Date().getTime();
-    setToasts((prevToasts) => [...prevToasts, {id, data}]);
+    setToasts((prevToasts) => [...prevToasts, { id, data }]);
 
     setTimeout(() => {
-      setToasts((prevToasts) => prevToasts.filter(toast => toast.id !== id))
+      setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
     }, 10000);
-  },[]);
+  }, []);
 
-
-  let isLoggedIn = useIsLoggedIn(eventSource, setEventSource,addToast);
-
+  useIsLoggedIn(isLoggedIn, eventSource, setEventSource, addToast);
 
   useEffect(() => {
-    const isProjectsBookmark =
-      location.pathname === "/projects" &&
-      location.search.includes("?bookmark=true");
-    const isMyProjects = location.pathname === "/my-projects";
+    // 멤버 관련 정보 소실 대비
+    async function nullCheckAndSetState() {
+      await nullableCheck();
+      const isProjectsBookmark =
+        location.pathname === "/projects" &&
+        location.search.includes("?bookmark=true");
+      const isMyProjects = location.pathname === "/my-projects";
 
-    if (!isProjectsBookmark && !isMyProjects) {
-      console.log("지나감");
-      setIsManagedProjectSelected(false);
-      setIsBookMarkSelected(false);
+      if (!isProjectsBookmark && !isMyProjects) {
+        console.log("지나감");
+        setIsManagedProjectSelected(false);
+        setIsBookMarkSelected(false);
+      }
     }
+
+    nullCheckAndSetState();
   }, [location]);
 
   const onManageChangeHandler = () => {
@@ -448,44 +458,55 @@ export default function MainNavigation() {
     navigate("/my-projects");
   };
 
+  const projectFetchApi = async (inputValue) => {
+    const response = await getApi(
+      `/projects?search=${inputValue}&page=${page}&size=6`
+    );
+    return response.data;
+  };
+
+  const onProjectFetchSuccessHandler = (data) => {
+    if (page === 1) {
+      setSearchList([...data.data]);
+    } else {
+      setSearchList([...searchList, ...data.data]);
+    }
+    setPage((prevPage) => prevPage + 1);
+    setMaxPage(data.pageInfo.totalPages !== 0 ? data.pageInfo.totalPages : 1);
+  };
+
+  const errorHandler = {
+    401: (error) => {
+      console.log("여기지나감");
+      console.log(error.response.status);
+      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
+      setIsLoggedIn(false);
+      navigate(
+        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+      );
+    },
+    500: (error) => {
+      console.error("Server Error:", error);
+      alert("서버에서 오류가 발생했습니다.");
+    },
+
+    /// 에러 코드 추가
+    default: (error) => {
+      console.error("Unknown error:", error);
+      alert("프로젝트 목록을 가져오는 중 오류가 발생하였습니다.");
+    },
+  };
+
   const projectFetch = useCallback(
     (inputValue) => {
-      console.log("inpuValue: " + inputValue);
-      console.log("searchList: ");
-      console.log(searchList);
-
-      if (page == 1) {
-        console.log("page == 1 지나감");
-        getApi(`/projects?search=${inputValue}&page=${page}&size=6`)
-          .then((res) => {
-            setSearchList([...res.data.data]);
-
-            setPage((prevPage) => prevPage + 1);
-
-            if (res.data.pageInfo.totalPages !== 0) {
-              setMaxPage(res.data.pageInfo.totalPages);
-            } else {
-              setMaxPage(1);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        console.log("page !==1 지나감" + page);
-        getApi(`/projects?search=${inputValue}&page=${page}&size=6`)
-          .then((res) => {
-            console.log(res);
-            setSearchList([...searchList, ...res.data.data]);
-            setPage((prevPage) => prevPage + 1);
-            setMaxPage(res.data.pageInfo.totalPages);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      console.log("inputValue:", inputValue);
+      tryFunc(
+        projectFetchApi,
+        onProjectFetchSuccessHandler,
+        errorHandler
+      )(inputValue);
     },
-    [page]
+    [page, searchList]
   );
 
   useEffect(() => {
@@ -497,10 +518,15 @@ export default function MainNavigation() {
     }
   }, [inView, page, maxPage, projectFetch, inputValue, searchList]);
 
-  const navigate = useNavigate();
-
   const toggleMenu = () => {
-    setShowMenu((showMenu) => !showMenu);
+    console.log("toggleMenu동작");
+    async function nullCheckAndSetState() {
+      await nullableCheck();
+
+      setShowMenu((showMenu) => !showMenu);
+    }
+
+    nullCheckAndSetState();
   };
 
   useEffect(() => {
@@ -545,32 +571,65 @@ export default function MainNavigation() {
     };
   }, []);
 
-  const nullableCheck = useCallback(() => {
-    if (isLoggedIn && (!profile || !name || !email)) {
-      getApi("/members").then(async (res) => {
-        setCookie("profile", res.data.profileImage, {
-          path: "/",
-          maxAge: 60 * 60 * 24 * 30,
-        });
-        setCookie("name", res.data.name, {
-          path: "/",
-          maxAge: 60 * 60 * 24 * 30,
-        });
-        setCookie("email", res.data.email, {
-          path: "/",
-          maxAge: 60 * 60 * 24 * 30,
-        });
-      });
+  const fetchMemberInfo = async () => {
+    const res = await getApi("/members");
+    return res.data;
+  };
+
+  const onFetchMemberInfoSuccessHandler = (data) => {
+    setCookie("profile", data.profileImage, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    setCookie("name", data.name, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    setCookie("email", data.email, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    setCookie("memberId", data.memberId, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    setProfileUpdate((prevState) => !prevState);
+  };
+
+  const fetMemberInfoErrorHandler = {
+    404: (error) => {
+      console.log(error.response.status);
+      alert("회원 정보를 찾지 못하였습니다.");
+    },
+    default: (error) => {
+      console.log(error);
+    },
+  };
+
+  const nullableCheck = useCallback(async () => {
+    console.log("nullableCheck 중");
+    console.log(getCookie("profile"));
+    if (
+      isLoggedIn &&
+      (!getCookie("profile") ||
+        !getCookie("name") ||
+        !getCookie("email") ||
+        !getCookie("memberId"))
+    ) {
+      tryFunc(
+        fetchMemberInfo,
+        onFetchMemberInfoSuccessHandler,
+        fetMemberInfoErrorHandler
+      )();
     }
   }, [isLoggedIn]);
 
-  nullableCheck();
-
   const handleButtonClick = () => {
-    dispatch(setIsLoggedIn());
-    isLoggedIn = false;
     setIsBookMarkSelected(false);
     setIsManagedProjectSelected(false);
+
+    navigate("/logout");
   };
 
   const searchChangeHandler = useCallback(
@@ -603,8 +662,6 @@ export default function MainNavigation() {
     },
     [isLoggedIn]
   );
-
-  
 
   return (
     <Header>
@@ -740,17 +797,19 @@ export default function MainNavigation() {
                 />
                 <div className="notification-info">알림</div>
               </div>
-              <Form action="/logout" method="post">
-                <button className="logout" onClick={handleButtonClick}>
-                  logout
-                </button>
-              </Form>
+              <button className="logout" onClick={handleButtonClick}>
+                logout
+              </button>
             </li>
           )}
         </ul>
       </nav>
       {toasts.map((toast, index) => (
-        <ToastMessage key={toast.id} data={toast.data} bottom={`${2 + index*10}rem`}/>
+        <ToastMessage
+          key={toast.id}
+          data={toast.data}
+          bottom={`${2 + index * 10}rem`}
+        />
       ))}
     </Header>
   );

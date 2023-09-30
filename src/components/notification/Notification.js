@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { patchApi } from "../../util/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBellSlash, faBell } from "@fortawesome/free-solid-svg-icons";
+import { tryFunc } from "../../util/tryFunc";
+import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
 
 const selectColor = (code) => {
   const array = [
@@ -149,6 +151,7 @@ const Notification = ({ checked, notification, onCheckboxChange }) => {
   const textRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const location = useLocation();
   
 
   useEffect(() => {
@@ -186,17 +189,52 @@ const Notification = ({ checked, notification, onCheckboxChange }) => {
 
   const color = selectColor(notification.code);
 
+  const markNotificationRead = async () => {
+    await patchApi(
+      `/notification/${notification.notificationTargetId}/read`
+    );
+  }
+
+  const onMarkReadSuccess = () => {
+    console.log('읽음 처리 완료');
+    navigate(notification.url);
+  }
+  
+  const onMarkReadError = {
+    500: (error) => {
+      console.error("Server Error:", error);
+      alert("서버에서 오류가 발생했습니다.");
+    },
+    401: (error) => {
+      console.log(error.response.status);
+      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
+      setIsLoggedIn(false);
+      navigate(
+        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+      );
+    },
+    403: (error) => {
+      console.log(error.response.status);
+      alert("해당 알림을 읽을 수 없습니다. 본인의 알림이 맞는지 확인하세요.");
+      
+    },
+    404: (error) => {
+      console.log(error.response.status);
+      alert("해당 알림을 찾을 수 없습니다.");
+     
+    },
+    default: (error) => {
+      console.error("Unknown error:", error);
+      alert("알림 읽음 처리 중 오류가 발생하였습니다.");
+    },
+  }
+
   const handleMoveUrl = useCallback(() => {
     if (notification.read === false) {
-      (async () => {
-        await patchApi(
-          `/notification/${notification.notificationTargetId}/read`
-        );
-      })();
-      console.log("읽음처리 완료");
+      tryFunc(markNotificationRead, onMarkReadSuccess, onMarkReadError)();
+    } else {
+      navigate(notification.url);
     }
-
-    navigate(notification.url);
   }, []);
 
   const labelClickHandler = useCallback((e) => {

@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import Log from "./Log";
 import LogTitle from "./LogTitle";
-import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;

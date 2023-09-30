@@ -5,7 +5,7 @@ import taskStatusReducer from "../reducers/taskStatus-slice";
 import signupReducer from "../reducers/signupSlice";
 import loginReducer from '../reducers/loginSlice';
 import mypageReducer from '../reducers/mypageSlice';
-import eventReducer from '../reducers/eventSlice';
+import triggerReducer from '../reducers/notificationTrigger-slice';
 
 
 
@@ -18,7 +18,7 @@ export const store = configureStore({
     signup: signupReducer,
     login: loginReducer,
     mypage : mypageReducer,
-    eventSource : eventReducer,
+    trigger : triggerReducer,
   },
 });
 

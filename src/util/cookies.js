@@ -20,4 +20,5 @@ export function removeUserCookie() {
   removeCookie("profile");
   removeCookie("name");
   removeCookie("memberId");
+  removeCookie("email");
 }

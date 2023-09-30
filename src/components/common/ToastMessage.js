@@ -51,7 +51,7 @@ const ToastContainer = styled.div`
   }
 
   &:hover {
-    background-color: #e5caff;
+    background-color: #e2e2e2;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
     color: black;
 

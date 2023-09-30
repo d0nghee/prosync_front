@@ -8,7 +8,7 @@ const getApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -18,7 +18,7 @@ const postApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error, "error");
-    return error;
+    throw error;
   }
 };
 
@@ -28,7 +28,8 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    console.error('patchApi 지나감');
+    throw error;
   }
 };
 
@@ -38,7 +39,7 @@ const deleteApi = async (url,data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 

@@ -1,30 +1,37 @@
 import React, { useState } from "react";
 import CustomButton from "../../components/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import LoginForm from "./components/loginForm";
 import { LoginButtonContainer } from "../../css/LoginStyle";
-import { setIsLoggedIn, setLoginFormData } from "../../redux/reducers/loginSlice";
+import {
+  setIsLoggedIn,
+  setLoginFormData,
+} from "../../redux/reducers/loginSlice";
 import axiosInstance from "../../util/axiosInstancs";
 import { getCookie, setCookie } from "../../util/cookies";
 import { getApi } from "../../util/api";
 import axios from "axios";
 import Popup from "../../components/popup/Popup";
-import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from "../../redux/reducers/signupSlice";
+import {
+  setIsConfirmModalOpen,
+  setModalButtons,
+  setModalMessage,
+} from "../../redux/reducers/signupSlice";
 
-import { store } from '../../redux/store/index'
-import { connectSse } from "../../util/eventSource/useSse";
+import { store } from "../../redux/store/index";
 import Loading from "../../components/common/Loading";
+import { tryFunc } from "../../util/tryFunc";
 
 export default function Login() {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
-  const navi = useNavigate();
-  const signup = useSelector(state => state.signup);
+  const navigate = useNavigate();
+  const signup = useSelector((state) => state.signup);
   const [loading, setLoading] = useState(false);
-
-
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
 
   const handleInputChange = (name, value) => {
     if (name === "email") {
@@ -52,76 +59,118 @@ export default function Login() {
     );
   };
 
+  const loginFunc = async () => {
+    const response = await axios.post(
+      "http://localhost:8080/api/v1/login",
+      login.loginFormData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    const header = response.headers;
+    const access = await header.authorization;
+    const refresh = await header.refresh;
+
+    if (access && refresh) {
+      setCookie("accessToken", access, { path: "/" });
+      setCookie("refreshToken", refresh, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+
+    return response;
+  };
+
+  const fetchMemberInfo = async () => {
+    const res = await getApi("/members");
+    setCookie("memberId", res.data.memberId, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    setCookie("profile", res.data.profileImage, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    setCookie("name", res.data.name, { path: "/", maxAge: 60 * 60 * 24 * 30 });
+    setCookie("email", res.data.email, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  };
+
   const handleLogin = async () => {
     setLoading(true);
-
-    axios.post("http://localhost:8080/api/v1/login", login.loginFormData, {
-      headers : {
-        "Content-Type" : "application/json",
-        Accept : "application/json",
-      },
-    })
-      .then(async (response) => {
-        const header = response.headers;
-        const access = await header.authorization;
-        const refresh = await header.refresh;
-
-        if (access && refresh) {
-          setCookie("accessToken", access, { path: "/" });
-          setCookie("refreshToken", refresh, { path: "/", maxAge: 60*60*24*30 });
-        }
-
-
-        return response.status;
-
-      }).then(() => {
-        getApi("/members")
-          .then(async (res) => {
-            setCookie("memberId", res.data.memberId, {path: "/", maxAge: 60*60*24*30})
-            setCookie("profile", res.data.profileImage, { path: "/", maxAge: 60*60*24*30 });
-            setCookie("name", res.data.name, { path: "/", maxAge: 60*60*24*30 });
-            setCookie("email", res.data.email, { path: "/", maxAge: 60*60*24*30 });
-            navi("/");
-            dispatch(setIsLoggedIn(true));
-          })
-          .catch(() => {
-            dispatch(setIsConfirmModalOpen(true));
-            dispatch(setModalMessage('정보 읽어오는데 실패하였습니다.'));
-            dispatch(setModalButtons([
-              {
-                label: "확인", onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-                  getApi("/removeToken")
-                  .then(async (res) => {
-                    navi("/login")
-                  }).catch((error) => {
-                    console.log(error)
-                  })
-                }
-              }
-            ]));
-          })
-      }
-      )
-      .catch(() => {
+    const errorHandlers = {
+      400: (error) => {
+        console.log(error.response.status);
         dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage('잘못된 정보를 입력하셨습니다.'));
-        dispatch(setModalButtons([
-          {
-            label: "확인", onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-            }
-          }
-        ]));
-      }).finally(() => {
-        setLoading(false);
-      })
+        dispatch(setModalMessage("잘못된 형식의 이메일을 입력하셨습니다."));
+        dispatch(
+          setModalButtons([
+            {
+              label: "확인",
+              onClick: () => dispatch(setIsConfirmModalOpen(false)),
+            },
+          ])
+        );
+      },
+      401: (error) => {
+        console.log(error.response.status);
+        dispatch(setIsConfirmModalOpen(true));
+        dispatch(setModalMessage("잘못된 정보를 입력하셨습니다."));
+        dispatch(
+          setModalButtons([
+            {
+              label: "확인",
+              onClick: () => dispatch(setIsConfirmModalOpen(false)),
+            },
+          ])
+        );
+      },
+      404: (error) => {
+        console.log(error.response.status);
+        dispatch(setIsConfirmModalOpen(true));
+        dispatch(setModalMessage("회원 정보를 찾지 못하였습니다."));
+        dispatch(
+          setModalButtons([
+            {
+              label: "확인",
+              onClick: () => dispatch(setIsConfirmModalOpen(false)),
+            },
+          ])
+        );
+      },
+      
+      default: (error) => {
+        console.error("Unknown error:", error);
+      },
+    };
+
+    const onLoginSuccess = async () => {
+      try {
+        await fetchMemberInfo();
+        console.log("fetchMemberInfo 완료");
+        const returnUrl = params.get("returnUrl");
+        navigate(returnUrl || "/");
+        dispatch(setIsLoggedIn(true));
+      } catch (error) {
+        console.log("member 데이터 정보 읽어오기 실패");
+      }
+    };
+
+    tryFunc(loginFunc, onLoginSuccess, errorHandlers)().finally(() =>
+      setLoading(false)
+    );
   };
 
   const handleSignup = () => {
-    navi("/signup");
+    navigate("/signup");
   };
-
 
   return (
     <div>
