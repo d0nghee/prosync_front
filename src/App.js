@@ -20,12 +20,8 @@ import TaskDetail, {
 } from "./pages/task/TaskDetail";
 import { action as manipulateTaskAction } from "./components/task/TaskForm";
 import NewProject from "./pages/project/NewProject";
-import NotificationRoot from "./pages/notification/NotificationRoot";
-import PersonalNotification from "./pages/notification/PersonalNotification";
-import ProjectNotification from "./pages/notification/ProjectNotification";
 import Project from "./components/notification/Project";
 import NotificationList from "./components/notification/NotificationList";
-import ProjectList from "./components/notification/ProjectList";
 import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
 import ProjectListContainer from "./pages/notification/ProjectListContainer";
 import { useEffect, useState } from "react";
@@ -34,18 +30,16 @@ import Footer from "./components/common/Footer";
 import LogOut from "../src/pages/auth/Logout";
 import ProtectedLayout from "./pages/ProtectedLayout";
 import Home from "./pages/Home";
-import { action as manipulateTaskAction } from './components/task/TaskForm';
-import { loader as projectLoader } from './pages/project/EditProject';
-import NewProject from './pages/project/NewProject';
-import NotificationRoot from './pages/notification/NotificationRoot';
-import PersonalNotification from './pages/notification/PersonalNotification';
-import ProjectNotification from './pages/notification/ProjectNotification';
+import { loader as projectLoader } from "./pages/project/EditProject";
+import NotificationRoot from "./pages/notification/NotificationRoot";
+import PersonalNotification from "./pages/notification/PersonalNotification";
+import ProjectNotification from "./pages/notification/ProjectNotification";
 
-import EditProejct from './pages/project/EditProject';
+import EditProejct from "./pages/project/EditProject";
 import ProjectList, {
   loader as projectListLoader,
-} from './pages/project/ProjectList';
-import TaskRoadmapView from './components/task/TaskRoadmapView';
+} from "./pages/project/ProjectList";
+import TaskRoadmapView from "./components/task/TaskRoadmapView";
 
 const router = createBrowserRouter([
   {
@@ -58,7 +52,6 @@ const router = createBrowserRouter([
       // 사용자 인증
       { path: "/", element: <Home /> },
       { path: "auth", element: <Authentication /> },
-      { path: "logout", element: <Logout /> },
       { path: "/login", element: <Login />, errorElement: <Error /> },
       { path: "/signup", element: <SignUp /> },
 
@@ -66,57 +59,57 @@ const router = createBrowserRouter([
         path: "/",
         element: <ProtectedLayout />,
         children: [
+          { path: "logout", element: <Logout /> },
+
           {
-            path: 'profile',
-            element: <UserProfile />,
-            action: userProfileEditAction,
-            loader: checkTokenLoader,
+            path: "/user/profile",
+            element: <MyPage />,
           },
-        ],
-      },
-      // projects //
-      {
-        path: 'projects',
-        children: [
-          { index: true, element: <NewProject /> },
-          {  path: ':projectId',
+
+          // projects //
+          {
+            path: "projects",
             children: [
-              // tasks //
-              { index: true },
+              { index: true, element: <NewProject /> },
               {
-                path: 'tasks',
-                element: <TasksRoot />,
+                path: ":projectId",
                 children: [
-                  { index: true, element: <Tasks />, loader: tasksLoader },
+                  // tasks //
+                  { index: true },
                   {
-                    path: ':taskId',
-                    id: 'task-details',
-                    loader: taskDetailLoader,
+                    path: "tasks",
+                    element: <TasksRoot />,
                     children: [
+                      { index: true, element: <Tasks />, loader: tasksLoader },
                       {
-                        index: true,
-                        element: <TaskDetail />,
-                        action: deleteTaskAction,
-                        id: 'task-delete',
+                        path: ":taskId",
+                        id: "task-details",
+                        loader: taskDetailLoader,
+                        children: [
+                          {
+                            index: true,
+                            element: <TaskDetail />,
+                            action: deleteTaskAction,
+                            id: "task-delete",
+                          },
+                          {
+                            path: "edit",
+                            element: <EditTask />,
+                            action: manipulateTaskAction,
+                          },
+                        ],
                       },
                       {
-                        path: 'edit',
-                        element: <EditTask />,
+                        path: "new",
+                        element: <NewTask />,
                         action: manipulateTaskAction,
                       },
                     ],
-                  },
-                  {
-                    path: 'new',
-                    element: <NewTask />,
-                    action: manipulateTaskAction,
                   },
                 ],
               },
             ],
           },
-        ],
-      },
 
           // notification
           {
@@ -144,6 +137,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+
       // users //
     ],
   },
