@@ -34,6 +34,18 @@ import Footer from "./components/common/Footer";
 import LogOut from "../src/pages/auth/Logout";
 import ProtectedLayout from "./pages/ProtectedLayout";
 import Home from "./pages/Home";
+import { action as manipulateTaskAction } from './components/task/TaskForm';
+import { loader as projectLoader } from './pages/project/EditProject';
+import NewProject from './pages/project/NewProject';
+import NotificationRoot from './pages/notification/NotificationRoot';
+import PersonalNotification from './pages/notification/PersonalNotification';
+import ProjectNotification from './pages/notification/ProjectNotification';
+
+import EditProejct from './pages/project/EditProject';
+import ProjectList, {
+  loader as projectListLoader,
+} from './pages/project/ProjectList';
+import TaskRoadmapView from './components/task/TaskRoadmapView';
 
 const router = createBrowserRouter([
   {
@@ -54,56 +66,57 @@ const router = createBrowserRouter([
         path: "/",
         element: <ProtectedLayout />,
         children: [
-          { path: "logout", element: <Logout /> },
-
           {
-            path: "/user/profile",
-            element: <MyPage />,
+            path: 'profile',
+            element: <UserProfile />,
+            action: userProfileEditAction,
+            loader: checkTokenLoader,
           },
-          // projects //
-          {
-            path: "projects",
+        ],
+      },
+      // projects //
+      {
+        path: 'projects',
+        children: [
+          { index: true, element: <NewProject /> },
+          {  path: ':projectId',
             children: [
-              { index: true, element: <NewProject /> },
+              // tasks //
+              { index: true },
               {
-                path: ":projectId",
+                path: 'tasks',
+                element: <TasksRoot />,
                 children: [
-                  // tasks //
-                  { index: true },
+                  { index: true, element: <Tasks />, loader: tasksLoader },
                   {
-                    path: "tasks",
-                    element: <TasksRoot />,
+                    path: ':taskId',
+                    id: 'task-details',
+                    loader: taskDetailLoader,
                     children: [
-                      { index: true, element: <Tasks />, loader: tasksLoader },
                       {
-                        path: ":taskId",
-                        id: "task-details",
-                        loader: taskDetailLoader,
-                        children: [
-                          {
-                            index: true,
-                            element: <TaskDetail />,
-                            action: deleteTaskAction,
-                            id: "task-delete",
-                          },
-                          {
-                            path: "edit",
-                            element: <EditTask />,
-                            action: manipulateTaskAction,
-                          },
-                        ],
+                        index: true,
+                        element: <TaskDetail />,
+                        action: deleteTaskAction,
+                        id: 'task-delete',
                       },
                       {
-                        path: "new",
-                        element: <NewTask />,
+                        path: 'edit',
+                        element: <EditTask />,
                         action: manipulateTaskAction,
                       },
                     ],
+                  },
+                  {
+                    path: 'new',
+                    element: <NewTask />,
+                    action: manipulateTaskAction,
                   },
                 ],
               },
             ],
           },
+        ],
+      },
 
           // notification
           {
