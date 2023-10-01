@@ -50,7 +50,7 @@ const footerItems = [
 const FooterContainer = styled.div`
   width: 90vw;
   margin-left: 7%;
-  z-index: 50;
+  z-index: 5;
 `
 
 const StyledFooter = styled.div`
@@ -77,7 +77,6 @@ const Logo = styled.img`
   width: 200px;
   height: 110px;
   cursor: pointer;
-  position: relative;
   margin-left: 50px;
 `
 
