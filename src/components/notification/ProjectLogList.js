@@ -27,7 +27,7 @@ const ProjectLogList = ({ logList }) => {
         logList.map((log) => <Log key={log.logId} log={log} />)}
       {logList.length === 0 && (
         <NoData>
-          <h2>알림이 존재하지 않습니다!</h2>
+          <h2>로그가 존재하지 않습니다!</h2>
         </NoData>
       )}
     </Container>

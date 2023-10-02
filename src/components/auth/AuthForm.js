@@ -8,15 +8,16 @@ import { useEffect } from "react";
 
 export default function AuthForm() {
   const [searchParams] = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl");
   const isLogin = searchParams.get("mode") === "login";
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !returnUrl) {
       navigate('/');
     }
-  },[isLoggedIn])
+  },[isLoggedIn, returnUrl])
 
 
   return (

@@ -13,7 +13,7 @@ export default function ProtectedLayout() {
   useEffect(() => {
     console.log("여기");
     if (!isLoggedIn) {
-      if (!location.pathname === "/logout") {
+      if (!(location.pathname === "/logout")) {
         setTimeout(() => {
           alert("로그인 하셔야 이용할 수 있는 메뉴입니다.");
           setIsLoading(false);

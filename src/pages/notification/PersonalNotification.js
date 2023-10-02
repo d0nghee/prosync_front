@@ -7,7 +7,8 @@ import styled from "styled-components";
 import UpperBar from "./../../components/notification/UpperBar";
 import { tryFunc } from "./../../util/tryFunc";
 import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
-import {setTrigger} from "../../redux/reducers/notificationTrigger-slice";
+import { setTrigger } from "../../redux/reducers/notificationTrigger-slice";
+import { useSelector } from "react-redux";
 
 const Loading = styled.div`
   color: gray;
@@ -112,6 +113,8 @@ const PersonalNotification = (props) => {
     setNotReadCount(data);
   };
 
+  
+
   const countErrorHandler = {
     401: (error) => {
       console.log(error.response.status);
@@ -198,7 +201,7 @@ const PersonalNotification = (props) => {
 
   const allReadErrorHandler = {
     401: (error) => {
-      console.log('여기지나감');
+      console.log("여기지나감");
       console.log(error.response.status);
       alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
       setIsLoggedIn(false);
@@ -218,7 +221,11 @@ const PersonalNotification = (props) => {
 
   const AllRead = useCallback(() => {
     if (window.confirm("모든 알림을 읽음 처리하시겠습니까?")) {
-      tryFunc(fetchAllReadNotification,onAllReadSuccess,allReadErrorHandler)();
+      tryFunc(
+        fetchAllReadNotification,
+        onAllReadSuccess,
+        allReadErrorHandler
+      )();
     } else {
       alert("읽음 처리를 취소하셨습니다.");
     }
