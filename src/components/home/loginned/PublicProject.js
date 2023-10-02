@@ -13,6 +13,8 @@ const Container = styled.div`
   border-radius: 25px;
   box-shadow: 1px 1px 2px 2px white;
   background-color: rgb(217,217,217);
+  max-height: 22rem;
+
 
   &:hover {
     box-shadow: 2px 2px 3px 4px #003350;

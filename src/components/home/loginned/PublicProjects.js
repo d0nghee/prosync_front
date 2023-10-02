@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PublicProjectsList from './PublicProjectsList';
 
 const Container = styled.div`
-  height: 100%;
+  /* height: 100%; */
   width: 75%;
   display: flex;
   flex-direction: column;
@@ -43,8 +43,8 @@ const Container = styled.div`
 
     &:hover {
         color: white;
-        box-shadow: 100px 0 0 0 rgba(0, 0, 0, 0.25) inset,
-          -100px 0 0 0 rgba(0, 0, 0, 0.25) inset;
+        box-shadow: 150px 0 0 0 rgba(0, 0, 0, 0.25) inset,
+          -150px 0 0 0 rgba(0, 0, 0, 0.25) inset;
       }
   }
 

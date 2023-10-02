@@ -12,6 +12,7 @@ const Container = styled.div`
   font-weight: 900;
   border-radius: 25px;
   box-shadow: 1px 1px 2px 2px gray;
+  max-height: 22rem;
 
   &:hover {
     box-shadow: 2px 2px 3px 4px black;

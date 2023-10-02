@@ -13,7 +13,6 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 const Container = styled.div`
   display: flex;
   align-items: center;
-  height: 100%;
 
   & > .left-direction {
     margin-right: 2%;

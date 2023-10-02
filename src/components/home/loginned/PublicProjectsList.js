@@ -13,7 +13,6 @@ import PublicProject from "./PublicProject";
 const Container = styled.div`
   display: flex;
   align-items: center;
-  height: 100%;
 
   & > .left-direction {
     margin-right: 2%;

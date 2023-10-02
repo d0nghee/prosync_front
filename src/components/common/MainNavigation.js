@@ -29,6 +29,7 @@ import ToastMessage from "./ToastMessage";
 import { useIsLoggedIn } from "./useIsLoggedIn";
 import { useSelector } from "react-redux";
 import { tryFunc } from "../../util/tryFunc";
+import { debounce } from "../../util/debounce";
 
 const Header = styled.header`
   display: flex;
@@ -415,6 +416,7 @@ export default function MainNavigation() {
 
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const navigate = useNavigate();
+  const [timer, setTimer] = useState(0);
 
   const addToast = useCallback((data) => {
     const id = new Date().getTime();
@@ -458,12 +460,26 @@ export default function MainNavigation() {
     navigate("/my-projects");
   };
 
+  const debouncedProjectFetch = useCallback(debounce(
+    (inputValue) => {
+      console.log("inputValue: ", inputValue);
+      tryFunc(
+        projectFetchApi,
+        onProjectFetchSuccessHandler,
+        errorHandler
+      )(inputValue);
+    }, 1000
+  ), [page, searchList])
+
+
   const projectFetchApi = async (inputValue) => {
     const response = await getApi(
       `/projects?search=${inputValue}&page=${page}&size=6`
     );
     return response.data;
   };
+
+
 
   const onProjectFetchSuccessHandler = (data) => {
     if (page === 1) {
@@ -497,26 +513,15 @@ export default function MainNavigation() {
     },
   };
 
-  const projectFetch = useCallback(
-    (inputValue) => {
-      console.log("inputValue:", inputValue);
-      tryFunc(
-        projectFetchApi,
-        onProjectFetchSuccessHandler,
-        errorHandler
-      )(inputValue);
-    },
-    [page, searchList]
-  );
 
   useEffect(() => {
     console.log("inView:" + inView);
     console.log(page);
     console.log("maxPage:" + maxPage);
     if (inView && page <= maxPage) {
-      projectFetch(inputValue);
+      debouncedProjectFetch(inputValue);
     }
-  }, [inView, page, maxPage, projectFetch, inputValue, searchList]);
+  }, [inView, page, maxPage, debouncedProjectFetch, inputValue, searchList]);
 
   const toggleMenu = () => {
     console.log("toggleMenu동작");
