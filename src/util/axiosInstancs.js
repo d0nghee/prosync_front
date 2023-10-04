@@ -9,7 +9,7 @@ import { setIsLoggedIn } from "../redux/reducers/loginSlice";
 
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: "http://13.209.219.235:8080/api/v1",
   headers: {
     "Content-Type": "application/json",
     accept: "application/json",

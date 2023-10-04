@@ -16,7 +16,7 @@ export function useIsLoggedIn(isLoggedIn,eventSource, setEventSource,addToast) {
           console.log('eventSource')
           const memberId = getCookie("memberId");
           const newEventSource = new EventSource(
-            `http://localhost:8080/api/v1/subscribe/${memberId}`
+            `http://13.209.219.235:8080/api/v1/subscribe/${memberId}`
           );
           setEventSource(newEventSource);
   
