@@ -1,25 +1,23 @@
-import React, { useState } from "react";
-import CustomButton from "../../components/button/Button";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import CustomButton from '../../components/button/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import LoginForm from "./components/loginForm";
-import { LoginButtonContainer } from "../../css/LoginStyle";
-import { setLoggedIn, setLoginFormData } from "../../redux/reducers/loginSlice";
-import axiosInstance from "../../util/axios/axiosInstances";
-import { setCookie } from "../../util/cookies";
-
+import LoginForm from './components/loginForm';
+import { LoginButtonContainer } from '../../css/LoginStyle';
+import { setLoggedIn, setLoginFormData } from '../../redux/reducers/loginSlice';
+import axiosInstance from '../../util/axiosInstances';
+import { setCookie } from '../../util/cookies';
 
 export default function Login() {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
   const navi = useNavigate();
 
-
   const handleInputChange = (name, value) => {
-    if (name === "email") {
+    if (name === 'email') {
       handleEmailChange(value);
-    } else if (name === "password") {
+    } else if (name === 'password') {
       handlePasswordChange(value);
     }
   };
@@ -43,28 +41,24 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    
-    axiosInstance.post("/login", login.loginFormData)
-    .then(async (response) => {
+    axiosInstance.post('/login', login.loginFormData).then(async (response) => {
       const header = response.headers;
       const access = await header.authorization;
       const refresh = await header.refresh;
 
       if (access && refresh) {
-        setCookie("accessToken", access, { path : "/"});
-        setCookie("refreshToken", refresh, { path : "/"});
+        setCookie('accessToken', access, { path: '/' });
+        setCookie('refreshToken', refresh, { path: '/' });
       }
 
-      navi("/");
+      navi('/');
       return response.status;
-      
-    })
+    });
   };
 
   const handleSignup = () => {
-    navi("/signup");
+    navi('/signup');
   };
-
 
   return (
     <div>

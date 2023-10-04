@@ -28,12 +28,15 @@ import NewProject from './pages/project/NewProject';
 import NotificationRoot from './pages/notification/NotificationRoot';
 import PersonalNotification from './pages/notification/PersonalNotification';
 import ProjectNotification from './pages/notification/ProjectNotification';
+import EditProject from './pages/project/EditProject';
+import ProjectList from './pages/project/ProjectList';
 
-import EditProejct from './pages/project/EditProject';
-import ProjectList, {
-  loader as projectListLoader,
-} from './pages/project/ProjectList';
-import TaskRoadmapView from './components/task/TaskRoadmapView';
+import EditProjectMember, {
+  loader as membersLoader,
+} from './pages/project/EditProjectMember';
+import TaskRoadmapPage, {
+  loader as roadmapLoader,
+} from './pages/task/TaskRoadmapView';
 
 const router = createBrowserRouter([
   {
@@ -74,22 +77,38 @@ const router = createBrowserRouter([
             index: true,
             id: 'projects',
             element: <ProjectList />,
-            loader: projectListLoader,
+            // element: <Project />,
           },
           { path: 'new', element: <NewProject /> },
           {
-            id: 'project',
             path: ':projectId',
-            element: <EditProejct />,
-            loader: projectLoader,
             children: [
-              // tasks //
               { index: true },
+              {
+                id: 'edit',
+                path: 'edit',
+                element: <EditProject />,
+                loader: projectLoader,
+              },
+              {
+                id: 'editmember',
+                path: 'members',
+                element: <EditProjectMember />,
+                loader: membersLoader,
+              },
+
+              // tasks //
               {
                 path: 'tasks',
                 element: <TasksRoot />,
                 children: [
                   { index: true, element: <Tasks />, loader: tasksLoader },
+                  {
+                    id: 'task-roadmap',
+                    path: 'roadmap',
+                    element: <TaskRoadmapPage />,
+                    loader: roadmapLoader,
+                  },
                   {
                     path: ':taskId',
                     id: 'task-details',
@@ -143,7 +162,6 @@ const router = createBrowserRouter([
 
 function App() {
   return <RouterProvider router={router} />;
-  // return <TaskRoadmapView />;
 }
 
 export default App;
