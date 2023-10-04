@@ -3,7 +3,7 @@ import ProjectForm from '../../components/project/ProjectForm';
 import { getApi } from '../../util/api';
 
 export default function EditProejct() {
-  const data = useRouteLoaderData('project');
+  const data = useRouteLoaderData('edit');
   const project = data?.data || {};
 
   console.log('project', project);

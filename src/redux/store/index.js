@@ -1,10 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
-import calendarReducer from "../reducers/calendar-slice";
-import checkboxReducer from "../reducers/checkbox-slice";
-import taskStatusReducer from "../reducers/taskStatus-slice";
-import signupReducer from "../reducers/signupSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import calendarReducer from '../reducers/calendar-slice';
+import checkboxReducer from '../reducers/checkbox-slice';
+import taskStatusReducer from '../reducers/taskStatus-slice';
+import signupReducer from '../reducers/signupSlice';
 import loginReducer from '../reducers/loginSlice';
-import mypageSlice from "../reducers/mypageSlice";
+import mypageSlice from '../reducers/mypageSlice';
+
+import memberCheckboxSlice from '../reducers/memberCheckboxSlice';
+import memberAuthoritySlice from '../reducers/memberAuthoritySlice';
 
 const store = configureStore({
   reducer: {
@@ -13,7 +16,9 @@ const store = configureStore({
     taskStatus: taskStatusReducer,
     signup: signupReducer,
     login: loginReducer,
-    mypage : mypageSlice,
+    mypage: mypageSlice,
+    authority: memberAuthoritySlice,
+    memberCheckbox: memberCheckboxSlice,
   },
 });
 

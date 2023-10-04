@@ -1,20 +1,66 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { deleteApi, postApi } from '../../util/api';
+import { tryFunc } from '../../util/tryFunc';
 
 export default function Project({
   projects: {
-    title = 'default title',
-    startDate = 'default startDate',
-    endDate = 'default endDate',
-    projectImage = 'default projectImage',
+    title = '',
+    startDate = '',
+    endDate = '',
+    projectImage = '',
+    projectId = '',
+    name = '',
+    bookmarkId = '',
   } = {},
-  member: { name = 'default name' } = {},
+  onStarChange,
 }) {
+  const [isStarred, setIsStarred] = useState(false);
+
+  const handleStarClick = () => {
+    console.log('handleStarClick');
+    tryFunc(changeBookmark)();
+  };
+
+  const changeBookmark = async () => {
+    if (isStarred) {
+      console.log('isStar 호출');
+      deleteApi(`/bookmark/${projectId}`).then(() => {
+        setIsStarred(false);
+        onStarChange();
+      });
+    } else {
+      console.log('!isStar 호출');
+      postApi(`/bookmark/${projectId}`).then(() => {
+        setIsStarred(true);
+        onStarChange();
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (bookmarkId) setIsStarred(true);
+  }, [bookmarkId]);
+
   return (
     <Container>
       <Header>
+        <div>{projectId}</div>
         <Title>{title}</Title>
+        <StarButton onClick={handleStarClick}>
+          <StarImage
+            src={
+              isStarred
+                ? process.env.PUBLIC_URL + '/img/fill-star.png'
+                : process.env.PUBLIC_URL + '/img/star.png'
+            }
+            alt="Star"
+          />
+        </StarButton>
       </Header>
-      <Content>{projectImage}</Content>
+      <Content>
+        <Image src={projectImage} alt="Project" />
+      </Content>
       <Footer>
         <Dates>
           <div>{startDate}</div>
@@ -25,34 +71,47 @@ export default function Project({
     </Container>
   );
 }
+const StarImage = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+`;
 
 const Container = styled.div`
-  width: 300px; // 고정된 너비를 설정
-  height: 400px; // 고정된 높이를 설정 (원하는 높이로 조절 가능)
-  margin: 50px auto;
-  background-color: #fff;
-  padding: 20px;
+  width: 280px;
+  height: 320px;
+  margin: 30px auto;
+  background-color: white;
+  padding: 15px;
   border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08); // 부드러운 그림자 효과
 `;
 
 const Content = styled.div`
   background-color: black;
-  height: 200px;
-  padding: 20px 0;
+  height: 160px;
+  padding: 15px 0;
   background-image: url(${(props) => props.image});
-  background-size: cover; // 이미지 크기 조절
-  background-position: center; // 이미지 중앙 정렬
-  overflow: hidden; // 오버플로우 숨기기
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
 `;
 
 const Header = styled.header`
-  border-bottom: 1px solid #e5e5e5;
-  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #f5d5d5; // 더 부드러운 색상의 경계선
+  padding-bottom: 8px;
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 20px; // 글꼴 크기 감소
   margin: 0;
 `;
 
@@ -60,15 +119,24 @@ const Footer = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  border-top: 1px solid #e5e5e5;
-  padding-top: 10px;
+  margin-top: 15px;
+  border-top: 1px solid #f5d5d5; // 더 부드러운 색상의 경계선
+  padding-top: 8px;
 `;
 
 const Dates = styled.div`
-  font-size: 14px;
+  font-size: 12px; // 글꼴 크기 감소
 `;
 
 const Author = styled.div`
-  font-size: 14px;
+  font-size: 12px; // 글꼴 크기 감소
+`;
+
+const StarButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  font-size: 18px; // 글꼴 크기 감소
 `;
