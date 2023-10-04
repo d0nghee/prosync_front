@@ -18,7 +18,6 @@ import NewTask from "./pages/task/NewTask";
 import TaskDetail, {
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
-import Test from "./TestComponent";
 import NewProject from "./pages/project/NewProject";
 
 const router = createBrowserRouter([

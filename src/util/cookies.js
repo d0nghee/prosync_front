@@ -7,7 +7,7 @@ export function setCookie(name, value, option) {
 }
 
 export function getCookie(name) {
-  return cookies.get(name);
+  return cookies.get(name, { path: "/" });
 }
 
 export function removeCookie(name) {
@@ -19,4 +19,5 @@ export function removeUserCookie() {
   setCookie("refreshToken", "", { maxAge: 0 });
   removeCookie("profile");
   removeCookie("name");
+  removeCookie("memberId");
 }

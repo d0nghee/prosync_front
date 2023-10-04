@@ -25,6 +25,7 @@ const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 2rem 0;
+  width: 80%;
 `;
 
 const SearchInput = styled.input`
@@ -34,7 +35,7 @@ const SearchInput = styled.input`
   border-radius: 4px;
   background-color: #f5f5f5;
   color: #333;
-  font-size: 16px;
-  width: 85rem;
+  font-size: 1.2rem;
+  width: 100%;
   outline: none;
 `;

@@ -14,5 +14,5 @@ const Badge = styled.div`
   min-width: 100px;
   text-align: center;
   line-height: 50px;
-  max-width: 150px;
+  width: 100%;
 `;

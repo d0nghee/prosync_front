@@ -28,6 +28,8 @@ export async function action({ request }) {
       const access = await headers.authorization;
       const refresh = await headers.refresh;
       if (access && refresh) {
+        const memberId = await response.data.memberId;
+        setCookie("memberId", memberId, { path: "/" });
         setCookie("accessToken", access, { path: "/" });
         setCookie("refreshToken", refresh, {
           path: "/",

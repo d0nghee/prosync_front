@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
     const originalRequest = await error.config;
     const accessToken = getCookie("accessToken");
 
-    if (error.response.headers && error.response.headers.authorization) {
+    if (error.response && error.response.headers.authorization) {
       // 헤더에 새 토큰이 있을 경우 - 토큰 변경 및 기존 요청을 재요청
       const newToken = error.response.headers.authorization;
       if (newToken) {
@@ -52,18 +52,18 @@ axiosInstance.interceptors.response.use(
       }
     }
     // 접근 불가 메뉴일 경우
-    else if (error.response) {
-      // 로그인 이후 사용 가능한 메뉴 -> 로그인 화면
-      if (error.response.status === 401) {
-        alert("로그인 이후 이용 가능한 메뉴입니다.");
-        return redirect("/auth?mode=login");
-      }
-      // 권한 없는 메뉴 -> 홈화면
-      else if (error.response.status === 403) {
-        alert("해당 메뉴에 대한 접근 권한이 없습니다.");
-        return redirect("/");
-      }
-    }
+    // else if (error.response) {
+    //   // 로그인 이후 사용 가능한 메뉴 -> 로그인 화면
+    //   if (error.response.status === 401) {
+    //     alert("로그인 이후 이용 가능한 메뉴입니다.");
+    //     return redirect("/auth?mode=login");
+    //   }
+    //   // 권한 없는 메뉴 -> 홈화면
+    //   else if (error.response.status === 403) {
+    //     alert("해당 메뉴에 대한 접근 권한이 없습니다.");
+    //     return redirect("/");
+    //   }
+    // }
     return Promise.reject(error);
   }
 );

@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
-import ProfileCard from "../common/ProfileCard";
+import ProfileCard from "../../common/ProfileCard";
 import { useDispatch, useSelector } from "react-redux";
-import { taskMembersAction } from "../../redux/reducers/taskMembers-slice";
+import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
 
 export default function TaskMemberList({
   taskMembers, //TODO: checklist인 경우 -> project member (프로젝트 회원 redux 로)
@@ -70,7 +70,7 @@ export default function TaskMemberList({
 
 const MemberBoxes = styled.div`
   max-height: 500px;
-  max-width: 200px;
+  width: 300px;
   border: 1px solid #dad7cd;
   padding: 1rem;
   border-radius: 10px;

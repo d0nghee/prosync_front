@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteTaskMemberApi, postTaskMemberApi } from "../../util/api";
+import { deleteTaskMemberApi, postTaskMemberApi } from "../../../util/api";
+import { tryFunc } from "../../../util/tryFunc";
 
 const taskMembersSlice = createSlice({
   name: "taskMembers",
@@ -53,12 +54,19 @@ export const requestApi = (taskId, originalMembers, checkedMembers) => {
   const addIds = checkedMemberIds.filter((one) => !assignedIds.includes(one));
   return async (dispatch) => {
     if (deleteIds.length !== 0) {
-      await deleteTaskMemberApi(taskId, { projectMemberIds: deleteIds });
+      tryFunc(
+        () => deleteTaskMemberApi(taskId, { projectMemberIds: deleteIds }),
+        () => {}
+      )();
     }
     if (addIds.length !== 0) {
-      await postTaskMemberApi(taskId, { projectMemberIds: addIds });
+      tryFunc(
+        () => postTaskMemberApi(taskId, { projectMemberIds: addIds }),
+        () => {}
+      )();
     }
-    dispatch(taskMembersAction.resetCheckedMember());
+    //초기화
+    dispatch(taskMembersAction.setTaskMembers([]));
   };
 };
 
