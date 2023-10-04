@@ -34,9 +34,9 @@ export default function Login() {
   const params = new URLSearchParams(location.search);
 
   const handleInputChange = (name, value) => {
-    if (name === "email") {
+    if (name === 'email') {
       handleEmailChange(value);
-    } else if (name === "password") {
+    } else if (name === 'password') {
       handlePasswordChange(value);
     }
   };

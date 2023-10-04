@@ -383,21 +383,21 @@ export default function SignupForm() {
           email: event.target.value,
         })
       );
-    } else if (event.target.name === "name") {
+    } else if (event.target.name === 'name') {
       dispatch(
         setFormData({
           ...signup.formData,
           name: event.target.value,
         })
       );
-    } else if (event.target.name === "password") {
+    } else if (event.target.name === 'password') {
       dispatch(
         setFormData({
           ...signup.formData,
           password: event.target.value,
         })
       );
-    } else if (event.target.name === "verifypassword") {
+    } else if (event.target.name === 'verifypassword') {
       dispatch(
         setVerifiedPassword({
           ...signup.verifiedPassword,
@@ -774,7 +774,10 @@ export default function SignupForm() {
               name="verifypassword"
               id="verifypassword"
             />
-            <DoubleCheck First={signup.formData.password} Second={signup.verifiedPassword.verifypassword}></DoubleCheck>
+            <DoubleCheck
+              First={signup.formData.password}
+              Second={signup.verifiedPassword.verifypassword}
+            ></DoubleCheck>
           </DivContainer>
           <Button
             backgroundColor={signup.isEmailValid && signup.isPasswordMatch && isVerifyCodeButtonVisible ? "#7B69B7" : "gray"}
@@ -783,7 +786,6 @@ export default function SignupForm() {
             disabled={!(signup.isEmailValid && signup.isPasswordMatch && isVerifyCodeButtonVisible)}
             modalCheck='생성'
           ></Button>
-          <Button backgroundColor="#B76969" label="취소" onClick={handleCancelButtonClick}></Button>
         </SideContent>
       </Page>
       <Popup

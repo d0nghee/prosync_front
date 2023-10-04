@@ -17,6 +17,12 @@ const Loading = styled.div`
   height: 10rem;
   margin-left: 40%;
   margin-top: 10%;
+  color: gray;
+  font-weight: 900;
+  width: 30rem;
+  height: 10rem;
+  margin-left: 40%;
+  margin-top: 10%;
 `;
 
 const Container = styled.div`

@@ -34,12 +34,15 @@ import { loader as projectLoader } from "./pages/project/EditProject";
 import NotificationRoot from "./pages/notification/NotificationRoot";
 import PersonalNotification from "./pages/notification/PersonalNotification";
 import ProjectNotification from "./pages/notification/ProjectNotification";
+import EditProject from "./pages/project/EditProject";
+import ProjectList from './pages/project/ProjectList';
 
-import EditProejct from "./pages/project/EditProject";
-import ProjectList, {
-  loader as projectListLoader,
-} from "./pages/project/ProjectList";
-import TaskRoadmapView from "./components/task/TaskRoadmapView";
+import EditProjectMember, {
+  loader as membersLoader,
+} from "./pages/project/EditProjectMember";
+import TaskRoadmapPage, {
+  loader as roadmapLoader,
+} from "./pages/task/TaskRoadmapView";
 
 const router = createBrowserRouter([
   {
