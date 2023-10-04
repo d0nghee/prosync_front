@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   max-height: 80rem;
-  /* height: 100%; */
   width: 75%;
   display: flex;
   flex-direction: column;
@@ -50,7 +49,6 @@ const Container = styled.div`
     background-color: gray;
     color: white;
     width: 7%;
-    height: 4%;
     padding-bottom: 1%;
     text-align: center;
     border-radius: 10px;
@@ -83,7 +81,7 @@ const MyProjects = () => {
         </div>
       </div>
       <div className="more-button" onClick={() => {navigate('/')}}>{`더보기 >`}</div>
-      <MyProjectsList></MyProjectsList>
+      <MyProjectsList/>
     </Container>
   );
 };

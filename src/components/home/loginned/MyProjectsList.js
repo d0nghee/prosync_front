@@ -14,25 +14,34 @@ const Container = styled.div`
   display: flex;
   align-items: center;
 
+  & > .no-project {
+    font-weight: 900;
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+    padding-top: 5%;
+    min-height: 10rem;
+  }
+
   & > .left-direction {
     margin-right: 2%;
-    color: ${props=> props.startPage ? '#eaefff':'#cc58ed'};
-    cursor: ${props=> props.startPage ? 'null':'pointer'};
+    color: ${props=> props.isNone ? 'null' : props.startPage ? '#eaefff' : '#cc58ed'};
+    cursor: ${props=> props.isNone ? 'null' : props.startPage ? 'null':  'pointer'};
   }
 
   & > .left-direction:hover {
-    color: ${props=> props.startPage ? 'null':'#7d7575'};
+    color: ${props=> props.isNone ? 'null' :props.startPage ? 'null': '#7d7575'};
 
   }
 
   & > .right-direction {
     margin-left: 2%;
-    color: ${props=> props.endPage ? '#eaefff':'#cc58ed'};
-    cursor: ${props=> props.endPage ? 'null':'pointer'};
+    color: ${props=> props.isNone ? 'null' :props.endPage ? '#eaefff': '#cc58ed'};
+    cursor: ${props=> props.isNone ? 'null' :props.endPage ? 'null': 'pointer'};
   }
 
   & > .right-direction:hover {
-    color: ${props=> props.endPage ? 'null':'#7d7575'};
+    color: ${props=> props.isNone ? 'null' :props.endPage ? 'null': '#7d7575'};
   }
 `;
 
@@ -109,7 +118,7 @@ const MyProjectsList = () => {
   }, [page, maxPage]);
 
   return (
-    <Container startPage={page===1} endPage={page===maxPage}>
+    <Container startPage={page===1} endPage={page===maxPage} isNone={projectsList.length==0}>
       {isLoading ? (
         <div>데이터 로딩중입니다.</div>
       ) : (
@@ -120,11 +129,15 @@ const MyProjectsList = () => {
             size="5x"
             onClick={handlePrev}
           />
-          <ListContainer>
-            {projectsList.map((project) => (
+          {
+            projectsList.length > 0 ? <ListContainer>{
+              projectsList.map((project) => (
               <MyProject key={project.projectId} project={project} />
             ))}
-          </ListContainer>
+            </ListContainer>
+            : <div className="no-project">현재 본인이 속한 프로젝트가 존재하지 않습니다</div>
+          }
+         
           <FontAwesomeIcon
             className="right-direction"
             icon={faAngleRight}

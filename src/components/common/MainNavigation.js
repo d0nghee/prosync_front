@@ -468,7 +468,7 @@ export default function MainNavigation() {
         onProjectFetchSuccessHandler,
         errorHandler
       )(inputValue);
-    }, 1000
+    }, 500
   ), [page, searchList])
 
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PublicProjectsList from './PublicProjectsList';
 
 const Container = styled.div`
-  /* height: 100%; */
+  max-height: 80rem;
   width: 75%;
   display: flex;
   flex-direction: column;
@@ -31,7 +31,6 @@ const Container = styled.div`
     background-color: rgb(217,217,217);
     color:black;
     width: 7%;
-    height: 4%;
     padding-bottom: 1%;
     text-align: center;
     border-radius: 10px;
@@ -61,7 +60,7 @@ const PublicProjects = () => {
         <div className="title">모든 프로젝트</div>
       </div>
       <div className="more-button" onClick={() => {navigate('/')}}>{`더보기 >`}</div>
-      <PublicProjectsList></PublicProjectsList>
+      <PublicProjectsList/>
     </Container>
   );
 };

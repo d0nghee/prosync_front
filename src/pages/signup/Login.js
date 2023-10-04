@@ -11,7 +11,7 @@ import {
 } from "../../redux/reducers/loginSlice";
 import axiosInstance from "../../util/axiosInstancs";
 import { getCookie, setCookie } from "../../util/cookies";
-import { getApi } from "../../util/api";
+import { getApi, postApi } from "../../util/api";
 import axios from "axios";
 import Popup from "../../components/popup/Popup";
 import {
@@ -60,17 +60,9 @@ export default function Login() {
   };
 
   const loginFunc = async () => {
-    const response = await axios.post(
-      "http://localhost:8080/api/v1/login",
-      login.loginFormData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    );
+    const response = await postApi('/login', login.loginFormData);
 
+    
     const header = response.headers;
     const access = await header.authorization;
     const refresh = await header.refresh;
@@ -106,23 +98,10 @@ export default function Login() {
   const handleLogin = async () => {
     setLoading(true);
     const errorHandlers = {
-      400: (error) => {
-        console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("잘못된 형식의 이메일을 입력하셨습니다."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
-      },
       401: (error) => {
         console.log(error.response.status);
         dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("잘못된 정보를 입력하셨습니다."));
+        dispatch(setModalMessage("일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요."));
         dispatch(
           setModalButtons([
             {
@@ -136,6 +115,19 @@ export default function Login() {
         console.log(error.response.status);
         dispatch(setIsConfirmModalOpen(true));
         dispatch(setModalMessage("회원 정보를 찾지 못하였습니다."));
+        dispatch(
+          setModalButtons([
+            {
+              label: "확인",
+              onClick: () => dispatch(setIsConfirmModalOpen(false)),
+            },
+          ])
+        );
+      },
+      422: (error) => {
+        console.log(error.response.status);
+        dispatch(setIsConfirmModalOpen(true));
+        dispatch(setModalMessage("이메일 형식이 잘못되었습니다."));
         dispatch(
           setModalButtons([
             {

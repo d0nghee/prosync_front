@@ -14,7 +14,7 @@ const HomeContainer = styled.div`
 `;
 
 const LoginHomeContainer = styled.div`
-  height: 160rem;
+  /* height: 160rem; */
   display: flex;
   flex-direction: column;
   align-items: center;
