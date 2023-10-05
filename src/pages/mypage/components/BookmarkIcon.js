@@ -8,7 +8,7 @@ export default function BookmarkIcon(props) {
 
     return (
         <>
-            {isBookCheck ? <FaBookmark onClick={onClick} style={style}/> : <FaRegBookmark onClick={onClick} style={style}/>}
+            {isBookCheck ? (<FaRegBookmark onClick={onClick} style={style}/>) : (<FaBookmark onClick={onClick} style={style}/>)}
         </>
     )
 }
