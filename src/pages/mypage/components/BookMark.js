@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { deleteApi, getApi, postApi } from '../../../util/api'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../../redux/reducers/mypageSlice';
-import { Container, BookmarkListItem, PaginationContainer, PageButton, PostTitle, PostDate, ListItemContainer, PostListContainer, PostItem } from '../../../css/MyPageStyle'
+import { Container, BookmarkListItem, PaginationContainer, PageButton, PostTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectTitle, ProjectImage } from '../../../css/MyPageStyle'
 import BookmarkIcon from './BookmarkIcon';
 import Loading from '../../../components/common/Loading';
 import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
@@ -147,26 +147,26 @@ export default function BookMark(props) {
 
     return mypage.postData.map((post, idx) =>
       <PostItem
-        id={post.bookmarkId}
         key={post.bookmarkId}
       >
-        <ListItemContainer>
-          <BookmarkIcon
-            style={bookmarkIcon}
-            onClick={() => subscribeFetch(idx)}
-            isBookCheck={subscribeState[currentPage]?.[post.projectId]}
-          />
 
-          <PostTitle
-            onMouseEnter={() => handleMouseEnter(idx)}
-            onMouseLeave={() => handleMouseLeave(idx)}
-            style={hoverState[idx] ? HoverStyle : postTitleStyle}
-            onClick={() => handleTitleClick(idx)}
-          >
-            {post.projectId}
-            {post.title}
-          </PostTitle>
-        </ListItemContainer>
+        <BookmarkIcon
+          style={bookmarkIcon}
+          onClick={() => subscribeFetch(idx)}
+          isBookCheck={subscribeState[currentPage]?.[post.projectId]}
+        />
+
+        <ProjectTitle
+          onMouseEnter={() => handleMouseEnter(idx)}
+          onMouseLeave={() => handleMouseLeave(idx)}
+          style={hoverState[idx] ? HoverStyle : postTitleStyle}
+          onClick={() => handleTitleClick(idx)}
+        >
+          {post.projectId}
+          {post.title}
+        </ProjectTitle>
+
+
         <PostDate>
           {/* {post.created_at[0]}.
           {post.created_at[1]}.

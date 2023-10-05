@@ -16,7 +16,7 @@ const bookmarkIcon = {
 }
 
 
-export default function MyProject(props) {
+export default function MyProject() {
 
   const dispatch = useDispatch();
   const mypage = useSelector(state => state.mypage);
@@ -131,6 +131,7 @@ export default function MyProject(props) {
     const projectId = projectList.data[idx].projectId;
 
     postApi(`/bookmark/${projectId}`);
+    
     setSubscribe((prevSubscribe) => {
       return {
         ...prevSubscribe,
@@ -206,8 +207,6 @@ export default function MyProject(props) {
       )
     }
   }
-
-
 
 
   return (
