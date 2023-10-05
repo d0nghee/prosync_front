@@ -1,11 +1,9 @@
-import CreateProject from '../../components/project/CreateProject';
-import SideBar from '../../components/common/SideBar';
+import ProjectForm from '../../components/project/ProjectForm';
 
 export default function NewProject() {
   return (
     <>
-      <SideBar></SideBar>
-      <CreateProject></CreateProject>
+      <ProjectForm method="POST" />
     </>
   );
 }

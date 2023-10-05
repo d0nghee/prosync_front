@@ -49,10 +49,8 @@ const footerItems = [
 
 const FooterContainer = styled.div`
   width: 90vw;
-  position: absolute;
-  left: 5%;
-  
-  z-index: -1000;
+  margin-left: 7%;
+  z-index: 5;
 `
 
 const StyledFooter = styled.div`
@@ -79,11 +77,10 @@ const Logo = styled.img`
   width: 200px;
   height: 110px;
   cursor: pointer;
-  position: relative;
   margin-left: 50px;
 `
 
-const Link = styled.text`
+const Link = styled.div`
   font-weight: 700;
   font-size: small;
   cursor: pointer;

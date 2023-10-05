@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const Overlay = styled.div`
+  margin-top: 0%;
   position: fixed;
   top: 0;
   left: 0;

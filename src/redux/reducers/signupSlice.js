@@ -17,6 +17,7 @@ const initialState = {
     isEmailValid: false,
     isPasswordMatch: false,
     
+    
 };
 
 export const signupSlice = createSlice({
@@ -47,6 +48,7 @@ export const signupSlice = createSlice({
         setIsPasswordMatch: (state, action) => {
             state.isPasswordMatch = action.payload;
         },
+       
         
     },
 });

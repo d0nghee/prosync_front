@@ -1,37 +1,40 @@
 import SignUp from "../src/pages/signup/SignUp";
 import Login from "./pages/signup/Login";
 import Error from "../src/pages/Error";
-import Home from "../src/pages/signup/Home";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
-import MyPage from '../src/pages/mypage/MyPage'
-import ErrorPage from './pages/Error';
-import Authentication, {
-  action as authAction,
-} from './pages/auth/Authentication';
-import { action as logoutAction } from './pages/auth/Logout';
-import { checkTokenLoader, accessTokenLoader } from './util/auth';
-import Tasks, { loader as tasksLoader } from './pages/task/Tasks';
-import TasksRoot from './pages/task/TasksRoot';
-import EditTask from './pages/task/EditTask';
-import NewTask from './pages/task/NewTask';
+import MyPage from "../src/pages/mypage/MyPage";
+import ErrorPage from "./pages/Error";
+import Authentication from "./pages/auth/Authentication";
+import { Logout } from "./pages/auth/Logout";
+import Tasks from "./pages/task/Tasks";
+import TasksRoot from "./pages/task/TasksRoot";
+import EditTask from "./pages/task/EditTask";
+import NewTask from "./pages/task/NewTask";
 import TaskDetail, {
-  loader as taskDetailLoader,
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
-import { action as manipulateTaskAction } from "./components/task/TaskForm";
 import NewProject from "./pages/project/NewProject";
+import Project from "./components/notification/Project";
+import NotificationList from "./components/notification/NotificationList";
+import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
+import ProjectListContainer from "./pages/notification/ProjectListContainer";
+import { useEffect, useState } from "react";
+import Loading from "./components/common/Loading";
+import Footer from "./components/common/Footer";
+import LogOut from "../src/pages/auth/Logout";
+import ProtectedLayout from "./pages/ProtectedLayout";
+import Home from "./pages/Home";
+import { loader as projectLoader } from "./pages/project/EditProject";
 import NotificationRoot from "./pages/notification/NotificationRoot";
 import PersonalNotification from "./pages/notification/PersonalNotification";
 import ProjectNotification from "./pages/notification/ProjectNotification";
-import Project from "./components/notification/Project";
-import NotificationList from "./components/notification/NotificationList";
-import ProjectList from "./components/notification/ProjectList";
-import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
-import ProjectListContainer from "./pages/notification/ProjectListContainer";
-import Footer from "./components/common/Footer";
-import { useEffect, useState } from "react";
-import Loading from "./components/common/Loading";
+import EditProject from "./pages/project/EditProject";
+import ProjectList from "./pages/project/ProjectList";
+
+import EditProjectMember, {
+  loader as membersLoader,
+} from "./pages/project/EditProjectMember";
 import { useDispatch } from "react-redux";
 import EditPassword from "./pages/mypage/components/EditPassword";
 import EditMember from "./pages/mypage/components/EditMember";
@@ -44,13 +47,11 @@ import MyProject from "./pages/mypage/components/MyProject";
 
 
 const router = createBrowserRouter([
-
   {
     path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     id: "root",
-    loader: accessTokenLoader,
     children: [
       { index: true, element: <Home /> },
       // 사용자 인증
@@ -74,41 +75,95 @@ const router = createBrowserRouter([
       },
       // projects //
       {
-        path: "projects",
+        path: "/",
+        element: <ProtectedLayout />,
         children: [
-          { index: true, element: <NewProject /> },
+          { path: "logout", element: <Logout /> },
+
           {
-            path: ":projectId",
+            path: "/user/profile",
+            element: <MyPage />,
+          },
+
+          {
+            path: "projects",
             children: [
-              // tasks //
-              { index: true },
               {
-                path: "tasks",
-                element: <TasksRoot />,
+                index: true,
+                id: "projects",
+                element: <ProjectList />,
+                // element: <Project />,
+              },
+              { path: "new", element: <NewProject /> },
+              {
+                path: ":projectId",
                 children: [
-                  { index: true, element: <Tasks />, loader: tasksLoader },
+                  { index: true },
                   {
-                    path: ":taskId",
-                    id: "task-details",
-                    loader: taskDetailLoader,
+                    id: "edit",
+                    path: "edit",
+                    element: <EditProject />,
+                    loader: projectLoader,
+                  },
+                  {
+                    id: "editmember",
+                    path: "members",
+                    element: <EditProjectMember />,
+                    loader: membersLoader,
+                  },
+
+                  // tasks //
+                  {
+                    path: "tasks",
+                    element: <TasksRoot />,
                     children: [
+                      { index: true, element: <Tasks /> },
                       {
-                        index: true,
-                        element: <TaskDetail />,
-                        action: deleteTaskAction,
-                        id: "task-delete",
+                        path: ":taskId",
+                        id: "task-details",
+                        children: [
+                          {
+                            index: true,
+                            element: <TaskDetail />,
+                            action: deleteTaskAction,
+                            id: "task-delete",
+                          },
+                          {
+                            path: "edit",
+                            element: <EditTask />,
+                          },
+                        ],
                       },
                       {
-                        path: "edit",
-                        element: <EditTask />,
-                        action: manipulateTaskAction,
+                        path: "new",
+                        element: <NewTask />,
                       },
                     ],
                   },
+                ],
+              },
+            ],
+          },
+
+          // notification
+          {
+            path: "notification",
+            element: <NotificationRoot />,
+            children: [
+              {
+                index: true,
+                id: "personal-noti",
+                element: <PersonalNotification />,
+              },
+              {
+                path: "projects",
+                id: "project-noti",
+                element: <ProjectNotification />,
+                children: [
+                  { index: true, element: <ProjectLogPreview /> },
                   {
-                    path: "new",
-                    element: <NewTask />,
-                    action: manipulateTaskAction,
+                    path: ":projectId",
+                    element: <ProjectListContainer />,
                   },
                 ],
               },
@@ -117,30 +172,7 @@ const router = createBrowserRouter([
         ],
       },
 
-      // notification
-      {
-        path: "notification",
-        element: <NotificationRoot />,
-        children: [
-          {
-            index: true,
-            id: "personal-noti",
-            element: <PersonalNotification />,
-          },
-          {
-            path: "projects",
-            id: "project-noti",
-            element: <ProjectNotification />,
-            children: [
-              { index: true, element: <ProjectLogPreview /> },
-              {
-                path: ":projectId",
-                element: <ProjectListContainer />,
-              },
-            ],
-          },
-        ],
-      },
+      // users //
     ],
   },
 ]);

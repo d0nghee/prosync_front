@@ -5,8 +5,11 @@ import Modal from "./Modal";
 import { deleteApi, patchApi } from "../../util/api";
 import { json } from "react-router";
 import NotificationTitle from "./NotificationTitle";
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { accessTokenLoader } from "./../../util/auth";
+import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { tryFunc } from "../../util/tryFunc";
 
 const NoData = styled.div`
   text-align: center;
@@ -46,9 +49,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-
-
-const NotificationList = ({ notiPageList}) => {
+const NotificationList = ({ notiPageList }) => {
   const [selectedTargetIds, setSelectedTargetIds] = useState(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdateOrDelete, setisUpdateOrDelete] = useState("");
@@ -56,96 +57,88 @@ const NotificationList = ({ notiPageList}) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  
-
   const handleCheckboxChange = useCallback((id, isChecked) => {
     if (isChecked) {
-      setSelectedTargetIds((prevIds) => {const newSet = new Set(prevIds); newSet.add(id); return newSet});
+      setSelectedTargetIds((prevIds) => {
+        const newSet = new Set(prevIds);
+        newSet.add(id);
+        return newSet;
+      });
     } else {
-      setSelectedTargetIds((prevIds) => {const newSet = new Set(prevIds); newSet.delete(id); return newSet});
+      setSelectedTargetIds((prevIds) => {
+        const newSet = new Set(prevIds);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   }, []);
 
-  const notiUpdateHandler = useCallback((isUpdateOrDelete) => {
-
+  const updateNoficiations = async (isUpdateOrDelete) => {
     if (isUpdateOrDelete === "ALLDELETE") {
-      deleteApi("/notification/deleteAll")
-        .then((response) => {
-          console.log("delete :");
-          console.log(response);
-          if (response && response.status === 200) {
-            setIsModalOpen(false);
-
-            navigate(`${location.pathname}`);
-          }
-        })
-        .catch((error) => {
-          throw json(
-            { status: error.response.status },
-            { message: error.response.data.resultCode }
-          );
-        });
-    } else {
-      if (selectedTargetIds.length === 0) {
-        alert("0개의 알림을 선택하셨습니다. 1개 이상의 알림을 선택해주세요.");
-        setIsModalOpen(false);
-      }
-  
-  
-      if (isUpdateOrDelete === "UPDATE") {
-        patchApi("/notification/read", {
+      const response = await deleteApi("/notification/deleteAll");
+      return { response, isUpdateOrDelete };
+    } else if (isUpdateOrDelete === "UPDATE") {
+      const response = await patchApi("/notification/read", {
+        notificationTargetIds: Array.from(selectedTargetIds),
+      });
+      return { response, isUpdateOrDelete };
+    } else if (isUpdateOrDelete === "DELETE") {
+      const response = await deleteApi("/notification/delete", {
+        data: {
           notificationTargetIds: Array.from(selectedTargetIds),
-        })
-          .then((response) => {
-            console.log("update :");
-            console.log(response);
-            if (response && response.status === 200) {
-              setIsModalOpen(false);
-  
-              navigate(`${location.pathname}?${queryParams.toString()}`)
-            }
-          })
-          .catch((error) => {
-            throw json(
-              { status: error.response.status },
-              { message: error.response.data.resultCode }
-            );
-          });
-      } else if (isUpdateOrDelete === "DELETE") {
-        deleteApi("/notification/delete", {
-          data: {
-            notificationTargetIds: Array.from(selectedTargetIds),
-          },
-        })
-          .then((response) => {
-            console.log("delete :");
-            console.log(response);
-            if (response && response.status === 200) {
-              setIsModalOpen(false);
-  
-              navigate(`${location.pathname}?${queryParams.toString()}`)
-
-            }
-          })
-          .catch((error) => {
-            throw json(
-              { status: error.response.status },
-              { message: error.response.data.resultCode }
-            );
-          });
-      }
+        },
+      });
+      return { response, isUpdateOrDelete };
     }
+  };
 
+  const onNotiUpdateSuccessHandler = ({isUpdateOrDelete}) => {
+    
+      if (isUpdateOrDelete === "ALLDELETE") {
+        alert("알림이 모두 삭제되었습니다.");
+      } else if (isUpdateOrDelete === "UPDATE") {
+        alert("알림 선택 읽기가 완료되었습니다.");
+      } else if (isUpdateOrDelete === "DELETE") {
+        alert("알림 선택 삭제가 완료되었습니다.");
+      }
+      setIsModalOpen(false);
+      navigate(`${location.pathname}?${queryParams.toString()}`);
+    
+  };
+
+  const onNotiUpdateErrorHandler = {
+    401: (error) => {
+      console.log(error.response.status);
+      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
+      setIsLoggedIn(false);
+      navigate(`/auth?mode=login&returnUrl=${location.pathname}${location.search}`);
+    },
+    default: (error) => {
+      console.error("Unknown error:", error);
+    },
+  };
+
+  const notiUpdateHandler = useCallback((isUpdateOrDelete) => {
+    if (isUpdateOrDelete === "ALLDELETE" || selectedTargetIds.size > 0) {
+      tryFunc(
+        updateNoficiations,
+        onNotiUpdateSuccessHandler,
+        onNotiUpdateErrorHandler
+      )(isUpdateOrDelete);
+    } else {
+      alert("0개의 알림을 선택하셨습니다. 1개 이상의 알림을 선택해주세요.");
+      setIsModalOpen(false);
+    }
   });
 
-  const onAllCheckHandler = (isChecked) => {
 
+
+  const onAllCheckHandler = (isChecked) => {
     console.log(isChecked);
 
     if (isChecked) {
-
-      if (notiPageList.length===0) {
-        alert('알림이 존재하지 않아 전체선택 하실 수 없습니다.');
+      if (notiPageList.length === 0) {
+        alert("알림이 존재하지 않아 전체선택 하실 수 없습니다.");
         return false;
       }
 
@@ -153,42 +146,43 @@ const NotificationList = ({ notiPageList}) => {
       notiPageList.forEach((notification) => {
         selectedIds.add(notification.notificationTargetId);
       });
-      
+
       setSelectedTargetIds(selectedIds);
     } else {
       setSelectedTargetIds(new Set());
     }
 
     return true;
-  }
-
-
+  };
 
   return (
     <Container>
       <NotificationTitle onAllCheckHandler={onAllCheckHandler} />
       {notiPageList.length > 0 &&
-        notiPageList.map((notification) => (  selectedTargetIds.has(notification.notificationTargetId) ?
-          <Notification
-          key={notification.notificationTargetId}
-          notification={notification}
-          onCheckboxChange={handleCheckboxChange}
-          checked={true}
-        /> : <Notification
-        key={notification.notificationTargetId}
-        notification={notification}
-        onCheckboxChange={handleCheckboxChange}
-        checked={false}
-      />
-        
-        ))}
+        notiPageList.map((notification) =>
+          selectedTargetIds.has(notification.notificationTargetId) ? (
+            <Notification
+              key={notification.notificationTargetId}
+              notification={notification}
+              onCheckboxChange={handleCheckboxChange}
+              checked={true}
+            />
+          ) : (
+            <Notification
+              key={notification.notificationTargetId}
+              notification={notification}
+              onCheckboxChange={handleCheckboxChange}
+              checked={false}
+            />
+          )
+        )}
       {notiPageList.length === 0 && (
         <NoData>
           <h2>알림이 존재하지 않습니다!</h2>
         </NoData>
       )}
       <ButtonContainer>
-      <button
+        <button
           onClick={() => {
             setIsModalOpen(true);
             setisUpdateOrDelete("ALLDELETE");
