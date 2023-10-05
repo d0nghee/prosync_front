@@ -18,6 +18,8 @@ export default function MyPage() {
 
   let content;
 
+
+
   switch (location.pathname) {
     case '/user/password' :
       content = <EditPassword />;
@@ -35,6 +37,10 @@ export default function MyPage() {
       content = <LeaveMember />;
       break;
   }
+
+  useEffect(() => {
+    
+  })
 
   useEffect(() => {
     

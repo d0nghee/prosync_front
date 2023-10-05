@@ -28,7 +28,8 @@ const HoverStyle = {
   textDecoration: 'underline',
 }
 
-export default function BookMark() {
+export default function BookMark(props) {
+
 
   const location = useLocation();
   const dispatch = useDispatch();

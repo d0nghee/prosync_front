@@ -16,9 +16,10 @@ const bookmarkIcon = {
 }
 
 
-export default function MyProject() {
+export default function MyProject(props) {
 
-
+  const dispatch = useDispatch();
+  const mypage = useSelector(state => state.mypage);
   const navi = useNavigate();
   const location = useLocation();
 
@@ -30,7 +31,6 @@ export default function MyProject() {
   const [projectList, setProjectList] = useState();
   const [pageInfo, setPageInfo] = useState();
   const [bookmarkList, setBookmarkList] = useState();
-  const itemPerPage = 10;
   const paginationButtons = [];
 
 
@@ -43,6 +43,16 @@ export default function MyProject() {
       setCurrentPage(nextPage);
     }
   }, [location.search])
+
+  useEffect(() => {
+    async function fetchData() {
+      bookmarkFetch();
+      myprojectFetch();
+      console.log("실행");
+    }
+
+     fetchData();
+  } ,[])
 
   useEffect(() => {
     setIsLoading(true);
@@ -137,6 +147,7 @@ export default function MyProject() {
     setProjectList(data);
     const page = data.pageInfo;
     setPageInfo(page);
+    dispatch(setProjectListPageInfo(page));
   }
 
   const fetchMyproject = async () => {
@@ -214,7 +225,7 @@ export default function MyProject() {
         {page()}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === pageInfo.totalPages}
+          disabled={currentPage === mypage.totalPages}
         >
           Next
         </button>

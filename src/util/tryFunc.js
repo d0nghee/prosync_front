@@ -8,7 +8,7 @@ export const tryFunc =  (fun, onSuccess, errorHandlers = {}) => async (...args)=
     if (result.response && result.response instanceof AxiosError) {
       throw result.response;
     }
-    onSuccess(result);
+    await onSuccess(result);
   } catch (error) {
     console.log(error);
     console.log('tryFuc 에러 ');
