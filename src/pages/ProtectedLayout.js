@@ -11,11 +11,11 @@ export default function ProtectedLayout() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("여기");
+    console.log("protectedLayout의 useEffect 실행")
     if (!isLoggedIn) {
       if (!(location.pathname === "/logout")) {
         setTimeout(() => {
-          alert("로그인 하셔야 이용할 수 있는 메뉴입니다.");
+          alert("로그인 하셔야 이용할 수 있습니다. 로그인 페이지로 이동합니다.");
           setIsLoading(false);
           navigate(
             `/auth?mode=login&returnUrl=${location.pathname}${location.search}`

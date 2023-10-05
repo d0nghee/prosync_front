@@ -10,6 +10,7 @@ import ExpandArrow from "./ExpandArrow";
 import { tryFunc } from "../../util/tryFunc";
 import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Direction = styled.div`
   position: absolute;
@@ -114,6 +115,7 @@ const MenuDivider = styled.div`
 //TODO: 페이지 따라 메뉴 내용 바꾸기
 function SideBar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const trigger= useSelector((state) => state.trigger.trigger)
   const queryParams = new URLSearchParams(location.search);
@@ -159,7 +161,7 @@ function SideBar() {
     tryFunc(
       fetchNotificationCount,
       onNotificationCountSuccess,
-      countErrorHandler
+      dispatch
     )();
   }, [isSidebarOpen, location, trigger]);
 
@@ -216,7 +218,7 @@ function SideBar() {
   const onNotificationReadHandler = (e) => {
     e.stopPropagation();
     if (window.confirm("알림을 모두 읽음 처리하시겠습니까?")) {
-      tryFunc(markAllNotificationAsRead, onAllReadSuccess, allReadErrorHandler)();
+      tryFunc(markAllNotificationAsRead, onAllReadSuccess, dispatch)();
     } else {
       alert("알림 읽음 처리가 취소되었습니다.");
     }
@@ -252,7 +254,7 @@ function SideBar() {
   const onNotificationDeleteHandler = (e) => {
     e.stopPropagation();
     if (window.confirm("알림을 모두 삭제하시겠습니까?")) {
-      tryFunc(fetchNotificationDelete,onNotificationDeleteSuccess, allDeleteErrorHandler)();
+      tryFunc(fetchNotificationDelete,onNotificationDeleteSuccess, dispatch)();
     } else {
       alert("알림 삭제 처리가 취소되었습니다");
     }

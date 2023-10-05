@@ -9,6 +9,7 @@ import memberCheckboxSlice from '../reducers/memberCheckboxSlice';
 import memberAuthoritySlice from '../reducers/memberAuthoritySlice';
 import mypageReducer from '../reducers/mypageSlice';
 import triggerReducer from '../reducers/notificationTrigger-slice';
+import errorReducer from '../reducers/error-slice';
 
 
 export const store = configureStore({
@@ -22,6 +23,7 @@ export const store = configureStore({
     trigger : triggerReducer,
     authority: memberAuthoritySlice,
     memberCheckbox: memberCheckboxSlice,
+    error: errorReducer,
   },
 });
 

@@ -413,6 +413,7 @@ export default function MainNavigation() {
   const email = getCookie("email");
   const memberId = getCookie("memberId");
   const [profileUpdate, setProfileUpdate] = useState(false);
+  const dispatch = useDispatch();
 
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const navigate = useNavigate();
@@ -466,7 +467,7 @@ export default function MainNavigation() {
       tryFunc(
         projectFetchApi,
         onProjectFetchSuccessHandler,
-        errorHandler
+        dispatch
       )(inputValue);
     }, 500
   ), [page, searchList])
@@ -625,7 +626,7 @@ export default function MainNavigation() {
       tryFunc(
         fetchMemberInfo,
         onFetchMemberInfoSuccessHandler,
-        fetMemberInfoErrorHandler
+        dispatch
       )();
     }
   }, [isLoggedIn]);

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBellSlash, faBell } from "@fortawesome/free-solid-svg-icons";
 import { tryFunc } from "../../util/tryFunc";
 import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { useDispatch } from "react-redux";
 
 const selectColor = (code) => {
   const array = [
@@ -147,6 +148,7 @@ const Code = styled.div`
 
 const Notification = ({ checked, notification, onCheckboxChange }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isChecked, setIsChecked] = useState(false);
   const textRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -190,9 +192,10 @@ const Notification = ({ checked, notification, onCheckboxChange }) => {
   const color = selectColor(notification.code);
 
   const markNotificationRead = async () => {
-    await patchApi(
+    const response = await patchApi(
       `/notification/${notification.notificationTargetId}/read`
     );
+    return response;
   }
 
   const onMarkReadSuccess = () => {
@@ -231,7 +234,8 @@ const Notification = ({ checked, notification, onCheckboxChange }) => {
 
   const handleMoveUrl = useCallback(() => {
     if (notification.read === false) {
-      tryFunc(markNotificationRead, onMarkReadSuccess, onMarkReadError)();
+      // tryFunc(markNotificationRead, onMarkReadSuccess, onMarkReadError)();
+      tryFunc(markNotificationRead, onMarkReadSuccess, dispatch)();
     } else {
       navigate(notification.url);
     }

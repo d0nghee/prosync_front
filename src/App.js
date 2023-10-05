@@ -53,8 +53,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       // 사용자 인증
-      { path: "/", element: <Home /> },
-      { path: "auth", element: <Authentication /> },
+      { path: "/auth", element: <Authentication /> },
       { path: "/login", element: <Login />, errorElement: <Error /> },
       { path: "/signup", element: <SignUp /> },
 
@@ -69,41 +68,65 @@ const router = createBrowserRouter([
             element: <MyPage />,
           },
 
-          // projects //
           {
-            path: "projects",
+            path: 'projects',
             children: [
-              { index: true, element: <NewProject /> },
               {
-                path: ":projectId",
+                index: true,
+                id: 'projects',
+                element: <ProjectList />,
+                // element: <Project />,
+              },
+              { path: 'new', element: <NewProject /> },
+              {
+                path: ':projectId',
                 children: [
-                  // tasks //
                   { index: true },
                   {
-                    path: "tasks",
+                    id: 'edit',
+                    path: 'edit',
+                    element: <EditProject />,
+                    loader: projectLoader,
+                  },
+                  {
+                    id: 'editmember',
+                    path: 'members',
+                    element: <EditProjectMember />,
+                    loader: membersLoader,
+                  },
+    
+                  // tasks //
+                  {
+                    path: 'tasks',
                     element: <TasksRoot />,
                     children: [
                       { index: true, element: <Tasks />, loader: tasksLoader },
                       {
-                        path: ":taskId",
-                        id: "task-details",
+                        id: 'task-roadmap',
+                        path: 'roadmap',
+                        element: <TaskRoadmapPage />,
+                        loader: roadmapLoader,
+                      },
+                      {
+                        path: ':taskId',
+                        id: 'task-details',
                         loader: taskDetailLoader,
                         children: [
                           {
                             index: true,
                             element: <TaskDetail />,
                             action: deleteTaskAction,
-                            id: "task-delete",
+                            id: 'task-delete',
                           },
                           {
-                            path: "edit",
+                            path: 'edit',
                             element: <EditTask />,
                             action: manipulateTaskAction,
                           },
                         ],
                       },
                       {
-                        path: "new",
+                        path: 'new',
                         element: <NewTask />,
                         action: manipulateTaskAction,
                       },

@@ -4,12 +4,8 @@ import { setCookie, getCookie } from "./cookies";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsLoggedIn } from "../redux/reducers/loginSlice";
 
-
-
-
-
 export const axiosInstance = axios.create({
-  baseURL: "http://13.209.219.235:8080/api/v1",
+  baseURL: "http://localhost:8080/api/v1",
   headers: {
     "Content-Type": "application/json",
     accept: "application/json",
@@ -43,11 +39,20 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = await error.config;
     const accessToken = getCookie("accessToken");
-    console.log('interceptor 지나감');
-    
+    console.log("interceptor 지나감");
 
-    if (error.response.headers && error.response.headers.authorization) {
+    // 네트워크 에러 잡아야함
+    // 서버와의 연결이 끊겼을 시 error.code는 ERR_NETWORK를 내뱉는다.
+    console.log(error);
+    console.log(error.code);
 
+    if (error.code === "ERR_NETWORK") {
+      console.log("네트워크 에러 발생");
+      throw error;
+
+
+
+    } else if (error.response.headers && error.response.headers.authorization) {
       // 헤더에 새 토큰이 있을 경우 - 토큰 변경 및 기존 요청을 재요청
       const newToken = error.response.headers.authorization;
       if (newToken) {
@@ -61,9 +66,9 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    console.log('axiosInstance interceptor response error :');
+    console.log("axiosInstance interceptor response error :");
     console.log(error);
-    console.log('Promise reject 객체');
+    console.log("Promise reject 객체");
     return Promise.reject(error);
   }
 );

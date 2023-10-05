@@ -9,6 +9,7 @@ import { tryFunc } from "./../../util/tryFunc";
 import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
 import { setTrigger } from "../../redux/reducers/notificationTrigger-slice";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Loading = styled.div`
   color: gray;
@@ -106,6 +107,7 @@ const PersonalNotification = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [notReadCount, setNotReadCount] = useState(0);
+  const dispatch = useDispatch();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
@@ -141,7 +143,7 @@ const PersonalNotification = (props) => {
     tryFunc(
       fetchNotificationCount,
       onNotificationCountSuccess,
-      countErrorHandler
+      dispatch
     )();
   }, [location]);
 
@@ -186,7 +188,7 @@ const PersonalNotification = (props) => {
       tryFunc(
         fetchNotificationList,
         onFetchNotificationListSuccess,
-        getNotificationListErrorHandler
+        dispatch
       )();
     };
 
@@ -230,7 +232,7 @@ const PersonalNotification = (props) => {
       tryFunc(
         fetchAllReadNotification,
         onAllReadSuccess,
-        allReadErrorHandler
+        dispatch
       )();
     } else {
       alert("읽음 처리를 취소하셨습니다.");

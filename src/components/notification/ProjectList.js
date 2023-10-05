@@ -28,6 +28,12 @@ const NoProject = styled.div`
   text-align: center;
 `;
 
+const ProjectCount = styled.div`
+  text-align: center;
+  font-size: 1.5rem;
+    font-weight: 700;
+`
+
 const ProjectList = () => {
   const [ref, inView] = useInView();
   const [projects, setProjects] = useState([]);
@@ -35,6 +41,7 @@ const ProjectList = () => {
   const [maxPage, setMaxPage] = useState(1);
   const [selectedProject, setSelectedProject] = useState("");
   const location = useLocation();
+  const [projectCount, setProjectCount] = useState(0);
   
 
   const fetchProjects = async () => {
@@ -47,6 +54,7 @@ const ProjectList = () => {
     setProjects([...projects, ...data.data]);
     setPage((prevPage) => prevPage + 1);
     setMaxPage(data.pageInfo.totalPages);
+    setProjectCount(data.pageInfo.totalElements);
   };
 
   const onFetchProjectsErrorHandler =  {
@@ -85,6 +93,8 @@ const ProjectList = () => {
   }, []);
 
   return (
+    <>
+    <ProjectCount>{`프로젝트 갯수 : ${projectCount} 개`}</ProjectCount>
     <StyledProjectList onClick={(e) => e.stopPropagation()}>
       {projects.length > 0 ? (
         projects.map((project) => {
@@ -105,6 +115,7 @@ const ProjectList = () => {
       )}
       <div ref={ref}></div>
     </StyledProjectList>
+    </>
   );
 };
 
