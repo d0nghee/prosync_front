@@ -5,20 +5,15 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
 import MyPage from "../src/pages/mypage/MyPage";
 import ErrorPage from "./pages/Error";
-import Authentication, {
-  action as authAction,
-} from "./pages/auth/Authentication";
-import { Logout, action as logoutAction } from "./pages/auth/Logout";
-import { checkTokenLoader, accessTokenLoader } from "./util/auth";
-import Tasks, { loader as tasksLoader } from "./pages/task/Tasks";
+import Authentication from "./pages/auth/Authentication";
+import { Logout } from "./pages/auth/Logout";
+import Tasks from "./pages/task/Tasks";
 import TasksRoot from "./pages/task/TasksRoot";
 import EditTask from "./pages/task/EditTask";
 import NewTask from "./pages/task/NewTask";
 import TaskDetail, {
-  loader as taskDetailLoader,
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
-import { action as manipulateTaskAction } from "./components/task/TaskForm";
 import NewProject from "./pages/project/NewProject";
 import Project from "./components/notification/Project";
 import NotificationList from "./components/notification/NotificationList";
@@ -40,9 +35,16 @@ import ProjectList from "./pages/project/ProjectList";
 import EditProjectMember, {
   loader as membersLoader,
 } from "./pages/project/EditProjectMember";
-import TaskRoadmapPage, {
-  loader as roadmapLoader,
-} from "./pages/task/TaskRoadmapView";
+import { useDispatch } from "react-redux";
+import EditPassword from "./pages/mypage/components/EditPassword";
+import EditMember from "./pages/mypage/components/EditMember";
+import LeaveMember from "./pages/mypage/components/LeaveMember";
+import BookMark from "./pages/mypage/components/BookMark";
+import MyProject from "./pages/mypage/components/MyProject";
+
+
+
+
 
 const router = createBrowserRouter([
   {
@@ -53,10 +55,25 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       // 사용자 인증
-      { path: "/auth", element: <Authentication /> },
-      { path: "/login", element: <Login />, errorElement: <Error /> },
-      { path: "/signup", element: <SignUp /> },
-
+      { path: '/', element: <Home /> },
+      { path: 'auth', element: <Authentication />, },
+      { path: 'logout', action: logoutAction },
+      { path: 'login', element: <Login />, errorElement: <Error /> },
+      { path: 'signup', element: <SignUp /> },
+      // users //
+      {
+        path: '/user',
+        element: <MyPage />,
+        loader: checkTokenLoader,
+        children : [
+          { path : 'profile', element : <EditMember />},
+          { path : 'password', element : <EditPassword />},
+          { path : 'leave', element : <LeaveMember />},
+          { path : 'bookmark', element : <BookMark />},
+          { path : 'myproject', element : <MyProject />},
+        ],
+      },
+      // projects //
       {
         path: "/",
         element: <ProtectedLayout />,
@@ -161,13 +178,22 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
-  return isLoading ? <Loading /> : <RouterProvider router={router} />;
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <>
+      <RouterProvider router={router} />
+      <Footer />
+    </>
+  )
 }
 
 export default App;

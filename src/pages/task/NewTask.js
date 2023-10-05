@@ -1,5 +1,4 @@
-import React from "react";
-import TaskForm from "../../components/task/TaskForm";
+import TaskForm from "../../components/task/form/TaskForm";
 
 export default function NewTask() {
   return <TaskForm method="POST" />;

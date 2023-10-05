@@ -1,9 +1,9 @@
-import { useRouteLoaderData } from 'react-router-dom';
-import RoadmapViewList from '../../components/task/RoadmapViewList';
-import { getApi } from '../../util/api';
+import { useRouteLoaderData } from "react-router-dom";
+import { getApi } from "../../util/api";
+import RoadmapViewList from "../../components/task/roadmap-view/RoadmapViewList";
 
 export default function TaskRoadmapPage() {
-  const data = useRouteLoaderData('task-roadmap');
+  const data = useRouteLoaderData("task-roadmap");
 
   const tasks = data?.tasks?.data?.data || [];
   const status = data.statusData.data.data;
@@ -19,7 +19,7 @@ export async function loader({ params }) {
 
     return { tasks, statusData };
   } catch (error) {
-    console.error('Error loading data', error);
+    console.error("Error loading data", error);
     return {};
   }
 }

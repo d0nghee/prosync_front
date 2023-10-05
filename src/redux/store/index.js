@@ -1,7 +1,8 @@
 import { configureStore, createStore } from '@reduxjs/toolkit';
-import calendarReducer from '../reducers/calendar-slice';
-import checkboxReducer from '../reducers/checkbox-slice';
-import taskStatusReducer from '../reducers/taskStatus-slice';
+import calendarReducer from '../reducers/task/calendar-slice';
+import taskStatusReducer from "../reducers/task/taskStatus-slice";
+import taskMembersReducer from '../reducers/task/taskMembers-slice';
+import taskListReducer from '../reducers/task/taskList-slice';
 import signupReducer from '../reducers/signupSlice';
 import loginReducer from '../reducers/loginSlice';
 import mypageSlice from '../reducers/mypageSlice';
@@ -15,8 +16,9 @@ import errorReducer from '../reducers/error-slice';
 export const store = configureStore({
   reducer: {
     calendar: calendarReducer,
-    checkbox: checkboxReducer,
     taskStatus: taskStatusReducer,
+    taskMembers: taskMembersReducer,
+    taskList: taskListReducer,
     signup: signupReducer,
     login: loginReducer,
     mypage: mypageReducer,

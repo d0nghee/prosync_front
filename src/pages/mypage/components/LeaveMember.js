@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../../../components/button/Button'
 import axiosInstance from '../../../util/axiosInstancs'
 import styled from 'styled-components'
@@ -7,6 +7,7 @@ import { deleteApi } from '../../../util/api'
 import Popup from '../../../components/popup/Popup'
 import { useDispatch, useSelector } from 'react-redux'
 import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from '../../../redux/reducers/signupSlice'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 
 const Div = styled.div`
     justify-content: center;
@@ -16,6 +17,7 @@ const Div = styled.div`
     height: 60vh;
     width: 1000px;
 `
+
 const CustomStyle = {
   border: '3px blue solid',
   width: '30vw',
@@ -24,17 +26,13 @@ const CustomStyle = {
   fontStyle: 'italic'
 }
 
-
 export default function LeaveMember() {
-
   const dispatch = useDispatch();
   const signup = useSelector(state => state.signup);
   const [inputMessage, setInputMessage] = useState("");
+  const navi = useNavigate();
 
 
-  const data = {
-    memberId: localStorage.getItem("memberId"),
-  }
 
   const handleChange = (e) => {
     setInputMessage(
@@ -44,9 +42,8 @@ export default function LeaveMember() {
   }
 
   const handleLeaveMember = () => {
-
     if (inputMessage === "탈퇴합니다") {
-      deleteApi("/members", data)
+      deleteApi("/members")
         .then(() => {
           dispatch(setIsConfirmModalOpen());
           dispatch(setModalMessage("탈퇴되었습니다"))

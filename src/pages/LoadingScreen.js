@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Container } from "./../components/task/TaskForm.style";
+import { Container } from "../components/task/form/TaskForm.style";
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -12,35 +12,29 @@ const LoadingContainer = styled.div`
 `;
 
 const LoadingIcon = styled.div`
-width: 50px;
+  width: 50px;
   height: 50px;
   border-radius: 50%;
   border: 5px solid transparent;
-  border-top-color: #fff; 
-  border-left-color: #fff; 
+  border-top-color: #fff;
+  border-left-color: #fff;
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-  0% {
-    transform: rotate(0deg);
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
-
-
-
-
-`
+`;
 
 const LoadingScreen = () => {
   return (
     <LoadingContainer>
       <h1>Loading...</h1>
-      <LoadingIcon/>
+      <LoadingIcon />
     </LoadingContainer>
   );
 };

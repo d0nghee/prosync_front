@@ -3,6 +3,7 @@ import { SideBar, SideMenuDetail, List, ListItem } from '../../../css/MyPageStyl
 import { useDispatch } from 'react-redux';
 import { setSelectedComponent } from '../../../redux/reducers/mypageSlice';
 import LeaveButton from './LeaveButton';
+import { Link } from 'react-router-dom'
 
 
 export default function SideMenu() {
@@ -29,40 +30,32 @@ export default function SideMenu() {
         }
     }, []);
 
-    const handleMenuClick = (component) => {
-        dispatch(setSelectedComponent(component));
-        console.log(component);
-    }
-
+    
     return (
         <SideBar>
-            <SideMenuDetail onClick={() => handleMenuClick('PwEdit')}>비밀번호 변경</SideMenuDetail>
+            <SideMenuDetail>
+                <Link to='/user/password'>비밀번호 변경</Link>    
+            </SideMenuDetail>
 
             <SideMenuDetail onClick={toggleList} ref={menuDetailRef}>
                 회원 정보
                 {isListVisible && (
                     <List>
                         <ListItem>
-                            <div onClick={() => handleMenuClick('InfoEdit')}>
-                               회원 정보 수정
-                            </div>
+                            <Link to='/user/profile'>프로필 수정</Link>
                         </ListItem>
                         <ListItem>
-                            <div onClick={() => handleMenuClick('BookMark')}>
-                                북마크 리스트
-                            </div>
+                            <Link to='/user/bookmark'>북마크 리스트</Link>
                         </ListItem>
                         <ListItem>
-                            <div onClick={() => handleMenuClick('MyProject')}>
-                                내 프로젝트
-                            </div>
+                            <Link to='/user/myproject'>내 프로젝트</Link>
                         </ListItem>
                     </List>
                 )}
             </SideMenuDetail>
 
             <SideMenuDetail>
-                <LeaveButton onClick={() => handleMenuClick('Leave')} />
+                    <Link to='/user/leave'>회원 탈퇴</Link>
             </SideMenuDetail>
 
 
