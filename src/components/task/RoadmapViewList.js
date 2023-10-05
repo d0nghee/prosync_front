@@ -28,6 +28,9 @@ export default function RoadmapViewList({ tasks, status }) {
 
     const options = {
       zoomMin: 1000 * 60 * 60 * 24, // 최소 줌 1일
+      zoomMax: 1000 * 60 * 60 * 24 * 30,
+      showCurrentTime: false, // 현재 시간 표시를 숨김
+      timeAxis: { scale: 'day', step: 1 }, // 시간 축을 '일' 단위로 표시하고, 시간 눈금을 표시하지 않음
       height: '300px',
     };
 
