@@ -31,10 +31,14 @@ import PersonalNotification from "./pages/notification/PersonalNotification";
 import ProjectNotification from "./pages/notification/ProjectNotification";
 import EditProject from "./pages/project/EditProject";
 import ProjectList from "./pages/project/ProjectList";
-
 import EditProjectMember, {
   loader as membersLoader,
 } from "./pages/project/EditProjectMember";
+import EditPassword from "./pages/mypage/components/EditPassword";
+import EditMember from "./pages/mypage/components/EditMember";
+import LeaveMember from "./pages/mypage/components/LeaveMember";
+import BookMark from "./pages/mypage/components/BookMark";
+import MyProject from "./pages/mypage/components/MyProject";
 
 const router = createBrowserRouter([
   {
@@ -56,8 +60,15 @@ const router = createBrowserRouter([
           { path: "logout", element: <Logout /> },
 
           {
-            path: "/user/profile",
+            path: "/user",
             element: <MyPage />,
+            children: [
+              { path: "profile", element: <EditMember /> },
+              { path: "password", element: <EditPassword /> },
+              { path: "leave", element: <LeaveMember /> },
+              { path: "bookmark", element: <BookMark /> },
+              { path: "myproject", element: <MyProject /> },
+            ],
           },
 
           {
