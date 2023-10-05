@@ -251,7 +251,7 @@ export default function MainNavigation() {
     if (dropdownRefSearchbar.current) {
       const rect = dropdownRefSearchbar.current.getBoundingClientRect();
       setSearchBoxPosition({
-        top: rect.bottom, 
+        top: rect.bottom,
         left: rect.left
       });
     }
@@ -329,7 +329,6 @@ export default function MainNavigation() {
       console.log('바뀌는중');
     }
    
-
   }
 
   return (
@@ -399,71 +398,71 @@ function useIsLoggedIn(eventSource, setEventSource) {
 
   useEffect(() => {
     if (isLoggedIn) {
-      if (!eventSource) {
-        console.log("여기 지나감");
-        const memberId = getCookie("memberId");
-        const newEventSource = new EventSource(
-          `http://localhost:8080/api/v1/subscribe/${memberId}`
-        );
-        setEventSource(newEventSource);
+    //   if (!eventSource) {
+    //     console.log("여기 지나감");
+    //     const memberId = getCookie("memberId");
+    //     const newEventSource = new EventSource(
+    //       `http://localhost:8080/api/v1/subscribe/${memberId}`
+    //     );
+    //     setEventSource(newEventSource);
 
-        newEventSource.addEventListener("sse", (event) => {
-          console.log(event.data);
+    //     newEventSource.addEventListener("sse", (event) => {
+    //       console.log(event.data);
 
-          let data = JSON.parse(event.data);
+    //       let data = JSON.parse(event.data);
 
-          if (!data.isCountMessage) {
-            data = data.notificationResponse;
-          }
+    //       if (!data.isCountMessage) {
+    //         data = data.notificationResponse;
+    //       }
 
-          (async () => {
-            // 브라우저 알림
-            const showNotification = () => {
-              const notification = new Notification("알림이 왔습니다", {
-                body: data.content,
-              });
+    //       (async () => {
+    //         // 브라우저 알림
+    //         const showNotification = () => {
+    //           const notification = new Notification("알림이 왔습니다", {
+    //             body: data.content,
+    //           });
 
-              setTimeout(() => {
-                notification.close();
-              }, 10 * 1000);
+    //           setTimeout(() => {
+    //             notification.close();
+    //           }, 10 * 1000);
 
-              notification.addEventListener("click", () => {
-                window.open(data.url, "_blank");
-              });
-            };
+    //           notification.addEventListener("click", () => {
+    //             window.open(data.url, "_blank");
+    //           });
+    //         };
 
-            // 브라우저 알림 허용 권한
-            let granted = false;
+    //         // 브라우저 알림 허용 권한
+    //         let granted = false;
 
-            if (Notification.permission === "granted") {
-              granted = true;
-            } else if (Notification.permission !== "denied") {
-              let permission = await Notification.requestPermission();
-              granted = permission === "granted";
-            }
+    //         if (Notification.permission === "granted") {
+    //           granted = true;
+    //         } else if (Notification.permission !== "denied") {
+    //           let permission = await Notification.requestPermission();
+    //           granted = permission === "granted";
+    //         }
 
-            // 알림 보여주기
-            if (granted) {
-              showNotification();
-            }
-          })();
-        });
+    //         // 알림 보여주기
+    //         if (granted) {
+    //           showNotification();
+    //         }
+    //       })();
+    //     });
 
-        newEventSource.addEventListener("error", function (event) {
-          if (event.target.readyState === EventSource.CLOSED) {
-            console.log("SSE closed");
-          } else if (event.target.readyState === EventSource.CONNECTING) {
-            console.log("SSE reconnecting");
-          } else {
-            console.error("SSE error:", event);
-          }
-        });
-      }
-    } else {
-      if (eventSource) {
-        eventSource.close();
-        setEventSource(null);
-      }
+    //     newEventSource.addEventListener("error", function (event) {
+    //       if (event.target.readyState === EventSource.CLOSED) {
+    //         console.log("SSE closed");
+    //       } else if (event.target.readyState === EventSource.CONNECTING) {
+    //         console.log("SSE reconnecting");
+    //       } else {
+    //         console.error("SSE error:", event);
+    //       }
+    //     });
+    //   }
+    // } else {
+    //   if (eventSource) {
+    //     eventSource.close();
+    //     setEventSource(null);
+    //   }
     }
   }, [isLoggedIn]);
 

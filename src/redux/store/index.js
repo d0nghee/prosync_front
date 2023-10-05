@@ -1,4 +1,4 @@
-import { configureStore, createStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import calendarReducer from "../reducers/calendar-slice";
 import checkboxReducer from "../reducers/checkbox-slice";
 import taskStatusReducer from "../reducers/taskStatus-slice";

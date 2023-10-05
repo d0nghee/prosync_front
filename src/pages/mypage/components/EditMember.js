@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Button from '../../../components/button/Button'
 import Popup from '../../../components/popup/Popup'
 import { styled } from 'styled-components'
@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setMemberInfo } from '../../../redux/reducers/mypageSlice'
 import axiosInstance from '../../../util/axiosInstancs'
 import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from '../../../redux/reducers/signupSlice'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useRouteLoaderData } from 'react-router-dom'
 import { getCookie, setCookie } from '../../../util/cookies'
 import { getApi } from '../../../util/api'
 
@@ -18,8 +18,17 @@ export default function EditMember() {
   const mypage = useSelector(state => state.mypage);
   const navi = useNavigate();
   const signup = useSelector(state => state.signup);
-
+  const isLoggedIn = Boolean(useRouteLoaderData("root"));
   const profileimg = getCookie("profile");
+
+  
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navi("/auth?mode=login");
+    }
+  }, [isLoggedIn]);
+
 
   const handleChange = (e) => {
     dispatch(setMemberInfo({

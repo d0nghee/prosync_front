@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CustomDiv, Label, InputText } from '../../../css/MyPageStyle'
 import Button from '../../../components/button/Button'
 import Popup from '../../../components/popup/Popup'
 import { useDispatch, useSelector } from 'react-redux'
 import { setMemberInfo } from '../../../redux/reducers/mypageSlice'
 import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from '../../../redux/reducers/signupSlice'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useRouteLoaderData } from 'react-router-dom'
 import { patchApi } from '../../../util/api'
 
 export default function EditPassword() {
-
+  const isLoggedIn = Boolean(useRouteLoaderData("root"));
   const dispatch = useDispatch();
   const mypage = useSelector(state => state.mypage);
   const signup = useSelector(state => state.signup);
@@ -55,6 +55,12 @@ export default function EditPassword() {
     }
 
   }
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navi("/auth?mode=login");
+    }
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -63,7 +69,7 @@ export default function EditPassword() {
         <InputText type='password' name='password' id='password' onChange={ handleChange } />
       </CustomDiv>
       <CustomDiv>
-        <Label> 비밀번호 재입력 :&nbsp;</Label>
+        <Label> 비밀번호 재입력 : &nbsp;</Label>
         <InputText type='password' name='pw' id='pw' onChange={ handleChange } />
       </CustomDiv>
       <CustomDiv style={{ justifyContent: 'center' }}>
