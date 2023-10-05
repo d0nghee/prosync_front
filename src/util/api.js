@@ -1,4 +1,6 @@
-import axiosInstance from "./axiosInstancs";
+import axiosInstance from './axiosInstancs';
+
+
 
 const getApi = async (url, data) => {
   try {
@@ -6,7 +8,7 @@ const getApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -16,7 +18,7 @@ const postApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error, "error");
-    return error;
+    throw error;
   }
 };
 
@@ -26,17 +28,18 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    console.error('patchApi 지나감');
+    throw error;
   }
 };
 
 const deleteApi = async (url, data) => {
   try {
-    const res = await axiosInstance.delete(url, data);
+    const res = await axiosInstance.delete(url,data);
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -50,7 +53,7 @@ const postFileApi = async (files) => {
   try {
     const response = await axiosInstance.post("/files", formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
     return await response.data.data;

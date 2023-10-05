@@ -24,7 +24,6 @@ import Guidance from "../../common/Guidance";
 import { tryFunc } from "../../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
-import { AiFillCaretDown } from "react-icons/ai";
 
 export default function TableViewList({
   onChangePage,
