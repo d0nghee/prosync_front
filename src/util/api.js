@@ -111,9 +111,20 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
   }
 };
 
+const patchTaskStatusSeqApi = async (projectId, seqList) => {
+  const response = await patchApi(
+    `/projects/${projectId}/task-status/seq`,
+    seqList
+  );
+
+  if (response.status === 200) {
+    return await response;
+  }
+};
+
 // 프로젝트 회원
-const getProjectMembersApi = async (projectId) => {
-  const response = await getApi(`/projects/${projectId}/members`);
+const getProjectMembersApi = async (projectId, params) => {
+  const response = await getApi(`/projects/${projectId}/members`, { params });
   if (response.status === 200) {
     return await response.data.data;
   }
@@ -224,6 +235,7 @@ export {
   getTaskStatusApi,
   deleteTaskStatusApi,
   patchTaskStatusApi,
+  patchTaskStatusSeqApi,
 };
 export { getProjectMembersApi };
 export { getTaskMembersApi, postTaskMemberApi, deleteTaskMemberApi };

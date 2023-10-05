@@ -159,13 +159,12 @@ const Text = styled.div`
 const TaskInfo = styled.div`
   display: inline-block;
   background-color: #ebebeb;
-  font-size: 1rem;
+  font-size: 1.1rem;
   padding: 10px;
   border-radius: 10px;
 `;
 
 const TaskInfos = styled.div`
   display: flex;
-  gap: 1rem;
-  padding: 0 5px 0 5px;
+  gap: 1.2rem;
 `;

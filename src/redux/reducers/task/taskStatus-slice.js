@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTaskStatusApi, patchTaskStatusApi } from "../../../util/api";
+import {
+  getTaskStatusApi,
+  patchTaskStatusApi,
+  patchTaskStatusSeqApi,
+} from "../../../util/api";
 import { tryFunc } from "../../../util/tryFunc";
 
 // taskStatusId, taskStatus, color,
@@ -8,6 +12,7 @@ const taskStatusSlice = createSlice({
   initialState: {
     show: false,
     list: [],
+    seqList: [],
   },
   reducers: {
     setList(state, action) {
@@ -25,10 +30,10 @@ const taskStatusSlice = createSlice({
     },
     updateStatus(state, action) {
       const updatedStatus = action.payload;
-      let findStatus = state.list.filter(
+      const findStatus = state.list.filter(
         (status) => status.taskStatusId === updatedStatus.taskStatusId
       );
-      findStatus = { ...updatedStatus };
+      findStatus = { ...updatedStatus, seq: findStatus.seq };
     },
     updateSeqOfCheckedStatus(state, action) {
       const selectedStatusId = action.payload;
@@ -55,26 +60,49 @@ const taskStatusSlice = createSlice({
     updateSeqOfStatusBoard(state, action) {
       const { taskStatusId, seq } = action.payload;
 
-      //TODO
-      // 업무 상태 순서 변경하는 경우 - 순서 일괄 변경
-      // 마지막 - 기존 seq 보다 큰 것들 -1
-      // 중간 1_ origi seq < new seq (뒤로 보내기) => 기존 seq 초과이고 새 seq 이하인것들 -1
-      // 중간 2_ origi seq > new seq (앞으로 보내기) => 새 seq 이상이고 기존 seq 미만인것들 + 1
-
       const findStatus = state.list.find(
         (one) => one.taskStatusId === taskStatusId
       );
+      const originalSeq = findStatus.seq;
 
       if (findStatus) {
         findStatus.seq = seq;
+        state.seqList.push({
+          taskStatusId: findStatus.taskStatusId,
+          seq,
+        });
       }
+
       state.list.forEach((one) => {
         if (one.taskStatusId !== taskStatusId && one.seq !== 0) {
+          // 뒤로 보내기
+          if (originalSeq < seq) {
+            if (one.seq > originalSeq && one.seq <= seq) {
+              one.seq--;
+              state.seqList.push({
+                taskStatusId: one.taskStatusId,
+                seq: one.seq,
+              });
+            }
+          }
+          // 앞으로 보내기
+          else if (originalSeq > seq) {
+            if (one.seq >= seq && one.seq < originalSeq) {
+              one.seq++;
+              state.seqList.push({
+                taskStatusId: one.taskStatusId,
+                seq: one.seq,
+              });
+            }
+          }
         }
       });
     },
     toggleList(state) {
       state.show = !state.show;
+    },
+    resetSeqList(state) {
+      state.seqList = [];
     },
   },
 });
@@ -88,13 +116,26 @@ export const getTaskStatus = (projectId) => {
   };
 };
 
-export const patchSequenceOfStatus = (taskStatusId, sequence, last) => {
+export const patchSequenceOfStatus = (taskStatusId, sequence, projectId) => {
   return async (dispatch, getState) => {
-    console.log(taskStatusId, sequence, last, "순서 확인");
+    console.log(taskStatusId, sequence, projectId, "순서 확인");
 
     // 뷰 공통 - status filter
     if (!sequence) {
       await dispatch(taskStatusActions.updateSeqOfCheckedStatus(taskStatusId));
+
+      const updatedList = getState().taskStatus.list;
+      const updatedStatus = updatedList.find(
+        (one) => one.taskStatusId === taskStatusId
+      );
+
+      if (updatedStatus) {
+        const seq = updatedStatus.seq;
+        await tryFunc(
+          () => patchTaskStatusApi(taskStatusId, { seq }),
+          () => {}
+        )();
+      }
     } else {
       // 보드뷰 - 보드 순서 변경
       await dispatch(
@@ -103,19 +144,18 @@ export const patchSequenceOfStatus = (taskStatusId, sequence, last) => {
           seq: sequence,
         })
       );
-    }
 
-    const updatedList = getState().taskStatus.list;
-    const updatedStatus = updatedList.find(
-      (one) => one.taskStatusId === taskStatusId
-    );
+      const seqList = getState().taskStatus.seqList;
 
-    if (updatedStatus) {
-      const seq = updatedStatus.seq;
-      await tryFunc(
-        () => patchTaskStatusApi(taskStatusId, { seq }),
-        () => {}
-      )();
+      if (seqList.length !== 0) {
+        await tryFunc(
+          () => patchTaskStatusSeqApi(projectId, seqList),
+          () => {
+            dispatch(taskStatusActions.resetSeqList());
+          },
+          {}
+        )();
+      }
     }
   };
 };

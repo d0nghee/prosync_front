@@ -7,12 +7,14 @@ import Guidance from "../../common/Guidance";
 import { useDispatch } from "react-redux";
 import { patchSequenceOfStatus } from "../../../redux/reducers/task/taskStatus-slice";
 import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
+import { useParams } from "react-router-dom";
 
 export default function BoardViewList({ projectMember, currentIndex }) {
   const list = useSelector((state) => state.taskList.list);
   const pageInfo = useSelector((state) => state.taskList.pageInfo);
   const dispatch = useDispatch();
   const taskStatusList = useSelector((state) => state.taskStatus.list);
+  const params = useParams();
 
   useEffect(() => {
     dispatch(taskListAction.updateTaskSeq(taskStatusList));
@@ -35,7 +37,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
     }
   };
 
-  const handleDrop = async (event, seq, last) => {
+  const handleDrop = async (event, seq) => {
     event.preventDefault();
     if (
       projectMember &&
@@ -43,7 +45,9 @@ export default function BoardViewList({ projectMember, currentIndex }) {
         projectMember.authority === "WRITER")
     ) {
       const taskStatusId = event.dataTransfer.getData("taskStatusId");
-      await dispatch(patchSequenceOfStatus(+taskStatusId, seq, last));
+      await dispatch(
+        patchSequenceOfStatus(+taskStatusId, seq, params.projectId)
+      );
     } else {
       alert("프로젝트 수정 권한이 없습니다.");
     }
@@ -92,6 +96,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
 const OneBoard = styled.div`
   display: flex;
   position: relative;
+  cursor: move;
 `;
 
 const BoardGap = styled.div`

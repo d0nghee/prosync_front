@@ -203,7 +203,7 @@ const FilterIcon = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  background-color: #9f86c0;
+  background-color: #c0c0c0;
   padding: 5px 10px;
   border-radius: 15px;
   color: white;

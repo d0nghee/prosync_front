@@ -318,25 +318,18 @@ const PageButton = styled.button`
   width: 70px;
   padding: 10px 10px;
   font-size: 1.5rem;
-  border: none;
-  color: #007bff;
-  border-radius: 10px;
-  background-color: white;
+  border-radius: 1rem;
   cursor: pointer;
-  border: 1px solid #007bff;
+  font-weight: bold;
+  border: ${(props) => (props.active ? "3px solid #be95c4" : "#333")};
+  color: #be95c4;
+  background-color: white;
 
   &:hover {
     opacity: 0.7;
-    background-color: #007bff;
+    background-color: #be95c4;
     color: white;
   }
-
-  ${(props) =>
-    props.active &&
-    `
-    background-color: #007bff;
-    color: #fff;
-  `}
 `;
 
 const FileInputContainer = styled.div`

@@ -66,7 +66,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
   useEffect(() => {
     tryFunc(
-      async () => await getProjectMembersApi(params.projectId),
+      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
       (projectMembers) => setProjectMembers(projectMembers),
       commonErrror
     )();
@@ -296,7 +296,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                     <t.SideName>
                       담당자
                       <AiOutlineUserAdd
-                        size="20px"
+                        size="23px"
                         className="logo"
                         onClick={() => setShowProjectMembers((prv) => !prv)}
                       />
@@ -316,7 +316,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                       <t.BackDrop
                         onClick={() => setShowProjectMembers((prv) => !prv)}
                       />
-                      <t.Wrapper show="true" customTop="110px">
+                      <t.Wrapper show="true" customtop="110px">
                         <TaskMemberList
                           taskMembers={projectMembers}
                           isCheckList="true"
@@ -368,7 +368,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                     </div>
                   </t.Period>
                   {showCalendar && (
-                    <t.Wrapper show={showCalendar.toString()} customTop="80px">
+                    <t.Wrapper show={showCalendar.toString()} customtop="80px">
                       <MyCalendar changeDate={calendarHandler} />
                     </t.Wrapper>
                   )}
@@ -400,8 +400,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                       <t.BackDrop
                         onClick={() => dispatch(taskStatusActions.toggleList())}
                       />
-                      {/* TODO: 인라인 스타일 수정 예정 */}
-                      <t.Wrapper show="true" style={{ top: "105px" }}>
+                      <t.Wrapper show="true" customtop="105px">
                         <TaskStatusList
                           updateTaskStatus={updateTaskStatus}
                           showStatusModal={() => setShowModal((prv) => !prv)}

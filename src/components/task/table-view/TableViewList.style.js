@@ -160,25 +160,18 @@ export const PageButton = styled.button`
   width: 80px;
   padding: 10px 10px;
   font-size: 1.5rem;
-  border: none;
-  color: #007bff;
-  border-radius: 10px;
-  background-color: white;
+  font-weight: bold;
+  border-radius: 1rem;
   cursor: pointer;
-  border: 1px solid #007bff;
+  border: ${(props) => (props.active ? "3px solid #be95c4" : "#333")};
+  color: #be95c4;
+  background-color: white;
 
   &:hover {
     opacity: 0.7;
-    background-color: #007bff;
+    background-color: #be95c4;
     color: white;
   }
-
-  ${(props) =>
-    props.active &&
-    `
-    background-color: #007bff;
-    color: #fff;
-  `}
 `;
 
 export const EditButton = styled.button`
@@ -192,6 +185,10 @@ export const Date = styled.div`
 
 export const StatusBox = styled.div`
   width: 100%;
+
+  &:hover {
+    opacity: ${(props) => (props.edit ? 0.7 : 1)};
+  }
 `;
 
 export const TaskInput = styled.input`

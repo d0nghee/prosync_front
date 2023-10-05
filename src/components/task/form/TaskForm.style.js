@@ -82,8 +82,15 @@ export const TaskArea = styled.div`
 export const SideName = styled.div`
   margin-bottom: 1.2rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  height: 2rem;
 
-  .logo {
+  .logo:hover {
+    cursor: pointer;
+    background-color: #d9d9d9;
+    border-radius: 10px;
   }
 `;
 
@@ -94,7 +101,7 @@ export const Container = styled.div`
 export const Wrapper = styled.div`
   z-index: 1;
   position: absolute;
-  top: ${({ customTop }) => customTop || "0px"};
+  top: ${({ customtop }) => customtop || "0px"};
   display: ${(props) => (props.show ? "block" : "none")};
   height: 500px;
   width: 300px;

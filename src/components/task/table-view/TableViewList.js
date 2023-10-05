@@ -24,6 +24,7 @@ import Guidance from "../../common/Guidance";
 import { tryFunc } from "../../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
+import { AiFillCaretDown } from "react-icons/ai";
 
 export default function TableViewList({
   onChangePage,
@@ -60,7 +61,7 @@ export default function TableViewList({
 
   useEffect(() => {
     tryFunc(
-      async () => await getProjectMembersApi(params.projectId),
+      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
       (projectMembers) => setProjectMembers(projectMembers),
       commonErrror
     )();
@@ -387,7 +388,7 @@ export default function TableViewList({
                               <t.BackDrop
                                 onClick={() => setShowAssignees((prv) => !prv)}
                               />
-                              <t.Wrapper show="true" customTop="100px">
+                              <t.Wrapper show="true" customtop="100px">
                                 <TaskMemberList
                                   taskMembers={projectMembers}
                                   isCheckList="true"
@@ -419,6 +420,7 @@ export default function TableViewList({
 
                         <div>
                           <tv.StatusBox
+                            edit="true"
                             onClick={() => setShowStatusModal((prv) => !prv)}
                           >
                             <TaskStatus
@@ -435,7 +437,7 @@ export default function TableViewList({
                               <t.BackDrop
                                 onClick={() => setShowStatusModal(false)}
                               />
-                              <t.Wrapper show="true" customTop="100px">
+                              <t.Wrapper show="true" customtop="100px">
                                 <TaskStatusList
                                   updateTaskStatus={updateTaskStatus}
                                   showStatusModal={() =>

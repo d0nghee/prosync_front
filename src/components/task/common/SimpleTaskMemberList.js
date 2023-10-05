@@ -31,7 +31,7 @@ export default function SimpleTaskMemberList({ taskMembers }) {
         {showTaskList && (
           <>
             <t.BackDrop onClick={() => setShowTaskList(false)} />
-            <Wrapper show="true" customTop="60px">
+            <Wrapper show="true" customtop="60px">
               <TaskMemberList taskMembers={taskMembers} />
             </Wrapper>
           </>
@@ -53,7 +53,7 @@ const SimpleBox = styled.div`
 const Wrapper = styled.div`
   z-index: 1;
   position: absolute;
-  top: ${({ customTop }) => customTop || "0px"};
+  top: ${({ customtop }) => customtop || "0px"};
   display: ${(props) => (props.show ? "block" : "none")};
 `;
 

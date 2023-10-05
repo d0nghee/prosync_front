@@ -99,15 +99,19 @@ export default function Tasks() {
       }
     }
   };
+
   return (
     <>
       <TaskView>
         {projectMember && (
           <TopButton>
-            <ExitButton type="button" onClick={memberProjectExitHandler}>
+            <TopDiv color="#ff7d00" back="white">
+              {projectMember.authority}
+            </TopDiv>
+            <TopDiv onClick={memberProjectExitHandler}>
               <BiExit size="20px" />
               프로젝트 나가기
-            </ExitButton>
+            </TopDiv>
           </TopButton>
         )}
         <TaskSearchBar
@@ -139,17 +143,18 @@ const TaskView = styled.section`
   margin-bottom: 5rem;
 `;
 
-const ExitButton = styled.button`
+const TopDiv = styled.div`
   display: flex;
   align-self: flex-end;
   gap: 10px;
   padding: 1rem;
-  color: white;
+  color: ${({ color }) => color || "white"};
   font-size: 1rem;
-  background-color: #e71d36;
-  border-radius: 5px;
+  background-color: ${({ back }) => back || "#e71d36"};
+  border-bottom: ${({ color }) => `1px solid ${color}` || "white"};
+  border-radius: ${({ color }) => (color ? "none" : "5px")};
   justify-content: flex-end;
-  border: none;
+  font-weight: bold;
 
   &:hover {
     opacity: 0.7;
@@ -160,4 +165,5 @@ const TopButton = styled.div`
   display: flex;
   width: 80%;
   justify-content: flex-end;
+  gap: 1rem;
 `;

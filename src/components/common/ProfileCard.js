@@ -1,11 +1,11 @@
 import { styled } from "styled-components";
 import { MdOutlinePersonOff } from "react-icons/md";
 
-export default function ProfileCard({ name, image }) {
+export default function ProfileCard({ name, image, imagesize }) {
   return (
     <ProfileContainer>
       {image ? (
-        <ProfileImage src={image} alt={image} />
+        <ProfileImage src={image} alt={image} imagesize={imagesize} />
       ) : (
         <MdOutlinePersonOff size="50px" />
       )}
@@ -29,7 +29,7 @@ const ProfileContainer = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 50px;
-  height: 50px;
+  width: ${({ imagesize }) => imagesize || "50px"};
+  width: ${({ imagesize }) => imagesize || "50px"};
   border-radius: 50%;
 `;

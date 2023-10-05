@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Modal from "../../components/task/common/Modal";
-import { patchTaskStatusApi, postTaskStatusApi } from "../../util/api";
+import { postTaskStatusApi } from "../../util/api";
 import { useDispatch } from "react-redux";
-import { taskStatusActions } from "../../redux/reducers/task/taskStatus-slice";
+import {
+  patchStatus,
+  taskStatusActions,
+} from "../../redux/reducers/task/taskStatus-slice";
 import { tryFunc } from "../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
-import { patchStatus } from "../../redux/reducers/task/taskStatus-slice";
 
 export default function NewTaskStatus({ onClose, editTask }) {
   const navigate = useNavigate();
+  const nameRef = useRef();
+  const colorRef = useRef();
+
   const commonErrror = {
     500: (error) => {
       console.error("Server Error:", error);
@@ -37,44 +42,33 @@ export default function NewTaskStatus({ onClose, editTask }) {
     const taskStatus = event.target[0].value;
     const seq = 0;
 
-    if (!editTask) {
-      tryFunc(
-        async () =>
-          await postTaskStatusApi({ taskStatus, color, seq }, params.projectId),
-        (taskStatusId) => {
-          dispatch(
-            taskStatusActions.addStatus({
-              taskStatusId,
-              taskStatus,
-              color,
-            })
-          );
-        },
-        commonErrror
-      )();
-    } else {
-      //TODO: 업무 상태 수정..
-      console.log(editTask, color, taskStatus, "test");
-      tryFunc(
-        async () =>
-          await patchTaskStatusApi(editTask.taskStatusId, {
-            color,
-            seq: null,
+    tryFunc(
+      async () =>
+        await postTaskStatusApi({ taskStatus, color, seq }, params.projectId),
+      (taskStatusId) => {
+        dispatch(
+          taskStatusActions.addStatus({
+            taskStatusId,
             taskStatus,
-          }),
-        () => {
-          alert("수정이 완료되었습니다.");
-        }
-      )();
-      // dispatch(
-      //   patchStatus({
-      //     taskStatusId: editTask.taskStatusId,
-      //     color,
-      //     taskStatus,
-      //   })
-      // );
-    }
+            color,
+          })
+        );
+      },
+      commonErrror
+    )();
 
+    onClose();
+  };
+
+  const editHandler = (event) => {
+    // 업무 상태 수정
+    dispatch(
+      patchStatus({
+        taskStatusId: editTask.taskStatusId,
+        color: colorRef.current.value,
+        taskStatus: nameRef.current.value,
+      })
+    );
     onClose();
   };
 
@@ -90,6 +84,7 @@ export default function NewTaskStatus({ onClose, editTask }) {
             required
             placeholder="업무상태를 입력하세요."
             defaultValue={editTask ? editTask.taskStatus : ""}
+            ref={nameRef}
           />
         </Item>
         <Item>
@@ -100,13 +95,20 @@ export default function NewTaskStatus({ onClose, editTask }) {
             id="color"
             required
             defaultValue={editTask ? editTask.color : ""}
+            ref={colorRef}
           />
         </Item>
         <Buttons>
           <button type="button" onClick={onClose}>
             취소
           </button>
-          <button>추가</button>
+          {!editTask ? (
+            <button>추가</button>
+          ) : (
+            <button type="button" onClick={editHandler}>
+              수정
+            </button>
+          )}
         </Buttons>
       </Box>
     </Modal>

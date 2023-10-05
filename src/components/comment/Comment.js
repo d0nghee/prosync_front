@@ -229,7 +229,6 @@ const Date = styled.div`
   background-color: #ebebeb;
   padding: 5px;
   border-radius: 10px;
-  border: 1px solid #333;
   margin-bottom: 5px;
   font-size: 0.9rem;
 `;

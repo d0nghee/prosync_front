@@ -7,7 +7,6 @@ import { taskStatusActions } from "../../../redux/reducers/task/taskStatus-slice
 import { RiDeleteBin6Line, RiEditLine } from "react-icons/ri";
 import { FiEdit2 } from "react-icons/fi";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
-import Modal from "./Modal";
 
 export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);
@@ -40,17 +39,17 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
     });
   };
 
-  const [editTaskStatus, setEditTaskStatus] = useState();
+  const [editTaskStatus, setEditTaskStatus] = useState({ show: false });
 
   const patchTaskStatusHandler = (taskStatusId, taskStatus, color) => {
-    setEditTaskStatus({ taskStatusId, taskStatus, color });
+    setEditTaskStatus({ taskStatusId, taskStatus, color, show: true });
   };
 
   return (
     <>
-      {editTaskStatus && (
+      {editTaskStatus.show && (
         <NewTaskStatus
-          onClose={() => setEditTaskStatus()}
+          onClose={() => setEditTaskStatus({ show: false })}
           editTask={editTaskStatus}
         />
       )}
@@ -65,13 +64,14 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
                   name={taskStatus.taskStatus}
                 />
               </div>
-              {/* 삭제 */}
               {editStatus ? (
                 <>
+                  {/* 삭제 */}
                   <RiDeleteBin6Line
                     onClick={() => deleteTaskStatus(taskStatus.taskStatusId)}
                     size="20px"
                   />
+                  {/* 수정 */}
                   <RiEditLine
                     size="20px"
                     onClick={() =>
