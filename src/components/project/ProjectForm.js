@@ -5,21 +5,27 @@ import { patchApi, postApi } from '../../util/api';
 
 // TODO: 폼에 이미지 입력 받을 수 있게 하기
 export default function ProjectForm({ project = {}, method }) {
+  const [img, setImg] = useState('default Image');
   const [projectData, setProjectData] = useState({
     title: project.title || '',
     intro: project.intro || '',
     startDate: project.startDate || '',
     endDate: project.endDate || '',
     isPublic: project.isPublic || true,
-    projectImage: project.projectImage || 'default Image',
+    projectImage: project.projectImage,
   });
 
   async function ProjectHandler() {
-    console.log('projectId', project.projectId);
+    console.log('image', img);
     try {
       let response;
       if (method === 'POST') {
-        response = await postApi('/projects', projectData);
+        const imgData = postApi('/files', { img });
+        setProjectData((pre) => ({
+          ...pre,
+          projectImage: imgData,
+        }));
+        await postApi('/projects', projectData);
       } else if (method === 'PATCH' && project.projectId) {
         response = await patchApi(
           `/projects/${project.projectId}`,
@@ -49,11 +55,16 @@ export default function ProjectForm({ project = {}, method }) {
     if (name === 'isPublic') {
       setProjectData((Data) => ({
         ...Data,
-        [name]: value === 'true' ? true : false,
+        [name]: value === '1' ? true : false,
       }));
     } else {
       setProjectData((Data) => ({ ...Data, [name]: value }));
     }
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) setImg(file);
   };
 
   return (
@@ -88,6 +99,8 @@ export default function ProjectForm({ project = {}, method }) {
         value={projectData.intro}
         onChange={handleInputChange}
       />
+      <Label>프로젝트 이미지</Label>
+      <Input type="file" onChange={handleImageChange} />
 
       <CheckboxContainer>
         <Label>
