@@ -1,24 +1,79 @@
-import React from 'react'
-import Button from '../../../components/button/Button'
-import Popup from '../../../components/popup/Popup'
-import { styled } from 'styled-components'
-import { CustomDiv, Label, InputText, InputTextArea } from '../../../css/MyPageStyle'
-import { useDispatch, useSelector } from 'react-redux'
-import { setMemberInfo } from '../../../redux/reducers/mypageSlice'
-import axiosInstance from '../../../util/axiosInstancs'
-import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from '../../../redux/reducers/signupSlice'
-import { useNavigate } from 'react-router-dom'
-import { getCookie, setCookie } from '../../../util/cookies'
-import { getApi } from '../../../util/api'
-
+import React from "react";
+import Button from "../../../components/button/Button";
+import Popup from "../../../components/popup/Popup";
+import { styled } from "styled-components";
+import {
+  CustomDiv,
+  Label,
+  InputText,
+  InputTextArea,
+} from "../../../css/MyPageStyle";
+import { useDispatch, useSelector } from "react-redux";
+import { setMemberInfo } from "../../../redux/reducers/mypageSlice";
+import axiosInstance from "../../../util/axiosInstancs";
+import {
+  setIsConfirmModalOpen,
+  setModalButtons,
+  setModalMessage,
+} from "../../../redux/reducers/signupSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCookie, setCookie } from "../../../util/cookies";
+import { getApi } from "../../../util/api";
+import { useEffect } from "react";
+import { useState } from "react";
+import { introValidate, nameValidate } from "../../../util/regex";
+import IntroCheck from "../../signup/components/IntroCheck";
+import NameCheck from "../../signup/components/NameCheck";
 
 export default function EditMember() {
   const dispatch = useDispatch();
   const mypage = useSelector((state) => state.mypage);
   const navi = useNavigate();
-  const signup = useSelector(state => state.signup);
+  const signup = useSelector((state) => state.signup);
+  const [originalInfo, setOriginalInfo] = useState({});
+  const location = useLocation();
+  const [isNameNotCorrect, setIsNameNotCorrect] = useState(false);
+  const [isIntroNotCorrect, setIsIntroNotCorrect] = useState(false);
 
-  const profileimg = getCookie("profile");
+  useEffect(() => {
+    getApi("/members")
+      .then((response) => {
+        console.log(response);
+
+        setOriginalInfo({
+          name: response.data.name,
+          profileImage: response.data.profileImage,
+          intro: response.data.intro,
+        });
+
+        dispatch(
+          setMemberInfo({
+            ...mypage.memberInfo,
+            name: response.data.name,
+            profileImage: response.data.profileImage,
+            intro: response.data.intro,
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        if (
+          error.response.status === 404 &&
+          error.response.data.resultCode === "USER_NOT_FOUND"
+        ) {
+          alert("유저 정보를 찾지 못하였습니다.");
+        }
+      });
+  }, [location]);
+
+  const hasChanges = () => {
+    if (!originalInfo) return false;
+    return (
+      originalInfo.name !== mypage.memberInfo.name ||
+      originalInfo.intro !== mypage.memberInfo.intro ||
+      originalInfo.profileImage !== mypage.memberInfo.profileImage
+    );
+  };
 
   const handleChange = (e) => {
     dispatch(

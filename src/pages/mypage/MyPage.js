@@ -38,22 +38,22 @@ export default function MyPage() {
       break;
   }
 
-  useEffect(() => {
+  // useEffect(() => {
     
-  })
+  // })
 
-  useEffect(() => {
+  // useEffect(() => {
     
-    if (!isLoggedIn) {
+  //   if (!isLoggedIn) {
 
-      navi("/auth?mode=login");
-    }
-  }, [isLoggedIn]);
+  //     navi("/auth?mode=login");
+  //   }
+  // }, [isLoggedIn]);
 
-  if (!isLoggedIn) {
-    console.log("로그인 안 됨");
-    return null;
-  }
+  // if (!isLoggedIn) {
+  //   console.log("로그인 안 됨");
+  //   return null;
+  // }
 
   
   return (

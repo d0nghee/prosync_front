@@ -15,14 +15,11 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
 import NewProject from "./pages/project/NewProject";
-import Project from "./components/notification/Project";
-import NotificationList from "./components/notification/NotificationList";
 import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
 import ProjectListContainer from "./pages/notification/ProjectListContainer";
 import { useEffect, useState } from "react";
 import Loading from "./components/common/Loading";
 import Footer from "./components/common/Footer";
-import LogOut from "../src/pages/auth/Logout";
 import ProtectedLayout from "./pages/ProtectedLayout";
 import Home from "./pages/Home";
 import { loader as projectLoader } from "./pages/project/EditProject";
@@ -31,11 +28,9 @@ import PersonalNotification from "./pages/notification/PersonalNotification";
 import ProjectNotification from "./pages/notification/ProjectNotification";
 import EditProject from "./pages/project/EditProject";
 import ProjectList from "./pages/project/ProjectList";
-
 import EditProjectMember, {
   loader as membersLoader,
 } from "./pages/project/EditProjectMember";
-import { useDispatch } from "react-redux";
 import EditPassword from "./pages/mypage/components/EditPassword";
 import EditMember from "./pages/mypage/components/EditMember";
 import LeaveMember from "./pages/mypage/components/LeaveMember";
@@ -55,25 +50,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       // 사용자 인증
-      { path: '/', element: <Home /> },
-      { path: 'auth', element: <Authentication />, },
-      { path: 'logout', action: logoutAction },
-      { path: 'login', element: <Login />, errorElement: <Error /> },
-      { path: 'signup', element: <SignUp /> },
-      // users //
-      {
-        path: '/user',
-        element: <MyPage />,
-        loader: checkTokenLoader,
-        children : [
-          { path : 'profile', element : <EditMember />},
-          { path : 'password', element : <EditPassword />},
-          { path : 'leave', element : <LeaveMember />},
-          { path : 'bookmark', element : <BookMark />},
-          { path : 'myproject', element : <MyProject />},
-        ],
-      },
-      // projects //
+      { path: "/auth", element: <Authentication /> },
+      { path: "/login", element: <Login />, errorElement: <Error /> },
+      { path: "/signup", element: <SignUp /> },
+
       {
         path: "/",
         element: <ProtectedLayout />,
@@ -81,8 +61,15 @@ const router = createBrowserRouter([
           { path: "logout", element: <Logout /> },
 
           {
-            path: "/user/profile",
+            path: "/user",
             element: <MyPage />,
+            children : [
+              { path : 'profile', element : <EditMember />},
+              { path : 'password', element : <EditPassword />},
+              { path : 'leave', element : <LeaveMember />},
+              { path : 'bookmark', element : <BookMark />},
+              { path : 'myproject', element : <MyProject />},
+            ]
           },
 
           {
@@ -178,22 +165,13 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
-  return isLoading ? (
-    <Loading />
-  ) : (
-    <>
-      <RouterProvider router={router} />
-      <Footer />
-    </>
-  )
+  return isLoading ? <Loading /> : <RouterProvider router={router} />;
 }
 
 export default App;

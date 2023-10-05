@@ -25,7 +25,6 @@ import Loading from "../../components/common/Loading";
 import { tryFunc } from "../../util/tryFunc";
 
 export default function Login() {
-
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
   const navigate = useNavigate();
