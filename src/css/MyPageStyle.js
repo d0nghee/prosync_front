@@ -166,3 +166,49 @@ export const ListItemContainer = styled.div`
     display: flex;
     flex-direction: row;
 `
+
+// 프로젝트 리스트
+export const PostListContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+
+export const ProjectImage = styled.img`
+    width : 100px;
+
+    object-fit: cover;
+`
+
+export const PostItem = styled.div`
+  width: calc(30% - 20px);
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 1200px) {
+    width: calc(45% - 20px);
+  }
+
+  @media (max-width: 768px) {
+    width: calc(100% - 20px);
+  }
+`;
+
+export const ProjectTitle = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+`;
+
+export const PostDescription = styled.div`
+  font-size: 14px;
+  color: #555;
+`;

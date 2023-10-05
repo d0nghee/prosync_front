@@ -17,7 +17,7 @@ const initialState = {
     profileImage : false,
 
     postData : [
-
+        
     ],
     pageInfo : {
         page : 1,
@@ -28,6 +28,14 @@ const initialState = {
 
     isBookCheck : {
         
+    },
+    projectList : []
+    ,
+    projectListPageInfo : {
+        page : 1,
+        size : 10,
+        totalElements : 0,
+        totalPages : 0,
     },
 }
 
@@ -52,8 +60,25 @@ const mypageSlice = createSlice({
             state.pageInfo = action.payload;
         },
         setIsBookCheck : (state, action) => {
-            const { bookmarkId } = action.payload;
-            state.isBookCheck[bookmarkId] = !state.isBookCheck[bookmarkId];
+            const { page, projectId } = action.payload;
+
+            if (!state.isBookCheck[page]) {
+                state.isBookCheck[page] = {};
+            }
+
+            state.isBookCheck[page][projectId] = !state.isBookCheck[page][projectId];
+            // const { page, projectId } = action.payload;
+            // if (state.isBookCheck[page]) {
+            //     state.isBookCheck[page][projectId] = !state.isBookCheck[page][projectId];
+            // } else {
+            //     state.isBookCheck[page] = { [projectId] : false};
+            // }
+        },
+        setProjectList : (state, action) => {
+            state.projectList = action.payload;
+        },
+        setProjectListPageInfo : (state, action) => {
+            state.projectListPageInfo = action.payload;
         }
     }
 })
@@ -65,9 +90,12 @@ export const {
     setMemberInfo,
     setPostsData,
     setPageInfo,
+    setProjectList,
+    setProjectListPageInfo,
     setIsBookCheck,
 
-
 } = mypageSlice.actions
+
+export const selectBookCheck = (state) => state.mypage.isBookCheck;
 
 export default mypageSlice.reducer;
