@@ -14,6 +14,7 @@ export default function ProfileCard({ name, image }) {
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   color: black;
   transition: background-color 0.3s ease;

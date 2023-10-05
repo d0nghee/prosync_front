@@ -24,6 +24,10 @@ const calendarSlice = createSlice({
       state.endDate = endDate;
       state.show = !state.show;
     },
+    resetDate(state) {
+      state.startDate = moment().format("YYYY-MM-DD");
+      state.endDate = moment().format("YYYY-MM-DD");
+    },
   },
 });
 

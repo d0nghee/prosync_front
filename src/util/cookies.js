@@ -7,7 +7,7 @@ export function setCookie(name, value, option) {
 }
 
 export function getCookie(name) {
-  return cookies.get(name);
+  return cookies.get(name, { path: "/" });
 }
 
 export function removeCookie(name) {
