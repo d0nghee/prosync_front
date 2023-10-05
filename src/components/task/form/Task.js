@@ -22,7 +22,7 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
       dispatch(
         deleteTask(params.taskId, params.projectId, { page: pageInfo.page })
       );
-      navigate("..");
+      navigate(`/projects/${params.projectId}`);
     }
   };
 
@@ -41,7 +41,7 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
                 <NaviButton
                   name="목록"
                   type="button"
-                  onClick={() => navigate("..")}
+                  onClick={() => navigate(`/projects/${params.projectId}`)}
                 />
                 {projectMember &&
                   (projectMember.authority === "ADMIN" ||

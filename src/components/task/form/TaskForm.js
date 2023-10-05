@@ -242,7 +242,13 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
               <t.ButtonArea>
                 <NaviButton
                   type="button"
-                  onClick={() => navigate("..")}
+                  onClick={() =>
+                    navigate(
+                      method === "patch"
+                        ? ".."
+                        : `/projects/${params.projectId}`
+                    )
+                  }
                   name="취소"
                 />
                 <NaviButton name="저장" color="#4361ee" fontcolor="white" />
