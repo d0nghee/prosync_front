@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { patchApi, postApi } from '../../util/api';
+import { patchApi, postApi, postFileApi } from '../../util/api';
 
 // TODO: 폼에 이미지 입력 받을 수 있게 하기
 export default function ProjectForm({ project = {}, method }) {
@@ -20,11 +20,9 @@ export default function ProjectForm({ project = {}, method }) {
     try {
       let response;
       if (method === 'POST') {
-        const imgData = postApi('/files', { img });
-        setProjectData((pre) => ({
-          ...pre,
-          projectImage: imgData,
-        }));
+        const imgData = postFileApi('/files', img);
+        console.log(imgData);
+        setProjectData({ projectImage: imgData.path });
         await postApi('/projects', projectData);
       } else if (method === 'PATCH' && project.projectId) {
         response = await patchApi(

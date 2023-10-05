@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from "react";
-import { Timeline, DataSet } from "vis-timeline/standalone";
-import styled from "styled-components";
-import { useSelector } from "react-redux";
-import Guidance from "../../common/Guidance";
-import ListLoadingSpinner from "../../common/ListLoadingSpinner";
+import React, { useEffect, useRef } from 'react';
+import { Timeline, DataSet } from 'vis-timeline/standalone';
+import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import Guidance from '../../common/Guidance';
+import ListLoadingSpinner from '../../common/ListLoadingSpinner';
 
 export default function RoadmapViewList() {
   const timelineRef = useRef(); // 하나의 Timeline에 대한 ref를 저장할 변수
@@ -14,30 +14,34 @@ export default function RoadmapViewList() {
   useEffect(() => {
     if (tasks.length !== 0) {
       // 모든 tasks를 하나의 타임라인에 추가
-      const timelineData = tasks.map((task) => {
-        if (task)
-          return {
-            id: task.taskId,
-            content: task.title,
-            start: task.startDate,
-            end: task.endDate,
-            style: `background-color: ${task.color}; color: #fff; border-radius: 4px;`,
-          };
-      });
+      const timelineData = tasks
+        .map((task) => {
+          if (task)
+            return {
+              id: task.taskId,
+              content: task.title,
+              start: task.startDate,
+              end: task.endDate,
+              style: `background-color: ${task.color}; color: #fff; border-radius: 4px;`,
+            };
+        })
+        .filter(Boolean);
 
       const items = new DataSet(timelineData);
 
       const options = {
         zoomMin: 1000 * 60 * 60 * 24, // 최소 줌 1일
         zoomMax: 1000 * 60 * 60 * 24 * 30,
-        height: "500px",
+        showCurrentTime: false, // 현재 시간 표시를 숨김
+        timeAxis: { scale: 'day', step: 1 }, // 시간 축을 '일' 단위로 표시하고, 시간 눈금을 표시하지 않음
+        height: '300px',
       };
 
       new Timeline(timelineRef.current, items, null, options);
     }
   }, [tasks, taskStatusList]);
 
-  if (!pageInfo.hasOwnProperty("page")) {
+  if (!pageInfo.hasOwnProperty('page')) {
     return <ListLoadingSpinner />;
   } else if (pageInfo.totalElements === 0) {
     return <Guidance text="업무가 존재하지 않습니다." />;
