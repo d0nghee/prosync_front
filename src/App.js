@@ -35,7 +35,7 @@ import NotificationRoot from "./pages/notification/NotificationRoot";
 import PersonalNotification from "./pages/notification/PersonalNotification";
 import ProjectNotification from "./pages/notification/ProjectNotification";
 import EditProject from "./pages/project/EditProject";
-import ProjectList from './pages/project/ProjectList';
+import ProjectList from "./pages/project/ProjectList";
 
 import EditProjectMember, {
   loader as membersLoader,
@@ -69,66 +69,57 @@ const router = createBrowserRouter([
           },
 
           {
-            path: 'projects',
+            path: "projects",
             children: [
               {
                 index: true,
-                id: 'projects',
+                id: "projects",
                 element: <ProjectList />,
                 // element: <Project />,
               },
-              { path: 'new', element: <NewProject /> },
+              { path: "new", element: <NewProject /> },
               {
-                path: ':projectId',
+                path: ":projectId",
                 children: [
                   { index: true },
                   {
-                    id: 'edit',
-                    path: 'edit',
+                    id: "edit",
+                    path: "edit",
                     element: <EditProject />,
                     loader: projectLoader,
                   },
                   {
-                    id: 'editmember',
-                    path: 'members',
+                    id: "editmember",
+                    path: "members",
                     element: <EditProjectMember />,
                     loader: membersLoader,
                   },
-    
+
                   // tasks //
                   {
-                    path: 'tasks',
+                    path: "tasks",
                     element: <TasksRoot />,
                     children: [
-                      { index: true, element: <Tasks />, loader: tasksLoader },
+                      { index: true, element: <Tasks /> },
                       {
-                        id: 'task-roadmap',
-                        path: 'roadmap',
-                        element: <TaskRoadmapPage />,
-                        loader: roadmapLoader,
-                      },
-                      {
-                        path: ':taskId',
-                        id: 'task-details',
-                        loader: taskDetailLoader,
+                        path: ":taskId",
+                        id: "task-details",
                         children: [
                           {
                             index: true,
                             element: <TaskDetail />,
                             action: deleteTaskAction,
-                            id: 'task-delete',
+                            id: "task-delete",
                           },
                           {
-                            path: 'edit',
+                            path: "edit",
                             element: <EditTask />,
-                            action: manipulateTaskAction,
                           },
                         ],
                       },
                       {
-                        path: 'new',
+                        path: "new",
                         element: <NewTask />,
-                        action: manipulateTaskAction,
                       },
                     ],
                   },

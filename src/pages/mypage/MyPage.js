@@ -18,6 +18,7 @@ export default function MyPage() {
         <GridContainer>
           
           <SideMenu />
+        
          
 
           <Content>

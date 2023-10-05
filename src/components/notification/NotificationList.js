@@ -211,6 +211,7 @@ const NotificationList = ({ notiPageList }) => {
         <Modal
           onClose={() => setIsModalOpen(false)}
           notiUpdateHandler={() => notiUpdateHandler(isUpdateOrDelete)}
+          size={selectedTargetIds.size}
           isUpdateOrDelete={isUpdateOrDelete}
         />
       )}
