@@ -1,11 +1,14 @@
 import styled from 'styled-components'
 
 export const GridContainer = styled.div`
+    margin: 40px 0 0 20px;
+    padding: 10px;
     display: grid;
-    grid-template-columns: 1fr 5fr;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 6fr;
+    grid-template-rows: 1fr ;
     grid-gap: 10px;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
 `
 
 export const Header = styled.div`
@@ -55,10 +58,15 @@ export const List = styled.ul`
 `
 
 export const ListItem = styled.li`
+    font-size: 14px;
     margin-left: 5px;
     margin-top: 5px;
     padding: 8px;
     border-left : 3px solid black;
+
+    &:hover {
+        background-color: #FFDAB9;
+    }
 
 `
 export const ListItemButton = styled.button`
@@ -71,27 +79,90 @@ export const ListItemButton = styled.button`
 `
 
 export const InputText = styled.input`
-    border: 1px #FFDAB9 solid;
-    border-radius: 3px;
+    width: 40%;
+    border: 2px #7B69B7 solid;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
 `
 export const InputTextArea = styled.textarea`
-    width: 30%;
-    border: #FFDAB9 1px solid;
+    width: 40%;
+    height: 10vh;
+    border: 2px solid #7B69B7;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
     resize: none;
-    border-radius: 3px;
+    margin-bottom: 10px;
 `
 
 export const CustomDiv = styled.div`
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: left;
-    margin-right: 20px;
-    margin-bottom: 40px;
-    padding: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
 `
 
 export const Label = styled.label`
-    font-size: larger;
-    font-weight: 300;
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 10px;
+`
+
+// 북마크 리스트
+
+export const Container = styled.div`
+  /* 전체 컨테이너 스타일 */
+  
+`;
+
+export const BookmarkListItem = styled.div`
+  /* 각 아이템 스타일 */
+  
+  width: 40%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f0f0f0;
+`;
+
+export const PaginationContainer = styled.div`
+  /* 페이지 버튼 컨테이너 스타일 */
+  text-align: center;
+`;
+
+export const PageButton = styled.button`
+  /* 페이지 버튼 스타일 */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #ccc;
+  }
+`;
+
+export const PostTitle = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  cursor: pointer;
+  text-decoration: none;
+
+`;
+
+export const PostDate = styled.div`
+  color: #888;
+  font-size: 14px;
+`;
+
+export const ListItemContainer = styled.div`
+    display: flex;
+    flex-direction: row;
 `

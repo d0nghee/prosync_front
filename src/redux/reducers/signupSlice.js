@@ -5,6 +5,7 @@ const initialState = {
         email: "",
         password: "",
         name: "",
+        certificationNumber : "",
     },
     verifiedPassword: {
         verifypassword: "",
@@ -15,6 +16,8 @@ const initialState = {
     modalButtons: [],
     isEmailValid: false,
     isPasswordMatch: false,
+    
+    
 };
 
 export const signupSlice = createSlice({
@@ -27,8 +30,8 @@ export const signupSlice = createSlice({
         setVerifiedPassword: (state, action) => {
             state.verifiedPassword = action.payload;
         },
-        setIsConfirmModalOpen: (state, action) => {
-            state.isConfirmModalOpen = action.payload;
+        setIsConfirmModalOpen: (state) => {
+            state.isConfirmModalOpen = !state.isConfirmModalOpen;
         },
         setModalCheck: (state, action) => {
             state.modalCheck = action.payload;
@@ -45,6 +48,8 @@ export const signupSlice = createSlice({
         setIsPasswordMatch: (state, action) => {
             state.isPasswordMatch = action.payload;
         },
+       
+        
     },
 });
 
@@ -59,6 +64,7 @@ export const {
     setModalButtons,
     setIsEmailValid,
     setIsPasswordMatch,
+  
 
 } = signupSlice.actions;
 

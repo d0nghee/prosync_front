@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const PageContainer = styled.div`
   margin-left: 25%;
@@ -61,24 +62,27 @@ const Button = styled.button`
   }
 `;
 
-function Pagination({
-  pageInfo,
-  pageCount,
-  searchCondition,
-  onConditionChangeHandler,
-}) {
-  console.log("Pagination");
-  console.log(pageInfo);
+function Pagination({ pageInfo, pageCount, isPersonal }) {
+ 
 
   const { page, totalPages } = pageInfo;
 
   const [currPage, setCurrPage] = useState(page);
   const firstNum = currPage - ((currPage - 1) % pageCount);
   const lastNum = Math.min(firstNum + pageCount - 1, totalPages);
+  const navigate = useNavigate();
+  const location = useLocation();
+
 
   const changePage = (newPage) => {
     setCurrPage(newPage);
-    onConditionChangeHandler({ ...searchCondition, page: newPage });
+
+    const queryParams = new URLSearchParams(location.search);
+
+    queryParams.set("page",newPage);
+
+    // useNavigate 사용하기
+    navigate(`${location.pathname}?${queryParams.toString()}`);
   };
 
   const createButtons = () => {
@@ -114,8 +118,6 @@ function Pagination({
       </ButtonWrap>
     </PageContainer>
   );
-
- 
 }
 
 export default Pagination;

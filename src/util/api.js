@@ -8,7 +8,7 @@ const getApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -17,8 +17,8 @@ const postApi = async (url, data) => {
     const res = await axiosInstance.post(url, data);
     return res;
   } catch (error) {
-    console.error(error, 'error');
-    return error;
+    console.error(error, "error");
+    throw error;
   }
 };
 
@@ -28,17 +28,18 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    console.error('patchApi 지나감');
+    throw error;
   }
 };
 
-const deleteApi = async (url) => {
+const deleteApi = async (url,data) => {
   try {
-    const res = await axiosInstance.delete(url);
+    const res = await axiosInstance.delete(url,data);
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 

@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+import Button from '../components/button/Button'
 
 export const Page = styled.div`
     display: flex;
@@ -13,7 +14,9 @@ export const SideImage = styled.div`
 `
 
 export const Image = styled.img`
-    height: 790px;
+    height: 40%;
+    width: 67%;
+    object-fit: cover;
 `
 
 export const SideContent = styled.div`
@@ -31,7 +34,7 @@ export const ConfirmEmail = styled.button`
     color: white;
     border: none;
     padding : 10px 15px;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor : pointer;
     transition: background-color 0.3s ease-in-out;
 
@@ -46,7 +49,7 @@ export const DisableButton = styled.button`
     color: white;
     border: none;
     padding : 10px 15px;
-    border-radius: 5px;
+    border-radius: 3px;
 `
 
 export const DivContainer = styled.div`
@@ -60,4 +63,27 @@ export const ButtonContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     text-align: center;
+`
+
+export const VerifyCodeContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    opacity: ${props => (props.isVisible ? 1 : 0)};
+    transition: opacity 0.3s ease-in-out;
+    
+`;
+
+const fadeIn = keyframes`
+    from {
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+`;
+
+export const VerifyCodeButton = styled(Button)`
+    margin-left: 1rem;
+    animation : ${fadeIn} 0.3s ease-in-out;
 `

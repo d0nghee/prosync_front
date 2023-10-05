@@ -16,7 +16,9 @@ export function removeCookie(name) {
 
 export function removeUserCookie() {
   removeCookie("accessToken");
-  setCookie("refreshToken", "", { maxAge: 0 });
+  removeCookie("refreshToken");
   removeCookie("profile");
   removeCookie("name");
+  removeCookie("memberId");
+  removeCookie("email");
 }

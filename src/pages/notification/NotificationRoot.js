@@ -1,12 +1,13 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom";
+import SideBar from "../../components/common/SideBar";
 
 const NotificationRoot = () => {
   return (
     <>
-    <div>내 알림</div>
-    <Outlet/>
+      <SideBar />
+      <Outlet />
     </>
-  )
-}
+  );
+};
 
 export default NotificationRoot;
