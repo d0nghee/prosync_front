@@ -15,7 +15,7 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from "./pages/task/TaskDetail";
 import NewProject from "./pages/project/NewProject";
-import Project from "./components/notification/Project";
+import Project from "./pages/project/Project";
 import NotificationList from "./components/notification/NotificationList";
 import ProjectLogPreview from "./pages/notification/ProjectLogPreview";
 import ProjectListContainer from "./pages/notification/ProjectListContainer";
@@ -78,13 +78,16 @@ const router = createBrowserRouter([
                 index: true,
                 id: "projects",
                 element: <ProjectList />,
-                // element: <Project />,
               },
               { path: "new", element: <NewProject /> },
               {
                 path: ":projectId",
                 children: [
-                  { index: true, element: <Tasks /> },
+                  {
+                    index: true,
+                    element: <Project />,
+                    loader: projectLoader,
+                  },
                   {
                     id: "edit",
                     path: "edit",
@@ -103,6 +106,7 @@ const router = createBrowserRouter([
                     path: "tasks",
                     element: <TasksRoot />,
                     children: [
+                      { index: true, element: <Tasks /> },
                       {
                         path: ":taskId",
                         id: "task-details",

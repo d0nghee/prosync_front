@@ -13,7 +13,7 @@ export default function TaskSearchBar({ updateSearch, onChangePage }) {
     <SearchContainer>
       <SearchInput
         type="text"
-        placeholder="검색어를 입력하세요"
+        placeholder="검색어를 입력하세요."
         aria-label="검색어 입력"
         onKeyUp={handleKeyPress}
       />

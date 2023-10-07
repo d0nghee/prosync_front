@@ -94,5 +94,5 @@ const TaskSection = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  width: 1400px;
+  width: 1600px;
 `;

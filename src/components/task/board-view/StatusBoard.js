@@ -90,7 +90,7 @@ const Container = styled.div`
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 350px;
-  height: 100%;
+  height: 1200px;
 `;
 
 const Board = styled.div`

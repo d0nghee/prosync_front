@@ -28,6 +28,7 @@ export const Title = styled.div`
   margin: 0 0.5rem;
   padding: 0 2.5rem 0 1rem;
   align-items: center;
+  font-size: 1.2rem;
 
   & > div {
     flex: 1;
@@ -96,8 +97,8 @@ export const Contents = styled.div`
     background-color: white;
   }
 
-  div:nth-child(1),
-  input:nth-child(1) {
+  & > div:nth-child(1),
+  & > input:nth-child(1) {
     flex: 1.5;
   }
 `;
@@ -112,7 +113,7 @@ export const LinkContents = styled(Link)`
   align-items: center;
   position: relative;
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.2rem;
 
   & > div,
   & > input,
@@ -128,8 +129,8 @@ export const LinkContents = styled(Link)`
     background-color: white;
   }
 
-  div:nth-child(1),
-  input:nth-child(1) {
+  & > div:nth-child(1),
+  & > input:nth-child(1) {
     flex: 1.5;
   }
 `;
@@ -144,6 +145,18 @@ export const Assignee = styled.div`
     padding-bottom: 10px;
     border-bottom: 1px solid #d6ccc2;
   }
+`;
+
+export const Undefined = styled.span`
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 80%;
+  color: white;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  background-color: #d6ccc2;
 `;
 
 export const Box = styled.ul`
@@ -163,13 +176,13 @@ export const PageButton = styled.button`
   font-weight: bold;
   border-radius: 1rem;
   cursor: pointer;
-  border: ${(props) => (props.active ? "3px solid #be95c4" : "#333")};
-  color: #be95c4;
+  border: ${(props) => (props.active ? "3px solid #c0c0c0" : "#333")};
+  color: #c0c0c0;
   background-color: white;
 
   &:hover {
     opacity: 0.7;
-    background-color: #be95c4;
+    background-color: #c0c0c0;
     color: white;
   }
 `;
