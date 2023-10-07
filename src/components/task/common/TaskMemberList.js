@@ -39,11 +39,10 @@ export default function TaskMemberList({
                   }
                 />
               )}
-              <ProfileCard
-                id={member.memberProjectId}
-                name={member.name}
-                image={member.profileImage}
-              />
+              <MemberInfo>
+                <img src={member.profileImage} />
+                <div>{member.name}</div>
+              </MemberInfo>
             </div>
           ))}
         {isCheckList && (
@@ -70,7 +69,7 @@ export default function TaskMemberList({
 
 const MemberBoxes = styled.div`
   max-height: 500px;
-  width: 300px;
+  width: 400px;
   border: 1px solid #dad7cd;
   padding: 1rem;
   border-radius: 10px;
@@ -110,4 +109,15 @@ const Button = styled.button`
   border-radius: 20px;
   border: ${(props) => (props.border ? props.border + " 1px solid" : "none")};
   color: ${(props) => props.fontcolor || "#333"};
+`;
+
+const MemberInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  & > img {
+    width: 50px;
+    height: 50px;
+  }
 `;

@@ -133,7 +133,7 @@ const Buttons = styled.div`
 `;
 
 const StatusBox = styled.div`
-  width: 280px;
+  width: 400px;
   max-height: 500px;
   border-radius: 10px;
   display: flex;

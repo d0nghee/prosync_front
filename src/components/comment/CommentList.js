@@ -22,7 +22,7 @@ export default function CommentList({ projectMember }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [startPage, setStartPage] = useState(1);
   const pagesToShow = 5;
-  const size = 7;
+  const size = 5;
 
   const totalPages = comments
     ? Array.from(
@@ -294,7 +294,7 @@ const CommentTotal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  width: 980px;
+  width: 1120px;
   font-size: 1.2rem;
   margin: 3rem 0;
 `;
@@ -321,13 +321,13 @@ const PageButton = styled.button`
   border-radius: 1rem;
   cursor: pointer;
   font-weight: bold;
-  border: ${(props) => (props.active ? "3px solid #be95c4" : "#333")};
-  color: #be95c4;
+  border: ${(props) => (props.active ? "3px solid #c0c0c0" : "#333")};
+  color: #c0c0c0;
   background-color: white;
 
   &:hover {
     opacity: 0.7;
-    background-color: #be95c4;
+    background-color: #c0c0c0;
     color: white;
   }
 `;

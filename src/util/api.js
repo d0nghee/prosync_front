@@ -1,6 +1,4 @@
-import axiosInstance from './axiosInstancs';
-
-
+import axiosInstance from "./axiosInstancs";
 
 const getApi = async (url, data) => {
   try {
@@ -28,14 +26,14 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    console.error('patchApi 지나감');
+    console.error("patchApi 지나감");
     throw error;
   }
 };
 
 const deleteApi = async (url, data) => {
   try {
-    const res = await axiosInstance.delete(url,data);
+    const res = await axiosInstance.delete(url, data);
     return res;
   } catch (error) {
     console.error(error);
@@ -53,7 +51,7 @@ const postFileApi = async (files) => {
   try {
     const response = await axiosInstance.post("/files", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     return await response.data.data;
@@ -116,7 +114,7 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
 
 const patchTaskStatusSeqApi = async (projectId, seqList) => {
   const response = await patchApi(
-    `/projects/${projectId}/task-status/seq`,
+    `/projects/${projectId}/task-status/sequence`,
     seqList
   );
 

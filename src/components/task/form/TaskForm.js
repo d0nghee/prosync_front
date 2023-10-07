@@ -27,6 +27,7 @@ import SelectedFiles from "../../file/SelectedFiles";
 import { patchTask } from "../../../redux/reducers/task/taskList-slice";
 import useFormInput from "../../../hooks/use-form-input";
 import { tryFunc } from "../../../util/tryFunc";
+import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const commonErrror = {
@@ -70,6 +71,10 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       (projectMembers) => setProjectMembers(projectMembers),
       commonErrror
     )();
+    if (method === "POST") {
+      dispatch(taskMembersAction.setTaskMembers([]));
+      dispatch(calendarActions.resetDate());
+    }
   }, [params.projectId]);
 
   // FORM 유효성 검증
@@ -118,9 +123,8 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     setTaskStatus({ ...newStatus });
   };
 
-  const saveHandler = async (event) => {
+  const saveHandler = (event) => {
     event.preventDefault();
-    console.log("1", titleValue, "2", classificationValue, "3", detailValue);
 
     if (method === "POST" && !taskStatus) {
       setTaskStatus({ error: true });
@@ -149,25 +153,26 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       fileIds,
     };
 
-    if (method === "PATCH") {
-      requestData.taskId = +params.taskId;
-      await dispatch(
-        requestApi(params.taskId, originalMembers, checkedMembers)
-      );
-      await dispatch(patchTask(params.taskId, requestData));
-      dispatch(calendarActions.resetDate());
-      navigate(`/projects/${projectId}/tasks/${params.taskId}`);
-    } else if (method === "POST") {
-      await tryFunc(
-        () =>
-          postTaskApi(params.projectId, taskStatus.taskStatusId, requestData),
-        (taskId) => {
-          navigate(`/projects/${projectId}/tasks/${taskId}`);
-          dispatch(requestApi(taskId, originalMembers, checkedMembers));
-        },
-        commonErrror
-      )();
-    }
+    (async () => {
+      if (method === "PATCH") {
+        requestData.taskId = +params.taskId;
+        await dispatch(
+          requestApi(params.taskId, originalMembers, checkedMembers)
+        );
+        await dispatch(patchTask(params.taskId, requestData));
+        dispatch(calendarActions.resetDate());
+        navigate(`/projects/${projectId}/tasks/${params.taskId}`);
+      } else if (method === "POST") {
+        //TODO : 에러처리 (try func X)
+        const taskId = await postTaskApi(
+          params.projectId,
+          taskStatus.taskStatusId,
+          requestData
+        );
+        await dispatch(requestApi(taskId, originalMembers, checkedMembers));
+        navigate(`/projects/${projectId}/tasks/${taskId}`);
+      }
+    })();
   };
 
   // 캘린더
@@ -242,13 +247,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
               <t.ButtonArea>
                 <NaviButton
                   type="button"
-                  onClick={() =>
-                    navigate(
-                      method === "patch"
-                        ? ".."
-                        : `/projects/${params.projectId}`
-                    )
-                  }
+                  onClick={() => navigate("..")}
                   name="취소"
                 />
                 <NaviButton name="저장" color="#4361ee" fontcolor="white" />

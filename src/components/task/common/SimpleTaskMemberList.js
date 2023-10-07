@@ -11,7 +11,7 @@ export default function SimpleTaskMemberList({ taskMembers }) {
       <SimpleBox>
         <Images>
           {taskMembers.map((member, idx) =>
-            idx < 3 ? (
+            idx < 4 ? (
               <UserBox key={member.memberProjectId}>
                 <UserName>{member.name}</UserName>
                 <ProfileImage src={member.profileImage} />
@@ -21,9 +21,9 @@ export default function SimpleTaskMemberList({ taskMembers }) {
             )
           )}
         </Images>
-        {taskMembers.length >= 4 ? (
+        {taskMembers.length >= 5 ? (
           <AddBedge onClick={() => setShowTaskList((prv) => !prv)}>
-            {showTaskList ? `접기` : `+ ${taskMembers.length - 3}`}
+            {showTaskList ? `접기` : `+ ${taskMembers.length - 4}`}
           </AddBedge>
         ) : (
           ""
@@ -65,8 +65,7 @@ const UserBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: abs
-  z-index: 2;
+  position: abs;
 
   &:hover div {
     display: block;
