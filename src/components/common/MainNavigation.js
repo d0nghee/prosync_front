@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  NavLink,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { getCookie } from "../../util/cookies";
 import ProfileCard from "./ProfileCard";
 import { useDispatch } from "react-redux";
@@ -152,7 +148,6 @@ const Header = styled.header`
 
     &:hover {
       color: rgb(158, 105, 194);
-      
     }
   }
 `;
@@ -232,8 +227,6 @@ const SideNavbar = styled.div.withConfig({
       display: flex;
       align-items: center;
       cursor: pointer;
-
-    
 
       & > *:nth-child(1) {
         margin-left: 10%;
@@ -400,8 +393,6 @@ const SearchBoxItem = styled.li.withConfig({
       margin-bottom: 10%;
       font-size: x-large;
     }
-
-    
   }
 
   .itemName {
@@ -417,7 +408,6 @@ const SearchBoxItem = styled.li.withConfig({
       font-size: x-large;
     }
   }
-
 `;
 
 const NotificationCount = styled.div`
@@ -466,7 +456,7 @@ const MenuDivider = styled.div`
   margin: 0;
 `;
 
-export default function MainNavigation({setMenuOpen}) {
+export default function MainNavigation({ setMenuOpen }) {
   const [showMenu, setShowMenu] = useState(false);
   const [searchList, setSearchList] = useState([]);
   const [showBox, setShowBox] = useState(false);
@@ -623,10 +613,6 @@ export default function MainNavigation({setMenuOpen}) {
     }
   }, [location, isLoggedIn]);
 
-  
-
-
-
   const projectFetchApi = async (inputValue) => {
     const response = await getApi(
       `/projects?search=${inputValue}&page=${page}&size=6`
@@ -670,7 +656,6 @@ export default function MainNavigation({setMenuOpen}) {
 
       setShowMenu((showMenu) => !showMenu);
       setMenuOpen((show) => !show);
-      
     }
 
     nullCheckAndSetState();
@@ -833,7 +818,10 @@ export default function MainNavigation({setMenuOpen}) {
                     <FontAwesomeIcon
                       icon={faLeftLong}
                       size="2x"
-                      onClick={() => {setShowMenu(false); setMenuOpen(false)}}
+                      onClick={() => {
+                        setShowMenu(false);
+                        setMenuOpen(false);
+                      }}
                     />
                     <div
                       className="profile"
@@ -856,24 +844,20 @@ export default function MainNavigation({setMenuOpen}) {
                     </div>
                     <div onClick={() => navigate("/user/profile")}>
                       <FontAwesomeIcon icon={faUser} />
-                      <div>
-                        MyPage
-                      </div>
+                      <div>MyPage</div>
                     </div>
-                    <div onClick={() => navigate("/user/project")}>
+                    <div onClick={() => navigate("/user/myproject")}>
                       <FontAwesomeIcon icon={faFileInvoice} />
-                      <div>
-                        Managed Project
-                      </div>
+                      <div>Managed Project</div>
                     </div>
                     <div onClick={() => navigate("/user/bookmark")}>
                       <FontAwesomeIcon icon={faBookmark} />
                       <div>Bookmark</div>
                     </div>
-                    <div  onClick={() => navigate("/notification")}>
+                    <div onClick={() => navigate("/notification")}>
                       <FontAwesomeIcon icon={faEnvelope} />
                       <div
-                        className="notification-menu"             
+                        className="notification-menu"
                         onContextMenu={onContextMenuHandler}
                         isMenuItemHovered={isMenuItemHovered}
                       >
@@ -901,11 +885,9 @@ export default function MainNavigation({setMenuOpen}) {
                         ) : null}
                       </div>
                     </div>
-                    <div  onClick={() => navigate("/notification/projects")}>
+                    <div onClick={() => navigate("/notification/projects")}>
                       <FontAwesomeIcon icon={faFileSignature} />
-                      <div>
-                        Project Log
-                      </div>
+                      <div>Project Log</div>
                     </div>
                   </div>
                   <div className="menu-footer">
@@ -920,7 +902,10 @@ export default function MainNavigation({setMenuOpen}) {
                   <FontAwesomeIcon
                     icon={faLeftLong}
                     size="2x"
-                    onClick={() =>{ setShowMenu(false); setMenuOpen(false)}}
+                    onClick={() => {
+                      setShowMenu(false);
+                      setMenuOpen(false);
+                    }}
                   />
                   <div>로그인하셔야 이용하실 수 있는 메뉴입니다.</div>
                 </div>
@@ -1003,7 +988,7 @@ export default function MainNavigation({setMenuOpen}) {
             );
           })
         ) : (
-          <SearchBoxItem className="no-project" pointHover={false} >
+          <SearchBoxItem className="no-project" pointHover={false}>
             해당 프로젝트가 존재하지 않습니다.
           </SearchBoxItem>
         )}
