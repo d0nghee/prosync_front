@@ -1,27 +1,21 @@
 import React from "react";
-import Button from "../../../components/button/Button";
-import Popup from "../../../components/popup/Popup";
+import Button from "../button/Button";
 import { styled } from "styled-components";
 import {
   CustomDiv,
   Label,
   InputText,
   InputTextArea,
-} from "../../../css/MyPageStyle";
+} from "../../css/MyPageStyle";
 import { useDispatch, useSelector } from "react-redux";
-import { setMemberInfo } from "../../../redux/reducers/mypageSlice";
-import axiosInstance from "../../../util/axiosInstancs";
-import {
-  setIsConfirmModalOpen,
-  setModalButtons,
-  setModalMessage,
-} from "../../../redux/reducers/signupSlice";
+import { setMemberInfo } from "../../redux/reducers/mypageSlice";
+import axiosInstance from "../../util/axiosInstancs";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "../../../util/cookies";
-import { getApi } from "../../../util/api";
-import { introValidate, nameValidate } from "../../../util/regex";
-import IntroCheck from "../../signup/components/IntroCheck";
-import NameCheck from "../../signup/components/NameCheck";
+import { setCookie } from "../../util/cookies";
+import { getApi, patchApi, postFileApi } from "../../util/api";
+import { introValidate, nameValidate } from "../../util/regex";
+import IntroCheck from "../../components/signup/IntroCheck";
+import NameCheck from "../../components/signup/NameCheck";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -29,11 +23,11 @@ export default function EditMember() {
   const dispatch = useDispatch();
   const mypage = useSelector((state) => state.mypage);
   const navi = useNavigate();
-  const signup = useSelector((state) => state.signup);
   const [originalInfo, setOriginalInfo] = useState({});
   const location = useLocation();
   const [isNameNotCorrect, setIsNameNotCorrect] = useState(false);
   const [isIntroNotCorrect, setIsIntroNotCorrect] = useState(false);
+  const [image, setImage] = useState('https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png');
 
   useEffect(() => {
     getApi("/members")
@@ -64,7 +58,7 @@ export default function EditMember() {
           alert("유저 정보를 찾지 못하였습니다.");
         }
       });
-  }, [location]);
+  }, [location, image]);
 
   const hasChanges = () => {
     if (!originalInfo) return false;
@@ -84,54 +78,22 @@ export default function EditMember() {
     );
   };
 
-  const handleFileChange = (e) => {};
-
   const handleEdit = () => {
     if (!nameValidate(mypage.memberInfo.name)) {
       if (introValidate(mypage.memberInfo.intro)) {
         setIsIntroNotCorrect(false);
       }
-
-      dispatch(setIsConfirmModalOpen(true));
-      dispatch(
-        setModalMessage(
-          "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
-        )
-      );
-      dispatch(
-        setModalButtons([
-          {
-            label: "확인",
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-              setIsNameNotCorrect(true);
-            },
-          },
-        ])
-      );
+      alert("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.");
+      setIsNameNotCorrect(true);
       return;
     }
 
     setIsNameNotCorrect(false);
 
     if (!introValidate(mypage.memberInfo.intro)) {
-      dispatch(setIsConfirmModalOpen(true));
-      dispatch(
-        setModalMessage(
-          "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
-        )
-      );
-      dispatch(
-        setModalButtons([
-          {
-            label: "확인",
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-              setIsIntroNotCorrect(true);
-            },
-          },
-        ])
-      );
+      alert("소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.");
+      setIsIntroNotCorrect(true);
+
       return;
     }
 
@@ -149,19 +111,8 @@ export default function EditMember() {
             path: "/",
             maxAge: 60 * 60 * 24 * 30,
           });
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(setModalMessage("프로필을 수정하였습니다."));
-          dispatch(
-            setModalButtons([
-              {
-                label: "확인",
-                onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-                  navi("/");
-                },
-              },
-            ])
-          );
+          alert("프로필을 수정하였습니다.");
+          navi("/");
         });
       })
       .catch((error) => {
@@ -172,90 +123,44 @@ export default function EditMember() {
           error.response.data.resultCode === "INCORRECT_FORMAT_NAME"
         ) {
           setIsIntroNotCorrect("true");
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(
-            setModalMessage(
-              "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
-            )
-          );
-          dispatch(
-            setModalButtons([
-              {
-                label: "확인",
-                onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-                },
-              },
-            ])
-          );
+          alert("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.");
+
         } else if (
           error.response.status === "422" &&
           error.response.data.resultCode === "INCORRECT_FORMAT_INTRO"
         ) {
           setIsNameNotCorrect("true");
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(
-            setModalMessage(
-              "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
-            )
-          );
-          dispatch(
-            setModalButtons([
-              {
-                label: "확인",
-                onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-                },
-              },
-            ])
-          );
+          alert("소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.");
+
         } else {
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(
-            setModalMessage("서버 오류로 인해 프로필 수정을 실패하였습니다.")
-          );
-          dispatch(
-            setModalButtons([
-              {
-                label: "확인",
-                onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-                },
-              },
-            ])
-          );
+          alert("서버 오류로 인해 프로필 수정을 실패하였습니다.");
+
           console.log(error);
         }
       });
   };
 
   const handleCancel = () => {
-    dispatch(setIsConfirmModalOpen(true));
-    dispatch(setModalMessage("취소하시겠습니까?"));
-    dispatch(
-      setModalButtons([
-        {
-          label: "확인",
-          onClick: () => {
-            dispatch(setIsConfirmModalOpen(false));
-            navi("/");
-          },
-        },
-        {
-          label: "취소",
-          onClick: () => {
-            dispatch(setIsConfirmModalOpen());
-          },
-        },
-      ])
-    );
+    const isConfirm = window.confirm("취소하시겠습니까?");
+    if (isConfirm) {
+      navi("/");
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    console.log("시발", files)
+    postFileApi(files)
+      .then((res) => {
+        console.log("응답",res);
+      })
+   
   };
 
   return (
     <>
       <CustomDiv style={{ justifyContent: "left", marginLeft: "100px" }}>
-        <ProfileImage src={originalInfo.profileImage} />
-
+        <ProfileImage src={mypage.memberInfo.profileImage} />
         <div
           style={{
             justifyContent: "center",
@@ -264,12 +169,15 @@ export default function EditMember() {
             marginLeft: "5rem",
           }}
         >
-          <Button
-            label="이미지 변경"
-            width="15%"
-            backgroundColor="#7B69B7"
-            onClick={handleFileChange}
-          ></Button>
+          <CustomFileUpload htmlFor="file-upload">
+            이미지 변경
+          </CustomFileUpload>
+          <FileInput
+            type="file"
+            id="file-upload"
+            onChange={handleFileChange}
+          >
+          </FileInput>
         </div>
       </CustomDiv>
       <CustomDiv>
@@ -310,11 +218,6 @@ export default function EditMember() {
           onClick={handleCancel}
         ></Button>
       </CustomDiv>
-      <Popup
-        isOpen={signup.isConfirmModalOpen}
-        message={signup.modalMessage}
-        buttons={signup.modalButtons}
-      />
     </>
   );
 }
@@ -324,4 +227,23 @@ const ProfileImage = styled.img`
   border: 5px solid #7b69b7;
   border-radius: 10rem;
   margin-left: 100px;
+`;
+
+const CustomFileUpload = styled.label`
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #7B69B7;
+  color: #fff;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #5a428a;
+  }
+`;
+
+const FileInput = styled.input`
+  display: none;
 `;

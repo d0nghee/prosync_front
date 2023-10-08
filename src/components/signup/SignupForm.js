@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InputContent, LabelContent } from "../../../css/LoginStyle";
+import { InputContent, LabelContent } from "../../css/LoginStyle";
 import {
   DivContainer,
   Page,
@@ -8,19 +8,17 @@ import {
   Image,
   VerifyCodeContainer,
   VerifyCodeButton
-} from "../../../css/SignupStyle";
-import Button from "../../../components/button/Button";
-import signupImage from "../../../util/signup.png";
+} from "../../css/SignupStyle";
+import Button from "../button/Button";
+import signupImage from '../../util/signup.png';
 import DoubleCheck from "./DoubleCheck";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setIsPasswordMatch, setIsVerfied, setModalButtons, setModalMessage, setVerifiedPassword } from "../../../redux/reducers/signupSlice";
-import Popup from '../../../components/popup/Popup'
+import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setIsPasswordMatch, setIsVerfied, setModalButtons, setModalMessage, setVerifiedPassword } from "../../redux/reducers/signupSlice";
 import ConfrimButton from './ConfirmButton'
-import { axiosInstance } from '../../../util/axiosInstancs'
-import { postApi } from "../../../util/api";
-import { emailValidate, nameValidate, passwordValidate } from "../../../util/regex";
+import { axiosInstance } from '../../util/axiosInstancs'
+import { postApi } from "../../util/api";
+import { emailValidate, nameValidate, passwordValidate } from "../../util/regex";
 import { useEffect } from "react";
 import EmailCheck from "./EmailCheck";
 import VerifyCheck from "./VerifyCheck";
@@ -110,18 +108,7 @@ export default function SignupForm() {
       } else {
         setIsPasswordNotCorrect(true);
       }
-      
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."));
-        dispatch(setModalButtons([
-          {
-            label: "확인",
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-              setIsNameNotCorrect(true);
-            }
-          }
-        ]));
+        alert("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.");
       return;
       
       
@@ -131,18 +118,8 @@ export default function SignupForm() {
     
     if (!passwordValidate(signup.formData.password)) {
       
-      
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요."));
-        dispatch(setModalButtons([
-          {
-            label: "확인",
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-              setIsPasswordNotCorrect(true);
-            }
-          }
-        ]));
+        alert("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요.");
+
       return;
     }
 
@@ -151,110 +128,35 @@ export default function SignupForm() {
 
     postApi('/signup', signup.formData)
       .then(() => {
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("회원가입에 성공하셨습니다!"));
-        dispatch(setModalButtons([
-          {
-            label: "확인",
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-              navi('/login');
-            }
-          }
-        ]));
+        alert("회원가입에 성공하셨습니다!");
+        navi("/login");
       }).catch((error) => {
 
         if (error.response.status===422 && error.response.data.resultCode==="INCORRECT_FORMAT_EMAIL") {
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(setModalMessage("잘못된 이메일 형식입니다."));
-          dispatch(setModalButtons([
-            {
-              label: "확인",
-              onClick: () => {
-                dispatch(setIsConfirmModalOpen(false));
-              }
-            }
-          ]))
+          alert("잘 못된 이메일 형식입니다.")
           return;
 
         }
 
         if (error.response.status===422 && error.response.data.resultCode==="INCORRECT_FORMAT_PASSWORD") {
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(setModalMessage("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요."));
-          dispatch(setModalButtons([
-            {
-              label: "확인",
-              onClick: () => {
-                dispatch(setIsConfirmModalOpen(false));
-                setIsPasswordNotCorrect(true);
-              }
-            }
-          ]))
+          alert("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요.")
           return;
         }
 
         if (error.response.status===422 && error.response.data.resultCode==="INCORRECT_FORMAT_NAME") {
-          dispatch(setIsConfirmModalOpen(true));
-          dispatch(setModalMessage("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."));
-          dispatch(setModalButtons([
-            {
-              label: "확인",
-              onClick: () => {
-                dispatch(setIsConfirmModalOpen(false));
-                setIsNameNotCorrect(true);
-              }
-            }
-          ]))
+          alert("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.")
         }
         
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("빈칸 없이 입력해주세요."));
-        dispatch(setModalButtons([{
-          label: "확인",
-          onClick: () => {
-            dispatch(setIsConfirmModalOpen(false));
-          }
-        }]))
+        alert("빈칸 없이 입력해주세요.");
       });
 
-  }
-
-  const handleCancelButtonClick = () => {
-    dispatch(setIsConfirmModalOpen(true));
-    dispatch(setModalMessage("취소하시겠습니까?"));
-    dispatch(setModalButtons([
-      {
-        label: "확인",
-        onClick: () => {
-          dispatch(setIsConfirmModalOpen(false));
-          navi('/login');
-        }
-      },
-      {
-        label: "취소",
-        onClick: () => {
-          dispatch(setIsConfirmModalOpen(false));
-        }
-      }
-    ]))
   }
 
   const handleIdCheckButtonClick = async () => {
 
    
       if (!emailValidate(signup.formData.email)) {
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("이메일 형식이 잘못되었습니다. 다시 입력해주세요."));
-        dispatch(setModalButtons([
-          {
-            label: "확인",
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-              // 이메일 옆에 빨간글자
-            }
-          }
-        ]));
+        alert("이메일 형식이 잘못되었습니다. 다시 입력해주세요.")
       return;
       }
       
@@ -269,34 +171,12 @@ export default function SignupForm() {
         }).catch((error) => {
           console.log(error);
           if (error.response.status===422 && error.response.data.resultCode==="INCORRECT_FORMAT_EMAIL") {
-            dispatch(setIsConfirmModalOpen(true));
-            dispatch(setModalMessage("잘못된 이메일 형식입니다."));
-            dispatch(setModalButtons([
-              {
-                label: "확인",
-                onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-                 
-
-                }
-              }
-            ]))
+            alert('잘못된 이메일 형식입니다.');
             return;
           }
 
           if (error.response.status===409 && error.response.data.resultCode==="DUPLICATED_USER_ID") {
-            dispatch(setIsConfirmModalOpen(true));
-            dispatch(setModalMessage("중복된 이메일입니다."));
-            dispatch(setModalButtons([
-              {
-                label: "확인",
-                onClick: () => {
-                  dispatch(setIsConfirmModalOpen(false));
-               
-
-                }
-              }
-            ]))
+            alert("중복된 이메일입니다.")
           }
         })
     
@@ -305,46 +185,17 @@ export default function SignupForm() {
   const handleVerifiedEmail = async () => {
 
     if (!signup.isEmailValid) {
-      dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage('이메일 입력을 먼저 통과하셔야 합니다!'));
-        dispatch(setModalButtons([
-          {
-            label: '확인',
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-            }
-          }
-        ]));
+      alert("이메일 입력을 먼저 하세요.");
         return;
     }
 
     axiosInstance.post("/send_verification", signup.formData)
       .then(async (res) => {
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage('전송되었습니다.'));
-        dispatch(setModalButtons([
-          {
-            label: '확인',
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-            }
-          }
-        ]));
+        alert("전송되었습니다.")
         setIsVerifyCodeVisible(!isVerifyCodeVisible);
 
-
-
       }).catch(error => {
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage('인증번호가 잘못되었습니다. 다시 입력하세요.'));
-        dispatch(setModalButtons([
-          {
-            label: '확인',
-            onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-            }
-          }
-        ]));
+        alert("인증번호가 잘못되었습니다.")
         console.log(error);
       })
 
@@ -359,16 +210,8 @@ export default function SignupForm() {
       })
       .catch(error => {
         console.log(error);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("인증번호가 일치하지 않습니다."));
-        dispatch(setModalButtons([
-          {
-            label: "확인", onClick: () => {
-              dispatch(setIsConfirmModalOpen(false));
-            }
-          }
-        ]))
-
+        alert("인증번호가 일치하지 않습니다.");
+        
       })
   }
 
@@ -471,11 +314,6 @@ export default function SignupForm() {
           ></Button>
         </SideContent>
       </Page>
-      <Popup
-        isOpen={signup.isConfirmModalOpen}
-        message={signup.modalMessage}
-        buttons={signup.modalButtons}
-      ></Popup>
     </>
   );
 }

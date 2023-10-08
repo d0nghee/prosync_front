@@ -2,25 +2,14 @@ import React, { useState } from "react";
 import CustomButton from "../../components/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import LoginForm from "./components/loginForm";
+import LoginForm from "../../components/signup/loginForm";
 import { LoginButtonContainer } from "../../css/LoginStyle";
 import {
   setIsLoggedIn,
   setLoginFormData,
 } from "../../redux/reducers/loginSlice";
-import axiosInstance from "../../util/axiosInstancs";
 import { getCookie, setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
-import axios from "axios";
-import Popup from "../../components/popup/Popup";
-import {
-  setIsConfirmModalOpen,
-  setModalButtons,
-  setModalMessage,
-} from "../../redux/reducers/signupSlice";
-
-import { store } from "../../redux/store/index";
 import Loading from "../../components/common/Loading";
 import { tryFunc } from "../../util/tryFunc";
 
@@ -101,46 +90,20 @@ export default function Login() {
     const errorHandlers = {
       401: (error) => {
         console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
+        alert("일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요.");
       },
       404: (error) => {
         console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("회원 정보를 찾지 못하였습니다."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
+        alert("회원 정보를 찾지 못하였습니다.");
       },
       422: (error) => {
         console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("이메일 형식이 잘못되었습니다."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
+        alert("이메일 형식이 잘못되었습니다.")
       },
       
       default: (error) => {
         console.error("Unknown error:", error);
+        alert("Unknown Error");
       },
     };
 
@@ -168,13 +131,17 @@ export default function Login() {
   return (
     <div>
       <div>
-        <LoginForm onChange={handleInputChange}></LoginForm>
+        <LoginForm
+         onChange={handleInputChange}
+         onEnter={handleLogin}
+         ></LoginForm>
       </div>
       <LoginButtonContainer>
         <CustomButton
           backgroundColor="#7B69B7"
           label="로그인"
           onClick={handleLogin}
+          
         />
         <CustomButton
           label="회원가입"
@@ -182,11 +149,6 @@ export default function Login() {
           onClick={handleSignup}
         />
       </LoginButtonContainer>
-      <Popup
-        isOpen={signup.isConfirmModalOpen}
-        message={signup.modalMessage}
-        buttons={signup.modalButtons}
-      />
 
       {loading && <Loading />}
     </div>

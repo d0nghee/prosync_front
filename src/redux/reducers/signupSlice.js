@@ -10,10 +10,7 @@ const initialState = {
     verifiedPassword: {
         verifypassword: "",
     },
-    isConfirmModalOpen: false,
-    modalCheck: "",
-    modalMessage: "",
-    modalButtons: [],
+    
     isEmailValid: false,
     isPasswordMatch: false,
     
@@ -30,18 +27,7 @@ export const signupSlice = createSlice({
         setVerifiedPassword: (state, action) => {
             state.verifiedPassword = action.payload;
         },
-        setIsConfirmModalOpen: (state) => {
-            state.isConfirmModalOpen = !state.isConfirmModalOpen;
-        },
-        setModalCheck: (state, action) => {
-            state.modalCheck = action.payload;
-        },
-        setModalMessage: (state, action) => {
-            state.modalMessage = action.payload;
-        },
-        setModalButtons: (state, action) => {
-            state.modalButtons = action.payload;
-        },
+        
         setIsEmailValid: (state, action) => {
             state.isEmailValid = action.payload;
         },
@@ -58,10 +44,6 @@ export const signupSlice = createSlice({
 export const {
     setFormData,
     setVerifiedPassword,
-    setIsConfirmModalOpen,
-    setModalCheck,
-    setModalMessage,
-    setModalButtons,
     setIsEmailValid,
     setIsPasswordMatch,
   
