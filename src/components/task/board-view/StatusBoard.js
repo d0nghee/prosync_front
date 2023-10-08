@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../../util/tryFunc";
 
+import { useState } from "react";
+
 export default function StatusBoard({ list, projectMember }) {
   const navigate = useNavigate();
   const commonErrror = {

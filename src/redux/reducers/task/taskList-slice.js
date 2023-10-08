@@ -1,15 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   deleteTaskApi,
   getTasksApi,
   patchTaskApi,
   postTaskApi,
-} from '../../../util/api';
+} from "../../../util/api";
 
-import { tryFunc } from '../../../util/tryFunc';
+import { tryFunc } from "../../../util/tryFunc";
 
 const taskListSlice = createSlice({
-  name: 'taskList',
+  name: "taskList",
   initialState: {
     list: [],
     pageInfo: {},
@@ -24,6 +24,7 @@ const taskListSlice = createSlice({
     },
     updateTask(state, action) {
       const updatedTask = action.payload;
+
       let findIndex = state.list.findIndex(
         (task) => task.taskId === updatedTask.taskId
       );
@@ -32,6 +33,30 @@ const taskListSlice = createSlice({
         state.list[findIndex] = { ...state.list[findIndex], ...updatedTask };
       }
     },
+    // board view에서 quit 회원 삭제 요청
+    updateBoardTaskMembers(state, action) {
+      const { memberProjectId, taskId } = action.payload;
+
+      if (state.list.length !== 0) {
+        state.list.forEach((statusList, index) => {
+          const idx = statusList.list.findIndex(
+            (task) => task.taskId === taskId
+          );
+          if (idx !== -1) {
+            let taskMembers = statusList.list[idx].taskMembers;
+            taskMembers = taskMembers.filter(
+              (member) => member.memberProjectId !== memberProjectId
+            );
+            console.log("taskmembers", taskMembers);
+            state.list[index].list[idx] = {
+              ...statusList.list[idx],
+              taskMembers,
+            };
+          }
+        });
+      }
+    },
+
     moveTask(state, action) {
       const { task, taskStatusId } = action.payload;
       const findOriginalIndex = state.list.findIndex(
@@ -64,7 +89,7 @@ const taskListSlice = createSlice({
     },
     updateTaskSeq(state, action) {
       const statusList = action.payload;
-      console.log(statusList, '상태 리스트 확인');
+      console.log(statusList, "상태 리스트 확인");
       statusList.forEach((one) => {
         const findIndex = state.list.findIndex(
           (status) => status.taskStatusId === one.taskStatusId

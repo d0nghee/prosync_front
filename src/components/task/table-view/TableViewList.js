@@ -199,6 +199,7 @@ export default function TableViewList({
     const classification = event.target[3].value;
     const status = taskStatus ? taskStatus : null;
 
+    // date 유효성 검사
     if (
       !isValidDateString(startDate) ||
       !isValidDateString(endDate) ||
@@ -206,7 +207,12 @@ export default function TableViewList({
     ) {
       setErrorTaskId(taskId);
       return;
-    } else if (title.trim() === "" || classification.trim() === "") {
+    } else if (title.trim() === "" || title.length > 50) {
+      // title => 1 ~ 50자 이내
+      setErrorTaskId(taskId);
+      return;
+    } else if (classification.trim() === "" || classification.length > 20) {
+      // classification => 1 ~ 20자 이내
       setErrorTaskId(taskId);
       return;
     }
@@ -321,7 +327,10 @@ export default function TableViewList({
                     )}
                     {task.taskMembers.length !== 0 ? (
                       <tv.Assignee>
-                        <SimpleTaskMemberList taskMembers={task.taskMembers} />
+                        <SimpleTaskMemberList
+                          taskMembers={task.taskMembers}
+                          taskId={task.taskId}
+                        />
                       </tv.Assignee>
                     ) : (
                       <tv.Assignee>
@@ -370,6 +379,8 @@ export default function TableViewList({
                             >
                               <SimpleTaskMemberList
                                 taskMembers={task.taskMembers}
+                                taskId={task.taskId}
+                                isTable="true"
                               />
                             </tv.Assignee>
                           ) : (
@@ -378,7 +389,7 @@ export default function TableViewList({
                             >
                               <tv.Assignee>
                                 <tv.Undefined>담당자 없음</tv.Undefined>
-                              </tv.Assignee>{" "}
+                              </tv.Assignee>
                             </div>
                           )}
                           {showAssignees && (
@@ -393,6 +404,7 @@ export default function TableViewList({
                                   toggleList={() =>
                                     setShowAssignees((prv) => !prv)
                                   }
+                                  taskId={task.taskId}
                                 />
                               </t.Wrapper>
                             </div>

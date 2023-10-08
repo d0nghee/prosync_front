@@ -8,7 +8,7 @@ const Container = styled.div`
   width: 75%;
   display: flex;
   flex-direction: column;
-  
+
   & > * {
     margin-bottom: 5%;
   }
@@ -23,7 +23,6 @@ const Container = styled.div`
       font-weight: 900;
       color: rgb(158, 105, 194);
     }
-    
 
     & > .create-button {
       background-color: rgb(138, 128, 191);
@@ -59,29 +58,36 @@ const Container = styled.div`
     font-weight: 800;
 
     &:hover {
-        color: white;
-        box-shadow: 150px 0 0 0 rgba(0, 0, 0, 0.25) inset,
-          -150px 0 0 0 rgba(0, 0, 0, 0.25) inset;
-      }
+      color: white;
+      box-shadow: 150px 0 0 0 rgba(0, 0, 0, 0.25) inset,
+        -150px 0 0 0 rgba(0, 0, 0, 0.25) inset;
+    }
   }
-
- 
 `;
 
 const MyProjects = () => {
-
   const navigate = useNavigate();
 
   return (
     <Container>
       <div className="upper">
         <div className="title">내 프로젝트</div>
-        <div className="create-button" onClick={() => {navigate('/projects/new')}}>
+        <div
+          className="create-button"
+          onClick={() => {
+            navigate("/projects/new");
+          }}
+        >
           프로젝트 생성
         </div>
       </div>
-      <div className="more-button" onClick={() => {navigate('/user/myproject')}}>{`더보기 >`}</div>
-      <MyProjectsList/>
+      <div
+        className="more-button"
+        onClick={() => {
+          navigate("/user/myproject");
+        }}
+      >{`더보기 >`}</div>
+      <MyProjectsList />
     </Container>
   );
 };
