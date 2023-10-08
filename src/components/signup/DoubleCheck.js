@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setIsPasswordMatch } from "../../../redux/reducers/member/signupSlice";
+import { setIsPasswordMatch } from "../../redux/reducers/member/signupSlice";
 
 export default function DoubleCheck(props) {
   const dispatch = useDispatch();
@@ -9,7 +9,7 @@ export default function DoubleCheck(props) {
 
   const check = () => {
     if (First === "" && Second === "") {
-      return null;
+      return <p style={{ color: "red", marginLeft: "2rem" }}>미입력</p>;
     } else if (First === Second) {
       dispatch(setIsPasswordMatch(true));
       return <p style={{ color: "green", marginLeft: "2rem" }}>일치함</p>;

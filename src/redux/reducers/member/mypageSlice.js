@@ -60,19 +60,7 @@ const mypageSlice = createSlice({
             state.pageInfo = action.payload;
         },
         setIsBookCheck : (state, action) => {
-            const { page, projectId } = action.payload;
-
-            if (!state.isBookCheck[page]) {
-                state.isBookCheck[page] = {};
-            }
-
-            state.isBookCheck[page][projectId] = !state.isBookCheck[page][projectId];
-            // const { page, projectId } = action.payload;
-            // if (state.isBookCheck[page]) {
-            //     state.isBookCheck[page][projectId] = !state.isBookCheck[page][projectId];
-            // } else {
-            //     state.isBookCheck[page] = { [projectId] : false};
-            // }
+            state.isBookCheck = action.payload;
         },
         setProjectList : (state, action) => {
             state.projectList = action.payload;

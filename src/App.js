@@ -33,12 +33,12 @@ import EditProject from './pages/project/EditProject';
 import ProjectList from './pages/project/ProjectList';
 import EditProjectMember, {
   loader as membersLoader,
-} from './pages/project/EditProjectMember';
-import EditPassword from './pages/mypage/components/EditPassword';
-import EditMember from './pages/mypage/components/EditMember';
-import LeaveMember from './pages/mypage/components/LeaveMember';
-import BookMark from './pages/mypage/components/BookMark';
-import MyProject from './pages/mypage/components/MyProject';
+} from "./pages/project/EditProjectMember";
+import EditPassword from './components/mypage/EditPassword'
+import EditMember from "./components/mypage/EditMember";
+import LeaveMember from './components/mypage/LeaveMember'
+import BookMark from './components/mypage/BookMark';
+import MyProject from './components/mypage/MyProject'
 
 const router = createBrowserRouter([
   {

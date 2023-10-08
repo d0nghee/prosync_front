@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { deleteApi, getApi, postApi } from '../../../util/api'
+import { deleteApi, getApi, postApi } from '../../util/api'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../../redux/reducers/member/mypageSlice';
-import { Container, BookmarkListItem, PaginationContainer, PageButton, PostTitle, PostDate, ListItemContainer, PostListContainer, PostItem } from '../../../css/MyPageStyle'
-import BookmarkIcon from './BookmarkIcon';
-import Loading from '../../../components/common/Loading';
+import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../redux/reducers/member/mypageSlice';
+import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage } from '../../css/MyPageStyle'
+import BookmarkIcon from './BookmarkIcon'
+import Loading from '../common/Loading';
 import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
-import { getCookie } from '../../../util/cookies';
-import { tryFunc } from '../../../util/tryFunc';
-import { setIsLoggedIn } from '../../../redux/reducers/member/loginSlice';
+import { tryFunc } from '../../util/tryFunc';
+import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 
 
 const bookmarkIcon = {
@@ -38,9 +37,11 @@ export default function BookMark(props) {
   const subscribeState = useSelector(selectBookCheck);
 
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
   const [hoverState, setHoverState] = useState(Array(mypage.postData.length).fill(false));
-  const [bookmarkState, setBookmarkState] = useState(Array(mypage.postData.length).fill(false));
+  const [buttons, setButtons] = useState([]);
+  const [use, setUse] = useState(false);
+  const [items, setItems] = useState([]);
 
   const paginationButtons = [];
 
@@ -53,26 +54,18 @@ export default function BookMark(props) {
     const newHoverState = [...hoverState];
     newHoverState[idx] = true;
     setHoverState(newHoverState);
-
   }
 
   const handleMouseLeave = (idx) => {
     const newHoverState = [...hoverState];
     newHoverState[idx] = false;
     setHoverState(newHoverState);
-
   }
-
-
 
   const handleTitleClick = (idx) => {
     let projectId = mypage.postData[idx].projectId;
     navi(`/projects/${projectId}/tasks`);
   }
-
-  const bookmarkFetch = useCallback(() => {
-    tryFunc(fetchBookmark, onFetchBookmarkSuccess, onFetchBookmarkErrorHandler)();
-  }, [mypage.postData, currentPage])
 
   const subscribeFetch = useCallback((idx) => {
     tryFunc(fetchSubscribe(idx), onFetchSubscribeSuccess, onFetchBookmarkErrorHandler)();
@@ -84,25 +77,13 @@ export default function BookMark(props) {
     return res.data;
   }
 
-  const fetchSubscribe = async (idx) => {
-
-    let projectId = mypage.postData[idx].projectId;
+  const fetchSubscribe = async (projectId) => {
 
     dispatch(setIsBookCheck({ page: currentPage, projectId: projectId }))
 
-
-
-    if (bookmarkState[idx] === true) {
-
-      postApi(`/bookmark/${projectId}`)
-
-
-    } else if (bookmarkState[idx] === false) {
-
-      deleteApi(`/bookmark/${projectId}`)
-
-    }
-
+    postApi(`/bookmark/${projectId}`);
+    setUse(!use);
+    setLoading(false);
   }
 
   const onFetchSubscribeSuccess = () => {
@@ -131,60 +112,82 @@ export default function BookMark(props) {
   }
 
   const onFetchBookmarkSuccess = (data) => {
-    setLoading(false);
-    console.log("success : " + data);
-    dispatch(setPageInfo(data.pageInfo));
-    dispatch(setPostsData(data.data));
-  }
+    console.log("데이터", data)
+    const resbookmark = data.data;
+    const pageInfo = data.pageInfo;
+    let buttons = [];
 
-  useEffect(() => {
-    setLoading(true);
-    bookmarkFetch();
-  }, [subscribeState, currentPage, subscribeFetch]);
+    console.log(resbookmark);
 
+    const items = resbookmark.map((post, idx) => {
 
-  const getList = () => {
+      return (
+        <PostItem
+          key={post.bookmarkId}
+        >
 
-    return mypage.postData.map((post, idx) =>
-      <PostItem
-        id={post.bookmarkId}
-        key={post.bookmarkId}
-      >
-        <ListItemContainer>
           <BookmarkIcon
             style={bookmarkIcon}
-            onClick={() => subscribeFetch(idx)}
+            onClick={() => subscribeFetch(post.projectId)}
             isBookCheck={subscribeState[currentPage]?.[post.projectId]}
           />
 
-          <PostTitle
+          <ProjectTitle
             onMouseEnter={() => handleMouseEnter(idx)}
             onMouseLeave={() => handleMouseLeave(idx)}
             style={hoverState[idx] ? HoverStyle : postTitleStyle}
             onClick={() => handleTitleClick(idx)}
           >
-            {post.projectId}
             {post.title}
-          </PostTitle>
-        </ListItemContainer>
-        <PostDate>
-          {/* {post.created_at[0]}.
-          {post.created_at[1]}.
-          {post.created_at[2]} &nbsp;/ &nbsp; 
-          {post.created_at[3]} 시
-          {post.created_at[4]} 분
-            */}
-        </PostDate>
+          </ProjectTitle>
+          <ProjectImage
+            src={post.projectImage}
+            onClick={() => handleTitleClick(idx)}
+          >
 
-      </PostItem>)
+          </ProjectImage>
+
+        </PostItem>
+      )
+    })
+
+    for (let i = 1; i <= pageInfo.totalPages; i++) {
+      buttons.push(
+        <PageButton
+          key={i}
+          onClick={() => handlePageChange(i)}
+          disabled={i === currentPage}
+        >
+          {i}
+        </PageButton>
+      )
+
+      setLoading(false);
+    }
+    setItems(items);
+    setButtons(buttons);
+    dispatch(setPageInfo(data.pageInfo));
+    dispatch(setPostsData(data.data));
   }
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const pageParam = searchParams.get('page');
+    if (pageParam) {
+      const nextPage = parseInt(pageParam);
+      setCurrentPage(nextPage);
+    }
+  }, [location.search])
+
+  useEffect(() => {
+    setLoading(true);
+    tryFunc(fetchBookmark, onFetchBookmarkSuccess, onFetchBookmarkErrorHandler)();
+  }, [subscribeState, currentPage, use]);
 
 
 
   for (let i = 1; i <= mypage.pageInfo.totalPages; i++) {
-
     paginationButtons.push(
-
       <PageButton
         key={i}
         onClick={() => handlePageChange(i)}
@@ -192,20 +195,28 @@ export default function BookMark(props) {
       >
         {i}
       </PageButton>
-
     )
-
   }
-
-
 
   return (
     <>
       <PostListContainer>
-        {getList()}
+        {items}
       </PostListContainer>
       <PaginationContainer>
-        {paginationButtons}
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+        {buttons}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === mypage.pageInfo.totalPages}
+        >
+          Next
+        </button>
       </PaginationContainer>
 
       {loading && <Loading />}

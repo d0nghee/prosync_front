@@ -47,6 +47,7 @@ const postFileApi = async (files) => {
   for (let i = 0; i < files.length; i++) {
     formData.append('files', files[i]);
   }
+  console.log("개시발", formData);
 
   try {
     const response = await axiosInstance.post('/files', formData, {
