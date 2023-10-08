@@ -1,6 +1,7 @@
 export function debounce(fn, delay) {
     let timeoutID;
-    return function (...args) {
+
+    const debounced =  function (...args) {
       if (timeoutID) {
         clearTimeout(timeoutID);
       }
@@ -8,4 +9,16 @@ export function debounce(fn, delay) {
         fn(...args);
       }, delay);
     };
+
+    debounced.cancel = function () {
+      if (timeoutID) {
+        clearTimeout(timeoutID);
+      }
+    };
+
+
+
+    return debounced;
+
+
   }

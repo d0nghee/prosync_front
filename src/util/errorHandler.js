@@ -1,4 +1,4 @@
-import { setIsLoggedIn } from "../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../redux/reducers/member/loginSlice";
 
 export const handleErrorCode = (
   status,
@@ -28,9 +28,10 @@ export const handleErrorCode = (
     case 401: // UNAUTHORIZED
       switch (resultCode) {
         case "UNAUTHORIZED": // 유저 인증 실패
-          //   alert("로그인이 만료되었습니다. 로그인 페이지로 이동합니다. [RootLayOut에서 처리]")
-          //   navigate(`/auth?mode=login&returnUrl=${location.pathname}${location.search}`)
           dispatch(setIsLoggedIn(false));
+          if (location.pathname=='/auth' && location.search.includes('?mode=login')) {
+            alert('일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요.');
+          }
           break;
         case "INVALID_TOKEN": // 토큰 유효성 검사 실패
           break;
@@ -46,6 +47,7 @@ export const handleErrorCode = (
         case "ACCESS_FORBIDDEN": // 프로젝트 위임 후 나가기, 댓글 수정/삭제 시
           break;
         case "INVALID_FILE_TYPE": // 파일 형식 오류
+          
           break;
         case "NOTIFICATION_CANT_READ": // 알림 읽기 권한 없음
           break;
@@ -61,6 +63,7 @@ export const handleErrorCode = (
     case 404: // NOT_FOUND
       switch (resultCode) {
         case "USER_NOT_FOUND": // 회원 리소스 찾기 실패
+          alert('회원 정보를 찾지 못하였습니다.');
           break;
         case "PROJECT_NOT_FOUND": // 프로젝트 리소스 찾기 실패
           break;
@@ -107,6 +110,7 @@ export const handleErrorCode = (
     case 422: // UNPROCESSABLE_ENTITY
       switch (resultCode) {
         case "INCORRECT_FORMAT_EMAIL": // 이메일 형식 불일치
+          alert('이메일 형식이 잘못되었습니다.');
           break;
         case "INCORRECT_FORMAT_NAME": // 이름 형식 불일치
           break;
@@ -131,6 +135,9 @@ export const handleErrorCode = (
           break;
       }
       break;
+
+    case 'ERR_NETWORK':
+      alert('서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요.')
 
     default:
       break;

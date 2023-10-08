@@ -8,8 +8,8 @@ import { LoginButtonContainer } from "../../css/LoginStyle";
 import {
   setIsLoggedIn,
   setLoginFormData,
-} from "../../redux/reducers/loginSlice";
-import axiosInstance from "../../util/axiosInstancs";
+} from "../../redux/reducers/member/loginSlice";
+import axiosInstance from "../../util/axiosInstances";
 import { getCookie, setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
 import axios from "axios";
@@ -18,7 +18,7 @@ import {
   setIsConfirmModalOpen,
   setModalButtons,
   setModalMessage,
-} from "../../redux/reducers/signupSlice";
+} from "../../redux/reducers/member/signupSlice";
 
 import { store } from "../../redux/store/index";
 import Loading from "../../components/common/Loading";
@@ -98,51 +98,6 @@ export default function Login() {
 
   const handleLogin = async () => {
     setLoading(true);
-    const errorHandlers = {
-      401: (error) => {
-        console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
-      },
-      404: (error) => {
-        console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("회원 정보를 찾지 못하였습니다."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
-      },
-      422: (error) => {
-        console.log(error.response.status);
-        dispatch(setIsConfirmModalOpen(true));
-        dispatch(setModalMessage("이메일 형식이 잘못되었습니다."));
-        dispatch(
-          setModalButtons([
-            {
-              label: "확인",
-              onClick: () => dispatch(setIsConfirmModalOpen(false)),
-            },
-          ])
-        );
-      },
-      
-      default: (error) => {
-        console.error("Unknown error:", error);
-      },
-    };
 
     const onLoginSuccess = async () => {
       try {
@@ -156,7 +111,7 @@ export default function Login() {
       }
     };
 
-    tryFunc(loginFunc, onLoginSuccess, errorHandlers)().finally(() =>
+    tryFunc(loginFunc, onLoginSuccess, dispatch)().finally(() =>
       setLoading(false)
     );
   };

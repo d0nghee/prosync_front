@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstancs';
+import axiosInstance from './axiosInstances';
 
 const getApi = async (url, data) => {
   try {

@@ -14,57 +14,62 @@ const ButtonWrap = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 1rem;
 `;
 
 const Button = styled.button`
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: gray;
-  color: #ffffff;
-  font-size: 16px;
+  width: 80px;
+  padding: 10px 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-left: 5%;
-  margin-right: 5%;
+  color: #be95c4;
+  background-color: white;
+  border: 0px;
 
   &:hover {
-    background-color: #0056b3;
+    background-color:  #be95c4;
+    opacity: 0.7;
+    color: white;
+
   }
 
   &:disabled {
-    background-color: #e0e0e0;
     cursor: not-allowed;
     color: #b0b0b0;
   }
 
+  &:disabled:hover {
+   background-color: white;
+  }
+
+
+
+
   &[border="true"] {
-    background-color: #e0e0e0;
+    background-color: white;
     color: #007bff;
     border: none;
-    border-radius: 5px;
+    border-radius: 1rem;
     color: #b0b0b0;
-    font-size: 16px;
+    font-size: 1.5rem;
+    padding: 10px 10px;
 
     &:hover {
-      background-color: #e6f0fa;
-      color: black;
-      font-weight: 700;
-      border: 1px solid black;
+      opacity: 0.7;
+      background-color: #be95c4;
+      color: white;
     }
   }
 
   &[aria-current="page"] {
-    background-color: gray;
-    color: white;
-    font-weight: 700;
-    border: 0px;
+    border: 3px solid #be95c4
+    
   }
 `;
 
 function Pagination({ pageInfo, pageCount, isPersonal }) {
- 
-
   const { page, totalPages } = pageInfo;
 
   const [currPage, setCurrPage] = useState(page);
@@ -73,13 +78,12 @@ function Pagination({ pageInfo, pageCount, isPersonal }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const changePage = (newPage) => {
     setCurrPage(newPage);
 
     const queryParams = new URLSearchParams(location.search);
 
-    queryParams.set("page",newPage);
+    queryParams.set("page", newPage);
 
     // useNavigate 사용하기
     navigate(`${location.pathname}?${queryParams.toString()}`);

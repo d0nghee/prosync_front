@@ -6,33 +6,56 @@ import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 const StyledProjectList = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: scroll;
-  padding-bottom: 2%;
-  border: 2px solid gray;
-  border-radius: 10px;
+  padding: 2% 2% 2% 2%;
+  
 
   & > *:not(:nth-last-child(1)):not(:nth-last-child(2)) {
     margin-bottom: 1rem;
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f7f7f7;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
   }
 `;
 
 const NoProject = styled.div`
   margin-top: 70%;
-  font-size: larger;
-  font-weight: 900;
   text-align: center;
+
+  & > div {
+    font-size: 1.5rem;
+    padding-top: 3%;
+    font-weight: 900;
+  }
 `;
 
 const ProjectCount = styled.div`
   text-align: center;
   font-size: 1.5rem;
-    font-weight: 700;
-`
+  font-weight: 700;
+  margin: 5% 0;
+`;
 
 const ProjectList = () => {
   const [ref, inView] = useInView();
@@ -42,22 +65,22 @@ const ProjectList = () => {
   const [selectedProject, setSelectedProject] = useState("");
   const location = useLocation();
   const [projectCount, setProjectCount] = useState(0);
-  
 
   const fetchProjects = async () => {
-    const response = await getApi(`/projectlog/admin?page=${page}&size=4`);
+    const response = await getApi(`/projectlog/admin?page=${page}&size=6`);
     return response.data;
   };
 
   const onFetchProjectsSuccess = (data) => {
-    console.log("프로젝트 무한 스크롤 가져오기 성공 :" + data);
+    console.log("프로젝트 무한 스크롤 가져오기 성공 :");
+    console.log(data);
     setProjects([...projects, ...data.data]);
     setPage((prevPage) => prevPage + 1);
     setMaxPage(data.pageInfo.totalPages);
     setProjectCount(data.pageInfo.totalElements);
   };
 
-  const onFetchProjectsErrorHandler =  {
+  const onFetchProjectsErrorHandler = {
     500: (error) => {
       console.error("Server Error:", error);
       alert("서버에서 오류가 발생했습니다.");
@@ -74,10 +97,14 @@ const ProjectList = () => {
       console.error("Unknown error:", error);
       alert("프로젝트 목록을 들고 오던 중 오류가 발생하였습니다.");
     },
-  }
+  };
 
   const projectFetch = useCallback(() => {
-    tryFunc(fetchProjects, onFetchProjectsSuccess, onFetchProjectsErrorHandler)();
+    tryFunc(
+      fetchProjects,
+      onFetchProjectsSuccess,
+      onFetchProjectsErrorHandler
+    )();
   }, [projects, maxPage]);
 
   useEffect(() => {
@@ -94,27 +121,30 @@ const ProjectList = () => {
 
   return (
     <>
-    <ProjectCount>{`프로젝트 갯수 : ${projectCount} 개`}</ProjectCount>
-    <StyledProjectList onClick={(e) => e.stopPropagation()}>
-      {projects.length > 0 ? (
-        projects.map((project) => {
-          return (
-            <Project
-              key={project.projectId}
-              data={project}
-              onClick={() => {
-                setSelectedProject(project.projectId);
-                projectLogFetchHandler(project.projectId);
-              }}
-              isSelected={selectedProject === project.projectId}
-            />
-          );
-        })
-      ) : (
-        <NoProject>ADMIN인 프로젝트가 존재하지 않습니다.</NoProject>
-      )}
-      <div ref={ref}></div>
-    </StyledProjectList>
+      <ProjectCount>{`${projectCount} 개의 프로젝트가 존재합니다`}</ProjectCount>
+      <StyledProjectList onClick={(e) => e.stopPropagation()}>
+        {projects.length > 0 ? (
+          projects.map((project) => {
+            return (
+              <Project
+                key={project.projectId}
+                data={project}
+                onClick={() => {
+                  setSelectedProject(project.projectId);
+                  projectLogFetchHandler(project.projectId);
+                }}
+                isSelected={selectedProject === project.projectId}
+              />
+            );
+          })
+        ) : (
+          <NoProject>
+            <FontAwesomeIcon icon={faCircleXmark} size="5x" />
+            <div>No Projects</div>
+          </NoProject>
+        )}
+        <div ref={ref}></div>
+      </StyledProjectList>
     </>
   );
 };

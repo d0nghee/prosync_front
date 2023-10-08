@@ -9,8 +9,8 @@ import {
   addCheckbox,
   selectCheckbox,
   toggleAllItems,
-} from '../../redux/reducers/memberCheckboxSlice';
-import { selectMembers } from '../../redux/reducers/memberAuthoritySlice';
+} from '../../redux/reducers/member/memberCheckboxSlice';
+import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
 import { useDispatch } from 'react-redux';
 
 export default function EditProjectMember() {

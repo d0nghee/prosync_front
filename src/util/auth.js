@@ -1,6 +1,6 @@
 import { redirect } from "react-router-dom";
 import { getCookie, removeCookie, removeUserCookie } from "./cookies";
-import { setIsLoggedIn } from "../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../redux/reducers/member/loginSlice";
 
 export function accessTokenLoader() {
   const accessToken = getCookie("accessToken");

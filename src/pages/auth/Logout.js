@@ -2,7 +2,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import { removeUserCookie } from "../../util/cookies";
 import { getApi } from "../../util/api";
 import { useDispatch } from "react-redux";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { useEffect } from "react";
 
 export function Logout() {

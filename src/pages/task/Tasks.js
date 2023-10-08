@@ -14,7 +14,7 @@ import { getTaskStatus } from "../../redux/reducers/task/taskStatus-slice";
 import { BiExit } from "react-icons/bi";
 import { deleteApi } from "../../util/api";
 import { tryFunc } from "../../util/tryFunc";
-import axiosInstance from "../../util/axiosInstancs";
+import axiosInstance from "../../util/axiosInstances";
 import { getCookie } from "../../util/cookies";
 
 export default function Tasks() {

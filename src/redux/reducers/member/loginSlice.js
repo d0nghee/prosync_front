@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCookie } from "../../util/cookies";
+import { getCookie } from "../../../util/cookies";
 
 
 const initialState = {
