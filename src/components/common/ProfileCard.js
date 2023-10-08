@@ -1,9 +1,9 @@
 import { styled } from "styled-components";
 import { AiFillCaretDown } from "react-icons/ai";
 
-export default function ProfileCard({ name, image }) {
+export default function ProfileCard({ name, image, setMemberProfile }) {
   return (
-    <ProfileContainer>
+    <ProfileContainer onClick={() => setMemberProfile({show:true})}>
       {image && <ProfileImage src={image} alt={image} />}
       {name && <div>{name} 님 반갑습니다</div>}
       <div className="profile-notification">프로필</div>

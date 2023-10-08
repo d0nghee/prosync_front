@@ -80,7 +80,7 @@ const MyProjects = () => {
           프로젝트 생성
         </div>
       </div>
-      <div className="more-button" onClick={() => {navigate('/user/project')}}>{`더보기 >`}</div>
+      <div className="more-button" onClick={() => {navigate('/user/myproject')}}>{`더보기 >`}</div>
       <MyProjectsList/>
     </Container>
   );
