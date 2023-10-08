@@ -5,6 +5,9 @@ import { tryFunc } from "../../../util/tryFunc";
 import { deleteTaskMemberApi } from "../../../util/api";
 import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
 import { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import MemberProfile from "../../common/MemberProfile";
+import { useEffect } from "react";
 
 export default function TaskMemberList({
   taskMembers, //TODO: checklist인 경우 -> project member (프로젝트 회원 redux 로)
@@ -13,6 +16,13 @@ export default function TaskMemberList({
   taskId,
 }) {
   const dispatch = useDispatch();
+  const [memberProfile, setMemberProfile] = useState({show: false});
+  const [memberId, setMemberId] = useState(null);
+  const params = useParams();
+
+  
+
+  
   const checkedMembers = useSelector(
     (state) => state.taskMembers.checkedMembers
   );
@@ -73,7 +83,7 @@ export default function TaskMemberList({
           taskMembers.map((member) =>
             member.status === "ACTIVE" ? (
               <div key={member.memberProjectId}>
-                <MemberInfo>
+                <MemberInfo onClick={() => {setMemberId(member.memberId); setMemberProfile({show:true})}}>
                   <img src={member.profileImage} alt="회원이미지" />
                   <div>{member.name}</div>
                 </MemberInfo>
@@ -116,6 +126,11 @@ export default function TaskMemberList({
           </ButtonArea>
         )}
       </MemberBoxes>
+      {
+      memberProfile.show && (
+        <MemberProfile onClose={() => setMemberProfile({show:false})} memberInformation={{isOthers:true,memberId:memberId ,projectId: params.projectId}}/>
+      )
+    }
     </>
   );
 }
@@ -172,6 +187,12 @@ const MemberInfo = styled.div`
   & > img {
     width: 50px;
     height: 50px;
+    border-radius: 2rem;
+    cursor: pointer;
+  }
+
+  & > img:hover {
+    border: 1px solid red;
   }
 `;
 

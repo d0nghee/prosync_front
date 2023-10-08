@@ -102,15 +102,15 @@ const Information = styled.div`
     width: 15rem;
     left: 31%;
     top: 7%;
-    border: 7px solid white;  
-    border-radius: 50%; 
+    border: 7px solid white;
+    border-radius: 50%;
   }
 `;
 
 const TextLine = styled.div`
   position: absolute;
   width: 80%;
-  left: 17%;
+  left: 19%;
   top: 43%;
 
   & * {
@@ -141,13 +141,22 @@ const TextLine = styled.div`
   }
 
   & > .authority {
+    display: flex;
+
+    & > div:nth-child(2) {
+      font-size: 1.3rem;
+      font-weight: 900;
+      padding-top: 0.5%;
+      margin-left: 3%;
+      color: #f72585;
+    }
   }
 `;
 
 const Introduction = styled.div`
   position: absolute;
   top: 60%;
-  left: 4%;
+  left: 5%;
   width: 90%;
   height: 17rem;
 
@@ -163,5 +172,7 @@ const Introduction = styled.div`
     height: 14rem;
     border-radius: 20px;
     padding: 2%;
+    font-size: 1rem;
+    font-weight: 700;
   }
 `;
