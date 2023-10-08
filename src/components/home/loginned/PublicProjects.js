@@ -59,7 +59,7 @@ const PublicProjects = () => {
       <div className="upper">
         <div className="title">모든 프로젝트</div>
       </div>
-      <div className="more-button" onClick={() => {navigate('/')}}>{`더보기 >`}</div>
+      <div className="more-button" onClick={() => {navigate('/projects')}}>{`더보기 >`}</div>
       <PublicProjectsList/>
     </Container>
   );

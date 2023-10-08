@@ -76,11 +76,11 @@ const MyProjects = () => {
     <Container>
       <div className="upper">
         <div className="title">내 프로젝트</div>
-        <div className="create-button" onClick={() => {navigate('/')}}>
+        <div className="create-button" onClick={() => {navigate('/projects/new')}}>
           프로젝트 생성
         </div>
       </div>
-      <div className="more-button" onClick={() => {navigate('/')}}>{`더보기 >`}</div>
+      <div className="more-button" onClick={() => {navigate('/user/project')}}>{`더보기 >`}</div>
       <MyProjectsList/>
     </Container>
   );

@@ -15,7 +15,7 @@ import DoubleCheck from "./DoubleCheck";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setIsPasswordMatch, setIsVerfied, setModalButtons, setModalMessage, setVerifiedPassword } from "../../../redux/reducers/signupSlice";
+import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setIsPasswordMatch, setIsVerfied, setModalButtons, setModalMessage, setVerifiedPassword } from "../../../redux/reducers/member/signupSlice";
 import Popup from '../../../components/popup/Popup'
 import ConfrimButton from './ConfirmButton'
 import { axiosInstance } from '../../../util/axiosInstancs'

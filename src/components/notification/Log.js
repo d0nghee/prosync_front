@@ -62,7 +62,7 @@ const LogContainer = styled.div`
   color: black;
 
   &:hover {
-    background-color: #f3f3f3;
+    background-color: #f4f3ee;
   }
 
   & > div:nth-child(2) {

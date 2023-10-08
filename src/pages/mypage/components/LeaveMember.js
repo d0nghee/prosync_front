@@ -6,7 +6,7 @@ import { Content, GridContainer, InputText } from '../../../css/MyPageStyle'
 import { deleteApi } from '../../../util/api'
 import Popup from '../../../components/popup/Popup'
 import { useDispatch, useSelector } from 'react-redux'
-import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from '../../../redux/reducers/signupSlice'
+import { setIsConfirmModalOpen, setModalButtons, setModalMessage } from '../../../redux/reducers/member/signupSlice'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 
 const Div = styled.div`

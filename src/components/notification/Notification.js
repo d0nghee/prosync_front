@@ -6,7 +6,7 @@ import { patchApi } from "../../util/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBellSlash, faBell } from "@fortawesome/free-solid-svg-icons";
 import { tryFunc } from "../../util/tryFunc";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { useDispatch } from "react-redux";
 
 const selectColor = (code) => {
@@ -61,40 +61,26 @@ const NotificationContainer = styled.div`
   margin-bottom: -0.5%;
   cursor: pointer;
   border-bottom: 1px solid gray;
-  background-color: ${(props) => (!props.read ? "#e8efed" : null)};
+  background-color: ${(props) => (!props.read ? "#f4f3ee" : null)};
   font-weight: ${(props) => (!props.read ? "900" : 200)};
   color: ${(props) => (!props.read ? "black" : "gray")};
   text-align: center;
   position: relative;
 
-  & input[type="checkbox"] {
-    display: none;
+  input {
+    width: 30px;
+    height: 30px;
+    padding: 0;
   }
 
-  & input[type="checkbox"] + label {
-    display: inline-block;
-    width: 2%;
-    height: 60%;
-    border: 3px solid #707070;
-    cursor: pointer;
+  & > *:nth-child(2) {
+    margin-left: 3%;
+    width: 2rem;
   }
 
-  & input[type="checkbox"]:checked + label::after {
-    content: "✔";
-    color: blue;
-    font-size: 23px;
-    width: 2%;
-    height: 60%;
-    text-align: center;
-    left: 0;
-    top: 0;
-  }
+  
 
-  & > label {
-    margin-right: 3%;
-  }
-
-  & > div:nth-child(5) {
+  & > div:nth-child(4) {
     position: relative;
     width: 60%;
     text-align: start;
@@ -104,13 +90,13 @@ const NotificationContainer = styled.div`
     text-overflow: ellipsis;
   }
 
-  & > div:nth-child(5):hover {
+  & > div:nth-child(4):hover {
     font-weight: 900;
     text-decoration: underline;
     color: black;
   }
 
-  & > div:nth-child(7) {
+  & > div:nth-child(6) {
     width: 20%;
     height: 60%;
   }
@@ -123,6 +109,7 @@ const Tooltip = styled.div`
   left: 40%;
   background-color: #f9f9f9;
   border: 1px solid gray;
+  border-radius: 10px;
   padding: 10px;
   z-index: 1000;
   color: black;
@@ -254,10 +241,6 @@ const Notification = ({ checked, notification, onCheckboxChange }) => {
         onChange={checkBoxHandler}
         onClick={(e) => e.stopPropagation()}
       />
-      <label
-        htmlFor={`checkbox-${notification.notificationTargetId}`}
-        onClick={labelClickHandler}
-      ></label>
       {notification.read ? (
         <FontAwesomeIcon icon={faBellSlash} />
       ) : (

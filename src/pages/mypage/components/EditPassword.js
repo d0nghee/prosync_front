@@ -3,12 +3,12 @@ import { CustomDiv, Label, InputText } from "../../../css/MyPageStyle";
 import Button from "../../../components/button/Button";
 import Popup from "../../../components/popup/Popup";
 import { useDispatch, useSelector } from "react-redux";
-import { setMemberInfo } from "../../../redux/reducers/mypageSlice";
+import { setMemberInfo } from "../../../redux/reducers/member/mypageSlice";
 import {
   setIsConfirmModalOpen,
   setModalButtons,
   setModalMessage,
-} from "../../../redux/reducers/signupSlice";
+} from "../../../redux/reducers/member/signupSlice";
 import { useNavigate } from "react-router-dom";
 import { patchApi } from "../../../util/api";
 import { useState } from "react";

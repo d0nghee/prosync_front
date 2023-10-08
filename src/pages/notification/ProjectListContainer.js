@@ -6,8 +6,9 @@ import { getApi } from "../../util/api";
 import ProjectLogList from "./../../components/notification/ProjectLogList";
 import UpperBar from "./../../components/notification/UpperBar";
 import { useLocation } from "react-router-dom";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { tryFunc } from "../../util/tryFunc";
+import ListLoadingSpinner from './../../components/common/ListLoadingSpinner';
 
 const codeInformation = [
   {
@@ -78,12 +79,7 @@ const codeInformation = [
 ];
 
 const Loading = styled.div`
-  color: gray;
-  font-weight: 900;
-  width: 30rem;
-  height: 10rem;
-  margin-left: 40%;
-  margin-top: 10%;
+  height: 100vh;
 `;
 
 const Container = styled.div`
@@ -95,6 +91,13 @@ const Container = styled.div`
   margin-left: 2%;
   padding: 0%;
   margin-right: 1%;
+`;
+
+const NoData = styled.div`
+  text-align: center;
+  height: 20rem;
+  padding-top: 20%;
+  font-size: 2rem;
 `;
 
 const ProjectListContainer = () => {
@@ -120,7 +123,8 @@ const ProjectListContainer = () => {
   };
 
   const onFetchLogListSuccess = (data) => {
-    console.log('로그 리스트 들고오기 성공 : '+data)
+    console.log('로그 리스트 들고오기 성공 : ');
+    console.log(data);
     setLogList(data.data);
     setLogPageInfo(data.pageInfo);
     setIsLoading(false);
@@ -164,12 +168,21 @@ const ProjectListContainer = () => {
       />
       {!isLoading && (
         <>
-          {<ProjectLogList logList={logList} />}
+          {logPageInfo.totalElements !== 0 ? (
+            <>
+              {<ProjectLogList logList={logList} />}
           <Pagination pageInfo={logPageInfo} pageCount={5} isPersonal={false} />
+            </>
+          ): (
+            <NoData>로그가 존재하지 않습니다</NoData>
+          )}
+        
         </>
       )}
       {isLoading && (
-        <Loading>데이터를 로딩중입니다. 잠시만 기다려주세요.</Loading>
+        <Loading>
+          <ListLoadingSpinner />;
+        </Loading>
       )}
     </Container>
   );

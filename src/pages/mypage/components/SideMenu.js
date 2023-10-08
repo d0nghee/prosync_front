@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { SideBar, SideMenuDetail, List, ListItem } from '../../../css/MyPageStyle'
 import { useDispatch } from 'react-redux';
-import { setSelectedComponent } from '../../../redux/reducers/mypageSlice';
+import { setSelectedComponent } from '../../../redux/reducers/member/mypageSlice';
 import LeaveButton from './LeaveButton';
 import { Link } from 'react-router-dom'
 

@@ -49,6 +49,10 @@ const StyledForm = styled.form`
   font-weight: 600;
   color: black;
 
+  & * {
+    font-weight: 800;
+  }
+
 
   & > div {
     display: flex;
@@ -96,6 +100,7 @@ const StyledForm = styled.form`
         width: 45%;
         border-radius: 10px;
         border: 0.05px solid gray;
+        
       }
     }
   }
@@ -158,11 +163,11 @@ const StyledForm = styled.form`
 `;
 
 const Container = styled.div.attrs(props => ({
-  isPersonal: props.isPernal
+  isPersonal: props.isPersonal
 }))`
-  width: ${(props) => (props.isPersonal ? "45%" : "55%")};
+  width: ${(props) => (props.isPersonal ? "35%" : "50%")};
   position: absolute;
-  left: ${(props) => (props.isPersonal ? "55%" : "45%")};
+  left: ${(props) => (props.isPersonal ? "65%" : "50%")};
   height: 130%;
   border-radius: 20px;
   background-color: #e6ebf6;
@@ -406,7 +411,7 @@ const SearchBar = ({ isPersonal, codeInformation }) => {
             />
           </div>
           <div className="size">
-            <div>페이지 사이즈</div>
+            <div>페이지 크기</div>
             <input
               type="text"
               defaultValue={searchCondition.size}

@@ -9,13 +9,13 @@ import {
   InputTextArea,
 } from "../../../css/MyPageStyle";
 import { useDispatch, useSelector } from "react-redux";
-import { setMemberInfo } from "../../../redux/reducers/mypageSlice";
+import { setMemberInfo } from "../../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../../util/axiosInstancs";
 import {
   setIsConfirmModalOpen,
   setModalButtons,
   setModalMessage,
-} from "../../../redux/reducers/signupSlice";
+} from "../../../redux/reducers/member/signupSlice";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../../util/cookies";
 import { getApi } from "../../../util/api";

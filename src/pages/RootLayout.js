@@ -12,22 +12,30 @@ import Footer from "../components/common/Footer";
 import { getCookie } from "../util/cookies";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setIsLoggedIn } from "../redux/reducers/loginSlice";
-import { clearError } from "../redux/reducers/error-slice";
+import { setIsLoggedIn } from "../redux/reducers/member/loginSlice";
+import { clearError } from "../redux/reducers/error/error-slice";
 import { handleErrorCode } from "../util/errorHandler";
+import { styled } from "styled-components";
 
-export default function RootLayout() {
+const StyledOutletContainer = styled.div`
+  transform: ${(props) =>
+    props.menuOpen ? "translateX(7vw)" : "translateX(0%)"};
+  transition: transform 0.7s ease-in-out, width 0.7s ease-in-out;
+  width: ${props => props.menuOpen ? 'calc(100% - 7vw)' : '100%'}; 
+`;
+
+export default function () {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const hasError = useSelector((state) => state.error.hasError);
   const errorData = useSelector((state) => state.error.errorData);
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const accessToken = getCookie("accessToken");
   const submit = useSubmit();
 
   const [errorTimeout, setErrorTimeout] = useState(null);
-
 
   useEffect(() => {
     console.log("RootLayout useEffect 실행");
@@ -47,29 +55,31 @@ export default function RootLayout() {
     }
   }, [accessToken, submit]);
 
-
-
   useEffect(() => {
     if (hasError) {
       if (errorTimeout) clearTimeout(errorTimeout);
-  
+
       const timeoutId = setTimeout(() => {
-        handleErrorCode(errorData.status, errorData.resultCode, navigate, location, dispatch);
+        handleErrorCode(
+          errorData.status,
+          errorData.resultCode,
+          navigate,
+          location,
+          dispatch
+        );
         dispatch(clearError());
-      }, 500); 
-  
+      }, 500);
+
       setErrorTimeout(timeoutId);
     }
   }, [hasError, errorData, dispatch]);
 
- 
-
   return (
     <>
-      <MainNavigation />
-      <main>
+      <MainNavigation setMenuOpen={setMenuOpen} />
+      <StyledOutletContainer menuOpen={menuOpen}>
         <Outlet />
-      </main>
+      </StyledOutletContainer>
       <Footer />
     </>
   );
