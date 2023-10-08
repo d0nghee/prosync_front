@@ -1,7 +1,7 @@
-import React from "react";
-import Button from "../../../components/button/Button";
-import Popup from "../../../components/popup/Popup";
-import { styled } from "styled-components";
+import React from 'react';
+import Button from '../../../components/button/Button';
+import Popup from '../../../components/popup/Popup';
+import { styled } from 'styled-components';
 import {
   CustomDiv,
   Label,
@@ -36,7 +36,7 @@ export default function EditMember() {
   const [isIntroNotCorrect, setIsIntroNotCorrect] = useState(false);
 
   useEffect(() => {
-    getApi("/members")
+    getApi('/members')
       .then((response) => {
         console.log(response);
 
@@ -59,9 +59,9 @@ export default function EditMember() {
         console.log(error);
         if (
           error.response.status === 404 &&
-          error.response.data.resultCode === "USER_NOT_FOUND"
+          error.response.data.resultCode === 'USER_NOT_FOUND'
         ) {
-          alert("유저 정보를 찾지 못하였습니다.");
+          alert('유저 정보를 찾지 못하였습니다.');
         }
       });
   }, [location]);
@@ -95,13 +95,13 @@ export default function EditMember() {
       dispatch(setIsConfirmModalOpen(true));
       dispatch(
         setModalMessage(
-          "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
+          '이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.'
         )
       );
       dispatch(
         setModalButtons([
           {
-            label: "확인",
+            label: '확인',
             onClick: () => {
               dispatch(setIsConfirmModalOpen(false));
               setIsNameNotCorrect(true);
@@ -118,13 +118,13 @@ export default function EditMember() {
       dispatch(setIsConfirmModalOpen(true));
       dispatch(
         setModalMessage(
-          "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
+          '소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.'
         )
       );
       dispatch(
         setModalButtons([
           {
-            label: "확인",
+            label: '확인',
             onClick: () => {
               dispatch(setIsConfirmModalOpen(false));
               setIsIntroNotCorrect(true);
@@ -138,26 +138,26 @@ export default function EditMember() {
     setIsIntroNotCorrect(false);
 
     axiosInstance
-      .patch("/members/profile", mypage.memberInfo)
+      .patch('/members/profile', mypage.memberInfo)
       .then(() => {
-        getApi("/members").then(async (res) => {
-          setCookie("profile", res.data.profileImage, {
-            path: "/",
+        getApi('/members').then(async (res) => {
+          setCookie('profile', res.data.profileImage, {
+            path: '/',
             maxAge: 60 * 60 * 24 * 30,
           });
-          setCookie("name", res.data.name, {
-            path: "/",
+          setCookie('name', res.data.name, {
+            path: '/',
             maxAge: 60 * 60 * 24 * 30,
           });
           dispatch(setIsConfirmModalOpen(true));
-          dispatch(setModalMessage("프로필을 수정하였습니다."));
+          dispatch(setModalMessage('프로필을 수정하였습니다.'));
           dispatch(
             setModalButtons([
               {
-                label: "확인",
+                label: '확인',
                 onClick: () => {
                   dispatch(setIsConfirmModalOpen(false));
-                  navi("/");
+                  navi('/');
                 },
               },
             ])
@@ -165,23 +165,23 @@ export default function EditMember() {
         });
       })
       .catch((error) => {
-        console.log("프로필 수정 실패");
+        console.log('프로필 수정 실패');
 
         if (
-          error.response.status === "422" &&
-          error.response.data.resultCode === "INCORRECT_FORMAT_NAME"
+          error.response.status === '422' &&
+          error.response.data.resultCode === 'INCORRECT_FORMAT_NAME'
         ) {
-          setIsIntroNotCorrect("true");
+          setIsIntroNotCorrect('true');
           dispatch(setIsConfirmModalOpen(true));
           dispatch(
             setModalMessage(
-              "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
+              '이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.'
             )
           );
           dispatch(
             setModalButtons([
               {
-                label: "확인",
+                label: '확인',
                 onClick: () => {
                   dispatch(setIsConfirmModalOpen(false));
                 },
@@ -189,20 +189,20 @@ export default function EditMember() {
             ])
           );
         } else if (
-          error.response.status === "422" &&
-          error.response.data.resultCode === "INCORRECT_FORMAT_INTRO"
+          error.response.status === '422' &&
+          error.response.data.resultCode === 'INCORRECT_FORMAT_INTRO'
         ) {
-          setIsNameNotCorrect("true");
+          setIsNameNotCorrect('true');
           dispatch(setIsConfirmModalOpen(true));
           dispatch(
             setModalMessage(
-              "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
+              '소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.'
             )
           );
           dispatch(
             setModalButtons([
               {
-                label: "확인",
+                label: '확인',
                 onClick: () => {
                   dispatch(setIsConfirmModalOpen(false));
                 },
@@ -212,12 +212,12 @@ export default function EditMember() {
         } else {
           dispatch(setIsConfirmModalOpen(true));
           dispatch(
-            setModalMessage("서버 오류로 인해 프로필 수정을 실패하였습니다.")
+            setModalMessage('서버 오류로 인해 프로필 수정을 실패하였습니다.')
           );
           dispatch(
             setModalButtons([
               {
-                label: "확인",
+                label: '확인',
                 onClick: () => {
                   dispatch(setIsConfirmModalOpen(false));
                 },
@@ -231,18 +231,18 @@ export default function EditMember() {
 
   const handleCancel = () => {
     dispatch(setIsConfirmModalOpen(true));
-    dispatch(setModalMessage("취소하시겠습니까?"));
+    dispatch(setModalMessage('취소하시겠습니까?'));
     dispatch(
       setModalButtons([
         {
-          label: "확인",
+          label: '확인',
           onClick: () => {
             dispatch(setIsConfirmModalOpen(false));
-            navi("/");
+            navi('/');
           },
         },
         {
-          label: "취소",
+          label: '취소',
           onClick: () => {
             dispatch(setIsConfirmModalOpen());
           },
@@ -253,15 +253,15 @@ export default function EditMember() {
 
   return (
     <>
-      <CustomDiv style={{ justifyContent: "left", marginLeft: "100px" }}>
+      <CustomDiv style={{ justifyContent: 'left', marginLeft: '100px' }}>
         <ProfileImage src={originalInfo.profileImage} />
 
         <div
           style={{
-            justifyContent: "center",
-            width: "100%",
-            marginTop: "30px",
-            marginLeft: "5rem",
+            justifyContent: 'center',
+            width: '100%',
+            marginTop: '30px',
+            marginLeft: '5rem',
           }}
         >
           <Button
@@ -293,9 +293,9 @@ export default function EditMember() {
         />
         <IntroCheck isIntroNotCorrect={isIntroNotCorrect} />
       </CustomDiv>
-      <CustomDiv style={{ justifyContent: "center" }}>
+      <CustomDiv style={{ justifyContent: 'center' }}>
         <Button
-          backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
+          backgroundColor={!hasChanges() ? 'gray' : '#7B69B7'}
           width="20%"
           label="수정"
           color="#FFDAB9"

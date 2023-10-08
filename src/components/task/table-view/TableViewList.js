@@ -1,5 +1,4 @@
 import TaskStatus from "../common/TaskStatus";
-import ProfileCard from "../../common/ProfileCard";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import * as tv from "./TableViewList.style.js";
@@ -24,6 +23,7 @@ import Guidance from "../../common/Guidance";
 import { tryFunc } from "../../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
+import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 
 export default function TableViewList({
   onChangePage,
@@ -275,6 +275,7 @@ export default function TableViewList({
       )}
       <tv.Header>
         {projectMember &&
+          projectMember.status === "ACTIVE" &&
           (projectMember.authority === "ADMIN" ||
             projectMember.authority === "WRITER") && (
             <input type="checkbox" onChange={toggleAllCheck} />
@@ -299,6 +300,7 @@ export default function TableViewList({
             )}
             <tv.Item>
               {projectMember &&
+                projectMember.status === "ACTIVE" &&
                 (projectMember.authority === "ADMIN" ||
                   projectMember.authority === "WRITER") && (
                   <div>
@@ -311,24 +313,22 @@ export default function TableViewList({
                 )}
               {task.taskId !== editTaskId ? (
                 <>
-                  <tv.LinkContents to={`tasks/${task.taskId}`}>
-                    <div>{task.title}</div>
+                  <tv.LinkContents to={`${task.taskId}`}>
+                    {task.title.length > 40 ? (
+                      <div>{task.title.substring(0, 40)}...</div>
+                    ) : (
+                      <div>{task.title}</div>
+                    )}
                     {task.taskMembers.length !== 0 ? (
                       <tv.Assignee>
-                        <ProfileCard
-                          key={idx}
-                          name={task.taskMembers[0].name}
-                          image={task.taskMembers[0].profileImage}
-                        />
+                        <SimpleTaskMemberList taskMembers={task.taskMembers} />
                       </tv.Assignee>
                     ) : (
                       <tv.Assignee>
-                        <ProfileCard name="Undefined" image={false} />
+                        <tv.Undefined>담당자 없음</tv.Undefined>
                       </tv.Assignee>
                     )}
-                    <tv.Date>
-                      <div>{`${task.startDate} ~ ${task.endDate}`}</div>
-                    </tv.Date>
+                    <div>{`${task.startDate} ~ ${task.endDate}`}</div>
                     <tv.StatusBox>
                       <TaskStatus color={task.color} name={task.taskStatus} />
                     </tv.StatusBox>
@@ -336,6 +336,7 @@ export default function TableViewList({
                     <div>{task.classification}</div>
                   </tv.LinkContents>
                   {projectMember &&
+                    projectMember.status === "ACTIVE" &&
                     (projectMember.authority === "ADMIN" ||
                       projectMember.authority === "WRITER") && (
                       <tv.EditButton
@@ -367,10 +368,8 @@ export default function TableViewList({
                             <tv.Assignee
                               onClick={() => setShowAssignees((prv) => !prv)}
                             >
-                              <ProfileCard
-                                key={idx}
-                                name={task.taskMembers[0].name}
-                                image={task.taskMembers[0].profileImage}
+                              <SimpleTaskMemberList
+                                taskMembers={task.taskMembers}
                               />
                             </tv.Assignee>
                           ) : (
@@ -378,8 +377,8 @@ export default function TableViewList({
                               onClick={() => setShowAssignees((prv) => !prv)}
                             >
                               <tv.Assignee>
-                                <ProfileCard name="Undefined" image={false} />
-                              </tv.Assignee>
+                                <tv.Undefined>담당자 없음</tv.Undefined>
+                              </tv.Assignee>{" "}
                             </div>
                           )}
                           {showAssignees && (

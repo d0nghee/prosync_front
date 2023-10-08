@@ -1,6 +1,12 @@
 import { setIsLoggedIn } from "../redux/reducers/member/loginSlice";
 
-export const handleErrorCode = (status, resultCode, navigate,location,dispatch) => {
+export const handleErrorCode = (
+  status,
+  resultCode,
+  navigate,
+  location,
+  dispatch
+) => {
   switch (status) {
     case 400: // BAD_REQUEST
       switch (resultCode) {

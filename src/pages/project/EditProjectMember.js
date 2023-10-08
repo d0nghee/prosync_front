@@ -5,7 +5,6 @@ import { useParams, useRouteLoaderData } from 'react-router-dom';
 import { deleteApi, getApi, patchApi, postApi } from '../../util/api';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { tryFunc } from '../../util/tryFunc';
 import {
   addCheckbox,
   selectCheckbox,
@@ -27,12 +26,44 @@ export default function EditProjectMember() {
   const isChecked = checkboxState.checkbox[0]?.checked || false;
   const dispatch = useDispatch();
 
-  const handleInputChange = (input) => {
-    setSearch(input);
-    setPage(1);
-    setMaxPage(1);
-    setMembers([]);
+  const handleInputChange = (input) => {};
+
+  useEffect(() => {
+    let url = `/projects/${projectId}/members`;
+
+    if (search) {
+      url += `?search=${search}`;
+    }
+  }, [search, inView, page]);
+
+  useEffect(() => {
+    if (Array.isArray(members) && members.length > 0) {
+      const memberProjectIds = members
+        .filter(
+          (member) => member.authority !== 'ADMIN' && member.status !== 'QUIT'
+        )
+        .map((member) => member.memberProjectId);
+
+      dispatch(addCheckbox(memberProjectIds));
+    }
+  }, [members, dispatch]);
+
+  const submitHandler = () => {
+    console.log('submitHandler');
+    console.log('authorityState:', authorityState);
+
+    const patchMemberAuthority = authorityState.map((item) => {
+      return patchApi(`/project-members/${item.memberProjectId}`, {
+        authority: item.authority,
+      });
+    });
+
+    Promise.all(patchMemberAuthority).then((response) => {
+      console.log('All patch requests were successful', response);
+      setMembers((prevMembers) => [...prevMembers]);
+    });
   };
+
   const deleteMemberHandler = () => {
     // 체크박스가 true로 설정된 memberProjectId들만 추출
     const checkedIds = Object.keys(checkboxState.checkbox).filter(
@@ -52,75 +83,6 @@ export default function EditProjectMember() {
       );
       setMembers(updatedMembers);
     });
-  };
-
-  useEffect(() => {
-    const memberProjectIds = members
-      .filter(
-        (member) => member.authority !== 'ADMIN' && member.status !== 'QUIT'
-      )
-      .map((member) => member.memberProjectId);
-
-    dispatch(addCheckbox(memberProjectIds));
-  }, [members, dispatch]);
-
-  const submitHandler = () => {
-    console.log('submitHandler');
-    console.log('authorityState:', authorityState);
-
-    const patchMemberAuthority = authorityState.map((item) => {
-      return patchApi(`/project-members/${item.memberProjectId}`, {
-        authority: item.authority,
-      });
-    });
-
-    Promise.all(patchMemberAuthority).then((response) => {
-      console.log('All patch requests were successful', response);
-      setMembers((prevMembers) => [...prevMembers]);
-    });
-  };
-
-  useEffect(() => {
-    console.log('useEffect 진입');
-    if (!inView || page > maxPage) return;
-    tryFunc(
-      getProjectMemberList,
-      getProjectMembersSuccess,
-      getProjectMemberListErrorHandler
-    )();
-  }, [inView, page, maxPage, search, projectId]);
-
-  const getProjectMemberList = async () => {
-    console.log('getProjectMemberList');
-
-    const response = await getApi(
-      `/projects/${projectId}/members?search=${search}&page=${page}`
-    );
-    return response;
-  };
-
-  const getProjectMembersSuccess = (response) => {
-    const newMembers = response.data.data;
-    const totalPages = response.data.pageInfo.totalPages;
-
-    setMembers((prev) => [...prev, ...newMembers]);
-    setPage((prev) => prev + 1);
-    setMaxPage(totalPages);
-  };
-
-  const getProjectMemberListErrorHandler = {
-    500: (error) => {
-      console.error('Server Error:', error);
-      alert('서버에서 오류가 발생했습니다.');
-    },
-    404: (error) => {
-      console.error('Not Found:', error);
-      alert('프로젝트 정보를 찾을 수 없습니다.');
-    },
-    default: (error) => {
-      console.error('Unknown error:', error);
-      alert('프로젝트 목록을 가져오는 중 오류가 발생하였습니다.');
-    },
   };
 
   const handleMemberCheck = () => {

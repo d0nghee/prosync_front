@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState } from 'react';
+import { useEffect } from 'react';
 import {
   Outlet,
   useLoaderData,
@@ -32,26 +32,26 @@ export default function () {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const accessToken = getCookie("accessToken");
+  const accessToken = getCookie('accessToken');
   const submit = useSubmit();
 
   const [errorTimeout, setErrorTimeout] = useState(null);
 
   useEffect(() => {
-    console.log("RootLayout useEffect 실행");
+    console.log('RootLayout useEffect 실행');
     if (!accessToken) {
-      const refreshToken = getCookie("refreshToken");
+      const refreshToken = getCookie('refreshToken');
 
       if (!refreshToken) {
-        console.log("refresh Token 존재하지 않음");
+        console.log('refresh Token 존재하지 않음');
         dispatch(setIsLoggedIn(false));
         return;
       }
     }
 
-    if (accessToken === "EXPIRED") {
-      alert("로그인이 만료되었습니다.");
-      navigate("/logout");
+    if (accessToken === 'EXPIRED') {
+      alert('로그인이 만료되었습니다.');
+      navigate('/logout');
     }
   }, [accessToken, submit]);
 

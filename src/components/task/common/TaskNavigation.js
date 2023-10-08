@@ -34,7 +34,7 @@ export default function TaskNavigation({
     } else if (checkedTasks.length === 1) {
       const taskId = checkedTasks[0];
       updateCheckbox([]);
-      navigate(`tasks/${taskId}/edit`);
+      navigate(`${taskId}/edit`);
     } else {
       alert("선택 대상이 없습니다.");
     }
@@ -122,48 +122,57 @@ export default function TaskNavigation({
           <NavItem to="?view=roadmap" selected={view === "roadmap"}>
             ROAD MAP
           </NavItem>
-          <StatusCheckBox>
-            <FilterIcon onClick={() => setShowStatusFilter((prv) => !prv)}>
-              <MdFilterAlt size="25px" />
-              Status Filter
-            </FilterIcon>
-            {showStatusFilter && (
-              <>
-                <t.BackDrop onClick={() => setShowStatusFilter(false)} />
-                <t.Wrapper show="true">
-                  <StatusFilter>
-                    {taskStatusList &&
-                      taskStatusList.length !== 0 &&
-                      taskStatusList.map((status) => (
-                        <OneStatus key={status.taskStatusId}>
-                          <input
-                            type="checkbox"
-                            checked={checkedStatusIds.current.includes(
-                              status.taskStatusId
-                            )}
-                            onChange={() =>
-                              checkTaskStatus(status.taskStatusId)
-                            }
-                          />
-                          <Color color={status.color}></Color>
-                          <div>{status.taskStatus}</div>
-                        </OneStatus>
-                      ))}
-                    <Buttons>
-                      <SimpleButton type="button" onClick={saveStatusHandler}>
-                        완료
-                      </SimpleButton>
-                      <SimpleButton type="reset" onClick={resetHandler}>
-                        취소
-                      </SimpleButton>
-                    </Buttons>
-                  </StatusFilter>
-                </t.Wrapper>
-              </>
+          {projectMember &&
+            projectMember.status === "ACTIVE" &&
+            (projectMember.authority === "ADMIN" ||
+              projectMember.authority === "WRITER") && (
+              <StatusCheckBox>
+                <FilterIcon onClick={() => setShowStatusFilter((prv) => !prv)}>
+                  <MdFilterAlt size="25px" />
+                  Status Filter
+                </FilterIcon>
+                {showStatusFilter && (
+                  <>
+                    <t.BackDrop onClick={() => setShowStatusFilter(false)} />
+                    <t.Wrapper show="true">
+                      <StatusFilter>
+                        {taskStatusList &&
+                          taskStatusList.length !== 0 &&
+                          taskStatusList.map((status) => (
+                            <OneStatus key={status.taskStatusId}>
+                              <input
+                                type="checkbox"
+                                checked={checkedStatusIds.current.includes(
+                                  status.taskStatusId
+                                )}
+                                onChange={() =>
+                                  checkTaskStatus(status.taskStatusId)
+                                }
+                              />
+                              <Color color={status.color}></Color>
+                              <div>{status.taskStatus}</div>
+                            </OneStatus>
+                          ))}
+                        <Buttons>
+                          <SimpleButton
+                            type="button"
+                            onClick={saveStatusHandler}
+                          >
+                            완료
+                          </SimpleButton>
+                          <SimpleButton type="reset" onClick={resetHandler}>
+                            취소
+                          </SimpleButton>
+                        </Buttons>
+                      </StatusFilter>
+                    </t.Wrapper>
+                  </>
+                )}
+              </StatusCheckBox>
             )}
-          </StatusCheckBox>
         </TaskFilter>
         {projectMember &&
+          projectMember.status === "ACTIVE" &&
           (projectMember.authority === "ADMIN" ||
             projectMember.authority === "WRITER") && (
             <Buttons>
@@ -172,7 +181,7 @@ export default function TaskNavigation({
                 name="생성"
                 color="#4361ee"
                 fontcolor="white"
-                onClick={() => navigate("tasks/new")}
+                onClick={() => navigate("new")}
               />
               {view === "table" && (
                 <>
@@ -273,6 +282,7 @@ const TaskFilter = styled.div`
   align-items: center;
 
   font-weight: bold;
+  font-size: 1.2rem;
   color: #495057;
 
   div {
