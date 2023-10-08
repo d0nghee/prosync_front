@@ -35,12 +35,12 @@ export default function RoadmapViewList() {
 
       const items = new DataSet(timelineData);
 
+      //TODO: 최소 1일 최대 한달
       const options = {
-        zoomMin: 1000 * 60 * 60 * 24, // 최소 줌 1일
+        zoomMin: 1000 * 60 * 60 * 24 * 30, // 최소 줌 1일
         zoomMax: 1000 * 60 * 60 * 24 * 30,
-        showCurrentTime: false, // 현재 시간 표시를 숨김
-        timeAxis: { scale: 'day', step: 1 }, // 시간 축을 '일' 단위로 표시하고, 시간 눈금을 표시하지 않음
-        height: '300px',
+        height: '700px',
+        timeAxis: { scale: 'day', step: 1 },
       };
 
       new Timeline(timelineRef.current, items, null, options);
@@ -93,7 +93,7 @@ const Header = styled.h2`
 
 const StyledTimeline = styled.div`
   width: 100%;
-  height: 500px;
+  height: 700px;
 `;
 const StatusLegendContainer = styled.div`
   display: flex;

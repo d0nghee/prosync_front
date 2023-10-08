@@ -38,6 +38,7 @@ export default function FileList({ fileList, deleteFile, projectMember }) {
           <Item key={file.fileId}>
             <FileInfo file={file} />
             {projectMember &&
+              projectMember.status === "ACTIVE" &&
               (projectMember.authority === "ADMIN" ||
                 projectMember.authority === "WRITER") && (
                 <button
@@ -60,6 +61,7 @@ const List = styled.div`
   padding: 1rem 0;
   max-height: 200px;
   overflow: auto;
+  font-size: 1.2rem;
 `;
 
 const Item = styled.div`
@@ -72,5 +74,6 @@ const Item = styled.div`
     background-color: white;
     border: 1px solid red;
     color: red;
+    font-size: 1.2rem;
   }
 `;

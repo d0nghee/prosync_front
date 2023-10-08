@@ -48,18 +48,19 @@ export const MainTask = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 70%;
+  width: 80%;
 `;
 
 export const SideTask = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
-  width: 280px;
+  width: 20%;
+  font-size: 1.2rem;
 
-  & > div {
+  & > div > div {
     border-bottom: 1px solid #dad7cd;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
   }
 `;
 
@@ -76,6 +77,7 @@ export const TaskArea = styled.div`
   display: flex;
   flex-direction: row;
   margin: 20px 0;
+  gap: 5rem;
   justify-content: space-between;
 `;
 
@@ -123,7 +125,6 @@ export const ChooseStatusComment = styled.div`
   text-align: center;
   line-height: 50px;
   max-width: 150px;
-  font-size: 0.8rem;
 `;
 
 export const BackDrop = styled.div`
@@ -150,9 +151,10 @@ export const TaskTotal = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  width: 90%;
 
   & > div {
-    width: 1400px;
+    width: 100%;
     margin: 0 auto;
   }
 `;
@@ -177,6 +179,7 @@ export const FileInputContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   font-weight: bold;
+  font-size: 1.2rem;
 `;
 
 export const StyledFileInput = styled.input`
@@ -217,4 +220,8 @@ export const ErrorMessage = styled.div`
       transform: translateZ(0);
     }
   }
+`;
+
+export const OneErrorMessage = styled.span`
+  color: red;
 `;

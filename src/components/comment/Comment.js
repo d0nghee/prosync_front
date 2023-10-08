@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import ProfileCard from "../common/ProfileCard";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { useRef, useState } from "react";
 import { deleteCommentApi, patchCommentApi, postFileApi } from "../../util/api";
@@ -129,7 +128,7 @@ export default function Comment({ comment, memberId, onRemove }) {
               <>
                 {/* 파일 등록 */}
                 <FileInputContainer>
-                  <RiAttachment2 size="28px" />
+                  <RiAttachment2 size="27px" />
                   <t.StyledFileInput
                     type="file"
                     onChange={handleFileChange}
@@ -141,7 +140,7 @@ export default function Comment({ comment, memberId, onRemove }) {
                   <BsCheckCircleFill size="24px" />
                 </PatchButton>
                 {/* 취소 */}
-                <GiCancel size="25px" onClick={() => cancelHandler()} />
+                <GiCancel size="26px" onClick={() => cancelHandler()} />
               </>
             ) : (
               ""
@@ -150,10 +149,13 @@ export default function Comment({ comment, memberId, onRemove }) {
           </Details>
           <Box>
             <SideInfo>
-              <ProfileCard
-                image={comment.memberInfo.profileImage}
-                name={comment.memberInfo.name}
-              />
+              <div>
+                <img
+                  src={comment.memberInfo.profileImage}
+                  alt="작성자 이미지"
+                />
+                <div>{comment.memberInfo.name}</div>
+              </div>
               {commentFiles && commentFiles.length !== 0 && (
                 <SimpleFileList
                   files={commentFiles}
@@ -183,15 +185,25 @@ export default function Comment({ comment, memberId, onRemove }) {
 const SideInfo = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.5rem;
+
+  & > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    img {
+      width: 50px;
+      height: 50px;
+    }
+  }
 `;
 
 const Details = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 0.7rem;
-  align-items: center:
+  align-items: flex-start;
 `;
 
 const CommentArea = styled.div`

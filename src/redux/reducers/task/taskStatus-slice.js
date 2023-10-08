@@ -30,10 +30,12 @@ const taskStatusSlice = createSlice({
     },
     updateStatus(state, action) {
       const updatedStatus = action.payload;
-      const findStatus = state.list.filter(
+      const findIndex = state.list.findIndex(
         (status) => status.taskStatusId === updatedStatus.taskStatusId
       );
-      findStatus = { ...updatedStatus, seq: findStatus.seq };
+      if (findIndex !== -1) {
+        state.list[findIndex] = { ...state.list[findIndex], ...updatedStatus };
+      }
     },
     updateSeqOfCheckedStatus(state, action) {
       const selectedStatusId = action.payload;
@@ -118,8 +120,6 @@ export const getTaskStatus = (projectId) => {
 
 export const patchSequenceOfStatus = (taskStatusId, sequence, projectId) => {
   return async (dispatch, getState) => {
-    console.log(taskStatusId, sequence, projectId, "순서 확인");
-
     // 뷰 공통 - status filter
     if (!sequence) {
       await dispatch(taskStatusActions.updateSeqOfCheckedStatus(taskStatusId));

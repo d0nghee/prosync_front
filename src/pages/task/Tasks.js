@@ -44,17 +44,26 @@ export default function Tasks() {
   useEffect(() => {
     dispatch(getTaskStatus(params.projectId));
     const memberId = getCookie("memberId");
-    tryFunc(
-      () =>
-        axiosInstance.get(`/projects/${params.projectId}/members/${memberId}`),
-      (response) => setProjectMember(response.data)
-    )();
+
+    (async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/projects/${params.projectId}/members/${memberId}`
+        );
+        if (response.status === 200) {
+          const projectMember = await response.data;
+          setProjectMember(projectMember);
+        }
+      } catch (error) {
+        console.log("GUEST");
+      }
+    })();
   }, [dispatch, params.projectId]);
 
   useEffect(() => {
     dispatch(taskListAction.setTaskList({ list: [], pageInfo: {} }));
     const boardParams =
-      view === "board"
+      view === "board" || view === "roadmap"
         ? {
             size: 1000,
             view,
@@ -103,17 +112,26 @@ export default function Tasks() {
   return (
     <>
       <TaskView>
-        {projectMember && (
+        <Top>
+          <TopDiv
+            back="hsl(226, 100%, 65%)"
+            color="white"
+            onClick={() => navigate("..")}
+          >
+            프로젝트 상세페이지
+          </TopDiv>
           <TopButton>
-            <TopDiv color="#ff7d00" back="white">
-              {projectMember.authority}
-            </TopDiv>
+            <Authority>
+              {projectMember && projectMember.status === "ACTIVE"
+                ? projectMember.authority
+                : "GUEST"}
+            </Authority>
             <TopDiv onClick={memberProjectExitHandler}>
               <BiExit size="20px" />
               프로젝트 나가기
             </TopDiv>
           </TopButton>
-        )}
+        </Top>
         <TaskSearchBar
           updateSearch={changeKeywordHandler}
           onChangePage={(value) => handleCurrentPage(value)}
@@ -140,20 +158,29 @@ const TaskView = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 5rem;
+  margin: 3rem 0;
+`;
+
+const Authority = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  padding: 0px 30px;
+  border: 1px solid #333;
+  border-radius: 2rem;
 `;
 
 const TopDiv = styled.div`
   display: flex;
-  align-self: flex-end;
   gap: 10px;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   color: ${({ color }) => color || "white"};
   font-size: 1rem;
   background-color: ${({ back }) => back || "#e71d36"};
-  border-bottom: ${({ color }) => `1px solid ${color}` || "white"};
-  border-radius: ${({ color }) => (color ? "none" : "5px")};
-  justify-content: flex-end;
+  border-radius: 5px;
+  font-weight: bold;
+  height: 100%;
+  align-items: center;
   font-weight: bold;
 
   &:hover {
@@ -161,9 +188,14 @@ const TopDiv = styled.div`
   }
 `;
 
-const TopButton = styled.div`
+const Top = styled.div`
   display: flex;
   width: 80%;
-  justify-content: flex-end;
+  justify-content: space-between;
+  height: 4rem;
+`;
+
+const TopButton = styled.div`
+  display: flex;
   gap: 1rem;
 `;
