@@ -1,14 +1,12 @@
 import axiosInstance from './axiosInstancs';
 
-
-
 const getApi = async (url, data) => {
   try {
     const res = await axiosInstance.get(url, data);
     return res;
   } catch (error) {
     console.error(error);
-    throw error;
+    return error;
   }
 };
 
@@ -17,8 +15,8 @@ const postApi = async (url, data) => {
     const res = await axiosInstance.post(url, data);
     return res;
   } catch (error) {
-    console.error(error, "error");
-    throw error;
+    console.error(error, 'error');
+    return error;
   }
 };
 
@@ -28,51 +26,35 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    console.error('patchApi 지나감');
-    throw error;
-  }
-};
-
-const deleteApi = async (url, data) => {
-  try {
-    const res = await axiosInstance.delete(url,data);
-    return res;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-// 파일
-const postFileApi = async (files) => {
-  const formData = new FormData();
-  for (let i = 0; i < files.length; i++) {
-    formData.append("files", files[i]);
-  }
-
-  try {
-    const response = await axiosInstance.post("/files", formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return await response.data.data;
-  } catch (error) {
     return error;
   }
 };
 
-const getFileApi = async (tableKey, tableName) => {
-  const response = await getApi("/files", { params: { tableKey, tableName } });
-
-  if (response.status === 200) {
-    return await response.data.data;
+const deleteApi = async (url) => {
+  try {
+    const res = await axiosInstance.delete(url);
+    return res;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
-  return response;
 };
 
-const deleteFileApi = async (fileInfoId) => {
-  return await deleteApi(`/files/${fileInfoId}`);
+//TODO : 확인
+const postFileApi = async (data) => {
+  const formData = new FormData();
+  formData.append('files', data);
+  try {
+    await axiosInstance.post({
+      url: '/files',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      data: formData,
+    });
+  } catch (error) {
+    return error;
+  }
 };
 
 // 업무 상태
@@ -89,6 +71,7 @@ const postTaskStatusApi = async ({ taskStatus, color, seq }, projectId) => {
   );
 
   if (response.status === 201) {
+    alert('등록 완료되었습니다.');
     return await response.data.data.taskStatusId;
   }
 };
@@ -97,11 +80,13 @@ const getTaskStatusApi = async (projectId) => {
   const response = await getApi(`/projects/${projectId}/task-status`);
 
   if (response.status === 200) {
+    console.log('업무 상태 조회');
     return await response.data.data;
   }
 };
 
 const deleteTaskStatusApi = async (taskStatusId) => {
+  console.log('업무 상태 삭제');
   return await deleteApi(`/task-status/${taskStatusId}`);
 };
 
@@ -110,28 +95,18 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
   const response = await patchApi(`/task-status/${taskStatusId}`, patchData);
 
   if (response.status === 200) {
+    console.log('업무 상태 수정');
     return await response.data.data;
-  }
-};
-
-const patchTaskStatusSeqApi = async (projectId, seqList) => {
-  const response = await patchApi(
-    `/projects/${projectId}/task-status/seq`,
-    seqList
-  );
-
-  if (response.status === 200) {
-    return await response;
   }
 };
 
 // 프로젝트 회원
-const getProjectMembersApi = async (projectId, params) => {
-  const response = await getApi(`/projects/${projectId}/members`, { params });
+const getProjectMembersApi = async (projectId) => {
+  const response = await getApi(`/projects/${projectId}/members`);
+
   if (response.status === 200) {
     return await response.data.data;
   }
-  return response;
 };
 
 // 업무 담당자
@@ -140,96 +115,23 @@ const getTaskMembersApi = async (taskId) => {
   if (response.status === 200) {
     return await response.data.data;
   }
-  return response;
 };
 
-const postTaskMemberApi = async (taskId, projectMemberIds) => {
+const postTaskMember = async (taskId, projectMemberIds) => {
   const response = await postApi(`/tasks/${taskId}/members`, projectMemberIds);
   if (response.status === 201) {
     return await response.data.data;
   }
-  return response;
 };
 
-const deleteTaskMemberApi = async (taskId, projectMemberIds) => {
-  const response = await deleteApi(`/tasks/${taskId}/members`, {
-    data: projectMemberIds,
-  });
-  return response;
-};
-
-// 업무
-const postTaskApi = async (projectId, taskStatusId, body) => {
-  const response = await postApi(
-    `/projects/${projectId}/tasks/task-status/${taskStatusId}`,
-    body
+const deleteTaskMember = async (taskId, projectMemberIds) => {
+  const response = await deleteApi(
+    `/tasks/${taskId}/members`,
+    projectMemberIds
   );
-  if (response.status === 201) {
-    return await response.data.data.taskId;
-  }
-  return response;
-};
-
-const patchTaskApi = async (taskId, body) => {
-  const response = await patchApi(`/tasks/${taskId}`, body);
-  if (response.status === 200) {
-    return await response.data.data.taskId;
-  }
-  return response;
-};
-
-const getTaskApi = async (taskId, params) => {
-  const response = await getApi(`/tasks/${taskId}`, params);
-
-  if (response.status === 200) {
-    return await response.data;
-  }
-  return response;
-};
-
-const deleteTaskApi = async (taskId) => {
-  return await deleteApi(`/tasks/${taskId}`);
-};
-
-const getTasksApi = async (projectId, params) => {
-  const response = await getApi(`/projects/${projectId}/tasks`, { params });
-  return await response.data;
-};
-
-// 댓글
-const getCommentsApi = async (taskId, params) => {
-  const response = await getApi(`/tasks/${taskId}/comments`, { params });
-  if (response.status === 200) {
-    return await response.data;
-  }
-  return response;
-};
-
-const postCommentApi = async (taskId, body) => {
-  const response = await postApi(`/tasks/${taskId}/comments`, body);
-  if (response.status === 201) {
-    return await response.data.commentId;
-  }
-  return response;
-};
-
-const patchCommentApi = async (taskId, commentId, body) => {
-  const response = await patchApi(
-    `/tasks/${taskId}/comments/${commentId}`,
-    body
-  );
-  if (response.status === 200) {
-    return await response.data;
-  }
-  return response;
-};
-
-const deleteCommentApi = async (taskId, commentId) => {
-  const response = await deleteApi(`/tasks/${taskId}/comments/${commentId}`);
   if (response.status === 204) {
-    return await response.data;
+    console.log('회원 삭제 성공');
   }
-  return response;
 };
 
 export { postApi, getApi, patchApi, deleteApi };
@@ -238,10 +140,6 @@ export {
   getTaskStatusApi,
   deleteTaskStatusApi,
   patchTaskStatusApi,
-  patchTaskStatusSeqApi,
 };
 export { getProjectMembersApi };
-export { getTaskMembersApi, postTaskMemberApi, deleteTaskMemberApi };
-export { postTaskApi, patchTaskApi, getTaskApi, deleteTaskApi, getTasksApi };
-export { getCommentsApi, postCommentApi, patchCommentApi, deleteCommentApi };
-export { postFileApi, getFileApi, deleteFileApi };
+export { getTaskMembersApi, postTaskMember, deleteTaskMember };

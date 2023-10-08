@@ -172,6 +172,9 @@ export default function ProjectList() {
 const ProjectGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  grid-gap: 2;
+  margin-left: 200px;
+  margin-right: 200px;
 `;
 
 const TopBarContainer = styled.div`

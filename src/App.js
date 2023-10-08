@@ -39,12 +39,6 @@ import EditMember from './pages/mypage/components/EditMember';
 import LeaveMember from './pages/mypage/components/LeaveMember';
 import BookMark from './pages/mypage/components/BookMark';
 import MyProject from './pages/mypage/components/MyProject';
-} from "./pages/project/EditProjectMember";
-import EditPassword from "./pages/mypage/components/EditPassword";
-import EditMember from "./pages/mypage/components/EditMember";
-import LeaveMember from "./pages/mypage/components/LeaveMember";
-import BookMark from "./pages/mypage/components/BookMark";
-import MyProject from "./pages/mypage/components/MyProject";
 
 const router = createBrowserRouter([
   {
@@ -61,19 +55,12 @@ const router = createBrowserRouter([
 
       {
         path: '/',
-      { path: "/auth", element: <Authentication /> },
-      { path: "/login", element: <Login />, errorElement: <Error /> },
-      { path: "/signup", element: <SignUp /> },
-
-      {
-        path: "/",
         element: <ProtectedLayout />,
         children: [
           { path: 'logout', element: <Logout /> },
 
           {
             path: '/user',
-            path: "/user",
             element: <MyPage />,
             children: [
               { path: 'profile', element: <EditMember /> },
@@ -81,14 +68,6 @@ const router = createBrowserRouter([
               { path: 'leave', element: <LeaveMember /> },
               { path: 'bookmark', element: <BookMark /> },
               { path: 'myproject', element: <MyProject /> },
-            ],
-          },
-            children: [
-              { path: "profile", element: <EditMember /> },
-              { path: "password", element: <EditPassword /> },
-              { path: "leave", element: <LeaveMember /> },
-              { path: "bookmark", element: <BookMark /> },
-              { path: "myproject", element: <MyProject /> },
             ],
           },
 
