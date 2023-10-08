@@ -56,7 +56,7 @@ export const SideTask = styled.div`
   flex-direction: column;
   gap: 3rem;
   width: 20%;
-  font-size: 1.2rem;
+  font-size: 1rem;
 
   & > div > div {
     border-bottom: 1px solid #dad7cd;

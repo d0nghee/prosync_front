@@ -102,7 +102,10 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
                   <div>
                     <t.SideName>담당자</t.SideName>
                     {task.taskMembers.length > 0 ? (
-                      <SimpleTaskMemberList taskMembers={task.taskMembers} />
+                      <SimpleTaskMemberList
+                        taskMembers={task.taskMembers}
+                        taskId={task.data.taskId}
+                      />
                     ) : (
                       <div>지정된 담당자가 없습니다.</div>
                     )}
@@ -168,7 +171,7 @@ const Text = styled.div`
 const TaskInfo = styled.div`
   display: inline-block;
   background-color: #ebebeb;
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding: 10px;
   border-radius: 10px;
 `;
