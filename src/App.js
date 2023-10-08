@@ -15,11 +15,14 @@ import TaskDetail, {
   action as deleteTaskAction,
 } from './pages/task/TaskDetail';
 import NewProject from './pages/project/NewProject';
+import Project from './components/notification/Project';
+import NotificationList from './components/notification/NotificationList';
 import ProjectLogPreview from './pages/notification/ProjectLogPreview';
 import ProjectListContainer from './pages/notification/ProjectListContainer';
 import { useEffect, useState } from 'react';
 import Loading from './components/common/Loading';
 import Footer from './components/common/Footer';
+import LogOut from '../src/pages/auth/Logout';
 import ProtectedLayout from './pages/ProtectedLayout';
 import Home from './pages/Home';
 import { loader as projectLoader } from './pages/project/EditProject';
@@ -36,6 +39,12 @@ import EditMember from './pages/mypage/components/EditMember';
 import LeaveMember from './pages/mypage/components/LeaveMember';
 import BookMark from './pages/mypage/components/BookMark';
 import MyProject from './pages/mypage/components/MyProject';
+} from "./pages/project/EditProjectMember";
+import EditPassword from "./pages/mypage/components/EditPassword";
+import EditMember from "./pages/mypage/components/EditMember";
+import LeaveMember from "./pages/mypage/components/LeaveMember";
+import BookMark from "./pages/mypage/components/BookMark";
+import MyProject from "./pages/mypage/components/MyProject";
 
 const router = createBrowserRouter([
   {
@@ -52,12 +61,19 @@ const router = createBrowserRouter([
 
       {
         path: '/',
+      { path: "/auth", element: <Authentication /> },
+      { path: "/login", element: <Login />, errorElement: <Error /> },
+      { path: "/signup", element: <SignUp /> },
+
+      {
+        path: "/",
         element: <ProtectedLayout />,
         children: [
           { path: 'logout', element: <Logout /> },
 
           {
             path: '/user',
+            path: "/user",
             element: <MyPage />,
             children: [
               { path: 'profile', element: <EditMember /> },
@@ -65,6 +81,14 @@ const router = createBrowserRouter([
               { path: 'leave', element: <LeaveMember /> },
               { path: 'bookmark', element: <BookMark /> },
               { path: 'myproject', element: <MyProject /> },
+            ],
+          },
+            children: [
+              { path: "profile", element: <EditMember /> },
+              { path: "password", element: <EditPassword /> },
+              { path: "leave", element: <LeaveMember /> },
+              { path: "bookmark", element: <BookMark /> },
+              { path: "myproject", element: <MyProject /> },
             ],
           },
 
@@ -81,7 +105,7 @@ const router = createBrowserRouter([
               {
                 path: ':projectId',
                 children: [
-                  { index: true },
+                  { index: true, element: <Tasks /> },
                   {
                     id: 'edit',
                     path: 'edit',
@@ -100,7 +124,6 @@ const router = createBrowserRouter([
                     path: 'tasks',
                     element: <TasksRoot />,
                     children: [
-                      { index: true, element: <Tasks /> },
                       {
                         path: ':taskId',
                         id: 'task-details',
