@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstancs";
+import axiosInstance from './axiosInstancs';
 
 const getApi = async (url, data) => {
   try {
@@ -15,7 +15,7 @@ const postApi = async (url, data) => {
     const res = await axiosInstance.post(url, data);
     return res;
   } catch (error) {
-    console.error(error, "error");
+    console.error(error, 'error');
     throw error;
   }
 };
@@ -26,7 +26,7 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    console.error("patchApi 지나감");
+    console.error('patchApi 지나감');
     throw error;
   }
 };
@@ -45,13 +45,13 @@ const deleteApi = async (url, data) => {
 const postFileApi = async (files) => {
   const formData = new FormData();
   for (let i = 0; i < files.length; i++) {
-    formData.append("files", files[i]);
+    formData.append('files', files[i]);
   }
 
   try {
-    const response = await axiosInstance.post("/files", formData, {
+    const response = await axiosInstance.post('/files', formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
     return await response.data.data;
@@ -61,7 +61,7 @@ const postFileApi = async (files) => {
 };
 
 const getFileApi = async (tableKey, tableName) => {
-  const response = await getApi("/files", { params: { tableKey, tableName } });
+  const response = await getApi('/files', { params: { tableKey, tableName } });
 
   if (response.status === 200) {
     return await response.data.data;

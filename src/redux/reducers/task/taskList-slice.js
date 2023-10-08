@@ -1,14 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 import {
   deleteTaskApi,
   getTasksApi,
   patchTaskApi,
   postTaskApi,
-} from "../../../util/api";
-import { tryFunc } from "../../../util/tryFunc";
+} from '../../../util/api';
+
+import { tryFunc } from '../../../util/tryFunc';
 
 const taskListSlice = createSlice({
-  name: "taskList",
+  name: 'taskList',
   initialState: {
     list: [],
     pageInfo: {},
@@ -63,7 +64,7 @@ const taskListSlice = createSlice({
     },
     updateTaskSeq(state, action) {
       const statusList = action.payload;
-      console.log(statusList, "상태 리스트 확인");
+      console.log(statusList, '상태 리스트 확인');
       statusList.forEach((one) => {
         const findIndex = state.list.findIndex(
           (status) => status.taskStatusId === one.taskStatusId

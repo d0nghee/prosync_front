@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { deleteApi, postApi } from '../../util/api';
 import { tryFunc } from '../../util/tryFunc';
+import { useNavigate } from 'react-router-dom';
 
 export default function Project({
   projects: {
@@ -16,6 +17,7 @@ export default function Project({
   onStarChange,
 }) {
   const [isStarred, setIsStarred] = useState(false);
+  const navigate = useNavigate();
 
   const handleStarClick = () => {
     console.log('handleStarClick');
@@ -42,10 +44,13 @@ export default function Project({
     if (bookmarkId) setIsStarred(true);
   }, [bookmarkId]);
 
+  const navigateHandler = () => {
+    navigate(`/projects/${projectId}`);
+  };
+
   return (
-    <Container>
+    <Container onClick={navigateHandler}>
       <Header>
-        <div>{projectId}</div>
         <Title>{title}</Title>
         <StarButton onClick={handleStarClick}>
           <StarImage
@@ -63,6 +68,7 @@ export default function Project({
       </Content>
       <Footer>
         <Dates>
+          <label>프로젝트 기간</label>
           <div>{startDate}</div>
           <div>{endDate}</div>
         </Dates>
@@ -84,13 +90,14 @@ const Image = styled.img`
 `;
 
 const Container = styled.div`
-  width: 280px;
-  height: 320px;
-  margin: 30px auto;
   background-color: white;
   padding: 15px;
   border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08); // 부드러운 그림자 효과
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
+  margin: 4px;
+  &:hover {
+    border: 1px solid #333;
+  }
 `;
 
 const Content = styled.div`
@@ -108,6 +115,8 @@ const Header = styled.header`
   align-items: center;
   border-bottom: 1px solid #f5d5d5; // 더 부드러운 색상의 경계선
   padding-bottom: 8px;
+  border: 1px solid grey;
+  padding: 10px;
 `;
 
 const Title = styled.h1`
