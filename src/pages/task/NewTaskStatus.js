@@ -10,11 +10,14 @@ import {
 } from "../../redux/reducers/task/taskStatus-slice";
 import { tryFunc } from "../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
+import { taskListAction } from "../../redux/reducers/task/taskList-slice";
+import { useSelector } from "react-redux";
 
 export default function NewTaskStatus({ onClose, editTask }) {
   const navigate = useNavigate();
   const nameRef = useRef();
   const colorRef = useRef();
+  const taskList = useSelector((state) => state.taskList.list);
 
   const commonErrror = {
     500: (error) => {
@@ -69,6 +72,15 @@ export default function NewTaskStatus({ onClose, editTask }) {
         taskStatus: nameRef.current.value,
       })
     );
+    // 해당 상태값을 가진 업무 리스트 업데이트
+    const findTask = taskList.filter(
+      (task) => task.taskStatusId === editTask.taskStatusId
+    );
+    findTask.forEach((task) => {
+      const updatedTask = { ...task, taskStatus: nameRef.current.value };
+      dispatch(taskListAction.updateTask(updatedTask));
+    });
+
     onClose();
   };
 

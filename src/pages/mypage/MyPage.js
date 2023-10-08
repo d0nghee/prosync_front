@@ -22,19 +22,19 @@ export default function MyPage() {
   let content;
 
   switch (location.pathname) {
-    case "/user/password":
+    case '/user/password':
       content = <EditPassword />;
       break;
-    case "/user/profile":
+    case '/user/profile':
       content = <EditMember />;
       break;
-    case "/user/bookmark":
+    case '/user/bookmark':
       content = <BookMark />;
       break;
-    case "/user/myproject":
+    case '/user/myproject':
       content = <Myproject />;
       break;
-    case "/user/leave":
+    case '/user/leave':
       content = <LeaveMember />;
       break;
   }

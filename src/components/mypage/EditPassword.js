@@ -2,7 +2,7 @@ import React from "react";
 import { CustomDiv, Label, InputText, GridContainer } from "../../css/MyPageStyle";
 import Button from "../button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { setMemberInfo } from "../../redux/reducers/mypageSlice";
+import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import { useNavigate } from "react-router-dom";
 import { patchApi } from "../../util/api";
 import { useState } from "react";

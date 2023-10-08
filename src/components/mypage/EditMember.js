@@ -8,8 +8,8 @@ import {
   InputTextArea,
 } from "../../css/MyPageStyle";
 import { useDispatch, useSelector } from "react-redux";
-import { setMemberInfo } from "../../redux/reducers/mypageSlice";
-import axiosInstance from "../../util/axiosInstancs";
+import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
+import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../util/cookies";
 import { getApi, patchApi, postFileApi } from "../../util/api";

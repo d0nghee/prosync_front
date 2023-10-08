@@ -6,31 +6,28 @@ import Pagination from "./../../components/notification/Pagination";
 import styled from "styled-components";
 import UpperBar from "./../../components/notification/UpperBar";
 import { tryFunc } from "./../../util/tryFunc";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
-import { setTrigger } from "../../redux/reducers/notificationTrigger-slice";
-import { useSelector } from "react-redux";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
+import { setTrigger } from "../../redux/reducers/notification/notificationTrigger-slice";
 import { useDispatch } from "react-redux";
+import ListLoadingSpinner from "../../components/common/ListLoadingSpinner";
 
 const Loading = styled.div`
-  color: gray;
-  font-weight: 900;
-  width: 30rem;
-  height: 10rem;
-  margin-left: 40%;
-  margin-top: 10%;
-  color: gray;
-  font-weight: 900;
-  width: 30rem;
-  height: 10rem;
-  margin-left: 40%;
-  margin-top: 10%;
+  height: 100vh;
 `;
 
 const Container = styled.div`
-  width: 80%;
+  width: 85%;
   height: 100%;
-  margin-left: 15%;
+  margin-left: 10%;
   margin-top: 2.5%;
+`;
+
+const NoData = styled.div`
+  height: 45rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 900;
+  padding-top: 20%;
 `;
 
 const codeInformation = [
@@ -121,8 +118,6 @@ const PersonalNotification = (props) => {
     setNotReadCount(data);
   };
 
-  
-
   const countErrorHandler = {
     401: (error) => {
       console.log(error.response.status);
@@ -140,11 +135,7 @@ const PersonalNotification = (props) => {
 
   useEffect(() => {
     console.log("count 불림");
-    tryFunc(
-      fetchNotificationCount,
-      onNotificationCountSuccess,
-      dispatch
-    )();
+    tryFunc(fetchNotificationCount, onNotificationCountSuccess, dispatch)();
   }, [location]);
 
   const fetchNotificationList = async () => {
@@ -229,11 +220,7 @@ const PersonalNotification = (props) => {
 
   const AllRead = useCallback(() => {
     if (window.confirm("모든 알림을 읽음 처리하시겠습니까?")) {
-      tryFunc(
-        fetchAllReadNotification,
-        onAllReadSuccess,
-        dispatch
-      )();
+      tryFunc(fetchAllReadNotification, onAllReadSuccess, dispatch)();
     } else {
       alert("읽음 처리를 취소하셨습니다.");
     }
@@ -250,16 +237,24 @@ const PersonalNotification = (props) => {
       />
       {!isLoading && (
         <>
-          <NotificationList notiPageList={notificationPageList} />
-          <Pagination
-            pageInfo={notificationPageInfo}
-            pageCount={5}
-            isPersonal={true}
-          />
+          {notificationPageInfo.totalElements !== 0 ? (
+            <>
+              <NotificationList notiPageList={notificationPageList} />
+              <Pagination
+                pageInfo={notificationPageInfo}
+                pageCount={5}
+                isPersonal={true}
+              />
+            </>
+          ) : (
+            <NoData>알림이 존재하지 않습니다</NoData>
+          )}
         </>
       )}
       {isLoading && (
-        <Loading>데이터를 로딩중입니다. 잠시만 기다려주세요.</Loading>
+        <Loading>
+          <ListLoadingSpinner />;
+        </Loading>
       )}
     </Container>
   );

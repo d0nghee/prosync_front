@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { deleteApi, getApi, postApi } from '../../util/api'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../redux/reducers/mypageSlice';
+import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../redux/reducers/member/mypageSlice';
 import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage } from '../../css/MyPageStyle'
 import BookmarkIcon from './BookmarkIcon'
 import Loading from '../common/Loading';
 import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
 import { tryFunc } from '../../util/tryFunc';
-import { setIsLoggedIn } from '../../redux/reducers/loginSlice';
+import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 
 
 const bookmarkIcon = {

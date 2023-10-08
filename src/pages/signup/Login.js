@@ -7,7 +7,7 @@ import { LoginButtonContainer } from "../../css/LoginStyle";
 import {
   setIsLoggedIn,
   setLoginFormData,
-} from "../../redux/reducers/loginSlice";
+} from "../../redux/reducers/member/loginSlice";
 import { getCookie, setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
 import Loading from "../../components/common/Loading";
@@ -119,7 +119,7 @@ export default function Login() {
       }
     };
 
-    tryFunc(loginFunc, onLoginSuccess, errorHandlers)().finally(() =>
+    tryFunc(loginFunc, onLoginSuccess, dispatch)().finally(() =>
       setLoading(false)
     );
   };

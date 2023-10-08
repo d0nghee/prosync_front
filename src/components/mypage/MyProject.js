@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { getApi, postApi } from '../../util/api'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import { setProjectListPageInfo } from '../../redux/reducers/mypageSlice';
+import { setProjectListPageInfo } from '../../redux/reducers/member/mypageSlice';
 import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate } from '../../css/MyPageStyle';
 import BookmarkIcon from './BookmarkIcon';
 import { tryFunc } from '../../util/tryFunc';
-import { setIsLoggedIn } from '../../redux/reducers/loginSlice';
+import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 import Loading from '../common/Loading';
 import styled from 'styled-components';
 import ProjectSearchBar from '../project/ProjectSearchBar';

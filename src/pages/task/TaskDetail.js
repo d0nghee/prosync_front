@@ -6,7 +6,7 @@ import CommentList from "../../components/comment/CommentList";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
-import axiosInstance from "../../util/axiosInstancs";
+import axiosInstance from "../../util/axiosInstances";
 import { getCookie } from "../../util/cookies";
 
 export default function TaskDetail() {
@@ -98,6 +98,6 @@ export async function action({ params }) {
 const TaskSection = styled.div`
   display: flex;
   flex-direction: column;
+  width: 70%;
   margin: 0 auto;
-  width: 1400px;
 `;

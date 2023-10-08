@@ -9,6 +9,7 @@ const ProjectNotificationContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   margin-top: 5%;
+  min-height: 60rem;
 `;
 
 const ProjectNotification = () => {

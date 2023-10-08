@@ -1,25 +1,20 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Notification from "./Notification";
 import styled from "styled-components";
-import Modal from "./Modal";
 import { deleteApi, patchApi } from "../../util/api";
-import { json } from "react-router";
 import NotificationTitle from "./NotificationTitle";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { accessTokenLoader } from "./../../util/auth";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { tryFunc } from "../../util/tryFunc";
 
-const NoData = styled.div`
-  text-align: center;
-`;
+
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 0.5%;
-  min-height: 20rem;
+  min-height: 40rem;
 
   & > * {
     margin-top: 2%;
@@ -36,23 +31,35 @@ const ButtonContainer = styled.div`
   & > button {
     background-color: black;
     color: white;
-    width: 8%;
+    width: 100px;
     font-weight: 700;
     height: 100%;
     border-radius: 10px;
     padding: 1rem;
     margin-left: 1%;
+    border: 0px;
 
     &:hover {
-      color: wheat;
+      opacity: 0.8;
     }
   }
+
+  & > button:nth-child(1) {
+    background-color: #ef233c;
+  }
+
+  & > button:nth-child(2) {
+    background-color: #4361ee;
+  }
+
+  & > button:nth-child(3) {
+    background-color: #ca5329;
+  }
+
 `;
 
 const NotificationList = ({ notiPageList }) => {
   const [selectedTargetIds, setSelectedTargetIds] = useState(new Set());
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isUpdateOrDelete, setisUpdateOrDelete] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -75,20 +82,34 @@ const NotificationList = ({ notiPageList }) => {
 
   const updateNoficiations = async (isUpdateOrDelete) => {
     if (isUpdateOrDelete === "ALLDELETE") {
-      const response = await deleteApi("/notification/deleteAll");
-      return { response, isUpdateOrDelete };
+      if (window.confirm('알림을 모두 삭제하시겠습니까?')) {
+        const response = await deleteApi("/notification/deleteAll");
+        return { response, isUpdateOrDelete };
+      } else {
+        alert('삭제 요청을 취소하셨습니다.');
+      }
     } else if (isUpdateOrDelete === "UPDATE") {
-      const response = await patchApi("/notification/read", {
-        notificationTargetIds: Array.from(selectedTargetIds),
-      });
-      return { response, isUpdateOrDelete };
-    } else if (isUpdateOrDelete === "DELETE") {
-      const response = await deleteApi("/notification/delete", {
-        data: {
+      if (window.confirm(`해당 ${selectedTargetIds.size}개의 알림들을 읽음처리하시겠습니까?`)) {
+        const response = await patchApi("/notification/read", {
           notificationTargetIds: Array.from(selectedTargetIds),
-        },
-      });
-      return { response, isUpdateOrDelete };
+        });
+        return { response, isUpdateOrDelete };
+      } else {
+        alert('읽기 요청을 취소하셨습니다.')
+      }
+      
+    } else if (isUpdateOrDelete === "DELETE") {
+      if (window.confirm(`해당 ${selectedTargetIds.size}개의 알림들을 삭제하시겠습니까?`)) {
+        const response = await deleteApi("/notification/delete", {
+          data: {
+            notificationTargetIds: Array.from(selectedTargetIds),
+          },
+        });
+        return { response, isUpdateOrDelete };
+      } else {
+        alert('삭제 요청을 취소하셨습니다.')
+      }
+      
     }
   };
 
@@ -101,7 +122,6 @@ const NotificationList = ({ notiPageList }) => {
       } else if (isUpdateOrDelete === "DELETE") {
         alert("알림 선택 삭제가 완료되었습니다.");
       }
-      setIsModalOpen(false);
       navigate(`${location.pathname}?${queryParams.toString()}`);
     
   };
@@ -127,7 +147,6 @@ const NotificationList = ({ notiPageList }) => {
       )(isUpdateOrDelete);
     } else {
       alert("0개의 알림을 선택하셨습니다. 1개 이상의 알림을 선택해주세요.");
-      setIsModalOpen(false);
     }
   });
 
@@ -176,44 +195,32 @@ const NotificationList = ({ notiPageList }) => {
             />
           )
         )}
-      {notiPageList.length === 0 && (
-        <NoData>
-          <h2>알림이 존재하지 않습니다!</h2>
-        </NoData>
-      )}
+     
       <ButtonContainer>
         <button
           onClick={() => {
-            setIsModalOpen(true);
-            setisUpdateOrDelete("ALLDELETE");
+            notiUpdateHandler("ALLDELETE");
           }}
         >
           모두삭제
         </button>
         <button
           onClick={() => {
-            setIsModalOpen(true);
-            setisUpdateOrDelete("UPDATE");
+            notiUpdateHandler("UPDATE");
+
           }}
         >
           선택읽음
         </button>
         <button
           onClick={() => {
-            setIsModalOpen(true);
-            setisUpdateOrDelete("DELETE");
+            notiUpdateHandler("DELETE");
+
           }}
         >
           선택삭제
         </button>
       </ButtonContainer>
-      {isModalOpen && (
-        <Modal
-          onClose={() => setIsModalOpen(false)}
-          notiUpdateHandler={() => notiUpdateHandler(isUpdateOrDelete)}
-          isUpdateOrDelete={isUpdateOrDelete}
-        />
-      )}
     </Container>
   );
 };

@@ -1,9 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { deleteTaskMemberApi, postTaskMemberApi } from "../../../util/api";
-import { tryFunc } from "../../../util/tryFunc";
+import { createSlice } from '@reduxjs/toolkit';
+import { deleteTaskMemberApi, postTaskMemberApi } from '../../../util/api';
+import { tryFunc } from '../../../util/tryFunc';
 
 const taskMembersSlice = createSlice({
-  name: "taskMembers",
+  name: 'taskMembers',
   initialState: {
     originalMembers: [],
     checkedMembers: [],
@@ -54,13 +54,13 @@ export const requestApi = (taskId, originalMembers, checkedMembers) => {
   const addIds = checkedMemberIds.filter((one) => !assignedIds.includes(one));
   return async (dispatch) => {
     if (deleteIds.length !== 0) {
-      tryFunc(
+      await tryFunc(
         () => deleteTaskMemberApi(taskId, { projectMemberIds: deleteIds }),
         () => {}
       )();
     }
     if (addIds.length !== 0) {
-      tryFunc(
+      await tryFunc(
         () => postTaskMemberApi(taskId, { projectMemberIds: addIds }),
         () => {}
       )();
