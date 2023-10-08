@@ -40,28 +40,18 @@ export default function MyPage() {
       break;
   }
 
-  // useEffect(() => {
+ 
 
-  // })
-
-  // useEffect(() => {
-
-  //   if (!isLoggedIn) {
-
-  //     navi("/auth?mode=login");
-  //   }
-  // }, [isLoggedIn]);
-
-  // if (!isLoggedIn) {
-  //   console.log("로그인 안 됨");
-  //   return null;
-  // }
-
+  
   return (
     <>
       <GridContainer>
+
         <SideMenu />
-        <Content>{content}</Content>
+        <Content>
+          {content}
+        </Content>
+
       </GridContainer>
     </>
   );

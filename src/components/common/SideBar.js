@@ -8,7 +8,7 @@ import { deleteApi, getApi, patchApi } from "../../util/api";
 import { json } from "react-router";
 import ExpandArrow from "./ExpandArrow";
 import { tryFunc } from "../../util/tryFunc";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
@@ -16,10 +16,10 @@ const Direction = styled.div`
   position: absolute;
   right: 5%;
   top: 2%;
+  cursor: pointer;
 
   & :hover {
     background-color: #e9ecef;
-    padding: 10px;
   }
 `;
 
@@ -142,19 +142,6 @@ function SideBar() {
     console.log("sidebar count 성공");
   };
 
-  const countErrorHandler = {
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-    },
-  };
 
   useEffect(() => {
     console.log("sidebar 호출");
@@ -200,20 +187,6 @@ function SideBar() {
     navigate(`${location.pathname}?${queryParams.toString()}`);
   };
 
-  const allReadErrorHandler = {
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("알림 읽음 처리 중 오류가 발생했습니다.");
-    },
-  };
 
   const onNotificationReadHandler = (e) => {
     e.stopPropagation();
@@ -235,21 +208,7 @@ function SideBar() {
     navigate(`${location.pathname}?${queryParams.toString()}`);
   };
 
-  const allDeleteErrorHandler = {
-    401: (error) => {
-      console.log(error.response.status);
-      console.log('나 401 코드')
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert('알림을 삭제하는 중 오류가 발생하였습니다.');
-    },
-  }
+
 
   const onNotificationDeleteHandler = (e) => {
     e.stopPropagation();

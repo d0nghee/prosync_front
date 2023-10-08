@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
   NavLink,
-  Form,
-  useRouteLoaderData,
   useNavigate,
   useLocation,
 } from "react-router-dom";
 import { getCookie } from "../../util/cookies";
 import ProfileCard from "./ProfileCard";
 import { useDispatch } from "react-redux";
-import { setIsLoggedIn } from "../../redux/reducers/loginSlice";
 import { setCookie } from "./../../util/cookies";
-import { getApi } from "../../util/api";
+import { deleteApi, getApi, patchApi } from "../../util/api";
 import { useCallback } from "react";
 import { useRef } from "react";
 import {
@@ -21,6 +18,11 @@ import {
   faFileInvoice,
   faBookmark,
   faFaceLaughSquint,
+  faLeftLong,
+  faHouse,
+  faFileSignature,
+  faEnvelope,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "styled-components";
@@ -30,6 +32,7 @@ import { useIsLoggedIn } from "./useIsLoggedIn";
 import { useSelector } from "react-redux";
 import { tryFunc } from "../../util/tryFunc";
 import { debounce } from "../../util/debounce";
+import { IoLogoSoundcloud } from "react-icons/io5";
 
 const Header = styled.header`
   display: flex;
@@ -149,22 +152,20 @@ const Header = styled.header`
 
     &:hover {
       color: rgb(158, 105, 194);
+      
     }
   }
 `;
 
 const SideNavbar = styled.div.withConfig({
-  shouldForwardProp: (prop) =>
-    !["isManagedProjectSelected", "isBookMarkSelected", "show"].includes(prop),
+  shouldForwardProp: (prop) => !["show"].includes(prop),
 })`
-  background-color: #f9f9f9;
   position: fixed;
   top: 0;
   left: 0;
   box-shadow: 10px 0px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1500;
   height: 100vh;
-  background-color: lightgray;
   width: 13vw;
   transform: ${(props) =>
     props.show ? "translateX(0%)" : "translateX(-150%)"};
@@ -177,7 +178,15 @@ const SideNavbar = styled.div.withConfig({
     background-color: rgb(57, 61, 84);
     font-size: large;
     padding: 5%;
-    padding-top: 20%;
+
+    display: flex;
+    flex-direction: column;
+
+    & > *:nth-child(1) {
+      margin-left: 83%;
+      margin-top: 2%;
+      cursor: pointer;
+    }
   }
 
   // sideNavbar의 목록에 설정
@@ -185,6 +194,12 @@ const SideNavbar = styled.div.withConfig({
     width: 100%;
     height: 30%;
     background-color: rgb(57, 61, 84);
+
+    & > :nth-child(1) {
+      margin-left: 83%;
+      margin-top: 2%;
+      cursor: pointer;
+    }
 
     & .profile:hover {
       text-decoration: underline;
@@ -198,10 +213,10 @@ const SideNavbar = styled.div.withConfig({
       object-fit: fill;
     }
 
-    & > div:nth-child(2) {
+    & > div:nth-child(3) {
       margin-left: 5%;
       height: 20%;
-      margin-top: 25%;
+      margin-top: 10%;
       font-size: x-large;
     }
   }
@@ -211,30 +226,30 @@ const SideNavbar = styled.div.withConfig({
     width: 100%;
     height: 55%;
 
-    & > div:nth-child(1) {
-      background-color: ${(props) =>
-        props.isManagedProjectSelected ? "rgb(229,112,102)" : null};
-    }
-
-    & > div:nth-child(2) {
-      background-color: ${(props) =>
-        props.isBookMarkSelected ? "rgb(229,112,102)" : null};
-    }
-
     & > div {
       height: 15%;
       font-size: large;
       display: flex;
       align-items: center;
+      cursor: pointer;
 
-      & > * {
-        cursor: pointer;
-      }
+    
 
       & > *:nth-child(1) {
         margin-left: 10%;
         margin-right: 10%;
       }
+    }
+
+    & > div:hover {
+      background-color: #ff006e;
+    }
+
+    & .notification-menu {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      padding-right: 1rem;
     }
   }
 
@@ -242,12 +257,20 @@ const SideNavbar = styled.div.withConfig({
     display: flex;
     height: 60%;
     cursor: pointer;
+    max-width: 12vw;
 
     & > div {
       display: flex;
       flex-direction: column;
       margin-top: 31%;
       margin-left: 6%;
+      max-width: 9vw;
+    }
+
+    & .email {
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
   }
 
@@ -275,6 +298,7 @@ const SideNavbar = styled.div.withConfig({
 const SearchBar = styled.input`
   padding: 1rem;
   border-radius: 0.5rem;
+  position: relative;
   width: 20rem;
   margin-left: 10rem;
   margin-right: 5rem;
@@ -342,6 +366,12 @@ const SearchBoxItem = styled.li.withConfig({
   padding-top: ${(props) => (!props.pointHover ? "4.5%" : null)};
   padding-left: ${(props) => (!props.pointHover ? "10%" : null)};
 
+  &.no-project {
+    color: gray;
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+
   &:hover {
     font-size: ${(props) => (props.pointHover ? "larger" : null)};
     font-weight: ${(props) => (props.pointHover ? "700" : null)};
@@ -370,6 +400,8 @@ const SearchBoxItem = styled.li.withConfig({
       margin-bottom: 10%;
       font-size: x-large;
     }
+
+    
   }
 
   .itemName {
@@ -385,9 +417,56 @@ const SearchBoxItem = styled.li.withConfig({
       font-size: x-large;
     }
   }
+
 `;
 
-export default function MainNavigation() {
+const NotificationCount = styled.div`
+  width: 30%;
+  background-color: #848679;
+  color: white;
+  border-radius: 10px;
+  margin-left: 25%;
+  text-align: center;
+`;
+
+const ContextMenu = styled.div`
+  position: fixed;
+  width: 60%;
+  z-index: 1000;
+  display: block;
+  left: 9%;
+  top: 32%;
+  border: 1px solid #e8f5ff;
+  background-color: white;
+  border-radius: 5px;
+
+  & :nth-child(1):hover {
+    background-color: #f1f1f1;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  & :nth-child(3):hover {
+    background-color: #f1f1f1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+`;
+
+const MenuItem = styled.div`
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+`;
+
+const MenuDivider = styled.div`
+  height: 1px;
+  background-color: #ccc;
+  margin: 0;
+`;
+
+export default function MainNavigation({setMenuOpen}) {
   const [showMenu, setShowMenu] = useState(false);
   const [searchList, setSearchList] = useState([]);
   const [showBox, setShowBox] = useState(false);
@@ -399,12 +478,10 @@ export default function MainNavigation() {
     left: 0,
   });
   const [ref, inView] = useInView();
+
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [inputValue, setInputValue] = useState("");
-  const [isManagedProjectSelected, setIsManagedProjectSelected] =
-    useState(false);
-  const [isBookMarkSelected, setIsBookMarkSelected] = useState(false);
   const location = useLocation();
   const [toasts, setToasts] = useState([]);
   const [eventSource, setEventSource] = useState(null);
@@ -418,6 +495,115 @@ export default function MainNavigation() {
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const navigate = useNavigate();
   const [timer, setTimer] = useState(0);
+  const queryParams = new URLSearchParams(location.search);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    top: "0px",
+    left: "0px",
+  });
+  const trigger = useSelector((state) => state.trigger.trigger);
+  const [isMenuItemHovered, setIsMenuItemHovered] = useState(false);
+
+  const fetchNotificationCount = async () => {
+    const response = await getApi("/notification/count");
+    return response.data;
+  };
+
+  const onNotificationCountSuccess = (data) => {
+    setNotificationCount(data);
+    console.log("sidebar count 성공");
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      console.log("sidebar 호출");
+      tryFunc(fetchNotificationCount, onNotificationCountSuccess, dispatch)();
+    }
+  }, [showMenu, location, trigger, isLoggedIn]);
+
+  useEffect(() => {
+    const hideContextMenu = (e) => {
+      if (isContextMenuOpen) {
+        setIsContextMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", hideContextMenu);
+
+    return () => {
+      document.removeEventListener("mousedown", hideContextMenu);
+    };
+  }, [isContextMenuOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRefSearchBox.current &&
+        !dropdownRefSearchBox.current.contains(event.target)
+      ) {
+        setShowBox(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const onContextMenuHandler = (e) => {
+    e.preventDefault();
+    setIsContextMenuOpen(true);
+    setContextMenuPosition({
+      top: `${e.clientY}px`,
+      left: `${e.clientX - 50}px`,
+    });
+  };
+
+  const markAllNotificationAsRead = async () => {
+    const response = await patchApi("/notification/allRead");
+    console.log("markAllNotification 실행 함수");
+    return response;
+  };
+
+  const onAllReadSuccess = (data) => {
+    alert("알림을 모두 읽음 처리하였습니다.");
+    setShowMenu(false);
+    setMenuOpen(false);
+    navigate(`${location.pathname}?${queryParams.toString()}`);
+  };
+
+  const onNotificationReadHandler = (e) => {
+    e.stopPropagation();
+    if (window.confirm("알림을 모두 읽음 처리하시겠습니까?")) {
+      tryFunc(markAllNotificationAsRead, onAllReadSuccess, dispatch)();
+    } else {
+      alert("알림 읽음 처리가 취소되었습니다.");
+    }
+  };
+
+  const fetchNotificationDelete = async () => {
+    const response = await deleteApi("/notification/deleteAll");
+    return response;
+  };
+
+  const onNotificationDeleteSuccess = (data) => {
+    alert("알림이 모두 삭제 처리되었습니다.");
+    setShowMenu(false);
+    setMenuOpen(false);
+    navigate(`${location.pathname}?${queryParams.toString()}`);
+  };
+
+  const onNotificationDeleteHandler = (e) => {
+    e.stopPropagation();
+    if (window.confirm("알림을 모두 삭제하시겠습니까?")) {
+      tryFunc(fetchNotificationDelete, onNotificationDeleteSuccess, dispatch)();
+    } else {
+      alert("알림 삭제 처리가 취소되었습니다");
+    }
+  };
 
   const addToast = useCallback((data) => {
     const id = new Date().getTime();
@@ -432,45 +618,13 @@ export default function MainNavigation() {
 
   useEffect(() => {
     // 멤버 관련 정보 소실 대비
-    async function nullCheckAndSetState() {
-      await nullableCheck();
-      const isProjectsBookmark =
-        location.pathname === "/projects" &&
-        location.search.includes("?bookmark=true");
-      const isMyProjects = location.pathname === "/my-projects";
-
-      if (!isProjectsBookmark && !isMyProjects) {
-        console.log("지나감");
-        setIsManagedProjectSelected(false);
-        setIsBookMarkSelected(false);
-      }
+    if (!isLoggedIn) {
+      nullableCheck();
     }
+  }, [location, isLoggedIn]);
 
-    nullCheckAndSetState();
-  }, [location]);
+  
 
-  const onManageChangeHandler = () => {
-    setIsManagedProjectSelected(true);
-    setIsBookMarkSelected(false);
-    navigate("/projects?bookmark=true&page=1");
-  };
-
-  const onBookChangeHandler = () => {
-    setIsBookMarkSelected(true);
-    setIsManagedProjectSelected(false);
-    navigate("/my-projects");
-  };
-
-  const debouncedProjectFetch = useCallback(debounce(
-    (inputValue) => {
-      console.log("inputValue: ", inputValue);
-      tryFunc(
-        projectFetchApi,
-        onProjectFetchSuccessHandler,
-        dispatch
-      )(inputValue);
-    }, 500
-  ), [page, searchList])
 
 
   const projectFetchApi = async (inputValue) => {
@@ -480,49 +634,34 @@ export default function MainNavigation() {
     return response.data;
   };
 
-
-
-  const onProjectFetchSuccessHandler = (data) => {
-    if (page === 1) {
-      setSearchList([...data.data]);
-    } else {
+  const onProjectFetchSuccessHandler = useCallback(
+    (data) => {
       setSearchList([...searchList, ...data.data]);
-    }
-    setPage((prevPage) => prevPage + 1);
-    setMaxPage(data.pageInfo.totalPages !== 0 ? data.pageInfo.totalPages : 1);
-  };
 
-  const errorHandler = {
-    401: (error) => {
-      console.log("여기지나감");
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
+      setPage((prevPage) => prevPage + 1);
+      setMaxPage(data.pageInfo.totalPages !== 0 ? data.pageInfo.totalPages : 1);
     },
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-
-    /// 에러 코드 추가
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("프로젝트 목록을 가져오는 중 오류가 발생하였습니다.");
-    },
-  };
-
+    [searchList]
+  );
 
   useEffect(() => {
     console.log("inView:" + inView);
-    console.log(page);
+    console.log("page:" + page);
     console.log("maxPage:" + maxPage);
+
+    const projectFetch = (inputValue) => {
+      console.log("inputValue: ", inputValue);
+      tryFunc(
+        projectFetchApi,
+        onProjectFetchSuccessHandler,
+        dispatch
+      )(inputValue);
+    };
+
     if (inView && page <= maxPage) {
-      debouncedProjectFetch(inputValue);
+      projectFetch(inputValue);
     }
-  }, [inView, page, maxPage, debouncedProjectFetch, inputValue, searchList]);
+  }, [inView, page, maxPage, inputValue]);
 
   const toggleMenu = () => {
     console.log("toggleMenu동작");
@@ -530,6 +669,8 @@ export default function MainNavigation() {
       await nullableCheck();
 
       setShowMenu((showMenu) => !showMenu);
+      setMenuOpen((show) => !show);
+      
     }
 
     nullCheckAndSetState();
@@ -547,35 +688,11 @@ export default function MainNavigation() {
       const relativeTop = childRect.top - parentRect.top;
 
       setSearchBoxPosition({
-        top: relativeTop + childRect.height + 3,
+        top: relativeTop + childRect.height + 20,
         left: childRect.x,
       });
     }
   }, [showBox]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        dropdownRefSidebar.current &&
-        !dropdownRefSidebar.current.contains(event.target)
-      ) {
-        setShowMenu(false);
-      }
-
-      if (
-        dropdownRefSearchBox.current &&
-        !dropdownRefSearchBox.current.contains(event.target)
-      ) {
-        setShowBox(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const fetchMemberInfo = async () => {
     const res = await getApi("/members");
@@ -603,16 +720,6 @@ export default function MainNavigation() {
     setProfileUpdate((prevState) => !prevState);
   };
 
-  const fetMemberInfoErrorHandler = {
-    404: (error) => {
-      console.log(error.response.status);
-      alert("회원 정보를 찾지 못하였습니다.");
-    },
-    default: (error) => {
-      console.log(error);
-    },
-  };
-
   const nullableCheck = useCallback(async () => {
     console.log("nullableCheck 중");
     console.log(getCookie("profile"));
@@ -623,20 +730,54 @@ export default function MainNavigation() {
         !getCookie("email") ||
         !getCookie("memberId"))
     ) {
-      tryFunc(
-        fetchMemberInfo,
-        onFetchMemberInfoSuccessHandler,
-        dispatch
-      )();
+      tryFunc(fetchMemberInfo, onFetchMemberInfoSuccessHandler, dispatch)();
     }
   }, [isLoggedIn]);
 
   const handleButtonClick = () => {
-    setIsBookMarkSelected(false);
-    setIsManagedProjectSelected(false);
-
     navigate("/logout");
   };
+
+  const fetchDataBasedOnInput = async (inputValue) => {
+    const response = await getApi(
+      `/projects?search=${inputValue}&page=1&size=6`
+    );
+    return response.data;
+  };
+
+  const onfetchDataBasedOnInputSuccessHanlder = (data) => {
+    console.log("fetDataBasedOnInputSucessHnadler 실행");
+    console.log(data.data);
+    setSearchList([...data.data]);
+    setMaxPage(data.pageInfo.totalPages);
+    setPage(2);
+  };
+
+  console.log("test");
+
+  const debouncedProjectFetch = debounce((inputValue) => {
+    console.log("inputValue: ", inputValue);
+    tryFunc(
+      fetchDataBasedOnInput,
+      onfetchDataBasedOnInputSuccessHanlder,
+      dispatch
+    )(inputValue);
+  }, 500);
+
+  const onClickHandler = useCallback(() => {
+    if (!isLoggedIn) {
+      alert("로그인한 회원만 이용가능합니다.");
+      setShowBox(false);
+      navigate("/auth?mode=login");
+      return;
+    }
+
+    setShowBox(true);
+  }, [isLoggedIn]);
+
+  const onCloseToast = useCallback((id) => {
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+  });
 
   const searchChangeHandler = useCallback(
     (event) => {
@@ -646,24 +787,29 @@ export default function MainNavigation() {
         navigate("/auth?mode=login");
       }
 
-      const inputValue = event.target.value;
+      const newInputValue = event.target.value;
 
-      if (inputValue === "" || inputValue === null) {
-        setShowBox(false);
-        return;
-      }
-
-      if (inputValue !== "" && inputValue !== null) {
-        setShowBox(true);
-        setInputValue(inputValue);
+      if (newInputValue === "" || newInputValue === null) {
+        console.log("newInputValue가 비었음");
         setSearchList([]);
+        setShowBox(false);
+
+        debouncedProjectFetch.cancel();
+        return;
+      } else {
+        setShowBox(true);
+        setInputValue(newInputValue);
         setPage(1);
         setMaxPage(1);
+        setSearchList([]);
+        console.log("진짜 검색어 받자마자 데이터 받아오는 로직");
+        debouncedProjectFetch(newInputValue);
+
         console.log("searchChangeHandler");
         console.log(searchList);
 
         console.log("바뀌는중");
-        console.log(inputValue + `로 전환했음`);
+        console.log(newInputValue + `로 전환했음`);
       }
     },
     [isLoggedIn]
@@ -680,40 +826,86 @@ export default function MainNavigation() {
               onClick={toggleMenu}
               size="2x"
             />
-            <SideNavbar
-              show={showMenu}
-              ref={dropdownRefSidebar}
-              isManagedProjectSelected={isManagedProjectSelected}
-              isBookMarkSelected={isBookMarkSelected}
-            >
+            <SideNavbar show={showMenu} ref={dropdownRefSidebar}>
               {isLoggedIn ? (
                 <>
                   <div className="profile-container">
+                    <FontAwesomeIcon
+                      icon={faLeftLong}
+                      size="2x"
+                      onClick={() => {setShowMenu(false); setMenuOpen(false)}}
+                    />
                     <div
                       className="profile"
                       onClick={() => {
-                        setShowMenu(false);
                         navigate("/user/profile");
                       }}
                     >
                       <img src={profile}></img>
                       <div>
                         <div>{name}</div>
-                        <div>{email}</div>
+                        <div className="email">{email}</div>
                       </div>
                     </div>
                     <div>Menu</div>
                   </div>
                   <div className="sidemenu-container">
-                    <div>
+                    <div onClick={() => navigate("/")}>
+                      <FontAwesomeIcon icon={faHouse} />
+                      <div>HOME</div>
+                    </div>
+                    <div onClick={() => navigate("/user/profile")}>
+                      <FontAwesomeIcon icon={faUser} />
+                      <div>
+                        MyPage
+                      </div>
+                    </div>
+                    <div onClick={() => navigate("/user/project")}>
                       <FontAwesomeIcon icon={faFileInvoice} />
-                      <div onClick={() => onManageChangeHandler()}>
+                      <div>
                         Managed Project
                       </div>
                     </div>
-                    <div>
+                    <div onClick={() => navigate("/user/bookmark")}>
                       <FontAwesomeIcon icon={faBookmark} />
-                      <div onClick={() => onBookChangeHandler()}>Bookmark</div>
+                      <div>Bookmark</div>
+                    </div>
+                    <div  onClick={() => navigate("/notification")}>
+                      <FontAwesomeIcon icon={faEnvelope} />
+                      <div
+                        className="notification-menu"             
+                        onContextMenu={onContextMenuHandler}
+                        isMenuItemHovered={isMenuItemHovered}
+                      >
+                        Notification
+                        <NotificationCount>
+                          {notificationCount >= 99 ? `+99` : notificationCount}
+                        </NotificationCount>
+                        {isContextMenuOpen ? (
+                          <ContextMenu
+                            style={contextMenuPosition}
+                            onMouseOver={() => setIsMenuItemHovered(true)}
+                            onMouseOut={() => setIsMenuItemHovered(false)}
+                            onMouseDown={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <MenuItem onClick={onNotificationReadHandler}>
+                              모두 읽음 처리
+                            </MenuItem>
+                            <MenuDivider />
+                            <MenuItem onClick={onNotificationDeleteHandler}>
+                              모두 삭제 처리
+                            </MenuItem>
+                          </ContextMenu>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div  onClick={() => navigate("/notification/projects")}>
+                      <FontAwesomeIcon icon={faFileSignature} />
+                      <div>
+                        Project Log
+                      </div>
                     </div>
                   </div>
                   <div className="menu-footer">
@@ -725,7 +917,12 @@ export default function MainNavigation() {
                 </>
               ) : (
                 <div className="not-login-menu">
-                  로그인하셔야 이용하실 수 있는 메뉴입니다.
+                  <FontAwesomeIcon
+                    icon={faLeftLong}
+                    size="2x"
+                    onClick={() =>{ setShowMenu(false); setMenuOpen(false)}}
+                  />
+                  <div>로그인하셔야 이용하실 수 있는 메뉴입니다.</div>
                 </div>
               )}
             </SideNavbar>
@@ -736,46 +933,12 @@ export default function MainNavigation() {
           <li className="searchBar" ref={dropdownRefSearchbar}>
             <FontAwesomeIcon icon={faMagnifyingGlass} size="2x" />
             <SearchBar
-              onClick={(event) => searchChangeHandler(event)}
+              onClick={() => onClickHandler()}
               onChange={(event) => searchChangeHandler(event)}
               placeholder="프로젝트 검색하세요."
             ></SearchBar>
           </li>
-          <SearchBox
-            searchBoxPosition={searchBoxPosition}
-            show={showBox}
-            ref={dropdownRefSearchBox}
-          >
-            {searchList.length > 0 ? (
-              searchList?.map((item) => {
-                return (
-                  <SearchBoxItem
-                    key={item.projectId}
-                    onClick={() => {
-                      navigate(`/projects/${item.projectId}`);
-                      setShowBox(false);
-                    }}
-                    pointHover={true}
-                  >
-                    <img src={item.projectImage}></img>
-                    <div className="itemTitle">
-                      <div>프로젝트</div>
-                      <div>{item.title}</div>
-                    </div>
-                    <div className="itemName">
-                      <div>담당자</div>
-                      <div>{item.name}</div>
-                    </div>
-                  </SearchBoxItem>
-                );
-              })
-            ) : (
-              <SearchBoxItem pointHover={false}>
-                해당 프로젝트가 존재하지 않습니다.
-              </SearchBoxItem>
-            )}
-            <div ref={ref}></div>
-          </SearchBox>
+
           {isLoggedIn && (
             <NavLink to="/user/profile">
               <ProfileCard name={name} image={profile} />
@@ -810,11 +973,49 @@ export default function MainNavigation() {
           )}
         </ul>
       </nav>
+      <SearchBox
+        searchBoxPosition={searchBoxPosition}
+        show={showBox}
+        ref={dropdownRefSearchBox}
+      >
+        {console.log(searchList)}
+        {searchList.length > 0 ? (
+          searchList?.map((item) => {
+            return (
+              <SearchBoxItem
+                key={item.projectId}
+                onClick={() => {
+                  navigate(`/projects/${item.projectId}`);
+                  setShowBox(false);
+                }}
+                pointHover={true}
+              >
+                <img src={item.projectImage}></img>
+                <div className="itemTitle">
+                  <div>프로젝트</div>
+                  <div>{item.title}</div>
+                </div>
+                <div className="itemName">
+                  <div>담당자</div>
+                  <div>{item.name}</div>
+                </div>
+              </SearchBoxItem>
+            );
+          })
+        ) : (
+          <SearchBoxItem className="no-project" pointHover={false} >
+            해당 프로젝트가 존재하지 않습니다.
+          </SearchBoxItem>
+        )}
+        {searchList.length > 0 && <div ref={ref}></div>}
+      </SearchBox>
       {toasts.map((toast, index) => (
         <ToastMessage
           key={toast.id}
+          id={toast.id}
           data={toast.data}
           bottom={`${2 + index * 10}rem`}
+          onCloseToast={onCloseToast}
         />
       ))}
     </Header>

@@ -3,24 +3,32 @@ import { styled } from "styled-components";
 import { getApi } from "../../../util/api";
 import { useEffect } from "react";
 import { useState } from "react";
-import { setIsLoggedIn } from "../../../redux/reducers/loginSlice";
+import { setIsLoggedIn } from "../../../redux/reducers/member/loginSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { tryFunc } from "./../../../util/tryFunc";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import PublicProject from "./PublicProject";
+import ListLoadingSpinner from "../../common/ListLoadingSpinner";
+
 
 const Container = styled.div`
   display: flex;
   align-items: center;
+
+  & > .loading-spinner {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 6%;
+  }
 
   & > .no-project {
     font-weight: 900;
     font-size: 1.5rem;
     width: 100%;
     text-align: center;
-    padding-top: 5%;
-    min-height: 10rem;
+    min-height: 30rem;
+    padding-top: 15%;
   }
 
   & > .left-direction {
@@ -120,7 +128,9 @@ const PublicProjectsList = () => {
   return (
     <Container startPage={page===1} endPage={page===maxPage} isNone={projectsList.length==0}>
       {isLoading ? (
-        <div>데이터 로딩중입니다.</div>
+        <div className="loading-spinner">
+        <ListLoadingSpinner />
+        </div>
       ) : (
         <>
           <FontAwesomeIcon

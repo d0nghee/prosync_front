@@ -7,23 +7,23 @@ import {
   Label,
   InputText,
   InputTextArea,
-} from '../../../css/MyPageStyle';
-import { useDispatch, useSelector } from 'react-redux';
-import { setMemberInfo } from '../../../redux/reducers/mypageSlice';
-import axiosInstance from '../../../util/axiosInstancs';
+} from "../../../css/MyPageStyle";
+import { useDispatch, useSelector } from "react-redux";
+import { setMemberInfo } from "../../../redux/reducers/member/mypageSlice";
+import axiosInstance from "../../../util/axiosInstances";
 import {
   setIsConfirmModalOpen,
   setModalButtons,
   setModalMessage,
-} from '../../../redux/reducers/signupSlice';
-import { useNavigate } from 'react-router-dom';
-import { setCookie } from '../../../util/cookies';
-import { getApi } from '../../../util/api';
-import { introValidate, nameValidate } from '../../../util/regex';
-import IntroCheck from '../../signup/components/IntroCheck';
-import NameCheck from '../../signup/components/NameCheck';
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+} from "../../../redux/reducers/member/signupSlice";
+import { useNavigate } from "react-router-dom";
+import { setCookie } from "../../../util/cookies";
+import { getApi } from "../../../util/api";
+import { introValidate, nameValidate } from "../../../util/regex";
+import IntroCheck from "../../signup/components/IntroCheck";
+import NameCheck from "../../signup/components/NameCheck";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function EditMember() {
   const dispatch = useDispatch();

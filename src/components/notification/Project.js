@@ -9,7 +9,7 @@ const ProjectContainer = styled.div`
   justify-content: center;
   align-items: center;
   transition: all 0.3s;
-  border-bottom: 1px solid black;
+  border: ${(props) => (props.isSelected ? null : "1px solid gray")};
   padding: 1%;
   border-radius: 10px;
 
@@ -20,7 +20,7 @@ const ProjectContainer = styled.div`
 
   &:hover {
     background-color: #f7efed;
-    transform: scale(1.05);
+    transform: scale(1.03);
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     color: black;
     font-weight: 900;
@@ -54,6 +54,8 @@ const ProjectContainer = styled.div`
   & > div:nth-child(3) > * {
     margin-bottom: 6%;
   }
+
+
 `;
 
 const Project = ({ data, onClick, isSelected }) => {

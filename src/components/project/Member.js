@@ -8,11 +8,11 @@ import { useNavigate } from 'react-router-dom';
 import {
   selectCheckbox,
   toggleCheckbox,
-} from '../../redux/reducers/memberCheckboxSlice';
+} from '../../redux/reducers/member/memberCheckboxSlice';
 import {
   addAuthority,
   removeAuthority,
-} from '../../redux/reducers/memberAuthoritySlice';
+} from '../../redux/reducers/member/memberAuthoritySlice';
 import { useSelector } from 'react-redux';
 
 export default function Member({ member }) {

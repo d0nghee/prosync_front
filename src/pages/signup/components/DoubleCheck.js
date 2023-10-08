@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setIsPasswordMatch } from "../../../redux/reducers/signupSlice";
+import { setIsPasswordMatch } from "../../../redux/reducers/member/signupSlice";
 
 export default function DoubleCheck(props) {
   const dispatch = useDispatch();

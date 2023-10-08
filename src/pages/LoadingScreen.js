@@ -8,7 +8,13 @@ const LoadingContainer = styled.div`
   align-items: center;
   height: 100vh;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: gray;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2000;
 `;
 
 const LoadingIcon = styled.div`
