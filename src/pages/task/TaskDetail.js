@@ -98,6 +98,6 @@ export async function action({ params }) {
 const TaskSection = styled.div`
   display: flex;
   flex-direction: column;
+  width: 70%;
   margin: 0 auto;
-  width: 1600px;
 `;

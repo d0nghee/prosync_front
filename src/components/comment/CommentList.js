@@ -183,6 +183,7 @@ export default function CommentList({ projectMember }) {
         <CommentTotal>
           <CommentTitle>{`${comments.pageInfo.totalElements} Comments`}</CommentTitle>
           {projectMember &&
+            projectMember.status === "ACTIVE" &&
             (projectMember.authority === "ADMIN" ||
               projectMember.authority === "WRITER") && (
               <>
@@ -294,9 +295,9 @@ const CommentTotal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  width: 1120px;
+  width: 70%;
   font-size: 1.2rem;
-  margin: 3rem 0;
+  margin: 3rem 5%;
 `;
 
 const CommentTitle = styled.div`
@@ -305,7 +306,7 @@ const CommentTitle = styled.div`
 
 // 페이지네이션
 const Page = styled.ul`
-  width: 980px;
+  width: 100%;
   padding: 10px;
   border-radius: 5px;
   display: flex;

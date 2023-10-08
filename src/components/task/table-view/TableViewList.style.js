@@ -87,10 +87,10 @@ export const Contents = styled.div`
   & > input,
   & > div > input {
     flex: 1;
-    margin-right: 1rem;
     overflow: hidden;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    margin: 0 1rem;
   }
 
   input {
@@ -119,7 +119,7 @@ export const LinkContents = styled(Link)`
   & > input,
   & > div > input {
     flex: 1;
-    margin-right: 1rem;
+    margin: 0 1rem;
     overflow: hidden;
     border: none;
     text-align: center;
@@ -205,7 +205,7 @@ export const StatusBox = styled.div`
 `;
 
 export const TaskInput = styled.input`
-  font-size: 1rem;
+  font-size: 1.2rem;
   padding: 5px;
   border-radius: 5px;
   border: none;

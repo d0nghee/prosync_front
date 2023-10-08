@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import ProfileCard from "../../common/ProfileCard";
 import { useDispatch, useSelector } from "react-redux";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
 
@@ -18,33 +17,57 @@ export default function TaskMemberList({
     <>
       <MemberBoxes>
         {taskMembers &&
-          taskMembers.map((member) => (
-            <div key={member.memberProjectId}>
-              {isCheckList && (
-                <input
-                  type="checkbox"
-                  onChange={() =>
-                    dispatch(
-                      taskMembersAction.checkTaskMemberAction({
-                        memberProjectId: member.memberProjectId,
-                        name: member.name,
-                        profileImage: member.profileImage,
-                      })
-                    )
-                  }
-                  checked={
-                    checkedMembers.filter(
-                      (one) => one.memberProjectId === member.memberProjectId
-                    ).length > 0
-                  }
-                />
-              )}
-              <MemberInfo>
-                <img src={member.profileImage} />
-                <div>{member.name}</div>
-              </MemberInfo>
-            </div>
-          ))}
+          isCheckList &&
+          taskMembers.map(
+            (member) =>
+              member.status === "ACTIVE" && (
+                <div key={member.memberProjectId}>
+                  <input
+                    type="checkbox"
+                    onChange={() =>
+                      dispatch(
+                        taskMembersAction.checkTaskMemberAction({
+                          memberProjectId: member.memberProjectId,
+                          name: member.name,
+                          profileImage: member.profileImage,
+                        })
+                      )
+                    }
+                    checked={
+                      checkedMembers.filter(
+                        (one) => one.memberProjectId === member.memberProjectId
+                      ).length > 0
+                    }
+                  />
+                  <MemberInfo>
+                    <img src={member.profileImage} />
+                    <div>{member.name}</div>
+                  </MemberInfo>
+                </div>
+              )
+          )}
+
+        {taskMembers &&
+          !isCheckList &&
+          taskMembers.map((member) =>
+            member.status === "ACTIVE" ? (
+              <div key={member.memberProjectId}>
+                <MemberInfo>
+                  <img src={member.profileImage} />
+                  <div>{member.name}</div>
+                </MemberInfo>
+              </div>
+            ) : (
+              // status = QUIT (삭제 가능하도록 처리)
+              <div key={member.memberProjectId}>
+                <MemberInfo>
+                  <img src={member.profileImage} />
+                  <div>{member.name}</div>
+                </MemberInfo>
+              </div>
+            )
+          )}
+
         {isCheckList && (
           <ButtonArea>
             <Button type="button" color="#d6ccc2" onClick={() => toggleList()}>

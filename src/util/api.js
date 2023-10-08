@@ -56,7 +56,7 @@ const postFileApi = async (files) => {
     });
     return await response.data.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -66,7 +66,7 @@ const getFileApi = async (tableKey, tableName) => {
   if (response.status === 200) {
     return await response.data.data;
   }
-  return response;
+  throw response;
 };
 
 const deleteFileApi = async (fileInfoId) => {

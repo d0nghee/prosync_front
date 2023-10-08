@@ -18,7 +18,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
 
   useEffect(() => {
     dispatch(taskListAction.updateTaskSeq(taskStatusList));
-  }, [dispatch, currentIndex, taskStatusList]);
+  }, [dispatch, taskStatusList]);
 
   if (!pageInfo.hasOwnProperty("page")) {
     return <ListLoadingSpinner />;
@@ -30,6 +30,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
   const handleDragStart = (event, taskStatusId) => {
     if (
       projectMember &&
+      projectMember.status === "ACTIVE" &&
       (projectMember.authority === "ADMIN" ||
         projectMember.authority === "WRITER")
     ) {
@@ -41,6 +42,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
     event.preventDefault();
     if (
       projectMember &&
+      projectMember.status === "ACTIVE" &&
       (projectMember.authority === "ADMIN" ||
         projectMember.authority === "WRITER")
     ) {
@@ -125,5 +127,5 @@ const Slider = styled.div`
   padding: 1rem;
   transition: transform 0.3s ease;
   gap: 30px;
-  transform: translateX(-${(props) => props.currentidx * 375}px);
+  transform: translateX(-${(props) => props.currentidx * 425}px);
 `;

@@ -85,7 +85,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     changeHandler: classificationChangeHandler,
     blurHandler: classificationBlurHandler,
     hasError: classificationHasError,
-  } = useFormInput((value) => value.trim() !== "");
+  } = useFormInput((value) => value.trim() !== "" && value.length <= 20);
 
   const {
     value: titleValue,
@@ -94,7 +94,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     changeHandler: titleChangeHandler,
     blurHandler: titleBlurHandler,
     hasError: titleHasError,
-  } = useFormInput((value) => value.trim() !== "");
+  } = useFormInput((value) => value.trim() !== "" && value.length <= 50);
 
   const {
     value: detailValue,
@@ -103,7 +103,10 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     blurHandler: detailBlurHandler,
     hasError: detailHasError,
   } = useFormInput(
-    (value) => value.trim() !== "" && value.trim() !== "<p><br></p>"
+    (value) =>
+      value.trim() !== "" &&
+      value.trim() !== "<p><br></p>" &&
+      value.length <= 800
   );
 
   useEffect(() => {
@@ -230,7 +233,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
           <t.DetailArea>
             {showErrorMessage && (
               <t.ErrorMessage>
-                입력값이 잘못되었습니다. 다시 시도해주세요.
+                입력값이 잘못되었습니다. 다시 확인해주세요.
               </t.ErrorMessage>
             )}
             <t.TopNav>
@@ -253,6 +256,11 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                 <NaviButton name="저장" color="#4361ee" fontcolor="white" />
               </t.ButtonArea>
             </t.TopNav>
+            {titleHasError && (
+              <t.OneErrorMessage>
+                제목은 1자 이상 50자 이내로 입력해주세요.
+              </t.OneErrorMessage>
+            )}
             <t.TaskArea>
               <t.MainTask>
                 <div>
@@ -270,6 +278,11 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                       isError={detailHasError}
                     />
                   </div>
+                  {detailHasError && (
+                    <t.OneErrorMessage>
+                      상세내용은 1자 이상 800자 이내로 입력해주세요.
+                    </t.OneErrorMessage>
+                  )}
                 </div>
                 {taskFiles && taskFiles.length !== 0 && (
                   <div>
@@ -296,124 +309,148 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
               </t.MainTask>
 
               <t.SideTask>
-                <t.Container>
-                  <div>
-                    <t.SideName>
-                      담당자
-                      <AiOutlineUserAdd
-                        size="23px"
-                        className="logo"
-                        onClick={() => setShowProjectMembers((prv) => !prv)}
-                      />
-                    </t.SideName>
-                    {/* 업무 담당자 */}
-                    {checkedMembers && checkedMembers.length > 0 ? (
-                      <SimpleTaskMemberList taskMembers={checkedMembers} />
-                    ) : (
-                      <div onClick={() => setShowProjectMembers((prv) => !prv)}>
-                        업무 담당자를 등록하세요.
-                      </div>
-                    )}
-                  </div>
-                  {/* 업무 담당자 등록*/}
-                  {showProjectMembers && (
-                    <>
-                      <t.BackDrop
-                        onClick={() => setShowProjectMembers((prv) => !prv)}
-                      />
-                      <t.Wrapper show="true" customtop="110px">
-                        <TaskMemberList
-                          taskMembers={projectMembers}
-                          isCheckList="true"
-                          toggleList={() =>
-                            setShowProjectMembers((prv) => !prv)
-                          }
-                        />
-                      </t.Wrapper>
-                    </>
-                  )}
-                </t.Container>
                 <div>
-                  <t.SideName>분류</t.SideName>
-                  <t.SideInput
-                    type="text"
-                    id="classification"
-                    name="classification"
-                    value={classificationValue}
-                    onChange={classificationChangeHandler}
-                    onBlur={classificationBlurHandler}
-                    isError={classificationHasError}
-                    placeholder="내용을 입력하세요"
-                  />
-                </div>
-                <t.Container>
-                  <t.SideName>기간</t.SideName>
-                  <t.Period>
+                  <t.Container>
                     <div>
-                      <label htmlFor="startDate"></label>
-                      <t.DateInput
-                        id="startDate"
-                        name="startDate"
-                        type="text"
-                        value={startDate}
-                        onClick={toggleCalendar}
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="endDate"></label>
-                      <t.DateInput
-                        id="endDate"
-                        name="endDate"
-                        type="text"
-                        value={endDate}
-                        onClick={toggleCalendar}
-                        readOnly
-                      />
-                    </div>
-                  </t.Period>
-                  {showCalendar && (
-                    <t.Wrapper show={showCalendar.toString()} customtop="80px">
-                      <MyCalendar changeDate={calendarHandler} />
-                    </t.Wrapper>
-                  )}
-                </t.Container>
-                <t.Container>
-                  <div>
-                    <t.SideName>업무상태</t.SideName>
-                    <t.TaskStatusBox
-                      onClick={() => dispatch(taskStatusActions.toggleList())}
-                    >
-                      {task || (taskStatus && !taskStatus.error) ? (
-                        <TaskStatus
-                          color={taskStatus ? taskStatus.color : task.color}
-                          name={
-                            taskStatus ? taskStatus.taskStatus : task.taskStatus
-                          }
-                          width="100px"
+                      <t.SideName>
+                        담당자
+                        <AiOutlineUserAdd
+                          size="23px"
+                          className="logo"
+                          onClick={() => setShowProjectMembers((prv) => !prv)}
                         />
+                      </t.SideName>
+                      {/* 업무 담당자 */}
+                      {checkedMembers && checkedMembers.length > 0 ? (
+                        <SimpleTaskMemberList taskMembers={checkedMembers} />
                       ) : (
-                        <t.ChooseStatusComment>
-                          업무 상태를 선택하세요.
-                        </t.ChooseStatusComment>
+                        <div
+                          style={{ paddingBottom: "10px" }}
+                          onClick={() => setShowProjectMembers((prv) => !prv)}
+                        >
+                          업무 담당자를 등록하세요.
+                        </div>
                       )}
-                      <AiFillCaretDown size="27px" color="#6c757d" />
-                    </t.TaskStatusBox>
-                  </div>
-                  {showStatusList && (
-                    <>
-                      <t.BackDrop
-                        onClick={() => dispatch(taskStatusActions.toggleList())}
-                      />
-                      <t.Wrapper show="true" customtop="105px">
-                        <TaskStatusList
-                          updateTaskStatus={updateTaskStatus}
-                          showStatusModal={() => setShowModal((prv) => !prv)}
+                    </div>
+                    {/* 업무 담당자 등록*/}
+                    {showProjectMembers && (
+                      <>
+                        <t.BackDrop
+                          onClick={() => setShowProjectMembers((prv) => !prv)}
                         />
-                      </t.Wrapper>
-                    </>
+                        <t.Wrapper show="true" customtop="110px">
+                          <TaskMemberList
+                            taskMembers={projectMembers}
+                            isCheckList="true"
+                            toggleList={() =>
+                              setShowProjectMembers((prv) => !prv)
+                            }
+                          />
+                        </t.Wrapper>
+                      </>
+                    )}
+                  </t.Container>
+                </div>
+
+                <div>
+                  <div>
+                    <t.SideName>분류</t.SideName>
+                    <t.SideInput
+                      type="text"
+                      id="classification"
+                      name="classification"
+                      value={classificationValue}
+                      onChange={classificationChangeHandler}
+                      onBlur={classificationBlurHandler}
+                      isError={classificationHasError}
+                      placeholder="내용을 입력하세요"
+                    />
+                  </div>
+                  {classificationHasError && (
+                    <t.OneErrorMessage>
+                      분류는 1자 이상 20자 이내로 입력해주세요.
+                    </t.OneErrorMessage>
                   )}
-                </t.Container>
+                </div>
+                <div>
+                  <t.Container>
+                    <t.SideName>기간</t.SideName>
+                    <t.Period>
+                      <div>
+                        <label htmlFor="startDate"></label>
+                        <t.DateInput
+                          id="startDate"
+                          name="startDate"
+                          type="text"
+                          value={startDate}
+                          onClick={toggleCalendar}
+                          readOnly
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="endDate"></label>
+                        <t.DateInput
+                          id="endDate"
+                          name="endDate"
+                          type="text"
+                          value={endDate}
+                          onClick={toggleCalendar}
+                          readOnly
+                        />
+                      </div>
+                    </t.Period>
+                    {showCalendar && (
+                      <t.Wrapper
+                        show={showCalendar.toString()}
+                        customtop="91px"
+                      >
+                        <MyCalendar changeDate={calendarHandler} />
+                      </t.Wrapper>
+                    )}
+                  </t.Container>
+                </div>
+                <div>
+                  <t.Container>
+                    <div>
+                      <t.SideName>업무상태</t.SideName>
+                      <t.TaskStatusBox
+                        onClick={() => dispatch(taskStatusActions.toggleList())}
+                      >
+                        {task || (taskStatus && !taskStatus.error) ? (
+                          <TaskStatus
+                            color={taskStatus ? taskStatus.color : task.color}
+                            name={
+                              taskStatus
+                                ? taskStatus.taskStatus
+                                : task.taskStatus
+                            }
+                            width="100px"
+                          />
+                        ) : (
+                          <t.ChooseStatusComment>
+                            업무 상태를 선택하세요.
+                          </t.ChooseStatusComment>
+                        )}
+                        <AiFillCaretDown size="27px" color="#6c757d" />
+                      </t.TaskStatusBox>
+                    </div>
+                    {showStatusList && (
+                      <>
+                        <t.BackDrop
+                          onClick={() =>
+                            dispatch(taskStatusActions.toggleList())
+                          }
+                        />
+                        <t.Wrapper show="true" customtop="105px">
+                          <TaskStatusList
+                            updateTaskStatus={updateTaskStatus}
+                            showStatusModal={() => setShowModal((prv) => !prv)}
+                          />
+                        </t.Wrapper>
+                      </>
+                    )}
+                  </t.Container>
+                </div>
               </t.SideTask>
             </t.TaskArea>
           </t.DetailArea>
