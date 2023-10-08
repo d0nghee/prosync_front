@@ -139,13 +139,13 @@ export default function ProjectList() {
   return (
     <>
       <TopBarContainer>
-        <ProjectSearchBar onSearch={ProjectSerachHandler} />
         <ProjectFilterBar
           onDefault={defaultProjectListHandler}
           onBookmarkFilter={bookmarkFilterHandler}
           onendDateSorting={endDateSortingHandler}
           onlatestSorting={latestSortingHandler}
         />
+        <ProjectSearchBar onSearch={ProjectSerachHandler} />
       </TopBarContainer>
       <ProjectGrid>
         {projects && projects.length > 0 ? (
@@ -179,9 +179,9 @@ const ProjectGrid = styled.div`
 
 const TopBarContainer = styled.div`
   display: flex;
-  justify-content: flex-end; // 우측 정렬
-  gap: 20px; // 필터바와 검색바 사이의 간격
-  margin-bottom: 20px; // 그리드와의 간격
+  justify-content: space-between; // 좌측과 우측 요소를 양 끝으로 보냅니다.
+  align-items: center;
+  margin-bottom: 20px;
   margin-left: 200px;
   margin-right: 200px;
 `;

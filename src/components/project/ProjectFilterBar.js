@@ -9,39 +9,40 @@ export default function ProjectFilterBar({
   onlatestSorting,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [menu, setMenu] = useState('최신 순 ');
   return (
     <DropdownContainer>
-      <MenuButton onClick={() => setIsOpen(!isOpen)}>Menu</MenuButton>
+      <MenuButton onClick={() => setIsOpen(!isOpen)}>{menu}</MenuButton>
       {isOpen && (
         <MenuList>
           <MenuItem
             onClick={() => {
-              console.log('defaultProjectListHandler is called');
               onDefault();
+              setMenu('최신 순');
             }}
           >
-            기본
+            최신 순
           </MenuItem>
           <MenuItem
             onClick={() => {
-              console.log('onBookmarkFilter is called');
               onBookmarkFilter();
+              setMenu('내 북마크');
             }}
           >
             내 북마크
           </MenuItem>
           <MenuItem
             onClick={() => {
-              console.log('projectSortingHandler is called');
               onendDateSorting();
+              setMenu('마감일 임박 순');
             }}
           >
             마감일 임박 순
           </MenuItem>
           <MenuItem
             onClick={() => {
-              console.log('onlatestSorting is called');
               onlatestSorting();
+              setMenu('최신 순');
             }}
           >
             최신 순
