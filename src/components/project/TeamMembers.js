@@ -1,5 +1,13 @@
+import { useState } from "react";
+import MemberProfile from "../common/MemberProfile";
+
 export default function Example({ projectMembers }) {
+  const [memberProfile, setMemberProfile] = useState({show: false});
+  const [memberInfo, setMemberInfo] = useState({});
+
+
   return (
+    <>
     <div
       className="bg-white py-24 sm:py-32"
       style={{ backgroundColor: "#f5f5f5" }}
@@ -24,6 +32,8 @@ export default function Example({ projectMembers }) {
                   className="h-16 w-16 rounded-full"
                   src={member.profileImage}
                   alt=""
+                  onClick={() => {setMemberInfo({memberId: member.memberId, projectId: member.projectId}); setMemberProfile({show:true})}}
+                  style={{cursor: "pointer"}}
                 />
                 <div>
                   <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">
@@ -39,5 +49,12 @@ export default function Example({ projectMembers }) {
         </ul>
       </div>
     </div>
+    {
+      memberProfile.show && (
+        <MemberProfile onClose={() => setMemberProfile({show:false})} memberInformation={{isOthers:true,memberId:memberInfo.memberId ,projectId: memberInfo.projectId}}/>
+      )
+    }
+    </>
   );
 }
+
