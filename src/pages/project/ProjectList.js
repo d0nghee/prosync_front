@@ -182,4 +182,6 @@ const TopBarContainer = styled.div`
   justify-content: flex-end; // 우측 정렬
   gap: 20px; // 필터바와 검색바 사이의 간격
   margin-bottom: 20px; // 그리드와의 간격
+  margin-left: 200px;
+  margin-right: 200px;
 `;

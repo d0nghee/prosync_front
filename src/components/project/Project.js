@@ -95,6 +95,7 @@ const Container = styled.div`
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
   margin: 4px;
+  border: 1px solid white;
   &:hover {
     border: 1px solid #333;
   }
