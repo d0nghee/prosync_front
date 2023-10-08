@@ -10,7 +10,7 @@ import {
 } from "../../../css/MyPageStyle";
 import { useDispatch, useSelector } from "react-redux";
 import { setMemberInfo } from "../../../redux/reducers/member/mypageSlice";
-import axiosInstance from "../../../util/axiosInstancs";
+import axiosInstance from "../../../util/axiosInstances";
 import {
   setIsConfirmModalOpen,
   setModalButtons,

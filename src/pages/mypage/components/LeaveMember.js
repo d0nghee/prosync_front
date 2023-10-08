@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Button from '../../../components/button/Button'
-import axiosInstance from '../../../util/axiosInstancs'
+import axiosInstance from '../../../util/axiosInstances'
 import styled from 'styled-components'
 import { Content, GridContainer, InputText } from '../../../css/MyPageStyle'
 import { deleteApi } from '../../../util/api'

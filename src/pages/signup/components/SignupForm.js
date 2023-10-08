@@ -18,7 +18,7 @@ import axios from "axios";
 import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setIsPasswordMatch, setIsVerfied, setModalButtons, setModalMessage, setVerifiedPassword } from "../../../redux/reducers/member/signupSlice";
 import Popup from '../../../components/popup/Popup'
 import ConfrimButton from './ConfirmButton'
-import { axiosInstance } from '../../../util/axiosInstancs'
+import { axiosInstance } from '../../../util/axiosInstances'
 import { postApi } from "../../../util/api";
 import { emailValidate, nameValidate, passwordValidate } from "../../../util/regex";
 import { useEffect } from "react";
