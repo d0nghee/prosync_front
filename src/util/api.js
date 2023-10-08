@@ -31,7 +31,7 @@ const patchApi = async (url, data) => {
   }
 };
 
-const deleteApi = async (url, data) => {
+const deleteApi = async (url) => {
   try {
     const res = await axiosInstance.delete(url, data);
     return res;
@@ -58,6 +58,19 @@ const postFileApi = async (files) => {
   } catch (error) {
     throw error;
   }
+};
+
+const getFileApi = async (tableKey, tableName) => {
+  const response = await getApi('/files', { params: { tableKey, tableName } });
+
+  if (response.status === 200) {
+    return await response.data.data;
+  }
+  throw response;
+};
+
+const deleteFileApi = async (fileInfoId) => {
+  return await deleteApi(`/files/${fileInfoId}`);
 };
 
 const getFileApi = async (tableKey, tableName) => {
