@@ -26,13 +26,14 @@ const patchApi = async (url, data) => {
     return res;
   } catch (error) {
     console.error(error);
-    return error;
+    console.error('patchApi 지나감');
+    throw error;
   }
 };
 
 const deleteApi = async (url) => {
   try {
-    const res = await axiosInstance.delete(url);
+    const res = await axiosInstance.delete(url, data);
     return res;
   } catch (error) {
     console.error(error);
@@ -53,8 +54,21 @@ const postFileApi = async (data) => {
       data: formData,
     });
   } catch (error) {
-    return error;
+    throw error;
   }
+};
+
+const getFileApi = async (tableKey, tableName) => {
+  const response = await getApi('/files', { params: { tableKey, tableName } });
+
+  if (response.status === 200) {
+    return await response.data.data;
+  }
+  throw response;
+};
+
+const deleteFileApi = async (fileInfoId) => {
+  return await deleteApi(`/files/${fileInfoId}`);
 };
 
 // 업무 상태
@@ -97,6 +111,17 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
   if (response.status === 200) {
     console.log('업무 상태 수정');
     return await response.data.data;
+  }
+};
+
+const patchTaskStatusSeqApi = async (projectId, seqList) => {
+  const response = await patchApi(
+    `/projects/${projectId}/task-status/sequence`,
+    seqList
+  );
+
+  if (response.status === 200) {
+    return await response;
   }
 };
 

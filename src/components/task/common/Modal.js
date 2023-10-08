@@ -1,10 +1,16 @@
 import { styled } from "styled-components";
+import ReactDOM from "react-dom";
 
-export default function Modal({ children, onClose, type }) {
+const portalElement = document.getElementById("overlays");
+
+export default function Modal({ children, onClose }) {
   return (
     <>
-      <BackDrop onClick={onClose} />
-      <StatusModal open={true}>{children}</StatusModal>
+      {ReactDOM.createPortal(<BackDrop onClick={onClose} />, portalElement)}
+      {ReactDOM.createPortal(
+        <StatusModal open={true}>{children}</StatusModal>,
+        portalElement
+      )}
     </>
   );
 }

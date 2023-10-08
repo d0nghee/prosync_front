@@ -63,6 +63,7 @@ const taskListSlice = createSlice({
     },
     updateTaskSeq(state, action) {
       const statusList = action.payload;
+      console.log(statusList, "상태 리스트 확인");
       statusList.forEach((one) => {
         const findIndex = state.list.findIndex(
           (status) => status.taskStatusId === one.taskStatusId

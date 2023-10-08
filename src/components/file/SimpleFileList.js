@@ -104,7 +104,6 @@ const One = styled.div`
 `;
 
 const SimpleButton = styled.div`
-  margin-bottom: 1rem;
   display: flex;
   gap: 0.3rem;
   position: relative;
@@ -116,7 +115,6 @@ const SimpleButton = styled.div`
   width: 100%;
   display: flex;
   cursor: pointer;
-  border: 1px solid #333;
 `;
 
 const Wrapper = styled.div`

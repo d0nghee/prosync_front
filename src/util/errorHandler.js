@@ -1,6 +1,12 @@
 import { setIsLoggedIn } from "../redux/reducers/loginSlice";
 
-export const handleErrorCode = (status, resultCode, navigate,location,dispatch) => {
+export const handleErrorCode = (
+  status,
+  resultCode,
+  navigate,
+  location,
+  dispatch
+) => {
   switch (status) {
     case 400: // BAD_REQUEST
       switch (resultCode) {
@@ -22,8 +28,8 @@ export const handleErrorCode = (status, resultCode, navigate,location,dispatch) 
     case 401: // UNAUTHORIZED
       switch (resultCode) {
         case "UNAUTHORIZED": // 유저 인증 실패
-        //   alert("로그인이 만료되었습니다. 로그인 페이지로 이동합니다. [RootLayOut에서 처리]")
-        //   navigate(`/auth?mode=login&returnUrl=${location.pathname}${location.search}`)
+          //   alert("로그인이 만료되었습니다. 로그인 페이지로 이동합니다. [RootLayOut에서 처리]")
+          //   navigate(`/auth?mode=login&returnUrl=${location.pathname}${location.search}`)
           dispatch(setIsLoggedIn(false));
           break;
         case "INVALID_TOKEN": // 토큰 유효성 검사 실패
