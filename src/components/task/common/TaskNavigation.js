@@ -34,7 +34,7 @@ export default function TaskNavigation({
     } else if (checkedTasks.length === 1) {
       const taskId = checkedTasks[0];
       updateCheckbox([]);
-      navigate(`${taskId}/edit`);
+      navigate(`tasks/${taskId}/edit`);
     } else {
       alert("선택 대상이 없습니다.");
     }
@@ -172,7 +172,7 @@ export default function TaskNavigation({
                 name="생성"
                 color="#4361ee"
                 fontcolor="white"
-                onClick={() => navigate("new")}
+                onClick={() => navigate("tasks/new")}
               />
               {view === "table" && (
                 <>

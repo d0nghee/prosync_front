@@ -91,6 +91,35 @@ export default function MyProject() {
       projectList.data.forEach(project => {
         const bookmarked = bookmarkProjectId.includes(project.projectId);
         update[project.projectId] = bookmarked;
+    book();
+  }, [location.search, currentPage, bookmarkList]);
+
+
+  const page = () => {
+    if (pageInfo && pageInfo.totalPages) {
+      for (let i = 1; i <= pageInfo.totalPages; i++) {
+        paginationButtons.push(
+          <PageButton
+            key={i}
+            onClick={() => handlePageChange(i)}
+            disabled={i === currentPage}
+          >
+            {i}
+          </PageButton>
+        )
+      }
+      return paginationButtons;
+    }
+  }
+
+  const book = () => {
+    if (bookmarkList && projectList) {
+      const bookmarkProjectId = bookmarkList.data.map(book => book.projectId);
+      const update = {};
+
+      projectList.data.forEach(project => {
+        const bookmarked = bookmarkProjectId.includes(project.projectId);
+        update[project.projectId] = bookmarked;
       })
       setSubscribe(update);
     }

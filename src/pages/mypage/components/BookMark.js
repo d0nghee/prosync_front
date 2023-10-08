@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { deleteApi, getApi, postApi } from '../../../util/api'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../../redux/reducers/mypageSlice';
-import { Container, BookmarkListItem, PaginationContainer, PageButton, PostTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectTitle, ProjectImage } from '../../../css/MyPageStyle'
+import { Container, BookmarkListItem, PaginationContainer, PageButton, PostTitle, PostDate, ListItemContainer, PostListContainer, PostItem } from '../../../css/MyPageStyle'
 import BookmarkIcon from './BookmarkIcon';
 import Loading from '../../../components/common/Loading';
 import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
@@ -202,7 +202,12 @@ export default function BookMark(props) {
   return (
     <>
       <PostListContainer>
+      <PostListContainer>
         {getList()}
+      </PostListContainer>
+      <PaginationContainer>
+        {paginationButtons}
+      </PaginationContainer>
       </PostListContainer>
       <PaginationContainer>
         {paginationButtons}

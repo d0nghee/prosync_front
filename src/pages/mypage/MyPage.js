@@ -7,43 +7,46 @@ import LeaveMember from './components/LeaveMember'
 import { GridContainer, Header, Content, Footer } from '../../css/MyPageStyle'
 import { useDispatch, useSelector } from 'react-redux'
 import SideMenu from './components/SideMenu'
-import { useNavigate, useParams, useRouteLoaderData, useLocation } from 'react-router-dom';
+import {
+  useNavigate,
+  useParams,
+  useRouteLoaderData,
+  useLocation,
+} from "react-router-dom";
 
 
 export default function MyPage() {
   const isLoggedIn = Boolean(useRouteLoaderData("root"));
-  const mypage = useSelector(state => state.mypage);
+  const mypage = useSelector((state) => state.mypage);
   const navi = useNavigate();
   const location = useLocation();
 
   let content;
 
-
-
   switch (location.pathname) {
-    case '/user/password' :
+    case "/user/password":
       content = <EditPassword />;
       break;
-    case '/user/profile' :
+    case "/user/profile":
       content = <EditMember />;
       break;
-    case '/user/bookmark' :
+    case "/user/bookmark":
       content = <BookMark />;
       break;
-    case '/user/myproject' :
+    case "/user/myproject":
       content = <Myproject />;
       break;
-    case '/user/leave' :
+    case "/user/leave":
       content = <LeaveMember />;
       break;
   }
 
   // useEffect(() => {
-    
+
   // })
 
   // useEffect(() => {
-    
+
   //   if (!isLoggedIn) {
 
   //     navi("/auth?mode=login");
@@ -55,7 +58,6 @@ export default function MyPage() {
   //   return null;
   // }
 
-  
   return (
     <>
       <GridContainer>

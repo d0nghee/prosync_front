@@ -16,14 +16,14 @@ import {
   setModalButtons,
   setModalMessage,
 } from "../../../redux/reducers/signupSlice";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getCookie, setCookie } from "../../../util/cookies";
+import { useNavigate } from "react-router-dom";
+import { setCookie } from "../../../util/cookies";
 import { getApi } from "../../../util/api";
-import { useEffect } from "react";
-import { useState } from "react";
 import { introValidate, nameValidate } from "../../../util/regex";
 import IntroCheck from "../../signup/components/IntroCheck";
 import NameCheck from "../../signup/components/NameCheck";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -212,9 +212,7 @@ export default function EditMember() {
         } else {
           dispatch(setIsConfirmModalOpen(true));
           dispatch(
-            setModalMessage(
-              "서버 오류로 인해 프로필 수정을 실패하였습니다."
-            )
+            setModalMessage("서버 오류로 인해 프로필 수정을 실패하였습니다.")
           );
           dispatch(
             setModalButtons([

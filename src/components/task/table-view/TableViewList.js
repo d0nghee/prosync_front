@@ -311,7 +311,7 @@ export default function TableViewList({
                 )}
               {task.taskId !== editTaskId ? (
                 <>
-                  <tv.LinkContents to={`${task.taskId}`}>
+                  <tv.LinkContents to={`tasks/${task.taskId}`}>
                     <div>{task.title}</div>
                     {task.taskMembers.length !== 0 ? (
                       <tv.Assignee>

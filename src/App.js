@@ -37,10 +37,6 @@ import LeaveMember from "./pages/mypage/components/LeaveMember";
 import BookMark from "./pages/mypage/components/BookMark";
 import MyProject from "./pages/mypage/components/MyProject";
 
-
-
-
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -64,11 +60,11 @@ const router = createBrowserRouter([
             path: "/user",
             element: <MyPage />,
             children : [
-              { path : 'profile', element : <EditMember />},
-              { path : 'password', element : <EditPassword />},
-              { path : 'leave', element : <LeaveMember />},
-              { path : 'bookmark', element : <BookMark />},
-              { path : 'myproject', element : <MyProject />},
+              { path: "profile", element: <EditMember /> },
+              { path: "password", element: <EditPassword /> },
+              { path: "leave", element: <LeaveMember /> },
+              { path: "bookmark", element: <BookMark /> },
+              { path: "myproject", element: <MyProject /> },
             ]
           },
 
@@ -85,7 +81,7 @@ const router = createBrowserRouter([
               {
                 path: ":projectId",
                 children: [
-                  { index: true },
+                  { index: true, element: <Tasks /> },
                   {
                     id: "edit",
                     path: "edit",
@@ -104,7 +100,6 @@ const router = createBrowserRouter([
                     path: "tasks",
                     element: <TasksRoot />,
                     children: [
-                      { index: true, element: <Tasks /> },
                       {
                         path: ":taskId",
                         id: "task-details",
