@@ -1,5 +1,4 @@
 import TaskStatus from "../common/TaskStatus";
-import ProfileCard from "../../common/ProfileCard";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import * as tv from "./TableViewList.style.js";
@@ -276,6 +275,7 @@ export default function TableViewList({
       )}
       <tv.Header>
         {projectMember &&
+          projectMember.status === "ACTIVE" &&
           (projectMember.authority === "ADMIN" ||
             projectMember.authority === "WRITER") && (
             <input type="checkbox" onChange={toggleAllCheck} />
@@ -300,6 +300,7 @@ export default function TableViewList({
             )}
             <tv.Item>
               {projectMember &&
+                projectMember.status === "ACTIVE" &&
                 (projectMember.authority === "ADMIN" ||
                   projectMember.authority === "WRITER") && (
                   <div>
@@ -335,6 +336,7 @@ export default function TableViewList({
                     <div>{task.classification}</div>
                   </tv.LinkContents>
                   {projectMember &&
+                    projectMember.status === "ACTIVE" &&
                     (projectMember.authority === "ADMIN" ||
                       projectMember.authority === "WRITER") && (
                       <tv.EditButton

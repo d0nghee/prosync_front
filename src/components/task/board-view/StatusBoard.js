@@ -29,6 +29,7 @@ export default function StatusBoard({ list, projectMember }) {
   const handleDragStart = (event, task) => {
     if (
       projectMember &&
+      projectMember.status === "ACTIVE" &&
       (projectMember.authority === "ADMIN" ||
         projectMember.authority === "WRITER")
     ) {
@@ -40,6 +41,7 @@ export default function StatusBoard({ list, projectMember }) {
     event.preventDefault();
     if (
       projectMember &&
+      projectMember.status === "ACTIVE" &&
       (projectMember.authority === "ADMIN" ||
         projectMember.authority === "WRITER")
     ) {
@@ -89,7 +91,7 @@ const Container = styled.div`
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  width: 400px;
   height: 1200px;
 `;
 

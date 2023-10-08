@@ -44,11 +44,20 @@ export default function Tasks() {
   useEffect(() => {
     dispatch(getTaskStatus(params.projectId));
     const memberId = getCookie("memberId");
-    tryFunc(
-      () =>
-        axiosInstance.get(`/projects/${params.projectId}/members/${memberId}`),
-      (response) => setProjectMember(response.data)
-    )();
+
+    (async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/projects/${params.projectId}/members/${memberId}`
+        );
+        if (response.status === 200) {
+          const projectMember = await response.data;
+          setProjectMember(projectMember);
+        }
+      } catch (error) {
+        console.log("GUEST");
+      }
+    })();
   }, [dispatch, params.projectId]);
 
   useEffect(() => {
@@ -103,20 +112,26 @@ export default function Tasks() {
   return (
     <>
       <TaskView>
-        {projectMember && (
-          <Top>
-            <TopDiv back="#d9d9d9" color="#555" onClick={() => navigate("..")}>
-              목록
+        <Top>
+          <TopDiv
+            back="hsl(226, 100%, 65%)"
+            color="white"
+            onClick={() => navigate("..")}
+          >
+            프로젝트 상세페이지
+          </TopDiv>
+          <TopButton>
+            <Authority>
+              {projectMember && projectMember.status === "ACTIVE"
+                ? projectMember.authority
+                : "GUEST"}
+            </Authority>
+            <TopDiv onClick={memberProjectExitHandler}>
+              <BiExit size="20px" />
+              프로젝트 나가기
             </TopDiv>
-            <TopButton>
-              <Authority>{projectMember.authority}</Authority>
-              <TopDiv onClick={memberProjectExitHandler}>
-                <BiExit size="20px" />
-                프로젝트 나가기
-              </TopDiv>
-            </TopButton>
-          </Top>
-        )}
+          </TopButton>
+        </Top>
         <TaskSearchBar
           updateSearch={changeKeywordHandler}
           onChangePage={(value) => handleCurrentPage(value)}

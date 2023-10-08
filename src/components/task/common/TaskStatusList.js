@@ -18,6 +18,7 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const statusList = useSelector((state) => state.taskStatus.list);
 
   const deleteTaskStatus = (statusId) => {
+    //TODO: 에러처리
     (async () => {
       const response = await deleteTaskStatusApi(statusId);
       if (response.response && response.response.status === 409) {

@@ -74,7 +74,7 @@ export default function ProjectInfo({ projectMembers }) {
                   </li>
                 </ProjectSideInfo>
                 <Link to={`/projects/${params.projectId}/tasks`}>
-                  프로젝트 상세로 이동하기
+                  프로젝트 업무리스트로 이동하기
                 </Link>
               </SideInfo>
             </Detail>
@@ -221,6 +221,6 @@ export const ProjectInformation = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 1200px;
+  width: 1280px;
   font-size: 1.2rem;
 `;

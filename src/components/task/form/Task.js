@@ -44,6 +44,7 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
                   onClick={() => navigate(`..`)}
                 />
                 {projectMember &&
+                  projectMember.status === "ACTIVE" &&
                   (projectMember.authority === "ADMIN" ||
                     projectMember.authority === "WRITER") && (
                     <>
@@ -98,32 +99,40 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
               </t.MainTask>
               <t.SideTask>
                 <div>
-                  <t.SideName>담당자</t.SideName>
-                  {task.taskMembers.length > 0 ? (
-                    <SimpleTaskMemberList taskMembers={task.taskMembers} />
-                  ) : (
-                    <div>지정된 담당자가 없습니다.</div>
-                  )}
-                </div>
-                <div>
-                  <t.SideName>분류</t.SideName>
-                  <Text>{task.data.classification}</Text>
-                </div>
-                <div>
-                  <t.SideName>기간</t.SideName>
                   <div>
-                    {task.data.startDate} ~ {task.data.endDate}
+                    <t.SideName>담당자</t.SideName>
+                    {task.taskMembers.length > 0 ? (
+                      <SimpleTaskMemberList taskMembers={task.taskMembers} />
+                    ) : (
+                      <div>지정된 담당자가 없습니다.</div>
+                    )}
                   </div>
                 </div>
                 <div>
-                  <t.SideName>업무상태</t.SideName>
-                  <t.TaskStatusBox>
-                    <TaskStatus
-                      color={task.data.color}
-                      name={task.data.taskStatus}
-                      width="100px"
-                    />
-                  </t.TaskStatusBox>
+                  <div>
+                    <t.SideName>분류</t.SideName>
+                    <Text>{task.data.classification}</Text>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <t.SideName>기간</t.SideName>
+                    <div>
+                      {task.data.startDate} ~ {task.data.endDate}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <t.SideName>업무상태</t.SideName>
+                    <t.TaskStatusBox>
+                      <TaskStatus
+                        color={task.data.color}
+                        name={task.data.taskStatus}
+                        width="100px"
+                      />
+                    </t.TaskStatusBox>
+                  </div>
                 </div>
               </t.SideTask>
             </t.TaskArea>
@@ -145,7 +154,7 @@ const TaskTitle = styled.div`
 const TaskDetails = styled.div`
   font-size: 1.3rem;
   line-height: 1.5;
-  height: 650px;
+  height: 850px;
   border: 1px solid #dad7cd;
   padding: 0 1rem;
   overflow: auto;
