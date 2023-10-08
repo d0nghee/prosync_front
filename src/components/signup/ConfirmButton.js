@@ -1,4 +1,4 @@
-import { ConfirmEmail, DisableButton } from "../../../css/SignupStyle";
+import { ConfirmEmail, DisableButton } from "../../css/SignupStyle";
 
 function ConfirmButton(props) {
 

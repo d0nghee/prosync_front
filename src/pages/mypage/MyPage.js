@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react';
-import EditMember from './components/EditMember';
-import BookMark from './components/BookMark';
-import Myproject from './components/MyProject';
-import EditPassword from './components/EditPassword';
-import LeaveMember from './components/LeaveMember';
-import { GridContainer, Header, Content, Footer } from '../../css/MyPageStyle';
-import { useDispatch, useSelector } from 'react-redux';
-import SideMenu from './components/SideMenu';
+import React, { useEffect } from 'react'
+import EditMember from '../../components/mypage/EditMember'
+import BookMark from '../../components/mypage/BookMark'
+import Myproject from '../../components/mypage/MyProject'
+import EditPassword from '../../components/mypage/EditPassword'
+import LeaveMember from '../../components/mypage/LeaveMember'
+import { GridContainer, Header, Content, Footer } from '../../css/MyPageStyle'
+import { useDispatch, useSelector } from 'react-redux'
+import SideMenu from '../../components/mypage/SideMenu'
 import {
   useNavigate,
   useParams,
   useRouteLoaderData,
   useLocation,
-} from 'react-router-dom';
+} from "react-router-dom";
+
 
 export default function MyPage() {
-  const isLoggedIn = Boolean(useRouteLoaderData('root'));
-  const mypage = useSelector((state) => state.mypage);
   const navi = useNavigate();
   const location = useLocation();
 
@@ -40,9 +39,6 @@ export default function MyPage() {
       break;
   }
 
- 
-
-  
   return (
     <>
       <GridContainer>

@@ -175,9 +175,9 @@ export const PostListContainer = styled.div`
 `;
 
 export const ProjectImage = styled.img`
-    width : 100px;
-
+    width : 120px;
     object-fit: cover;
+    cursor: pointer;
 `
 
 export const PostItem = styled.div`
@@ -201,9 +201,16 @@ export const PostItem = styled.div`
   }
 `;
 
+export const BookmarkWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
 export const ProjectTitle = styled.div`
   font-size: 18px;
   font-weight: bold;
+  align-items: center;
   cursor: pointer;
   margin-bottom: 10px;
 `;
@@ -211,4 +218,12 @@ export const ProjectTitle = styled.div`
 export const PostDescription = styled.div`
   font-size: 14px;
   color: #555;
+`;
+export const PostName = styled.span`
+  font-weight: bold;
+`;
+
+export const PostsDate = styled.span`
+  color: #888;
+  margin-left: 5px;
 `;
