@@ -1,9 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { deleteTaskMemberApi, postTaskMemberApi } from "../../../util/api";
-import { tryFunc } from "../../../util/tryFunc";
+import { createSlice } from '@reduxjs/toolkit';
+import { deleteTaskMemberApi, postTaskMemberApi } from '../../../util/api';
+import { tryFunc } from '../../../util/tryFunc';
 
 const taskMembersSlice = createSlice({
-  name: "taskMembers",
+  name: 'taskMembers',
   initialState: {
     originalMembers: [],
     checkedMembers: [],
