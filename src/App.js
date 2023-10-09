@@ -38,7 +38,7 @@ import EditPassword from './components/mypage/EditPassword'
 import EditMember from "./components/mypage/EditMember";
 import LeaveMember from './components/mypage/LeaveMember'
 import BookMark from './components/mypage/BookMark';
-import MyProject from './components/mypage/MyProject'
+import MyPageProject from './components/mypage/MyPageProject'
 
 const router = createBrowserRouter([
   {
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
               { path: 'password', element: <EditPassword /> },
               { path: 'leave', element: <LeaveMember /> },
               { path: 'bookmark', element: <BookMark /> },
-              { path: 'myproject', element: <MyProject /> },
+              { path: 'myproject', element: <MyPageProject /> },
             ],
           },
 
