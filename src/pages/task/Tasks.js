@@ -158,7 +158,7 @@ const TaskView = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 3rem 0;
+  margin: 3rem 0 10rem 0;
 `;
 
 const Authority = styled.div`

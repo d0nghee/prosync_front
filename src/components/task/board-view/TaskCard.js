@@ -1,55 +1,50 @@
 import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import * as tv from "../table-view/TableViewList.style";
-import * as t from "../form/TaskForm.style";
-import TaskMemberList from "../common/TaskMemberList";
-import { useState } from "react";
 
-export default function TaskCard({ task, dragStart }) {
+export default function TaskCard({ task, dragStart, showHandler }) {
   const params = useParams();
   const navigate = useNavigate();
-  const [showAssignees, setShowAssignees] = useState(false);
 
   return (
-    <Card
-      key={task.taskId}
-      draggable="true"
-      onDragStart={(e) => dragStart(e, JSON.stringify(task))}
-    >
-      <h3
-        onClick={() =>
-          navigate(`/projects/${params.projectId}/tasks/${task.taskId}`)
-        }
+    <ModalSection>
+      <Card
+        key={task.taskId}
+        draggable="true"
+        onDragStart={(e) => dragStart(e, JSON.stringify(task))}
       >
-        {task.title}
-      </h3>
-      <div>{`${task.startDate} - ${task.endDate}`}</div>
-      {task.taskMembers.length !== 0 ? (
-        <ModalSection>
-          <Assignee onClick={() => setShowAssignees((prv) => !prv)}>
+        <h3
+          onClick={() =>
+            navigate(`/projects/${params.projectId}/tasks/${task.taskId}`)
+          }
+        >
+          {task.title}
+        </h3>
+        <div>{`${task.startDate} - ${task.endDate}`}</div>
+        {task.taskMembers.length !== 0 ? (
+          <Assignee onClick={showHandler}>
             <SimpleTaskMemberList
               taskMembers={task.taskMembers}
               taskId={task.taskId}
               isTable="true"
             />
           </Assignee>
-          {showAssignees && (
-            <div>
-              <t.BackDrop onClick={() => setShowAssignees(false)} />
-              <t.Wrapper show="true" customtop="300px">
-                <TaskMemberList
-                  taskMembers={task.taskMembers}
-                  taskId={task.taskId}
-                />
-              </t.Wrapper>
-            </div>
-          )}
-        </ModalSection>
-      ) : (
-        <Undefined>담당자 없음</Undefined>
-      )}
-    </Card>
+        ) : (
+          <Undefined>담당자 없음</Undefined>
+        )}
+      </Card>
+      {/* {showAssignees && (
+        <div>
+          <t.BackDrop onClick={() => setShowAssignees(false)} />
+          <t.Wrapper show="true" customtop="300px">
+            <TaskMemberList
+              taskMembers={task.taskMembers}
+              taskId={task.taskId}
+            />
+          </t.Wrapper>
+        </div>
+      )} */}
+    </ModalSection>
   );
 }
 

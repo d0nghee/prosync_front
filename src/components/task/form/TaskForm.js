@@ -322,10 +322,15 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                       </t.SideName>
                       {/* 업무 담당자 */}
                       {checkedMembers && checkedMembers.length > 0 ? (
-                        <SimpleTaskMemberList
-                          taskMembers={checkedMembers}
-                          taskId={task ? task.taskId : undefined}
-                        />
+                        <div
+                          onClick={() => setShowProjectMembers((prv) => !prv)}
+                        >
+                          <SimpleTaskMemberList
+                            taskMembers={checkedMembers}
+                            taskId={task ? task.taskId : undefined}
+                            isTable="true"
+                          />
+                        </div>
                       ) : (
                         <div
                           style={{ paddingBottom: "10px" }}

@@ -77,6 +77,7 @@ export default function TaskDetail() {
           taskFiles={taskFiles}
           deleteFile={deleteFile}
           projectMember={projectMember}
+          updateTask={(value) => setTask(value)}
         />
         {/* 댓글 목록 */}
         <CommentList projectMember={projectMember} />

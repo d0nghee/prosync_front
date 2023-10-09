@@ -3,7 +3,12 @@ import { styled } from "styled-components";
 import TaskMemberList from "./TaskMemberList";
 import * as t from "../form/TaskForm.style";
 
-export default function SimpleTaskMemberList({ taskMembers, taskId, isTable }) {
+export default function SimpleTaskMemberList({
+  taskMembers,
+  taskId,
+  isTable,
+  updateTask,
+}) {
   const [showTaskList, setShowTaskList] = useState(false);
 
   return (
@@ -43,7 +48,11 @@ export default function SimpleTaskMemberList({ taskMembers, taskId, isTable }) {
           <>
             <t.BackDrop onClick={() => setShowTaskList(false)} />
             <Wrapper show="true" customtop="60px">
-              <TaskMemberList taskMembers={taskMembers} taskId={taskId} />
+              <TaskMemberList
+                taskMembers={taskMembers}
+                taskId={taskId}
+                updateTask={updateTask}
+              />
             </Wrapper>
           </>
         )}

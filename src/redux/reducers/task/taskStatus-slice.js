@@ -80,6 +80,8 @@ const taskStatusSlice = createSlice({
           // 뒤로 보내기
           if (originalSeq < seq) {
             if (one.seq > originalSeq && one.seq <= seq) {
+              console.log("뒤로 보내기");
+              console.log(one.taskStatus + ", " + one.taskStatusId);
               one.seq--;
               state.seqList.push({
                 taskStatusId: one.taskStatusId,
@@ -90,6 +92,8 @@ const taskStatusSlice = createSlice({
           // 앞으로 보내기
           else if (originalSeq > seq) {
             if (one.seq >= seq && one.seq < originalSeq) {
+              console.log("앞으로 보내기");
+              console.log(one.taskStatus + ", " + one.taskStatusId);
               one.seq++;
               state.seqList.push({
                 taskStatusId: one.taskStatusId,

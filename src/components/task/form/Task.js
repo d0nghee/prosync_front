@@ -10,7 +10,13 @@ import FileList from "../../file/FileList";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "../../common/LoadingSpinner";
 
-export default function Task({ task, taskFiles, deleteFile, projectMember }) {
+export default function Task({
+  task,
+  taskFiles,
+  deleteFile,
+  projectMember,
+  updateTask,
+}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
@@ -105,6 +111,7 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
                       <SimpleTaskMemberList
                         taskMembers={task.taskMembers}
                         taskId={task.data.taskId}
+                        updateTask={updateTask}
                       />
                     ) : (
                       <div>지정된 담당자가 없습니다.</div>

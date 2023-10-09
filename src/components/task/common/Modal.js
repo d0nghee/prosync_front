@@ -33,5 +33,6 @@ const StatusModal = styled.dialog`
   overflow: hidden;
   z-index: 2;
   border: none;
-  top: 250px;
+  top: 500px;
+  margin: 0 auto;
 `;

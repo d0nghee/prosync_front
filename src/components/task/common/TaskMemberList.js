@@ -4,18 +4,20 @@ import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slic
 import { tryFunc } from "../../../util/tryFunc";
 import { deleteTaskMemberApi } from "../../../util/api";
 import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function TaskMemberList({
   taskMembers, //TODO: checklist인 경우 -> project member (프로젝트 회원 redux 로)
   isCheckList,
   toggleList,
   taskId,
+  updateTask,
 }) {
   const dispatch = useDispatch();
   const checkedMembers = useSelector(
     (state) => state.taskMembers.checkedMembers
   );
+
   const memberDeleteHandler = (memberProjectId) => {
     tryFunc(
       () =>
@@ -26,13 +28,20 @@ export default function TaskMemberList({
         dispatch(
           taskListAction.updateBoardTaskMembers({ memberProjectId, taskId })
         );
+        if (updateTask) {
+          const newMembers = taskMembers.filter(
+            (member) => member.memberProjectId != memberProjectId
+          );
+
+          // setMembers(newMembers);
+          updateTask((prv) => ({ ...prv, taskMembers: newMembers }));
+        }
+
         //TODO: 업무 조회, 수정 화면
         alert("담당자 삭제가 완료되었습니다.");
       }
     )();
   };
-
-  console.log(taskMembers, "taskmember");
 
   return (
     <>
@@ -172,6 +181,11 @@ const MemberInfo = styled.div`
   & > img {
     width: 50px;
     height: 50px;
+    border-radius: 2rem;
+  }
+
+  & > img:hover {
+    border: 1px solid red;
   }
 `;
 
