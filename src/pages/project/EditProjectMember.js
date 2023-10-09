@@ -12,6 +12,7 @@ import {
 } from '../../redux/reducers/member/memberCheckboxSlice';
 import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
 import { useDispatch } from 'react-redux';
+import InviteModal from '../../components/project/InviteModal';
 
 export default function EditProjectMember() {
   const data = useRouteLoaderData('editmember');
@@ -24,17 +25,46 @@ export default function EditProjectMember() {
   const checkboxState = useSelector(selectCheckbox);
   const authorityState = useSelector(selectMembers);
   const isChecked = checkboxState.checkbox[0]?.checked || false;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [inviteLink, setInviteLink] = useState('');
+
   const dispatch = useDispatch();
 
-  const handleInputChange = (input) => {};
+  const handleInputChange = (input) => {
+    console.log('handleInputChange');
+    setMembers([]);
+    setMaxPage(1);
+    setSearch(input);
+    setPage(1);
+  };
 
   useEffect(() => {
-    let url = `/projects/${projectId}/members`;
+    if (!inView || page > maxPage) return;
 
-    if (search) {
-      url += `?search=${search}`;
+    loadMore();
+  }, [inView, search, maxPage, page]);
+
+  const loadMore = async () => {
+    console.log('loadmore 진입');
+    const response = await getApi(
+      `/projects/${projectId}/members?page=${page}&search=${search}`
+    );
+
+    const newMembers = response.data.data;
+
+    const totalPages = response.data.pageInfo.totalPages;
+
+    setMaxPage(totalPages);
+
+    if (page === 1) {
+      setMembers(newMembers);
+    } else {
+      setMembers((prev) => [...prev, ...newMembers]);
     }
-  }, [search, inView, page]);
+
+    setPage((pre) => pre + 1);
+  };
 
   useEffect(() => {
     if (Array.isArray(members) && members.length > 0) {
@@ -70,14 +100,11 @@ export default function EditProjectMember() {
       (id) => id !== '0' && checkboxState.checkbox[id].checked
     );
 
-    console.log('Checked memberProjectIds:', checkedIds);
-
     const deleteMemberRequest = checkedIds.map((memberProjectId) => {
       return deleteApi(`/project-members/${memberProjectId}`);
     });
 
     Promise.all(deleteMemberRequest).then(() => {
-      console.log('모든 항목이 성공적으로 삭제되었습니다.');
       const updatedMembers = members.filter(
         (member) => !checkedIds.includes(member.memberProjectId.toString())
       );
@@ -88,16 +115,21 @@ export default function EditProjectMember() {
   const handleMemberCheck = () => {
     dispatch(toggleAllItems());
   };
-
-  const inviteHandler = () => {
-    const inviteCode = postApi(`/projects/${projectId}/invitation`);
-    console.log(inviteCode);
-    alert(inviteCode);
+  const handleInvite = async () => {
+    const response = await postApi(`/projects/${projectId}/invitation`);
+    const inviteCode = response.data.data.inviteCode;
+    setInviteLink(`http://localhost:8080/api/v1/invitation/${inviteCode}`);
+    setIsModalOpen(true);
   };
 
   return (
     <Container>
-      <button onClick={inviteHandler}>초대 링크 생성</button>
+      <button onClick={handleInvite}>초대 링크 생성</button>
+      <InviteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        inviteLink={inviteLink}
+      />
       <CheckboxContainer>
         <HiddenCheckbox checked={isChecked} onChange={handleMemberCheck} />
         <StyledCheckbox checked={isChecked} />
@@ -111,6 +143,7 @@ export default function EditProjectMember() {
 }
 
 export async function loader({ params }) {
+  console.log('loader 호출');
   const projectId = params.projectId;
   const data = getApi(`/projects/${projectId}/members`);
 

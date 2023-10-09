@@ -6,13 +6,17 @@ export default function ProjectFilterBar({
   onBookmarkFilter,
   onendDateSorting,
   onDefault,
-  onlatestSorting,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [menu, setMenu] = useState('최신 순 ');
+  const [menu, setMenu] = useState('정렬');
+
+  const menuHandler = () => {
+    setIsOpen((pre) => !pre);
+  };
+
   return (
     <DropdownContainer>
-      <MenuButton onClick={() => setIsOpen(!isOpen)}>{menu}</MenuButton>
+      <MenuButton onClick={menuHandler}>{menu}</MenuButton>
       {isOpen && (
         <MenuList>
           <MenuItem
@@ -39,14 +43,6 @@ export default function ProjectFilterBar({
           >
             마감일 임박 순
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onlatestSorting();
-              setMenu('최신 순');
-            }}
-          >
-            최신 순
-          </MenuItem>
         </MenuList>
       )}
     </DropdownContainer>
@@ -55,20 +51,22 @@ export default function ProjectFilterBar({
 
 const DropdownContainer = styled.div`
   position: relative;
+  width: 200px;
   display: inline-block;
 `;
 
 const MenuButton = styled.button`
-  background-color: #3498db;
+  background-color: #55a0a2;
   color: white;
   padding: 10px 20px;
   border: none;
   cursor: pointer;
   border-radius: 4px;
   font-size: 16px;
+  width: 100%;
 
   &:hover {
-    background-color: #2980b9;
+    background-color: #467a8c;
   }
 `;
 
@@ -76,7 +74,7 @@ const MenuList = styled.div`
   display: block;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 160px;
+  min-width: 100%;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   top: 100%;

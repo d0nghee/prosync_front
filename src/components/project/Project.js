@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { deleteApi, postApi } from '../../util/api';
 import { tryFunc } from '../../util/tryFunc';
 import { useNavigate } from 'react-router-dom';
+import bookmarkOff from '../../assets/images/bookmark-off.png';
+import bookmarkOn from '../../assets/images/bookmark-on.png';
 
 export default function Project({
   projects: {
@@ -19,8 +21,8 @@ export default function Project({
   const [isStarred, setIsStarred] = useState(false);
   const navigate = useNavigate();
 
-  const handleStarClick = () => {
-    console.log('handleStarClick');
+  const handleStarClick = (e) => {
+    e.stopPropagation();
     tryFunc(changeBookmark)();
   };
 
@@ -53,14 +55,7 @@ export default function Project({
       <Header>
         <Title>{title}</Title>
         <StarButton onClick={handleStarClick}>
-          <StarImage
-            src={
-              isStarred
-                ? process.env.PUBLIC_URL + '/img/fill-star.png'
-                : process.env.PUBLIC_URL + '/img/star.png'
-            }
-            alt="Star"
-          />
+          <StarImage src={isStarred ? bookmarkOn : bookmarkOff} alt="Star" />
         </StarButton>
       </Header>
       <Content>
@@ -84,8 +79,8 @@ const StarImage = styled.img`
 
 const Image = styled.img`
   width: 100%;
-  height: auto;
-  border-radius: 8px;
+  height: 100%;
+  border: 1px solid gray;
   object-fit: cover;
 `;
 
@@ -104,7 +99,7 @@ const Container = styled.div`
 const Content = styled.div`
   background-color: black;
   height: 160px;
-  padding: 15px 0;
+
   background-image: url(${(props) => props.image});
   background-size: cover;
   background-position: center;
@@ -118,10 +113,11 @@ const Header = styled.header`
   padding-bottom: 8px;
   border: 1px solid grey;
   padding: 10px;
+  background-color: #fffff7;
 `;
 
 const Title = styled.h1`
-  font-size: 20px; // 글꼴 크기 감소
+  font-size: 15px; // 글꼴 크기 감소
   margin: 0;
 `;
 
@@ -132,6 +128,7 @@ const Footer = styled.footer`
   margin-top: 15px;
   border-top: 1px solid #f5d5d5; // 더 부드러운 색상의 경계선
   padding-top: 8px;
+  height: 50px;
 `;
 
 const Dates = styled.div`

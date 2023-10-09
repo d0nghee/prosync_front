@@ -16,9 +16,8 @@ export default function ProjectSearchBar({ onSearch }) {
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onSubmit={handleSubmit}
       />
-      <SearchButton type="submit">Search</SearchButton>
+      <SearchButton onClick={handleSubmit}>Search</SearchButton>
     </SearchBarContainer>
   );
 }

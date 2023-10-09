@@ -6,25 +6,25 @@ import {
   useLocation,
   useNavigate,
   useSubmit,
-} from "react-router-dom";
-import MainNavigation from "../components/common/MainNavigation";
-import Footer from "../components/common/Footer";
-import { getCookie } from "../util/cookies";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setIsLoggedIn } from "../redux/reducers/member/loginSlice";
-import { clearError } from "../redux/reducers/error/error-slice";
-import { handleErrorCode } from "../util/errorHandler";
-import { styled } from "styled-components";
+} from 'react-router-dom';
+import MainNavigation from '../components/common/MainNavigation';
+import Footer from '../components/common/Footer';
+import { getCookie } from '../util/cookies';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setIsLoggedIn } from '../redux/reducers/member/loginSlice';
+import { clearError } from '../redux/reducers/error/error-slice';
+import { handleErrorCode } from '../util/errorHandler';
+import { styled } from 'styled-components';
 
 const StyledOutletContainer = styled.div`
   transform: ${(props) =>
-    props.menuOpen ? "translateX(7vw)" : "translateX(0%)"};
+    props.menuOpen ? 'translateX(7vw)' : 'translateX(0%)'};
   transition: transform 0.7s ease-in-out, width 0.7s ease-in-out;
-  width: ${props => props.menuOpen ? 'calc(100% - 7vw)' : '100%'}; 
+  width: ${(props) => (props.menuOpen ? 'calc(100% - 7vw)' : '100%')};
 `;
 
-export default function () {
+export default function RootLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const hasError = useSelector((state) => state.error.hasError);
