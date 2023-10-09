@@ -123,7 +123,7 @@ const MyProjectsList = () => {
       fetchMyProjectListSuccess,
       fetchMyProjectsListErrorHandler
     )();
-  }, [page, maxPage]);
+  }, [page]);
 
   return (
     <Container startPage={page===1} endPage={page===maxPage} isNone={projectsList.length==0}>
@@ -161,4 +161,3 @@ const MyProjectsList = () => {
 };
 
 export default MyProjectsList;
-
