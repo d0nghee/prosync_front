@@ -35,8 +35,8 @@ const StatusModal = styled.dialog`
   border: none;
   /* top: 250px; */
 
-  position: fixed;      
-  top: 50%;             
-  left: 40%;            
+  position: fixed;
+  top: 50%;
+  left: 40%;
   transform: translate(-50%, -50%);
 `;

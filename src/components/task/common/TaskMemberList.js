@@ -14,18 +14,17 @@ export default function TaskMemberList({
   isCheckList,
   toggleList,
   taskId,
+  updateTask,
 }) {
   const dispatch = useDispatch();
-  const [memberProfile, setMemberProfile] = useState({show: false});
+  const [memberProfile, setMemberProfile] = useState({ show: false });
   const [memberId, setMemberId] = useState(null);
   const params = useParams();
 
-  
-
-  
   const checkedMembers = useSelector(
     (state) => state.taskMembers.checkedMembers
   );
+
   const memberDeleteHandler = (memberProjectId) => {
     tryFunc(
       () =>
@@ -36,13 +35,20 @@ export default function TaskMemberList({
         dispatch(
           taskListAction.updateBoardTaskMembers({ memberProjectId, taskId })
         );
+        if (updateTask) {
+          const newMembers = taskMembers.filter(
+            (member) => member.memberProjectId != memberProjectId
+          );
+
+          // setMembers(newMembers);
+          updateTask((prv) => ({ ...prv, taskMembers: newMembers }));
+        }
+
         //TODO: 업무 조회, 수정 화면
         alert("담당자 삭제가 완료되었습니다.");
       }
     )();
   };
-
-  console.log(taskMembers, "taskmember");
 
   return (
     <>
@@ -83,7 +89,12 @@ export default function TaskMemberList({
           taskMembers.map((member) =>
             member.status === "ACTIVE" ? (
               <div key={member.memberProjectId}>
-                <MemberInfo onClick={() => {setMemberId(member.memberId); setMemberProfile({show:true})}}>
+                <MemberInfo
+                  onClick={() => {
+                    setMemberId(member.memberId);
+                    setMemberProfile({ show: true });
+                  }}
+                >
                   <img src={member.profileImage} alt="회원이미지" />
                   <div>{member.name}</div>
                 </MemberInfo>
@@ -126,11 +137,16 @@ export default function TaskMemberList({
           </ButtonArea>
         )}
       </MemberBoxes>
-      {
-      memberProfile.show && (
-        <MemberProfile onClose={() => setMemberProfile({show:false})} memberInformation={{isOthers:true,memberId:memberId ,projectId: params.projectId}}/>
-      )
-    }
+      {memberProfile.show && (
+        <MemberProfile
+          onClose={() => setMemberProfile({ show: false })}
+          memberInformation={{
+            isOthers: true,
+            memberId: memberId,
+            projectId: params.projectId,
+          }}
+        />
+      )}
     </>
   );
 }

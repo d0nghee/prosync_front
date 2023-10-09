@@ -5,10 +5,13 @@ import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../../util/tryFunc";
-
+import * as tv from "../table-view/TableViewList.style";
+import * as t from "../form/TaskForm.style";
+import TaskMemberList from "../common/TaskMemberList";
 import { useState } from "react";
 
-export default function StatusBoard({ list, projectMember }) {
+export default function StatusBoard({ list, projectMember, wid }) {
+  const [showId, setShowId] = useState();
   const navigate = useNavigate();
   const commonErrror = {
     500: (error) => {
@@ -63,6 +66,27 @@ export default function StatusBoard({ list, projectMember }) {
     }
   };
 
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+
+  const showHandler = (e, taskId) => {
+    console.log("쇼 실행");
+    setShowId(taskId);
+
+    const card = e.currentTarget;
+    const cardRect = card.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    console.log(scrollTop, "scroll top");
+    console.log(cardRect.top, "cardrect.top");
+    setModalPosition({
+      top: scrollTop + cardRect,
+      left: cardRect.left,
+    });
+    console.log(cardRect.top + scrollTop - 600 + "px", "test");
+  };
+  const closeHandler = () => {
+    setShowId();
+  };
+
   return (
     <>
       {list && list.list && (
@@ -73,11 +97,30 @@ export default function StatusBoard({ list, projectMember }) {
           <BoardTitle color={list.color}>{list.taskStatus}</BoardTitle>
           <Board>
             {list.list.map((task) => (
-              <TaskCard
-                task={task}
-                key={task.taskId}
-                dragStart={handleDragStart}
-              />
+              <div>
+                <div>
+                  <TaskCard
+                    task={task}
+                    key={task.taskId}
+                    dragStart={handleDragStart}
+                    showHandler={(e) => showHandler(e, task.taskId)}
+                  />
+                </div>
+
+                {showId === task.taskId && (
+                  <ModalSection>
+                    {/* TODO 백드롭 x축 포함해서 다시.. */}
+                    <BackDrop onClick={closeHandler} />
+
+                    <t.Wrapper show="true" customtop={modalPosition.top}>
+                      <TaskMemberList
+                        taskMembers={task.taskMembers}
+                        taskId={task.taskId}
+                      />
+                    </t.Wrapper>
+                  </ModalSection>
+                )}
+              </div>
             ))}
           </Board>
         </Container>
@@ -86,6 +129,21 @@ export default function StatusBoard({ list, projectMember }) {
   );
 }
 
+export const BackDrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+`;
+
+const ModalSection = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 5px solid orange;
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -95,6 +153,7 @@ const Container = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 400px;
   height: 1200px;
+  // position: relative;
 `;
 
 const Board = styled.div`

@@ -159,6 +159,9 @@ export const Undefined = styled.span`
   border-radius: 1rem;
   padding: 0.5rem;
   background-color: #d6ccc2;
+  height: 40px;
+  align-items: center;
+  align-self: center;
 `;
 
 export const Box = styled.ul`
