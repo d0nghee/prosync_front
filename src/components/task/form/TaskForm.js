@@ -353,7 +353,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                             toggleList={() =>
                               setShowProjectMembers((prv) => !prv)
                             }
-                            taskId={task.taskId}
+                            taskId={task ? task.taskId : ""}
                           />
                         </t.Wrapper>
                       </>
