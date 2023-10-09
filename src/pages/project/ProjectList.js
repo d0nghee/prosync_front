@@ -61,24 +61,19 @@ export default function ProjectList() {
 
   // 필터에 맞는 프로젝트 데이터 세팅
   const projectsHandler = (response) => {
-    console.log('projectHandler');
-    console.log('response.data.data', response.data.data);
     setProjects(response.data.data);
     setTotalPages(response.data.pageInfo.totalPages);
   };
 
   // 필터에 맞는 프로젝트 데이터리스트 페이지 이동 시 naviate
   const handlePageChange = (newPage) => {
-    console.log('handlePageChange');
     let url = QueryParamHandler(newPage);
     setLoading(true);
     navigate(url);
-    console.log('navigate');
   };
 
   // 기본 정렬
   const defaultProjectListHandler = () => {
-    console.log('default');
     navigate(`/projects?page=1`);
     currentFilter.current = { bookmark: false, type: '', query: '' };
   };
@@ -92,21 +87,12 @@ export default function ProjectList() {
 
   // 종료 임박 순
   const endDateSortingHandler = () => {
-    console.log('endDate');
     navigate(`/projects?sort=endDate&page=1`);
     currentFilter.current = { bookmark: false, type: 'endDate', query: '' };
   };
 
-  // 최신순(사실상 기본)
-  const latestSortingHandler = () => {
-    console.log('latest');
-    navigate(`/projects?sort=latest&page=1`);
-    currentFilter.current = { bookmark: false, type: 'latest', query: '' };
-  };
-
   // 검색 필터
   const ProjectSerachHandler = (query) => {
-    console.log('search');
     let url = QueryParamHandler(1, query);
     navigate(url);
     currentFilter.current = { ...currentFilter.current, query };
@@ -118,7 +104,6 @@ export default function ProjectList() {
     let newUrl = `/projects?page=${page}`;
 
     if (currentFilter.current.type === 'endDate') newUrl += '&sort=endDate';
-    else if (currentFilter.current.type === 'latest') newUrl += '&sort=latest';
     if (currentFilter.current.bookmark) newUrl += '&bookmark=true';
     if (query) newUrl += `&search=${query}`;
     else if (currentFilter.current.query)
@@ -139,13 +124,12 @@ export default function ProjectList() {
   return (
     <>
       <TopBarContainer>
-        <ProjectSearchBar onSearch={ProjectSerachHandler} />
         <ProjectFilterBar
           onDefault={defaultProjectListHandler}
           onBookmarkFilter={bookmarkFilterHandler}
           onendDateSorting={endDateSortingHandler}
-          onlatestSorting={latestSortingHandler}
         />
+        <ProjectSearchBar onSearch={ProjectSerachHandler} />
       </TopBarContainer>
       <ProjectGrid>
         {projects && projects.length > 0 ? (
@@ -179,7 +163,9 @@ const ProjectGrid = styled.div`
 
 const TopBarContainer = styled.div`
   display: flex;
-  justify-content: flex-end; // 우측 정렬
-  gap: 20px; // 필터바와 검색바 사이의 간격
-  margin-bottom: 20px; // 그리드와의 간격
+  justify-content: space-between; // 좌측과 우측 요소를 양 끝으로 보냅니다.
+  align-items: center;
+  margin-bottom: 20px;
+  margin-left: 200px;
+  margin-right: 200px;
 `;

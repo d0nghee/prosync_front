@@ -8,6 +8,7 @@ import {
   postApi,
   postFileApi,
 } from '../../util/api';
+import DeleteProjectModal from './DeleteProjectModal';
 
 export default function ProjectForm({ project = {}, method }) {
   const [img, setImg] = useState('');
@@ -23,6 +24,7 @@ export default function ProjectForm({ project = {}, method }) {
   const navigate = useNavigate();
   const [imgName, setImgName] = useState();
   const [newImg, setNewImg] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (method === 'PATCH') {
@@ -154,6 +156,14 @@ export default function ProjectForm({ project = {}, method }) {
     navigate('/projects');
   };
 
+  const modalOpenHandler = () => {
+    setIsModalOpen(true);
+  };
+
+  const modalCloseHandler = () => {
+    setIsModalOpen(false);
+  };
+
   const imgClickHandler = () => {
     window.open(project.projectImage);
   };
@@ -165,6 +175,11 @@ export default function ProjectForm({ project = {}, method }) {
 
   return (
     <ProjectContainer>
+      <DeleteProjectModal
+        isOpen={isModalOpen}
+        onClose={modalCloseHandler}
+        onDelete={deleteProjectHandler}
+      />
       <MainContentContainer>
         <Label>프로젝트명</Label>
         <Input
@@ -190,8 +205,8 @@ export default function ProjectForm({ project = {}, method }) {
           <Button $cancel onClick={cancelHandler}>
             취소
           </Button>
-          {method === 'PATHCH' ? (
-            <Button $cancel onClick={deleteProjectHandler}>
+          {method === 'PATCH' ? (
+            <Button $cancel onClick={modalOpenHandler}>
               프로젝트 삭제
             </Button>
           ) : null}
