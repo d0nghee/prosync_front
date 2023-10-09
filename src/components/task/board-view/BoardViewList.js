@@ -76,6 +76,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
                       list={board}
                       index={index}
                       projectMember={projectMember}
+                      wid={currentIndex * 425}
                     />
                   </div>
                   {index === list.length - 1 && (
