@@ -1,8 +1,8 @@
-import React from "react";
-import { styled } from "styled-components";
-import bookmark_off from "../../../assets/images/bookmark-off.png";
-import bookmark_on from "../../../assets/images/bookmark-on.png";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { styled } from 'styled-components';
+import bookmark_off from '../../../assets/images/bookmark-off.png';
+import bookmark_on from '../../../assets/images/bookmark-on.png';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -60,8 +60,6 @@ const Container = styled.div`
       border: 2px solid gray;
     }
 
-    
-
     & > .project-manager {
       margin-left: 2%;
       width: 30%;
@@ -74,10 +72,14 @@ const Container = styled.div`
   }
 `;
 const MyProject = ({ project }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
-    <Container onClick={() => {navigate(`/projects/${project.projectId}`)}}>
+    <Container
+      onClick={() => {
+        navigate(`/projects/${project.projectId}`);
+      }}
+    >
       <div className="project-upper">
         <div>{project.title} 프로젝트</div>
         {project.bookmarkId ? (

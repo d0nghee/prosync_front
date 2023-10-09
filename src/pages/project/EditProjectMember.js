@@ -118,7 +118,9 @@ export default function EditProjectMember() {
   const handleInvite = async () => {
     const response = await postApi(`/projects/${projectId}/invitation`);
     const inviteCode = response.data.data.inviteCode;
-    setInviteLink(`http://localhost:8080/api/v1/invitation/${inviteCode}`);
+    console.log(response);
+
+    setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
     setIsModalOpen(true);
   };
 

@@ -33,12 +33,14 @@ import EditProject from './pages/project/EditProject';
 import ProjectList from './pages/project/ProjectList';
 import EditProjectMember, {
   loader as membersLoader,
-} from "./pages/project/EditProjectMember";
-import EditPassword from './components/mypage/EditPassword'
-import EditMember from "./components/mypage/EditMember";
-import LeaveMember from './components/mypage/LeaveMember'
+} from './pages/project/EditProjectMember';
+import EditPassword from './components/mypage/EditPassword';
+import EditMember from './components/mypage/EditMember';
+import LeaveMember from './components/mypage/LeaveMember';
 import BookMark from './components/mypage/BookMark';
-import MyPageProject from './components/mypage/MyPageProject'
+import MyPageProject from './components/mypage/MyPageProject';
+import InviteProject from './components/project/InviteProjectMember';
+import InviteProjectMember from './components/project/InviteProjectMember';
 
 const router = createBrowserRouter([
   {
@@ -80,6 +82,7 @@ const router = createBrowserRouter([
                 element: <ProjectList />,
               },
               { path: 'new', element: <NewProject /> },
+              { path: 'invite/:inviteCode', element: <InviteProjectMember /> },
               {
                 path: ':projectId',
                 children: [
