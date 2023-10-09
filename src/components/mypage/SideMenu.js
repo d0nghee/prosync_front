@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { SideBar, SideMenuDetail, List, ListItem } from '../../css/MyPageStyle'
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 
 export default function SideMenu() {
 
-    const dispatch = useDispatch();
-
     const [isListVisible, setIsListVisible] = useState(false);
     const menuDetailRef = useRef(null);
+    const navi = useNavigate();
 
     const toggleList = () => {
         setIsListVisible(!isListVisible);
+    }
+    const menuClickHandler = (path) => {
+        navi(path);
     }
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export default function SideMenu() {
     
     return (
         <SideBar>
-            <SideMenuDetail>
+            <SideMenuDetail onClick={() => menuClickHandler("/user/password")}>
                 <Link to='/user/password'>비밀번호 변경</Link>    
             </SideMenuDetail>
 
@@ -39,20 +40,20 @@ export default function SideMenu() {
                 회원 정보
                 {isListVisible && (
                     <List>
-                        <ListItem>
+                        <ListItem onClick={() => menuClickHandler("/user/profile")}>
                             <Link to='/user/profile'>프로필 수정</Link>
                         </ListItem>
-                        <ListItem>
+                        <ListItem onClick={() => menuClickHandler("/user/bookmark")}>
                             <Link to='/user/bookmark'>북마크 리스트</Link>
                         </ListItem>
-                        <ListItem>
+                        <ListItem onClick={() => menuClickHandler("/user/myproject")}>
                             <Link to='/user/myproject'>내 프로젝트</Link>
                         </ListItem>
                     </List>
                 )}
             </SideMenuDetail>
 
-            <SideMenuDetail>
+            <SideMenuDetail onClick={() => menuClickHandler("/user/leave")}>
                     <Link to='/user/leave'>회원 탈퇴</Link>
             </SideMenuDetail>
 

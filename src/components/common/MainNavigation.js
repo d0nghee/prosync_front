@@ -860,7 +860,7 @@ export default function MainNavigation({setMenuOpen}) {
                         MyPage
                       </div>
                     </div>
-                    <div onClick={() => navigate("/user/project")}>
+                    <div onClick={() => navigate("/user/myproject")}>
                       <FontAwesomeIcon icon={faFileInvoice} />
                       <div>
                         Managed Project
