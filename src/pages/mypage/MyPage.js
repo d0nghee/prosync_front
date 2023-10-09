@@ -13,7 +13,7 @@ import {
   useRouteLoaderData,
   useLocation,
 } from "react-router-dom";
-
+import MyPageProject from '../../components/mypage/MyPageProject'
 
 export default function MyPage() {
   const navi = useNavigate();
