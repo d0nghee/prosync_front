@@ -59,13 +59,16 @@ export default function TaskDetail() {
         commonErrror
       )();
       const memberId = getCookie("memberId");
-      await tryFunc(
-        () =>
-          axiosInstance.get(
-            `/projects/${params.projectId}/members/${memberId}`
-          ),
-        (response) => setProjectMember(response.data)
-      )();
+
+      try {
+        await tryFunc(
+          () =>
+            axiosInstance.get(
+              `/projects/${params.projectId}/members/${memberId}`
+            ),
+          (response) => setProjectMember(response.data)
+        )();
+      } catch (error) {}
     })();
   }, [params.taskId]);
 

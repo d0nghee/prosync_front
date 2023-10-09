@@ -200,6 +200,7 @@ export default function BookMark(props) {
 
   return (
     <>
+      {loading && <Loading />}
       <PostListContainer>
         {items}
       </PostListContainer>
@@ -218,8 +219,6 @@ export default function BookMark(props) {
           Next
         </button>
       </PaginationContainer>
-
-      {loading && <Loading />}
     </>
   )
 }

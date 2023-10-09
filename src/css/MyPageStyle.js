@@ -227,3 +227,10 @@ export const PostsDate = styled.span`
   color: #888;
   margin-left: 5px;
 `;
+
+export const NullPost = styled.div`
+  width: 100%;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+`

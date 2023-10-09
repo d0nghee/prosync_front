@@ -3,7 +3,7 @@ import { getApi, postApi } from '../../util/api'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { setProjectListPageInfo } from '../../redux/reducers/member/mypageSlice';
-import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate } from '../../css/MyPageStyle';
+import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost } from '../../css/MyPageStyle';
 import BookmarkIcon from './BookmarkIcon';
 import { tryFunc } from '../../util/tryFunc';
 import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
@@ -39,8 +39,8 @@ export default function MyProject(props) {
   const queryParams = new URLSearchParams(location.search);
   const page = queryParams.get('page') || 1;
   const currentFilter = useRef({
-    type : '',
-    query : '',
+    type: '',
+    query: '',
   })
 
 
@@ -68,7 +68,7 @@ export default function MyProject(props) {
     const update = data.update;
 
     setMaxPage(resProject.pageInfo.totalPages);
-
+    console.log(resProject.data)
     let buttons = [];
 
     const items = resProject.data.map((post) => {
@@ -201,7 +201,7 @@ export default function MyProject(props) {
     console.log('search');
     let url = QueryParamHandler(1, query);
     navi(url);
-    currentFilter.current = { ...currentFilter.current, query}
+    currentFilter.current = { ...currentFilter.current, query }
   }
 
   const QueryParamHandler = (page, query) => {
@@ -232,26 +232,33 @@ export default function MyProject(props) {
   return (
     <>
       {isLoading && <Loading />}
-        <ProjectSearchBar onSearch={searchHandler}>
-        </ProjectSearchBar>
-      <PostListContainer>
-        {projectElement}
-      </PostListContainer>
-      <PaginationContainer>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        {buttons}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === maxPage}
-        >
-          Next
-        </button>
-      </PaginationContainer>
+      {projectElement.length === 0 ? (
+        <>
+          <ProjectSearchBar onSearch={searchHandler}>
+          </ProjectSearchBar>
+          <PostListContainer>
+            {projectElement}
+          </PostListContainer>
+          <PaginationContainer>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </button>
+            {buttons}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === maxPage}
+            >
+              Next
+            </button>
+          </PaginationContainer>
+        </>
+      ) : (
+        <NullPost>내가 속한 프로젝트가 없습니다.</NullPost>
+      )}
+
     </>
   )
 }
