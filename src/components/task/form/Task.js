@@ -22,6 +22,7 @@ export default function Task({
   const params = useParams();
   const pageInfo = useSelector((state) => state.taskList.pageInfo);
 
+
   const taskDeleteHandler = () => {
     const proceed = window.confirm("정말 삭제하시겠습니까?");
     if (proceed) {

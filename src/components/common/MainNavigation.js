@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import { tryFunc } from "../../util/tryFunc";
 import { debounce } from "../../util/debounce";
 import { IoLogoSoundcloud } from "react-icons/io5";
+import MemberProfile from "./MemberProfile";
 
 const Header = styled.header`
   display: flex;
@@ -494,6 +495,7 @@ export default function MainNavigation({ setMenuOpen }) {
   });
   const trigger = useSelector((state) => state.trigger.trigger);
   const [isMenuItemHovered, setIsMenuItemHovered] = useState(false);
+  const [memberProfile, setMemberProfile] = useState({show: false});
 
   const fetchNotificationCount = async () => {
     const response = await getApi("/notification/count");
@@ -801,6 +803,7 @@ export default function MainNavigation({ setMenuOpen }) {
   );
 
   return (
+    <>
     <Header>
       <nav>
         <ul className="list">
@@ -925,9 +928,7 @@ export default function MainNavigation({ setMenuOpen }) {
           </li>
 
           {isLoggedIn && (
-            <NavLink to="/user/profile">
-              <ProfileCard name={name} image={profile} />
-            </NavLink>
+              <ProfileCard name={name} image={profile} setMemberProfile={setMemberProfile}/>
           )}
           {/* 로그인 전 */}
           {!isLoggedIn && (
@@ -1004,5 +1005,11 @@ export default function MainNavigation({ setMenuOpen }) {
         />
       ))}
     </Header>
+    {
+      memberProfile.show && (
+        <MemberProfile onClose={() => setMemberProfile({show:false})} memberInformation={{isOthers:false}}/>
+      )
+    }
+    </>
   );
 }
