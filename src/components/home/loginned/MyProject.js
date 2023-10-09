@@ -1,95 +1,106 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import MyProjectsList from './MyProjectsList';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { styled } from "styled-components";
+import bookmark_off from "../../../assets/images/bookmark-off.png";
+import bookmark_on from "../../../assets/images/bookmark-on.png";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
-  max-height: 80rem;
-  width: 75%;
   display: flex;
   flex-direction: column;
+  color: gray;
+  cursor: pointer;
+  font-weight: 900;
+  border-radius: 25px;
+  box-shadow: 1px 1px 2px 2px gray;
+  max-height: 22rem;
 
-  & > * {
-    margin-bottom: 5%;
-  }
-
-  & > .upper {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10%;
-
-    & > .title {
-      font-size: 3rem;
-      font-weight: 900;
-      color: rgb(158, 105, 194);
-    }
-
-    & > .create-button {
-      background-color: rgb(138, 128, 191);
-      width: 27%;
-      border-radius: 30px;
-      color: white;
-      font-size: 1.2rem;
-      text-align: center;
-      padding: 1.5% 1% 0% 1%;
-      font-weight: 900;
-      cursor: pointer;
-      transition: all 0.5s;
-
-      &:hover {
-        color: white;
-        box-shadow: 500px 0 0 0 rgba(0, 0, 0, 0.25) inset,
-          -500px 0 0 0 rgba(0, 0, 0, 0.25) inset;
-      }
-    }
-  }
-
-  & > .more-button {
-    background-color: gray;
+  &:hover {
+    box-shadow: 2px 2px 3px 4px black;
+    background-color: rgb(151, 138, 220);
     color: white;
-    width: 7%;
-    padding-bottom: 1%;
-    text-align: center;
-    border-radius: 10px;
-    padding-top: 0.6%;
-    align-self: end;
-    cursor: pointer;
-    transition: all 0.5s;
-    font-weight: 800;
+  }
 
-    &:hover {
-      color: white;
-      box-shadow: 150px 0 0 0 rgba(0, 0, 0, 0.25) inset,
-        -150px 0 0 0 rgba(0, 0, 0, 0.25) inset;
+  & > .project-upper {
+    display: flex;
+    height: 20%;
+    justify-content: space-between;
+    padding: 2% 4%;
+    align-items: center;
+
+    & > *:nth-child(1) {
+      font-size: 1.5rem;
+    }
+
+    & > img {
+      object-fit: fill;
+      width: 10%;
+      height: 70%;
+    }
+  }
+
+  & > img {
+    align-self: center;
+    object-fit: fill;
+    width: 80%;
+    height: 50%;
+  }
+
+  & > .project-detail {
+    display: flex;
+    width: 100%;
+    height: 30%;
+    align-items: center;
+    padding: 1% 4%;
+
+    & > img {
+      object-fit: fill;
+      width: 15%;
+      height: 60%;
+      border-radius: 50%;
+      border: 2px solid gray;
+    }
+
+    
+
+    & > .project-manager {
+      margin-left: 2%;
+      width: 30%;
+    }
+
+    & > .project-period {
+      width: 50%;
+      text-align: center;
     }
   }
 `;
-
-const MyProjects = () => {
-  const navigate = useNavigate();
+const MyProject = ({ project }) => {
+    const navigate = useNavigate();
 
   return (
-    <Container>
-      <div className="upper">
-        <div className="title">내 프로젝트</div>
-        <div
-          className="create-button"
-          onClick={() => {
-            navigate('/projects/new');
-          }}
-        >
-          프로젝트 생성
+    <Container onClick={() => {navigate(`/projects/${project.projectId}`)}}>
+      <div className="project-upper">
+        <div>{project.title} 프로젝트</div>
+        {project.bookmarkId ? (
+          <img src={bookmark_on} />
+        ) : (
+          <img src={bookmark_off} />
+        )}
+      </div>
+      <img src={project.projectImage} />
+      <div className="project-detail">
+        <img src={project.profileImage} />
+        <div className="project-manager">
+          <div>담당자</div>
+          <div>{project.name}</div>
+        </div>
+        <div className="project-period">
+          <div>프로젝트 기간</div>
+          <div>시작날짜: {project.startDate}</div>
+          <div>종료날짜: {project.endDate}</div>
         </div>
       </div>
-      <div
-        className="more-button"
-        onClick={() => {
-          navigate('/user/myproject');
-        }}
-      >{`더보기 >`}</div>
-      <MyProjectsList />
     </Container>
   );
 };
 
-export default MyProjects;
+export default MyProject;
