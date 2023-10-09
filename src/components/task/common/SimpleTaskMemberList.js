@@ -3,7 +3,12 @@ import { styled } from "styled-components";
 import TaskMemberList from "./TaskMemberList";
 import * as t from "../form/TaskForm.style";
 
-export default function SimpleTaskMemberList({ taskMembers }) {
+export default function SimpleTaskMemberList({
+  taskMembers,
+  taskId,
+  isTable,
+  updateTask,
+}) {
   const [showTaskList, setShowTaskList] = useState(false);
 
   return (
@@ -11,8 +16,15 @@ export default function SimpleTaskMemberList({ taskMembers }) {
       <SimpleBox>
         <Images>
           {taskMembers.map((member, idx) =>
-            idx < 4 ? (
-              <UserBox key={member.memberProjectId}>
+            idx < 3 ? (
+              <UserBox
+                key={member.memberProjectId}
+                onClick={() =>
+                  isTable
+                    ? setShowTaskList(false)
+                    : setShowTaskList((prv) => !prv)
+                }
+              >
                 <UserName>{member.name}</UserName>
                 <ProfileImage src={member.profileImage} />
               </UserBox>
@@ -21,9 +33,13 @@ export default function SimpleTaskMemberList({ taskMembers }) {
             )
           )}
         </Images>
-        {taskMembers.length >= 5 ? (
-          <AddBedge onClick={() => setShowTaskList((prv) => !prv)}>
-            {showTaskList ? `접기` : `+ ${taskMembers.length - 4}`}
+        {taskMembers.length >= 4 ? (
+          <AddBedge
+            onClick={() =>
+              isTable ? setShowTaskList(false) : setShowTaskList((prv) => !prv)
+            }
+          >
+            {showTaskList ? `접기` : `+ ${taskMembers.length - 3}`}
           </AddBedge>
         ) : (
           ""
@@ -32,7 +48,11 @@ export default function SimpleTaskMemberList({ taskMembers }) {
           <>
             <t.BackDrop onClick={() => setShowTaskList(false)} />
             <Wrapper show="true" customtop="60px">
-              <TaskMemberList taskMembers={taskMembers} />
+              <TaskMemberList
+                taskMembers={taskMembers}
+                taskId={taskId}
+                updateTask={updateTask}
+              />
             </Wrapper>
           </>
         )}
@@ -78,7 +98,7 @@ const UserName = styled.div`
   background-color: #1b263b;
   padding: 10px;
   color: white;
-  bottom: 55px;
+  bottom: 85px;
   border-radius: 10px;
   font-size: 0.8rem;
   font-weight: bold;

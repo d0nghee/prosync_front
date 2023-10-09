@@ -11,15 +11,13 @@ export default function ProjectSearchBar({ onSearch }) {
 
   return (
     <SearchBarContainer>
-      <form onSubmit={handleSubmit}>
-        <SearchInput
-          type="text"
-          placeholder="Search..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <SearchButton type="submit">Search</SearchButton>
-      </form>
+      <SearchInput
+        type="text"
+        placeholder="Search..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <SearchButton onClick={handleSubmit}>Search</SearchButton>
     </SearchBarContainer>
   );
 }
@@ -27,15 +25,16 @@ export default function ProjectSearchBar({ onSearch }) {
 const SearchBarContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  width: 100%;
 `;
 
 const SearchInput = styled.input`
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
-  width: 200px;
   border-radius: 4px 0 0 4px;
+  width: 100%;
+  margin: 20px;
 `;
 
 const SearchButton = styled.button`

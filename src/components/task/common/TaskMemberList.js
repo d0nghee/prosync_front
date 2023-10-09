@@ -1,17 +1,54 @@
 import { styled } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
+import { tryFunc } from "../../../util/tryFunc";
+import { deleteTaskMemberApi } from "../../../util/api";
+import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
+import { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import MemberProfile from "../../common/MemberProfile";
+import { useEffect } from "react";
 
 export default function TaskMemberList({
   taskMembers, //TODO: checklist인 경우 -> project member (프로젝트 회원 redux 로)
   isCheckList,
   toggleList,
+  taskId,
+  updateTask,
 }) {
   const dispatch = useDispatch();
+  const [memberProfile, setMemberProfile] = useState({ show: false });
+  const [memberId, setMemberId] = useState(null);
+  const params = useParams();
 
   const checkedMembers = useSelector(
     (state) => state.taskMembers.checkedMembers
   );
+
+  const memberDeleteHandler = (memberProjectId) => {
+    tryFunc(
+      () =>
+        deleteTaskMemberApi(taskId, {
+          projectMemberIds: [memberProjectId],
+        }),
+      () => {
+        dispatch(
+          taskListAction.updateBoardTaskMembers({ memberProjectId, taskId })
+        );
+        if (updateTask) {
+          const newMembers = taskMembers.filter(
+            (member) => member.memberProjectId != memberProjectId
+          );
+
+          // setMembers(newMembers);
+          updateTask((prv) => ({ ...prv, taskMembers: newMembers }));
+        }
+
+        //TODO: 업무 조회, 수정 화면
+        alert("담당자 삭제가 완료되었습니다.");
+      }
+    )();
+  };
 
   return (
     <>
@@ -40,7 +77,7 @@ export default function TaskMemberList({
                     }
                   />
                   <MemberInfo>
-                    <img src={member.profileImage} />
+                    <img src={member.profileImage} alt="회원이미지" />
                     <div>{member.name}</div>
                   </MemberInfo>
                 </div>
@@ -52,8 +89,13 @@ export default function TaskMemberList({
           taskMembers.map((member) =>
             member.status === "ACTIVE" ? (
               <div key={member.memberProjectId}>
-                <MemberInfo>
-                  <img src={member.profileImage} />
+                <MemberInfo
+                  onClick={() => {
+                    setMemberId(member.memberId);
+                    setMemberProfile({ show: true });
+                  }}
+                >
+                  <img src={member.profileImage} alt="회원이미지" />
                   <div>{member.name}</div>
                 </MemberInfo>
               </div>
@@ -61,8 +103,17 @@ export default function TaskMemberList({
               // status = QUIT (삭제 가능하도록 처리)
               <div key={member.memberProjectId}>
                 <MemberInfo>
-                  <img src={member.profileImage} />
-                  <div>{member.name}</div>
+                  <img src={member.profileImage} alt="회원이미지" />
+                  <QuitMember>
+                    <span>{member.name}</span>
+                    <Quit
+                      onClick={() =>
+                        memberDeleteHandler(member.memberProjectId)
+                      }
+                    >
+                      삭제
+                    </Quit>
+                  </QuitMember>
                 </MemberInfo>
               </div>
             )
@@ -86,6 +137,16 @@ export default function TaskMemberList({
           </ButtonArea>
         )}
       </MemberBoxes>
+      {memberProfile.show && (
+        <MemberProfile
+          onClose={() => setMemberProfile({ show: false })}
+          memberInformation={{
+            isOthers: true,
+            memberId: memberId,
+            projectId: params.projectId,
+          }}
+        />
+      )}
     </>
   );
 }
@@ -142,5 +203,29 @@ const MemberInfo = styled.div`
   & > img {
     width: 50px;
     height: 50px;
+    border-radius: 2rem;
+    cursor: pointer;
+  }
+
+  & > img:hover {
+    border: 1px solid red;
+  }
+`;
+
+const QuitMember = styled.div`
+  & > span:first-child {
+    text-decoration: line-through;
+  }
+`;
+
+const Quit = styled.span`
+  margin-left: 5px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 1rem;
+  padding: 10px;
+
+  &:hover {
+    cursor: pointer;
   }
 `;

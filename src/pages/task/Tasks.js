@@ -31,6 +31,8 @@ export default function Tasks() {
   const [checkStatus, setCheckStatus] = useState(false);
   const navigate = useNavigate();
 
+
+
   const handleCurrentPage = (page) => {
     setCurrentPage(page);
   };
@@ -158,7 +160,7 @@ const TaskView = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 3rem 0;
+  margin: 3rem 0 10rem 0;
 `;
 
 const Authority = styled.div`
@@ -199,3 +201,5 @@ const TopButton = styled.div`
   display: flex;
   gap: 1rem;
 `;
+
+

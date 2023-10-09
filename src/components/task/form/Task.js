@@ -10,11 +10,18 @@ import FileList from "../../file/FileList";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "../../common/LoadingSpinner";
 
-export default function Task({ task, taskFiles, deleteFile, projectMember }) {
+export default function Task({
+  task,
+  taskFiles,
+  deleteFile,
+  projectMember,
+  updateTask,
+}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
   const pageInfo = useSelector((state) => state.taskList.pageInfo);
+
 
   const taskDeleteHandler = () => {
     const proceed = window.confirm("정말 삭제하시겠습니까?");
@@ -102,7 +109,11 @@ export default function Task({ task, taskFiles, deleteFile, projectMember }) {
                   <div>
                     <t.SideName>담당자</t.SideName>
                     {task.taskMembers.length > 0 ? (
-                      <SimpleTaskMemberList taskMembers={task.taskMembers} />
+                      <SimpleTaskMemberList
+                        taskMembers={task.taskMembers}
+                        taskId={task.data.taskId}
+                        updateTask={updateTask}
+                      />
                     ) : (
                       <div>지정된 담당자가 없습니다.</div>
                     )}
@@ -168,7 +179,7 @@ const Text = styled.div`
 const TaskInfo = styled.div`
   display: inline-block;
   background-color: #ebebeb;
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding: 10px;
   border-radius: 10px;
 `;

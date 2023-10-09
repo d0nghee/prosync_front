@@ -28,7 +28,7 @@ export const Title = styled.div`
   margin: 0 0.5rem;
   padding: 0 2.5rem 0 1rem;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
 
   & > div {
     flex: 1;
@@ -89,7 +89,7 @@ export const Contents = styled.div`
     flex: 1;
     overflow: hidden;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin: 0 1rem;
   }
 
@@ -113,7 +113,7 @@ export const LinkContents = styled(Link)`
   align-items: center;
   position: relative;
   width: 100%;
-  font-size: 1.2rem;
+  font-size: 1rem;
 
   & > div,
   & > input,
@@ -138,12 +138,14 @@ export const LinkContents = styled(Link)`
 export const Assignee = styled.div`
   display: flex;
   justify-content: center;
+  height: 100%;
 
   & > div {
     display: flex;
-    width: 80%;
+    width: 100%;
+    justify-content: center;
     padding-bottom: 10px;
-    border-bottom: 1px solid #d6ccc2;
+    // border-bottom: 1px solid #d6ccc2;
   }
 `;
 
@@ -151,12 +153,15 @@ export const Undefined = styled.span`
   display: flex;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
   width: 80%;
   color: white;
   border-radius: 1rem;
   padding: 0.5rem;
   background-color: #d6ccc2;
+  height: 40px;
+  align-items: center;
+  align-self: center;
 `;
 
 export const Box = styled.ul`
@@ -205,7 +210,7 @@ export const StatusBox = styled.div`
 `;
 
 export const TaskInput = styled.input`
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 5px;
   border-radius: 5px;
   border: none;

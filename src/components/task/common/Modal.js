@@ -28,10 +28,15 @@ const BackDrop = styled.div`
 const StatusModal = styled.dialog`
   border: none;
   border-radius: 6px;
-  bax-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   padding: 1rem;
   overflow: hidden;
   z-index: 2;
   border: none;
-  top: 250px;
+  /* top: 250px; */
+
+  position: fixed;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
 `;

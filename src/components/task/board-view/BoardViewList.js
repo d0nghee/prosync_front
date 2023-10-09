@@ -43,15 +43,14 @@ export default function BoardViewList({ projectMember, currentIndex }) {
     if (
       projectMember &&
       projectMember.status === "ACTIVE" &&
-      (projectMember.authority === "ADMIN" ||
-        projectMember.authority === "WRITER")
+      projectMember.authority === "ADMIN"
     ) {
       const taskStatusId = event.dataTransfer.getData("taskStatusId");
       await dispatch(
         patchSequenceOfStatus(+taskStatusId, seq, params.projectId)
       );
     } else {
-      alert("프로젝트 수정 권한이 없습니다.");
+      alert("수정 권한이 없습니다.");
     }
   };
 
@@ -77,6 +76,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
                       list={board}
                       index={index}
                       projectMember={projectMember}
+                      wid={currentIndex * 425}
                     />
                   </div>
                   {index === list.length - 1 && (
