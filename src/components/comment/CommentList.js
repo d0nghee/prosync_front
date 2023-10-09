@@ -178,7 +178,7 @@ export default function CommentList({ projectMember }) {
   };
 
   return (
-    <>
+    <Total>
       {comments && (
         <CommentTotal>
           <CommentTitle>{`${comments.pageInfo.totalElements} Comments`}</CommentTitle>
@@ -258,9 +258,12 @@ export default function CommentList({ projectMember }) {
           )}
         </CommentTotal>
       )}
-    </>
+    </Total>
   );
 }
+const Total = styled.div`
+  width: 90%;
+`;
 
 const Save = styled.div`
   display: flex;
@@ -294,8 +297,9 @@ const Save = styled.div`
 const CommentTotal = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 2rem;
-  width: 70%;
+  width: 75%;
   font-size: 1.2rem;
   margin: 3rem 5%;
 `;
