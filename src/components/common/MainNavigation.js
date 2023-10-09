@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import { tryFunc } from '../../util/tryFunc';
 import { debounce } from '../../util/debounce';
 import { IoLogoSoundcloud } from 'react-icons/io5';
+import MemberProfile from './MemberProfile';
 
 const Header = styled.header`
   display: flex;
@@ -494,6 +495,7 @@ export default function MainNavigation({ setMenuOpen }) {
   });
   const trigger = useSelector((state) => state.trigger.trigger);
   const [isMenuItemHovered, setIsMenuItemHovered] = useState(false);
+  const [memberProfile, setMemberProfile] = useState({ show: false });
 
   const fetchNotificationCount = async () => {
     const response = await getApi('/notification/count');
@@ -801,20 +803,107 @@ export default function MainNavigation({ setMenuOpen }) {
   );
 
   return (
-    <Header>
-      <nav>
-        <ul className="list">
-          <li className="toggle">
-            <FontAwesomeIcon
-              className="toggleIcon"
-              icon={faBars}
-              onClick={toggleMenu}
-              size="2x"
-            />
-            <SideNavbar show={showMenu} ref={dropdownRefSidebar}>
-              {isLoggedIn ? (
-                <>
-                  <div className="profile-container">
+    <>
+      <Header>
+        <nav>
+          <ul className="list">
+            <li className="toggle">
+              <FontAwesomeIcon
+                className="toggleIcon"
+                icon={faBars}
+                onClick={toggleMenu}
+                size="2x"
+              />
+              <SideNavbar show={showMenu} ref={dropdownRefSidebar}>
+                {isLoggedIn ? (
+                  <>
+                    <div className="profile-container">
+                      <FontAwesomeIcon
+                        icon={faLeftLong}
+                        size="2x"
+                        onClick={() => {
+                          setShowMenu(false);
+                          setMenuOpen(false);
+                        }}
+                      />
+                      <div
+                        className="profile"
+                        onClick={() => {
+                          navigate('/user/profile');
+                        }}
+                      >
+                        <img src={profile}></img>
+                        <div>
+                          <div>{name}</div>
+                          <div className="email">{email}</div>
+                        </div>
+                      </div>
+                      <div>Menu</div>
+                    </div>
+                    <div className="sidemenu-container">
+                      <div onClick={() => navigate('/')}>
+                        <FontAwesomeIcon icon={faHouse} />
+                        <div>HOME</div>
+                      </div>
+                      <div onClick={() => navigate('/user/profile')}>
+                        <FontAwesomeIcon icon={faUser} />
+                        <div>MyPage</div>
+                      </div>
+                      <div onClick={() => navigate('/user/myproject')}>
+                        <FontAwesomeIcon icon={faFileInvoice} />
+                        <div>Managed Project</div>
+                      </div>
+                      <div onClick={() => navigate('/user/bookmark')}>
+                        <FontAwesomeIcon icon={faBookmark} />
+                        <div>Bookmark</div>
+                      </div>
+                      <div onClick={() => navigate('/notification')}>
+                        <FontAwesomeIcon icon={faEnvelope} />
+                        <div
+                          className="notification-menu"
+                          onContextMenu={onContextMenuHandler}
+                          isMenuItemHovered={isMenuItemHovered}
+                        >
+                          Notification
+                          <NotificationCount>
+                            {notificationCount >= 99
+                              ? `+99`
+                              : notificationCount}
+                          </NotificationCount>
+                          {isContextMenuOpen ? (
+                            <ContextMenu
+                              style={contextMenuPosition}
+                              onMouseOver={() => setIsMenuItemHovered(true)}
+                              onMouseOut={() => setIsMenuItemHovered(false)}
+                              onMouseDown={(e) => {
+                                e.stopPropagation();
+                              }}
+                            >
+                              <MenuItem onClick={onNotificationReadHandler}>
+                                모두 읽음 처리
+                              </MenuItem>
+                              <MenuDivider />
+                              <MenuItem onClick={onNotificationDeleteHandler}>
+                                모두 삭제 처리
+                              </MenuItem>
+                            </ContextMenu>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div onClick={() => navigate('/notification/projects')}>
+                        <FontAwesomeIcon icon={faFileSignature} />
+                        <div>Project Log</div>
+                      </div>
+                    </div>
+                    <div className="menu-footer">
+                      <div>
+                        <FontAwesomeIcon icon={faFaceLaughSquint} size="2x" />
+                        <div>Thank you for Inviting Site</div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="not-login-menu">
                     <FontAwesomeIcon
                       icon={faLeftLong}
                       size="2x"
@@ -823,186 +912,111 @@ export default function MainNavigation({ setMenuOpen }) {
                         setMenuOpen(false);
                       }}
                     />
-                    <div
-                      className="profile"
-                      onClick={() => {
-                        navigate('/user/profile');
-                      }}
-                    >
-                      <img src={profile}></img>
-                      <div>
-                        <div>{name}</div>
-                        <div className="email">{email}</div>
-                      </div>
-                    </div>
-                    <div>Menu</div>
+                    <div>로그인하셔야 이용하실 수 있는 메뉴입니다.</div>
                   </div>
-                  <div className="sidemenu-container">
-                    <div onClick={() => navigate('/')}>
-                      <FontAwesomeIcon icon={faHouse} />
-                      <div>HOME</div>
-                    </div>
-                    <div onClick={() => navigate('/user/profile')}>
-                      <FontAwesomeIcon icon={faUser} />
-                      <div>MyPage</div>
-                    </div>
-                    <div onClick={() => navigate('/user/myproject')}>
-                      <FontAwesomeIcon icon={faFileInvoice} />
-                      <div>Managed Project</div>
-                    </div>
-                    <div onClick={() => navigate('/user/bookmark')}>
-                      <FontAwesomeIcon icon={faBookmark} />
-                      <div>Bookmark</div>
-                    </div>
-                    <div onClick={() => navigate('/notification')}>
-                      <FontAwesomeIcon icon={faEnvelope} />
-                      <div
-                        className="notification-menu"
-                        onContextMenu={onContextMenuHandler}
-                        isMenuItemHovered={isMenuItemHovered}
-                      >
-                        Notification
-                        <NotificationCount>
-                          {notificationCount >= 99 ? `+99` : notificationCount}
-                        </NotificationCount>
-                        {isContextMenuOpen ? (
-                          <ContextMenu
-                            style={contextMenuPosition}
-                            onMouseOver={() => setIsMenuItemHovered(true)}
-                            onMouseOut={() => setIsMenuItemHovered(false)}
-                            onMouseDown={(e) => {
-                              e.stopPropagation();
-                            }}
-                          >
-                            <MenuItem onClick={onNotificationReadHandler}>
-                              모두 읽음 처리
-                            </MenuItem>
-                            <MenuDivider />
-                            <MenuItem onClick={onNotificationDeleteHandler}>
-                              모두 삭제 처리
-                            </MenuItem>
-                          </ContextMenu>
-                        ) : null}
-                      </div>
-                    </div>
-                    <div onClick={() => navigate('/notification/projects')}>
-                      <FontAwesomeIcon icon={faFileSignature} />
-                      <div>Project Log</div>
-                    </div>
-                  </div>
-                  <div className="menu-footer">
-                    <div>
-                      <FontAwesomeIcon icon={faFaceLaughSquint} size="2x" />
-                      <div>Thank you for Inviting Site</div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="not-login-menu">
+                )}
+              </SideNavbar>
+            </li>
+            <li className="title">
+              <NavLink to="/">Prosync</NavLink>
+            </li>
+            <li className="searchBar" ref={dropdownRefSearchbar}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} size="2x" />
+              <SearchBar
+                onClick={() => onClickHandler()}
+                onChange={(event) => searchChangeHandler(event)}
+                placeholder="프로젝트 검색하세요."
+              ></SearchBar>
+            </li>
+
+            {isLoggedIn && (
+              <ProfileCard
+                name={name}
+                image={profile}
+                setMemberProfile={setMemberProfile}
+              />
+            )}
+            {/* 로그인 전 */}
+            {!isLoggedIn && (
+              <li>
+                <NavLink to="/auth?mode=signup">signup</NavLink>
+              </li>
+            )}
+
+            {!isLoggedIn && (
+              <li>
+                <NavLink to="/auth?mode=login">login</NavLink>
+              </li>
+            )}
+            {isLoggedIn && (
+              <li className="addtiontab">
+                <div className="notification-container">
                   <FontAwesomeIcon
-                    icon={faLeftLong}
+                    icon={faBell}
                     size="2x"
-                    onClick={() => {
-                      setShowMenu(false);
-                      setMenuOpen(false);
-                    }}
+                    onClick={() => navigate('/notification')}
                   />
-                  <div>로그인하셔야 이용하실 수 있는 메뉴입니다.</div>
+                  <div className="notification-info">알림</div>
                 </div>
-              )}
-            </SideNavbar>
-          </li>
-          <li className="title">
-            <NavLink to="/">Prosync</NavLink>
-          </li>
-          <li className="searchBar" ref={dropdownRefSearchbar}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} size="2x" />
-            <SearchBar
-              onClick={() => onClickHandler()}
-              onChange={(event) => searchChangeHandler(event)}
-              placeholder="프로젝트 검색하세요."
-            ></SearchBar>
-          </li>
-
-          {isLoggedIn && (
-            <NavLink to="/user/profile">
-              <ProfileCard name={name} image={profile} />
-            </NavLink>
+                <button className="logout" onClick={handleButtonClick}>
+                  logout
+                </button>
+              </li>
+            )}
+          </ul>
+        </nav>
+        <SearchBox
+          searchBoxPosition={searchBoxPosition}
+          show={showBox}
+          ref={dropdownRefSearchBox}
+        >
+          {console.log(searchList)}
+          {searchList.length > 0 ? (
+            searchList?.map((item) => {
+              return (
+                <SearchBoxItem
+                  key={item.projectId}
+                  onClick={() => {
+                    navigate(`/projects/${item.projectId}`);
+                    setShowBox(false);
+                  }}
+                  pointHover={true}
+                >
+                  <img src={item.projectImage}></img>
+                  <div className="itemTitle">
+                    <div>프로젝트</div>
+                    <div>{item.title}</div>
+                  </div>
+                  <div className="itemName">
+                    <div>담당자</div>
+                    <div>{item.name}</div>
+                  </div>
+                </SearchBoxItem>
+              );
+            })
+          ) : (
+            <SearchBoxItem className="no-project" pointHover={false}>
+              해당 프로젝트가 존재하지 않습니다.
+            </SearchBoxItem>
           )}
-          {/* 로그인 전 */}
-          {!isLoggedIn && (
-            <li>
-              <NavLink to="/auth?mode=signup">signup</NavLink>
-            </li>
-          )}
-
-          {!isLoggedIn && (
-            <li>
-              <NavLink to="/auth?mode=login">login</NavLink>
-            </li>
-          )}
-          {isLoggedIn && (
-            <li className="addtiontab">
-              <div className="notification-container">
-                <FontAwesomeIcon
-                  icon={faBell}
-                  size="2x"
-                  onClick={() => navigate('/notification')}
-                />
-                <div className="notification-info">알림</div>
-              </div>
-              <button className="logout" onClick={handleButtonClick}>
-                logout
-              </button>
-            </li>
-          )}
-        </ul>
-      </nav>
-      <SearchBox
-        searchBoxPosition={searchBoxPosition}
-        show={showBox}
-        ref={dropdownRefSearchBox}
-      >
-        {console.log(searchList)}
-        {searchList.length > 0 ? (
-          searchList?.map((item) => {
-            return (
-              <SearchBoxItem
-                key={item.projectId}
-                onClick={() => {
-                  navigate(`/projects/${item.projectId}`);
-                  setShowBox(false);
-                }}
-                pointHover={true}
-              >
-                <img src={item.projectImage}></img>
-                <div className="itemTitle">
-                  <div>프로젝트</div>
-                  <div>{item.title}</div>
-                </div>
-                <div className="itemName">
-                  <div>담당자</div>
-                  <div>{item.name}</div>
-                </div>
-              </SearchBoxItem>
-            );
-          })
-        ) : (
-          <SearchBoxItem className="no-project" pointHover={false}>
-            해당 프로젝트가 존재하지 않습니다.
-          </SearchBoxItem>
-        )}
-        {searchList.length > 0 && <div ref={ref}></div>}
-      </SearchBox>
-      {toasts.map((toast, index) => (
-        <ToastMessage
-          key={toast.id}
-          id={toast.id}
-          data={toast.data}
-          bottom={`${2 + index * 10}rem`}
-          onCloseToast={onCloseToast}
+          {searchList.length > 0 && <div ref={ref}></div>}
+        </SearchBox>
+        {toasts.map((toast, index) => (
+          <ToastMessage
+            key={toast.id}
+            id={toast.id}
+            data={toast.data}
+            bottom={`${2 + index * 10}rem`}
+            onCloseToast={onCloseToast}
+          />
+        ))}
+      </Header>
+      {memberProfile.show && (
+        <MemberProfile
+          onClose={() => setMemberProfile({ show: false })}
+          memberInformation={{ isOthers: false }}
         />
-      ))}
-    </Header>
+      )}
+    </>
   );
 }
