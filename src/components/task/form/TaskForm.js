@@ -30,23 +30,6 @@ import { tryFunc } from "../../../util/tryFunc";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
-  const commonErrror = {
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      navigate(`/auth?mode=login`);
-    },
-    403: (error) => {
-      console.log(error.response.status);
-      alert("해당 메뉴에 대한 접근 권한이 없습니다.");
-      navigate("/");
-    },
-  };
-
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,8 +51,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   useEffect(() => {
     tryFunc(
       async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
-      (projectMembers) => setProjectMembers(projectMembers),
-      commonErrror
+      (projectMembers) => setProjectMembers(projectMembers)
     )();
     if (method === "POST") {
       dispatch(taskMembersAction.setTaskMembers([]));
@@ -112,8 +94,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   useEffect(() => {
     tryFunc(
       async () => await getTaskStatusApi(params.projectId),
-      (list) => dispatch(taskStatusActions.setList(list)),
-      commonErrror
+      (list) => dispatch(taskStatusActions.setList(list))
     )();
 
     if (task) {
@@ -215,8 +196,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       // api 요청
       tryFunc(
         () => postFileApi(fileList),
-        (files) => setSelectedFiles((prv) => [...prv, ...files]),
-        commonErrror
+        (files) => setSelectedFiles((prv) => [...prv, ...files])
       )();
     }
   };

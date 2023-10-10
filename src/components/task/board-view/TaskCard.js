@@ -2,12 +2,12 @@ import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function TaskCard({ task, dragStart, showHandler }) {
+export default function TaskCard({ task, dragStart }) {
   const params = useParams();
   const navigate = useNavigate();
 
   return (
-    <ModalSection>
+    <div>
       <Card
         key={task.taskId}
         draggable="true"
@@ -22,33 +22,20 @@ export default function TaskCard({ task, dragStart, showHandler }) {
         </h3>
         <div>{`${task.startDate} - ${task.endDate}`}</div>
         {task.taskMembers.length !== 0 ? (
-          <Assignee onClick={showHandler}>
+          <Assignee>
             <SimpleTaskMemberList
               taskMembers={task.taskMembers}
               taskId={task.taskId}
-              isTable="true"
             />
           </Assignee>
         ) : (
           <Undefined>담당자 없음</Undefined>
         )}
       </Card>
-      {/* {showAssignees && (
-        <div>
-          <t.BackDrop onClick={() => setShowAssignees(false)} />
-          <t.Wrapper show="true" customtop="300px">
-            <TaskMemberList
-              taskMembers={task.taskMembers}
-              taskId={task.taskId}
-            />
-          </t.Wrapper>
-        </div>
-      )} */}
-    </ModalSection>
+    </div>
   );
 }
 
-const ModalSection = styled.div``;
 const Card = styled.div`
   display: flex;
   flex-direction: column;

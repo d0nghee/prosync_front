@@ -61,33 +61,31 @@ export default function BoardViewList({ projectMember, currentIndex }) {
           {list &&
             list.length !== 0 &&
             list.map((board, index) => (
-              <>
-                <OneBoard key={index}>
-                  <BoardGap
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => handleDrop(e, index + 1)}
+              <OneBoard key={index}>
+                <BoardGap
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, index + 1)}
+                />
+                <div
+                  key={board.taskStatusId}
+                  onDragStart={(e) => handleDragStart(e, board.taskStatusId)}
+                  draggable="true"
+                >
+                  <StatusBoard
+                    list={board}
+                    index={index}
+                    projectMember={projectMember}
+                    wid={currentIndex * 425}
                   />
-                  <div
-                    key={board.taskStatusId}
-                    onDragStart={(e) => handleDragStart(e, board.taskStatusId)}
-                    draggable="true"
-                  >
-                    <StatusBoard
-                      list={board}
-                      index={index}
-                      projectMember={projectMember}
-                      wid={currentIndex * 425}
-                    />
-                  </div>
-                  {index === list.length - 1 && (
-                    <BoardGap
-                      left="90%"
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={(e) => handleDrop(e, index + 2, true)}
-                    />
-                  )}
-                </OneBoard>
-              </>
+                </div>
+                {index === list.length - 1 && (
+                  <BoardGap
+                    left="90%"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleDrop(e, index + 2, true)}
+                  />
+                )}
+              </OneBoard>
             ))}
         </Slider>
       </SliderWrapper>
@@ -99,6 +97,7 @@ const OneBoard = styled.div`
   display: flex;
   position: relative;
   cursor: move;
+  height: 1400px;
 `;
 
 const BoardGap = styled.div`

@@ -65,7 +65,7 @@ const SimpleBox = styled.div`
   display: flex;
   position: relative;
   flex-direction: row;
-  width: 100%;
+  width: 220px;
   align-items: center;
   gap: 1rem;
 `;
