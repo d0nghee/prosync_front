@@ -84,7 +84,7 @@ const MyProjects = () => {
       <div
         className="more-button"
         onClick={() => {
-          navigate("/user/myproject");
+          navigate("/user/myprojects");
         }}
       >{`더보기 >`}</div>
       <MyProjectsList />

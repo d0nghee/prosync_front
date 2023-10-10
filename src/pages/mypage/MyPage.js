@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import EditMember from '../../components/mypage/EditMember'
 import BookMark from '../../components/mypage/BookMark'
+import MyPageproject from '../../components/mypage/MyPageProject'
 import EditPassword from '../../components/mypage/EditPassword'
 import LeaveMember from '../../components/mypage/LeaveMember'
 import { GridContainer, Header, Content, Footer } from '../../css/MyPageStyle'
@@ -30,8 +31,8 @@ export default function MyPage() {
     case '/user/bookmark':
       content = <BookMark />;
       break;
-    case '/user/myproject':
-      content = <MyPageProject />;
+    case '/user/myprojects':
+      content = <MyPageproject />;
       break;
     case '/user/leave':
       content = <LeaveMember />;

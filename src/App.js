@@ -69,7 +69,7 @@ const router = createBrowserRouter([
               { path: 'password', element: <EditPassword /> },
               { path: 'leave', element: <LeaveMember /> },
               { path: 'bookmark', element: <BookMark /> },
-              { path: 'myproject', element: <MyPageProject /> },
+              { path: 'myprojects', element: <MyPageProject /> },
             ],
           },
 
