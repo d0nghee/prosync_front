@@ -168,4 +168,5 @@ const TopBarContainer = styled.div`
   margin-bottom: 20px;
   margin-left: 200px;
   margin-right: 200px;
+  margin-top: 30px;
 `;

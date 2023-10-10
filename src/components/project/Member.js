@@ -1,14 +1,11 @@
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import AdminModal from './AdminModal';
+
 import { tryFunc } from '../../util/tryFunc';
 import { patchApi } from '../../util/api';
 import { useNavigate } from 'react-router-dom';
-import {
-  selectCheckbox,
-  toggleCheckbox,
-} from '../../redux/reducers/member/memberCheckboxSlice';
+
 import {
   addAuthority,
   removeAuthority,
@@ -99,12 +96,11 @@ export default function Member({ member, isChecked, onCheckboxChange }) {
     },
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleAdminButtonClick = () => {
-    handleOpenModal();
+    const isConfirmed = window.confirm('정말로 ADMIN 권한을 위임하시겠습니까?');
+    if (isConfirmed) {
+      handleConfirm();
+    }
   };
 
   return (
@@ -149,11 +145,6 @@ export default function Member({ member, isChecked, onCheckboxChange }) {
           </StyledAuthoritySelect>
         </CenterContainer>
       </MemberContainer>
-      <AdminModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        handleConfirm={handleConfirm}
-      />
     </>
   );
 }
@@ -163,8 +154,12 @@ const MemberContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  background: #f5f6f9;
+  background: #f8f9f6;
   padding: 20px;
+
+  &:hover {
+    background-color: #f3f3f3;
+  }
 `;
 
 const LeftContainer = styled.div`

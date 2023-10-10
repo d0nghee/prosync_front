@@ -1,14 +1,16 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
 import Member from './Member';
-import { deleteApi } from '../../util/api';
+import { deleteApi, postApi } from '../../util/api';
+import InviteModal from './InviteModal';
 
-export default function ProjectMember({ setInView, members }) {
-  const { ref, inView } = useInView({ threshold: 0 });
+export default function ProjectMember({ members, projectId }) {
   const [checkMembers, setCheckMembers] = useState({});
   const [isChecked, setIsChecked] = useState(false);
   const [updateMembers, setUpdateMembers] = useState(members);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [inviteLink, setInviteLink] = useState('');
 
   useEffect(() => {
     const initialCheckStatus = members
@@ -23,10 +25,6 @@ export default function ProjectMember({ setInView, members }) {
       : {};
     setCheckMembers(initialCheckStatus);
   }, [updateMembers, members]);
-
-  useEffect(() => {
-    setInView(inView);
-  }, [inView, setInView]);
 
   const allcheckHandler = () => {
     const newStatus = Object.keys(checkMembers).reduce((acc, key) => {
@@ -45,6 +43,7 @@ export default function ProjectMember({ setInView, members }) {
     }));
   };
 
+  // 멤버 삭제
   const deleteMemberHandler = async () => {
     const isConfirmed = window.confirm(
       '선택된 멤버를 정말로 삭제하시겠습니까?'
@@ -66,16 +65,33 @@ export default function ProjectMember({ setInView, members }) {
     );
     setUpdateMembers(updatedMembers);
   };
+  const handleInvite = async () => {
+    const response = await postApi(`/projects/${projectId}/invitation`);
+    const inviteCode = response.data.data.inviteCode;
+    console.log(response);
+
+    setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
+    setIsModalOpen(true);
+  };
 
   return (
     <Container>
-      <div>
+      <InviteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        inviteLink={inviteLink}
+      />
+      <MenuContainer>
         <input type="checkbox" onClick={allcheckHandler}></input>
-        <button onClick={deleteMemberHandler}>삭제</button>
-      </div>
+        <div>
+          <StyledButton onClick={handleInvite}>초대 링크 생성</StyledButton>
+
+          <StyledButton onClick={deleteMemberHandler}>삭제</StyledButton>
+        </div>
+      </MenuContainer>
       <MembersContainer>
-        {updateMembers && updateMembers.length > 0 ? (
-          updateMembers
+        {members && members.length > 0 ? (
+          members
             .filter(
               (member) =>
                 member.authority !== 'ADMIN' && member.status !== 'QUIT'
@@ -93,20 +109,15 @@ export default function ProjectMember({ setInView, members }) {
         ) : (
           <NoMembers>멤버가 없습니다</NoMembers>
         )}
-        <div ref={ref}></div>
       </MembersContainer>
     </Container>
   );
 }
 
-// 나머지 스타일 부분은 그대로 유지
-
 const Container = styled.div`
-  height: 100px;
+  height: 800px;
   padding: 20px;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
   background-color: #fff;
 `;
 
@@ -120,4 +131,35 @@ const MembersContainer = styled.div`
 
 const NoMembers = styled.div`
   color: #888;
+`;
+
+const MenuContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between; // 이 부분을 추가
+  margin-left: 300px;
+  margin-right: 300px;
+  background: #f5f6f9;
+  padding: 20px;
+  background: #f8f9f6;
+`;
+
+const StyledButton = styled.button`
+  padding: 8px 16px;
+  margin-left: 8px;
+  background-color: #6672fb;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #5b67ca;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
 `;
