@@ -1,12 +1,12 @@
-import { redirect, useParams } from "react-router-dom";
-import { deleteApi, getFileApi, getTaskApi } from "../../util/api";
-import Task from "../../components/task/form/Task";
-import { useEffect, useState } from "react";
-import CommentList from "../../components/comment/CommentList";
-import { styled } from "styled-components";
-import { tryFunc } from "../../util/tryFunc";
-import axiosInstance from "../../util/axiosInstances";
-import { getCookie } from "../../util/cookies";
+import { redirect, useParams } from 'react-router-dom';
+import { deleteApi, getFileApi, getTaskApi } from '../../util/api';
+import Task from '../../components/task/form/Task';
+import { useEffect, useState } from 'react';
+import CommentList from '../../components/comment/CommentList';
+import { styled } from 'styled-components';
+import { tryFunc } from '../../util/tryFunc';
+import axiosInstance from '../../util/axiosInstances';
+import { getCookie } from '../../util/cookies';
 
 export default function TaskDetail() {
   const [task, setTask] = useState();
@@ -30,14 +30,14 @@ export default function TaskDetail() {
         (task) => setTask(task)
       )();
       await tryFunc(
-        () => getFileApi(params.taskId, "TASK"),
+        () => getFileApi(params.taskId, 'TASK'),
         (taskFile) => {
           if (taskFile) {
             setTaskFiles(taskFile);
           }
         }
       )();
-      const memberId = getCookie("memberId");
+      const memberId = getCookie('memberId');
 
       try {
         await tryFunc(
@@ -75,7 +75,7 @@ export async function action({ params }) {
     })
     .catch((error) => console.error(error));
 
-  return redirect("..");
+  return redirect('..');
 }
 
 const TaskSection = styled.div`
