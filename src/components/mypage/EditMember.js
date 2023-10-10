@@ -152,23 +152,23 @@ export default function EditMember() {
     console.log("시발", files)
     postFileApi(files)
       .then((res) => {
-        console.log("응답",res);
+        console.log("응답", res);
       })
-   
+
   };
 
   return (
-    <>
-      <CustomDiv style={{ justifyContent: "left", marginLeft: "100px" }}>
-        <ProfileImage src={mypage.memberInfo.profileImage} />
-        <div
-          style={{
-            justifyContent: "center",
-            width: "100%",
-            marginTop: "30px",
-            marginLeft: "5rem",
-          }}
-        >
+    <ProfileGridContainer>
+      <ProfileImage src={mypage.memberInfo.profileImage} />
+      <div
+        style={{
+          justifyContent: "center",
+          width: "100%",
+          marginTop: "30px",
+          marginLeft: "5rem",
+        }}
+      >
+        <FileContainer>
           <CustomFileUpload htmlFor="file-upload">
             이미지 변경
           </CustomFileUpload>
@@ -178,8 +178,9 @@ export default function EditMember() {
             onChange={handleFileChange}
           >
           </FileInput>
-        </div>
-      </CustomDiv>
+        </FileContainer>
+      </div>
+      <DivContainer>
       <CustomDiv>
         <Label>이름 입력 : &nbsp;</Label>
         <InputText
@@ -201,6 +202,7 @@ export default function EditMember() {
         />
         <IntroCheck isIntroNotCorrect={isIntroNotCorrect} />
       </CustomDiv>
+      </DivContainer>
       <CustomDiv style={{ justifyContent: "center" }}>
         <Button
           backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
@@ -218,7 +220,7 @@ export default function EditMember() {
           onClick={handleCancel}
         ></Button>
       </CustomDiv>
-    </>
+    </ProfileGridContainer>
   );
 }
 
@@ -247,3 +249,34 @@ const CustomFileUpload = styled.label`
 const FileInput = styled.input`
   display: none;
 `;
+
+const ProfileGridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  margin-left: 20px;
+  max-width: 1200px;
+`
+
+const FileContainer = styled.div`
+  grid-column: span 2;
+  grid-row: span 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const DivContainer = styled.div`
+  grid-column: 1/6;
+  grid-row: span 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`
+
+const ButtonContainer = styled.div`
+`

@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-export default function ProjectSearchBar({ onSearch }) {
+export default function ProjectSearchBar({ onSearch, padding, margin}) {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch(query);
   };
+
+  const projectStyle = {
+    "padding" : "10px" && padding,
+    "fontSize" : "16px",
+    "border" : "1px solid #ccc",
+    "borderRadius" : "4px 0 0 4px",
+    "margin" : "20px" && margin
+  }
+
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      onSearch(query);
+    }
+  }
 
   return (
     <SearchBarContainer>
@@ -16,6 +30,8 @@ export default function ProjectSearchBar({ onSearch }) {
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        style={projectStyle}
+        onKeyPress={onKeyPress}
       />
       <SearchButton onClick={handleSubmit}>Search</SearchButton>
     </SearchBarContainer>

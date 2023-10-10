@@ -26,10 +26,39 @@ export const SideBar = styled.div`
 `
 
 export const Content = styled.div`
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  margin-left: 10px;
+  display: grid;
+  grid-template-columns: 80px 200px 200px 200px 200px;
+  grid-template-rows: 50px 200px 200px 200px;
+  gap: 15px;
+  text-align: center;
+`
+
+export const ProjectSearchBarContainer = styled.div`
+  grid-column: 3/5;
+  display: flex;
+  flex-direction: row;
+`
+
+export const PaginationGridContainer = styled.div`
+  grid-row: 6/6;
+  grid-column: 4/4;
+
+`
+
+export const FilterContainer = styled.div`
+  grid-column: 5/5;
+  display: flex;
+  flex-direction: row;
+`
+
+export const ProjectContent = styled.div`
+  margin-top: 20px;
+  grid-column: 2/6;
+  grid-row : 2/4;
+  display: flex;
+  flex-direction: row;
+  margin-right: 20px;
 `
 
 export const Footer = styled.div`
@@ -172,6 +201,7 @@ export const PostListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  height: 60vh;
 `;
 
 export const ProjectImage = styled.img`
@@ -187,23 +217,26 @@ export const PostItem = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   transition: all 0.3s ease;
+  height: 15rem;
+  margin-right: 20px;
 
   &:hover {
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   }
 
-  @media (max-width: 1200px) {
+  /* @media (max-width: 1200px) {
     width: calc(45% - 20px);
   }
 
   @media (max-width: 768px) {
     width: calc(100% - 20px);
-  }
+  } */
 `;
 
 export const BookmarkWrapper = styled.div`
-  display: flex;
+  
   align-items: center;
+  text-align: center;
   margin-bottom: 10px;
 `;
 
@@ -227,3 +260,8 @@ export const PostsDate = styled.span`
   color: #888;
   margin-left: 5px;
 `;
+
+export const NullPost = styled.div`
+  grid-column: 3/3;
+  grid-row: 3/3;
+`
