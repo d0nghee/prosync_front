@@ -5,14 +5,14 @@ import { useDispatch } from "react-redux";
 import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { useEffect } from "react";
 
+
 export function Logout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
 
   useEffect(() => {
     console.log("로그아웃 발생");
-    alert('로그아웃이 완료되었습니다.')
+    alert('로그아웃이 완료되었습니다.');
     getApi("/removeToken").then((res) => {
       removeUserCookie();
       dispatch(setIsLoggedIn(false));
@@ -24,5 +24,10 @@ export function Logout() {
 
   }, [navigate]);
 
+ 
+
   return null;
 }
+
+
+

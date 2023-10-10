@@ -384,15 +384,16 @@ const SearchBoxItem = styled.li.withConfig({
   .itemTitle {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 40%;
     text-align: center;
     margin-left: 5%;
     height: 100%;
     justify-content: space-around;
+    font-weight: 900;
 
     & > div:nth-child(2) {
       margin-bottom: 10%;
-      font-size: x-large;
+      font-size: 1.2rem;
     }
   }
 
@@ -403,10 +404,11 @@ const SearchBoxItem = styled.li.withConfig({
     text-align: center;
     height: 100%;
     justify-content: space-around;
+    font-weight: 900;
 
     & > div:nth-child(2) {
       margin-bottom: 10%;
-      font-size: x-large;
+      font-size: 1.2rem;
     }
   }
 `;
@@ -416,7 +418,7 @@ const NotificationCount = styled.div`
   background-color: #848679;
   color: white;
   border-radius: 10px;
-  margin-left: 25%;
+  margin-left: 9%;
   text-align: center;
 `;
 
@@ -666,22 +668,32 @@ export default function MainNavigation({ setMenuOpen }) {
   };
 
   useEffect(() => {
-    if (
-      dropdownRefSearchbar.current &&
-      dropdownRefSearchbar.current.parentElement
-    ) {
-      const childRect = dropdownRefSearchbar.current.getBoundingClientRect();
-      const parentRect =
-        dropdownRefSearchbar.current.parentElement.getBoundingClientRect();
+    const updatePosition = () => {
+        if (
+            dropdownRefSearchbar.current &&
+            dropdownRefSearchbar.current.parentElement
+        ) {
+            const childRect = dropdownRefSearchbar.current.getBoundingClientRect();
+            const parentRect =
+                dropdownRefSearchbar.current.parentElement.getBoundingClientRect();
 
-      const relativeTop = childRect.top - parentRect.top;
+            const relativeTop = childRect.top - parentRect.top;
 
-      setSearchBoxPosition({
-        top: relativeTop + childRect.height + 20,
-        left: childRect.x,
-      });
+            setSearchBoxPosition({
+                top: relativeTop + childRect.height + 20,
+                left: childRect.x,
+            });
+        }
     }
-  }, [showBox]);
+
+    updatePosition();
+
+    window.addEventListener('resize', updatePosition);
+
+    return () => {
+        window.removeEventListener('resize', updatePosition);
+    }
+}, [showBox]);
 
   const fetchMemberInfo = async () => {
     const res = await getApi('/members');

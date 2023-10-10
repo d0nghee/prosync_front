@@ -34,10 +34,11 @@ const PromotionTextContainer = styled.div`
     & > div {
       background-color: white;
       border-radius: 40px;
+      text-align: center;
       color: rgb(151, 138, 220);
-      width: 23%;
+      width: 30%;
       padding: 3%;
-      font-size: large;
+      font-size: 1.3rem;
       font-weight: 900;
       margin-left: 15%;
       cursor: pointer;
@@ -59,7 +60,7 @@ const PromotionText = () => {
     <PromotionTextContainer>
       <div>
         Prosync를 이용하여
-        <br /> 사원들과 프로젝트를 공유해보세요
+        <br /> 사원들과 프로젝트를 공유하세요
       </div>
       <div>Fast, easy & unlimited conference call services.</div>
       <div>

@@ -8,13 +8,17 @@ const LoadingContainer = styled.div`
   align-items: center;
   height: 100vh;
   flex-direction: column;
-  background-color: gray;
+  background-color: #555;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 50000;
+  z-index: 30;
+
+  & > h1 {
+    color: white;
+  }
 `;
 
 const LoadingIcon = styled.div`
