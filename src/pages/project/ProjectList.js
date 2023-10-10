@@ -57,7 +57,7 @@ export default function ProjectList() {
       getProjectListSuccess,
       getProjectListErrorHandler
     )();
-  }, [location.pathname, location.search, star]);
+  }, [location.pathname, location.search]);
 
   // 필터에 맞는 프로젝트 데이터 세팅
   const projectsHandler = (response) => {
