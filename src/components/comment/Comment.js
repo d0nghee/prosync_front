@@ -1,35 +1,18 @@
-import { styled } from 'styled-components';
-import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
-import { useRef, useState } from 'react';
-import { patchCommentApi, deleteCommentApi, postFileApi } from '../../util/api';
-import { useNavigate, useParams } from 'react-router-dom';
-import { BsCheckCircleFill } from 'react-icons/bs';
-import { GiCancel } from 'react-icons/gi';
-import SimpleFileList from '../file/SimpleFileList';
-import { RiAttachment2 } from 'react-icons/ri';
-import * as t from '../task/form/TaskForm.style';
-import SelectedFiles from '../file/SelectedFiles';
-import { tryFunc } from '../../util/tryFunc';
+import { styled } from "styled-components";
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { useRef, useState } from "react";
+import { patchCommentApi, deleteCommentApi, postFileApi } from "../../util/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { GiCancel } from "react-icons/gi";
+import SimpleFileList from "../file/SimpleFileList";
+import { RiAttachment2 } from "react-icons/ri";
+import * as t from "../task/form/TaskForm.style";
+import SelectedFiles from "../file/SelectedFiles";
+import { tryFunc } from "../../util/tryFunc";
 
 export default function Comment({ comment, memberId, onRemove }) {
   const navigate = useNavigate();
-  const commonErrror = {
-    500: (error) => {
-      console.error('Server Error:', error);
-      alert('서버에서 오류가 발생했습니다.');
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert('로그인이 만료되었습니다. 다시 로그인 해주세요.');
-      navigate(`/auth?mode=login`);
-    },
-    403: (error) => {
-      console.log(error.response.status);
-      alert('해당 메뉴에 대한 접근 권한이 없습니다.');
-      navigate('/');
-    },
-  };
-
   const [activeCommentId, setActiveCommentId] = useState(false);
   const contentRef = useRef();
   const [originalContent, setOriginalContent] = useState(comment.content);
@@ -60,8 +43,7 @@ export default function Comment({ comment, memberId, onRemove }) {
         setOriginalContent(content);
         setActiveCommentId(null);
         setSelectedFiles([]);
-      },
-      commonErrror
+      }
     )();
   };
 
@@ -75,15 +57,14 @@ export default function Comment({ comment, memberId, onRemove }) {
   };
 
   const deleteHandler = async (commentId) => {
-    const proceed = window.confirm('정말 삭제하시겠습니까?');
+    const proceed = window.confirm("정말 삭제하시겠습니까?");
     if (proceed) {
       await tryFunc(
         () => deleteCommentApi(params.taskId, commentId),
         () => {
           onRemove(commentId);
-          window.alert('삭제가 완료되었습니다.');
-        },
-        commonErrror
+          window.alert("삭제가 완료되었습니다.");
+        }
       )();
     }
   };
@@ -96,8 +77,7 @@ export default function Comment({ comment, memberId, onRemove }) {
       // api 요청
       tryFunc(
         async () => await postFileApi(fileList),
-        (files) => setSelectedFiles(files),
-        commonErrror
+        (files) => setSelectedFiles(files)
       )();
     }
   };
@@ -143,7 +123,7 @@ export default function Comment({ comment, memberId, onRemove }) {
                 <GiCancel size="26px" onClick={() => cancelHandler()} />
               </>
             ) : (
-              ''
+              ""
             )}
             <Date>최근 수정: {comment.modifiedAt}</Date>
           </Details>

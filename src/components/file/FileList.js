@@ -6,28 +6,11 @@ import { tryFunc } from "../../util/tryFunc";
 
 export default function FileList({ fileList, deleteFile, projectMember }) {
   const navigate = useNavigate();
-  const commonErrror = {
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      navigate(`/auth?mode=login`);
-    },
-    403: (error) => {
-      console.log(error.response.status);
-      alert("해당 메뉴에 대한 접근 권한이 없습니다.");
-      navigate("/");
-    },
-  };
 
   const deleteHandler = (fileInfoId) => {
     tryFunc(
       async () => await deleteFileApi(fileInfoId),
-      (response) => deleteFile(fileInfoId),
-      commonErrror
+      (response) => deleteFile(fileInfoId)
     )();
   };
   return (
