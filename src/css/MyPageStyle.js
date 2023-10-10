@@ -26,10 +26,33 @@ export const SideBar = styled.div`
 `
 
 export const Content = styled.div`
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: 10vw 10vw 10vw 10vw 10vw 10vw;
+  grid-template-rows: 3rem 10rem 10rem 10rem 10rem;
+  gap: 5px;
+  text-align: center;
+`
+
+export const ProjectSearchBarContainer = styled.div`
+  grid-column: 2/5;
+  display: flex;
+  flex-direction: row;
+`
+
+export const PaginationGridContainer = styled.div`
+  grid-row: 5/5;
+  grid-column: 1/5;
+
+`
+
+export const FilterContainer = styled.div`
+  grid-column: 6/6;
+  display: flex;
+  flex-direction: row;
+`
+
+export const ProjectContent = styled.div`
+  grid-column: 1/6;
 `
 
 export const Footer = styled.div`
@@ -132,6 +155,7 @@ export const BookmarkListItem = styled.div`
 export const PaginationContainer = styled.div`
   /* 페이지 버튼 컨테이너 스타일 */
   text-align: center;
+  
 `;
 
 export const PageButton = styled.button`
@@ -172,6 +196,7 @@ export const PostListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  height: 60vh;
 `;
 
 export const ProjectImage = styled.img`
@@ -187,6 +212,7 @@ export const PostItem = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   transition: all 0.3s ease;
+  height: 13rem;
 
   &:hover {
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
@@ -230,7 +256,7 @@ export const PostsDate = styled.span`
 
 export const NullPost = styled.div`
   width: 100%;
-  height: 80vh;
+  height: 60vh;
   justify-content: center;
   align-items: center;
 `

@@ -3,179 +3,82 @@ import { getApi, postApi } from '../../util/api'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { setProjectListPageInfo } from '../../redux/reducers/member/mypageSlice';
-import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost } from '../../css/MyPageStyle';
+import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
 import BookmarkIcon from './BookmarkIcon';
 import { tryFunc } from '../../util/tryFunc';
 import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 import Loading from '../common/Loading';
-import styled from 'styled-components';
+
 import ProjectSearchBar from '../project/ProjectSearchBar';
-
-const bookmarkIcon = {
-  marginRight: "10px",
-  cursor: "pointer",
-}
-
-const SearchBarContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-`;
+import PaginationButton from './PaginationButton';
+import ProjectFilterBar from '../project/ProjectFilterBar';
+import MyPageProjectProject from './MyPageProjectProject';
 
 
-export default function MyProject(props) {
 
-  const dispatch = useDispatch();
+
+
+export default function MyProject() {
   const navi = useNavigate();
   const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [projectElement, setProjectElement] = useState([]);
-  const [buttons, setButtons] = useState();
-  const [maxPage, setMaxPage] = useState();
-  const [bookmark, setBookmark] = useState({});
-  const [use, setUse] = useState(false);
+  const [totalPages, setTotalPages] = useState();
+  const [book, setBook] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const page = queryParams.get('page') || 1;
   const currentFilter = useRef({
     type: '',
     query: '',
-  })
+    bookmark: false,
+  });
+
+  const fetchMyproject = async () => {
+    let url = `/my-projects` + location.search;
+    const res = getApi(url);
+    return res;
+  }
+
+  const onFetchMyprojectSuccess = (data) => {
+    console.log("데이터", data)
+    myprojectHandler(data);
+    setIsLoading(false);
+  }
 
 
-  const handleImage = (e, projectId) => {
-    e.stopPropagation();
-    titleClickHandler(projectId);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const pageParam = searchParams.get('page');
+    if (pageParam) {
+      const nextPage = parseInt(pageParam);
+      setCurrentPage(nextPage);
+    }
+  }, [location.search])
+
+
+
+  useEffect(() => {
+    setIsLoading(true);
+    tryFunc(
+      fetchMyproject,
+      onFetchMyprojectSuccess,
+      onFetchMyprojectErrorHandler)();
+  }, [currentPage, location.search, location.pathname, book]);
+
+
+  const myprojectHandler = (data) => {
+    console.log("데이터", data)
+    setProjectElement(data.data.data);
+    setTotalPages(data.data.pageInfo.totalPages);
   }
 
 
   const handlePageChange = (next) => {
-    setCurrentPage(next);
-    navi(`?page=${next}`, { state: { from: location } })
-  }
-
-  const fetchSubscribe = async (projectId) => {
-    console.log("성공")
-    await postApi(`/bookmark/${projectId}`);
-    setUse(!use);
-    setIsLoading(false);
-  }
-
-  const onFetchMyprojectSuccess = async (data) => {
-
-    const resProject = data.project;
-    const update = data.update;
-
-    setMaxPage(resProject.pageInfo.totalPages);
-    console.log(resProject.data)
-    let buttons = [];
-
-    const items = resProject.data.map((post) => {
-      return (
-        <PostItem
-          key={post.projectId}
-        >
-          <BookmarkWrapper>
-            <BookmarkIcon
-              style={bookmarkIcon}
-              onClick={() => fetchSubscribe(post.projectId)}
-              isBookCheck={!update[post.projectId]}
-            >
-            </BookmarkIcon>
-            <ProjectTitle
-              onClick={() => titleClickHandler(post.projectId)}
-            >
-              {post.title}
-            </ProjectTitle>
-          </BookmarkWrapper>
-          <ProjectImage
-            src={post.projectImage}
-            onClick={handleImage}>
-          </ProjectImage>
-          <PostDescription>
-            <PostName>
-              {post.name}
-            </PostName>
-          </PostDescription>
-          <PostDescription>
-
-            <PostsDate>
-              {post.startDate} to {post.endDate}
-            </PostsDate>
-
-          </PostDescription>
-        </PostItem>
-      )
-    })
-
-    for (let i = 1; i <= resProject.pageInfo.totalPages; i++) {
-      buttons.push(
-        <>
-          <PageButton
-            key={i}
-            onClick={() => handlePageChange(i)}
-            disabled={i === currentPage}
-          >
-            {i}
-          </PageButton>
-        </>
-      )
-    }
-    setProjectElement(items);
-    setButtons(buttons);
-
-
-  }
-
-  const fetchMyproject = async () => {
-    let url = `/my-projects` + location.search;
-    console.log("url", url)
-    const searchData = getApi(url);
-    console.log("서치", searchData.data);
-    const res = await getApi(`/my-projects?page=${currentPage}`)
-    const bookmarkRes = await getApi(`/bookmark-list?page=${currentPage}`);
-
-    // dispatch(setIsBookCheck(bookmarkRes.data.data));
-    let res2 = [];
-
-    try {
-      for (let i = 1; i <= bookmarkRes.data.pageInfo.totalPages; i++) {
-        const bookmarkPage = getApi(`/bookmark-list?page=${i}`);
-        // res2 = bookmarkRes.data.data.map(book => book);
-        res2 = [...res2, ...(await bookmarkPage).data.data];
-      }
-
-      const bookmarkProjectId = res2.map(book => book.projectId);
-      const update = {};
-
-      res.data.data.forEach(project => {
-        const bookmarked = bookmarkProjectId.includes(project.projectId);
-        update[project.projectId] = bookmarked;
-      });
-
-      setBookmark(update);
-      dispatch(setProjectListPageInfo(res.data.pageInfo));
-
-      setIsLoading(false);
-
-      return {
-        project: res.data,
-        bookmark: res2,
-        update: update,
-      }
-    } catch (err) {
-      return {
-        project: res.data,
-        bookmark: [],
-        update: {},
-      }
-    }
-
-  }
-
-  const titleClickHandler = (projectId) => {
-    navi(`/projects/${projectId}/tasks`);
+    let url = QueryParamHandler(next);
+    navi(url);
   }
 
   const onFetchMyprojectErrorHandler = {
@@ -197,6 +100,20 @@ export default function MyProject(props) {
     }
   }
 
+  const defaultProjectListHandler = () => {
+    navi(`/my-projects?page=1`);
+    currentFilter.current = { bookmark: false, type: '', query: '' }
+  };
+
+  const bookmarkFilterHandler = () => {
+    navi(`/my-projects?bookmark=true&page1`);
+    currentFilter.current = { bookmark: true, type: '', query: '' }
+  }
+
+  const endDateHandler = () => {
+    navi(`/my-projects?sort=endDate&page=1`);
+  }
+
   const searchHandler = (query) => {
     console.log('search');
     let url = QueryParamHandler(1, query);
@@ -205,28 +122,29 @@ export default function MyProject(props) {
   }
 
   const QueryParamHandler = (page, query) => {
-    let newUrl = `/user/myproject?page=${page}`;
+    let newUrl = `/user/my-projects?page=${page}`;
+
+    if (currentFilter.current.type === 'endDate') {
+      newUrl += '&sort=endDate'
+    }
+    if (currentFilter.current.bookmark) {
+      newUrl += '&bookmark=true'
+    }
     if (query) {
       newUrl += `$search=?${query}`;
+    } 
+    else if (currentFilter.current.query) {
+      newUrl += `&search=${currentFilter.current.query}`
     }
     return newUrl;
   }
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const pageParam = searchParams.get('page');
-    if (pageParam) {
-      const nextPage = parseInt(pageParam);
-      setCurrentPage(nextPage);
-    }
-  }, [location.search])
+  const bookmarkChangeHandler = () => {
+    setBook((prev) => {
+      return !prev;
+    })
+  }
 
-
-
-  useEffect(() => {
-    setIsLoading(true);
-    tryFunc(fetchMyproject, onFetchMyprojectSuccess, onFetchMyprojectErrorHandler)();
-  }, [currentPage, dispatch, use, location.search]);
 
 
   return (
@@ -234,29 +152,62 @@ export default function MyProject(props) {
       {isLoading && <Loading />}
       {projectElement.length === 0 ? (
         <>
-          <ProjectSearchBar onSearch={searchHandler}>
-          </ProjectSearchBar>
-          <PostListContainer>
-            {projectElement}
-          </PostListContainer>
-          <PaginationContainer>
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </button>
-            {buttons}
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === maxPage}
-            >
-              Next
-            </button>
-          </PaginationContainer>
+          <NullPost>내가 속한 프로젝트가 없습니다.</NullPost>
         </>
       ) : (
-        <NullPost>내가 속한 프로젝트가 없습니다.</NullPost>
+        <>
+          <ProjectSearchBarContainer>
+            <ProjectSearchBar onSearch={searchHandler}>
+            </ProjectSearchBar>
+          </ProjectSearchBarContainer>
+          <FilterContainer>
+            <ProjectFilterBar
+              onDefault={defaultProjectListHandler}
+              onBookmarkFilter={bookmarkFilterHandler}
+              onendDateSorting={endDateHandler}
+            />
+          </FilterContainer>
+
+          <ProjectContent>
+            {
+              projectElement && projectElement.length > 0 ? (
+                projectElement.map((post) => (
+                  <PostItem
+                    key={post.projectId}
+                  >
+                    <MyPageProjectProject 
+                      projects={post}
+                      onBookmarkChange={bookmarkChangeHandler}
+                    />
+                  </PostItem>
+                ))) : (
+                <NullPost>내가 속한 프로젝트가 없습니다.</NullPost>
+              )
+            }
+
+          </ProjectContent>
+          <PaginationGridContainer>
+            <PaginationContainer>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <PaginationButton
+                currentPage={Number(page)}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </PaginationContainer>
+          </PaginationGridContainer>
+        </>
       )}
 
     </>

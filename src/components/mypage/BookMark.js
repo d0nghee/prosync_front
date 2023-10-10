@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { deleteApi, getApi, postApi } from '../../util/api'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../redux/reducers/member/mypageSlice';
-import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage } from '../../css/MyPageStyle'
+import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage, NullPost } from '../../css/MyPageStyle'
 import BookmarkIcon from './BookmarkIcon'
 import Loading from '../common/Loading';
 import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
@@ -201,24 +201,37 @@ export default function BookMark(props) {
   return (
     <>
       {loading && <Loading />}
-      <PostListContainer>
-        {items}
-      </PostListContainer>
-      <PaginationContainer>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        {buttons}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === mypage.pageInfo.totalPages}
-        >
-          Next
-        </button>
-      </PaginationContainer>
+      {items.length === 0 ? (
+        <>
+          <NullPost>
+            
+              북마크한 프로젝트가 없습니다.
+            
+          </NullPost>
+        </>
+      ) : (
+        <>
+          <PostListContainer>
+            {items}
+          </PostListContainer>
+          <PaginationContainer>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </button>
+            {buttons}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === mypage.pageInfo.totalPages}
+            >
+              Next
+            </button>
+          </PaginationContainer>
+        </>
+      )}
+
     </>
   )
 }
