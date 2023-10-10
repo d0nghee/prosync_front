@@ -101,6 +101,10 @@ export const Contents = styled.div`
   & > input:nth-child(1) {
     flex: 1.5;
   }
+
+  & > div:nth-child(2) {
+    min-width: 220px;
+  }
 `;
 
 export const LinkContents = styled(Link)`
@@ -132,6 +136,10 @@ export const LinkContents = styled(Link)`
   & > div:nth-child(1),
   & > input:nth-child(1) {
     flex: 1.5;
+  }
+
+  & > div:nth-child(2) {
+    min-width: 220px;
   }
 `;
 

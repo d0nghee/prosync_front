@@ -5,9 +5,8 @@ import { tryFunc } from "../../../util/tryFunc";
 import { deleteTaskMemberApi } from "../../../util/api";
 import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
 import { useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MemberProfile from "../../common/MemberProfile";
-import { useEffect } from "react";
 
 export default function TaskMemberList({
   taskMembers, //TODO: checklist인 경우 -> project member (프로젝트 회원 redux 로)
@@ -37,14 +36,11 @@ export default function TaskMemberList({
         );
         if (updateTask) {
           const newMembers = taskMembers.filter(
-            (member) => member.memberProjectId != memberProjectId
+            (member) => member.memberProjectId !== memberProjectId
           );
-
-          // setMembers(newMembers);
           updateTask((prv) => ({ ...prv, taskMembers: newMembers }));
         }
 
-        //TODO: 업무 조회, 수정 화면
         alert("담당자 삭제가 완료되었습니다.");
       }
     )();
@@ -153,7 +149,7 @@ export default function TaskMemberList({
 
 const MemberBoxes = styled.div`
   max-height: 500px;
-  width: 400px;
+  width: 300px;
   border: 1px solid #dad7cd;
   padding: 1rem;
   border-radius: 10px;
@@ -219,11 +215,11 @@ const QuitMember = styled.div`
 `;
 
 const Quit = styled.span`
-  margin-left: 5px;
-  color: red;
-  border: 1px solid red;
-  border-radius: 1rem;
-  padding: 10px;
+  margin-left: 10px;
+  color: white;
+  background-color: red;
+  border-radius: 2rem;
+  padding: 5px 10px;
 
   &:hover {
     cursor: pointer;

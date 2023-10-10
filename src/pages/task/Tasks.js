@@ -31,8 +31,6 @@ export default function Tasks() {
   const [checkStatus, setCheckStatus] = useState(false);
   const navigate = useNavigate();
 
-
-
   const handleCurrentPage = (page) => {
     setCurrentPage(page);
   };
@@ -98,13 +96,6 @@ export default function Tasks() {
           () => deleteApi(`/projects/${params.projectId}/members`),
           () => {
             navigate("/");
-          },
-          {
-            403: (error) => {
-              alert(
-                "프로젝트 관리자는 프로젝트 회원에게 권한 위임 후 나갈 수 있습니다."
-              );
-            },
           }
         )();
       }
@@ -128,10 +119,14 @@ export default function Tasks() {
                 ? projectMember.authority
                 : "GUEST"}
             </Authority>
-            <TopDiv onClick={memberProjectExitHandler}>
-              <BiExit size="20px" />
-              프로젝트 나가기
-            </TopDiv>
+            {projectMember &&
+              projectMember.status === "ACTIVE" &&
+              projectMember.authority !== "ADMIN" && (
+                <TopDiv onClick={memberProjectExitHandler}>
+                  <BiExit size="20px" />
+                  프로젝트 나가기
+                </TopDiv>
+              )}
           </TopButton>
         </Top>
         <TaskSearchBar
@@ -201,5 +196,3 @@ const TopButton = styled.div`
   display: flex;
   gap: 1rem;
 `;
-
-
