@@ -26,12 +26,14 @@ const SearchBarContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
+  margin-top: 50px;
+  max-width: 1100px;
+  margin-left: 300px;
+  margin-right: 300px;
+
   padding: 8px;
   border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #cbdfea;
 `;
 
 const StyledInput = styled.input`
@@ -42,6 +44,5 @@ const StyledInput = styled.input`
   border-radius: 4px;
   &:focus {
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
 `;
