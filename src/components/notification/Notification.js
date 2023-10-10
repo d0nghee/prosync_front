@@ -61,7 +61,7 @@ const NotificationContainer = styled.div`
   margin-bottom: -0.5%;
   cursor: pointer;
   border-bottom: 1px solid gray;
-  background-color: ${(props) => (!props.read ? "#f4f3ee" : null)};
+  background-color: ${(props) => (!props.read ? "#f5f5f5" : null)};
   font-weight: ${(props) => (!props.read ? "900" : 200)};
   color: ${(props) => (!props.read ? "black" : "gray")};
   text-align: center;
