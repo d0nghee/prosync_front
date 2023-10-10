@@ -84,7 +84,7 @@ const MyProjectsList = () => {
   };
 
   const fetchMyProjectsList = async () => {
-    const response = await getApi(`/my-projects?page=${page}&size=6`);
+    const response = await getApi(`/user/myprojects?page=${page}&size=6`);
     return response.data;
   };
 

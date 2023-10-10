@@ -26,33 +26,39 @@ export const SideBar = styled.div`
 `
 
 export const Content = styled.div`
+  margin-left: 10px;
   display: grid;
-  grid-template-columns: 10vw 10vw 10vw 10vw 10vw 10vw;
-  grid-template-rows: 3rem 10rem 10rem 10rem 10rem;
-  gap: 5px;
+  grid-template-columns: 80px 200px 200px 200px 200px;
+  grid-template-rows: 50px 200px 200px 200px;
+  gap: 15px;
   text-align: center;
 `
 
 export const ProjectSearchBarContainer = styled.div`
-  grid-column: 2/5;
+  grid-column: 3/5;
   display: flex;
   flex-direction: row;
 `
 
 export const PaginationGridContainer = styled.div`
-  grid-row: 5/5;
-  grid-column: 1/5;
+  grid-row: 6/6;
+  grid-column: 4/4;
 
 `
 
 export const FilterContainer = styled.div`
-  grid-column: 6/6;
+  grid-column: 5/5;
   display: flex;
   flex-direction: row;
 `
 
 export const ProjectContent = styled.div`
-  grid-column: 1/6;
+  margin-top: 20px;
+  grid-column: 2/6;
+  grid-row : 2/4;
+  display: flex;
+  flex-direction: row;
+  margin-right: 20px;
 `
 
 export const Footer = styled.div`
@@ -155,7 +161,6 @@ export const BookmarkListItem = styled.div`
 export const PaginationContainer = styled.div`
   /* 페이지 버튼 컨테이너 스타일 */
   text-align: center;
-  
 `;
 
 export const PageButton = styled.button`
@@ -212,24 +217,26 @@ export const PostItem = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   transition: all 0.3s ease;
-  height: 13rem;
+  height: 15rem;
+  margin-right: 20px;
 
   &:hover {
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   }
 
-  @media (max-width: 1200px) {
+  /* @media (max-width: 1200px) {
     width: calc(45% - 20px);
   }
 
   @media (max-width: 768px) {
     width: calc(100% - 20px);
-  }
+  } */
 `;
 
 export const BookmarkWrapper = styled.div`
-  display: flex;
+  
   align-items: center;
+  text-align: center;
   margin-bottom: 10px;
 `;
 
@@ -255,8 +262,6 @@ export const PostsDate = styled.span`
 `;
 
 export const NullPost = styled.div`
-  width: 100%;
-  height: 60vh;
-  justify-content: center;
-  align-items: center;
+  grid-column: 3/3;
+  grid-row: 3/3;
 `

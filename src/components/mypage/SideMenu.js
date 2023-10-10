@@ -46,8 +46,8 @@ export default function SideMenu() {
                         <ListItem onClick={() => menuClickHandler("/user/bookmark")}>
                             <Link to='/user/bookmark'>북마크 리스트</Link>
                         </ListItem>
-                        <ListItem onClick={() => menuClickHandler("/user/myproject")}>
-                            <Link to='/user/myproject'>내 프로젝트</Link>
+                        <ListItem onClick={() => menuClickHandler("/user/myprojects")}>
+                            <Link to='/user/myprojects'>내 프로젝트</Link>
                         </ListItem>
                     </List>
                 )}

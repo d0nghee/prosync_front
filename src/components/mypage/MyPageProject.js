@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getApi, postApi } from '../../util/api'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux';
-import { setProjectListPageInfo } from '../../redux/reducers/member/mypageSlice';
 import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
-import BookmarkIcon from './BookmarkIcon';
 import { tryFunc } from '../../util/tryFunc';
 import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 import Loading from '../common/Loading';
@@ -36,7 +33,7 @@ export default function MyProject() {
   });
 
   const fetchMyproject = async () => {
-    let url = `/my-projects` + location.search;
+    let url = location.pathname + location.search;
     const res = getApi(url);
     return res;
   }
@@ -101,17 +98,17 @@ export default function MyProject() {
   }
 
   const defaultProjectListHandler = () => {
-    navi(`/my-projects?page=1`);
+    navi(`/user/myprojects?page=1`);
     currentFilter.current = { bookmark: false, type: '', query: '' }
   };
 
   const bookmarkFilterHandler = () => {
-    navi(`/my-projects?bookmark=true&page1`);
+    navi(`/user/myprojects?bookmark=true&page1`);
     currentFilter.current = { bookmark: true, type: '', query: '' }
   }
 
   const endDateHandler = () => {
-    navi(`/my-projects?sort=endDate&page=1`);
+    navi(`/user/myprojects?sort=endDate&page=1`);
   }
 
   const searchHandler = (query) => {
@@ -122,7 +119,7 @@ export default function MyProject() {
   }
 
   const QueryParamHandler = (page, query) => {
-    let newUrl = `/user/my-projects?page=${page}`;
+    let newUrl = `/user/myprojects?page=${page}`;
 
     if (currentFilter.current.type === 'endDate') {
       newUrl += '&sort=endDate'
@@ -131,8 +128,8 @@ export default function MyProject() {
       newUrl += '&bookmark=true'
     }
     if (query) {
-      newUrl += `$search=?${query}`;
-    } 
+      newUrl += `&search=${query}`;
+    }
     else if (currentFilter.current.query) {
       newUrl += `&search=${currentFilter.current.query}`
     }
@@ -145,29 +142,27 @@ export default function MyProject() {
     })
   }
 
-
-
   return (
     <>
       {isLoading && <Loading />}
-      {projectElement.length === 0 ? (
-        <>
-          <NullPost>내가 속한 프로젝트가 없습니다.</NullPost>
-        </>
-      ) : (
-        <>
-          <ProjectSearchBarContainer>
-            <ProjectSearchBar onSearch={searchHandler}>
-            </ProjectSearchBar>
-          </ProjectSearchBarContainer>
-          <FilterContainer>
-            <ProjectFilterBar
-              onDefault={defaultProjectListHandler}
-              onBookmarkFilter={bookmarkFilterHandler}
-              onendDateSorting={endDateHandler}
-            />
-          </FilterContainer>
+      <ProjectSearchBarContainer>
+        <ProjectSearchBar
+          onSearch={searchHandler}
+          padding="0px"
+          margin="0px 20px 0px 0px"
+        >
+        </ProjectSearchBar>
+      </ProjectSearchBarContainer>
+      <FilterContainer>
+        <ProjectFilterBar
+          onDefault={defaultProjectListHandler}
+          onBookmarkFilter={bookmarkFilterHandler}
+          onendDateSorting={endDateHandler}
+        />
+      </FilterContainer>
 
+      {
+        <>
           <ProjectContent>
             {
               projectElement && projectElement.length > 0 ? (
@@ -175,7 +170,7 @@ export default function MyProject() {
                   <PostItem
                     key={post.projectId}
                   >
-                    <MyPageProjectProject 
+                    <MyPageProjectProject
                       projects={post}
                       onBookmarkChange={bookmarkChangeHandler}
                     />
@@ -208,8 +203,7 @@ export default function MyProject() {
             </PaginationContainer>
           </PaginationGridContainer>
         </>
-      )}
-
+      }
     </>
   )
 }

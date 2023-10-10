@@ -31,7 +31,7 @@ export default function MyPage() {
     case '/user/bookmark':
       content = <BookMark />;
       break;
-    case '/user/myproject':
+    case '/user/myprojects':
       content = <MyPageproject />;
       break;
     case '/user/leave':
