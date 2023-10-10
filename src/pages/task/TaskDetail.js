@@ -4,30 +4,11 @@ import Task from "../../components/task/form/Task";
 import { useEffect, useState } from "react";
 import CommentList from "../../components/comment/CommentList";
 import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
 import axiosInstance from "../../util/axiosInstances";
 import { getCookie } from "../../util/cookies";
 
 export default function TaskDetail() {
-  const navigate = useNavigate();
-  const commonErrror = {
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      navigate(`/auth?mode=login`);
-    },
-    403: (error) => {
-      console.log(error.response.status);
-      alert("해당 메뉴에 대한 접근 권한이 없습니다.");
-      navigate("/");
-    },
-  };
-
   const [task, setTask] = useState();
   const [taskFiles, setTaskFiles] = useState([]);
   const params = useParams();
@@ -46,8 +27,7 @@ export default function TaskDetail() {
     (async () => {
       await tryFunc(
         () => getTaskApi(`${params.taskId}`),
-        (task) => setTask(task),
-        commonErrror
+        (task) => setTask(task)
       )();
       await tryFunc(
         () => getFileApi(params.taskId, "TASK"),
@@ -55,19 +35,21 @@ export default function TaskDetail() {
           if (taskFile) {
             setTaskFiles(taskFile);
           }
-        },
-        commonErrror
+        }
       )();
       const memberId = getCookie("memberId");
-      await tryFunc(
-        () =>
-          axiosInstance.get(
-            `/projects/${params.projectId}/members/${memberId}`
-          ),
-        (response) => setProjectMember(response.data)
-      )();
+
+      try {
+        await tryFunc(
+          () =>
+            axiosInstance.get(
+              `/projects/${params.projectId}/members/${memberId}`
+            ),
+          (response) => setProjectMember(response.data)
+        )();
+      } catch (error) {}
     })();
-  }, [params.taskId]);
+  }, [params.projectId, params.taskId]);
 
   return (
     <>
