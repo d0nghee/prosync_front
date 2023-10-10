@@ -601,9 +601,11 @@ export default function MainNavigation({ setMenuOpen }) {
     const id = new Date().getTime();
     setToasts((prevToasts) => [...prevToasts, { id, data }]);
 
-    setTimeout(() => {
+    const timerId = setTimeout(() => {
       setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
     }, 10000);
+
+    return timerId;
   }, []);
 
   useIsLoggedIn(isLoggedIn, eventSource, setEventSource, addToast);
