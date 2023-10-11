@@ -47,14 +47,14 @@ const footerItems = [
 ];
 
 const FooterContainer = styled.div`
-  width: 90vw;
-  margin-left: 7%;
+  width: 100%;
+  /* margin-top: 7%; */
   z-index: 5;
+  background-color: #edf2f4;
 `;
 
 const StyledFooter = styled.div`
-  width: 80%;
-  margin-left: 6%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -63,19 +63,24 @@ const StyledFooter = styled.div`
 `;
 
 const Line = styled.hr`
-  width: 80%;
-  margin: auto;
+  width: 100%;
   margin-top: 2%;
   height: 3px;
   background-color: lightgray;
   border: 0;
 `;
 
-const Logo = styled.img`
+
+const Logo = styled.div`
   width: 200px;
   height: 110px;
+  padding: 55px 55px 40px 54px; /* 예시를 위한 패딩 값입니다 */
+  background-image: ${props => `url(${props.src})`};
+  background-size: cover;
+  background-color: gray;
+  background-clip: content-box;
   cursor: pointer;
-  margin-left: 50px;
+  margin-left: 5%;
 `;
 
 const Link = styled.div`
@@ -89,6 +94,7 @@ const Madeby = styled.div`
   opacity: 0.5;
   font-size: larger;
   width: 30%;
+  z-index: 5;
 `;
 
 const openInNewTab = (url) => {

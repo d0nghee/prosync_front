@@ -30,6 +30,7 @@ import { tryFunc } from "../../util/tryFunc";
 import { debounce } from "../../util/debounce";
 import { IoLogoSoundcloud } from "react-icons/io5";
 import MemberProfile from "./MemberProfile";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 
 const Header = styled.header`
   display: flex;
@@ -146,6 +147,7 @@ const Header = styled.header`
     cursor: pointer;
     font-weight: bolder;
     font-family: "Lato", sans-serif;
+    font-family: "Lato", sans-serif;
 
     &:hover {
       color: rgb(158, 105, 194);
@@ -163,8 +165,7 @@ const SideNavbar = styled.div.withConfig({
   z-index: 1500;
   height: 100vh;
   width: 13vw;
-  transform: ${(props) =>
-    props.show ? "translateX(0%)" : "translateX(-150%)"};
+  transform: ${(props) => props.show ? "translateX(0%)" : "translateX(-150%)"};
   transition: transform 0.5s ease-in-out;
   color: white;
 
@@ -359,6 +360,8 @@ const SearchBoxItem = styled.li.withConfig({
   cursor: ${(props) => (props.pointHover ? "pointer" : null)};
   padding-top: ${(props) => (!props.pointHover ? "4.5%" : null)};
   padding-left: ${(props) => (!props.pointHover ? "10%" : null)};
+  height: ${(props) => (props.pointHover ? "8rem" : "4.5rem")};
+ 
 
   &.no-project {
     color: gray;
@@ -373,6 +376,8 @@ const SearchBoxItem = styled.li.withConfig({
     background-color: ${(props) => (props.pointHover ? "rgb(50,62,92)" : null)};
     transform: ${(props) => (props.pointHover ? "scale(1.03)" : null)};
     transition: ${(props) => (props.pointHover ? "transform 0.3s ease" : null)};
+    font-size: ${(props) => (props.pointHover ? "larger" : null)};
+    font-weight: ${(props) => (props.pointHover ? "700" : null)};
   }
 
   & > img {
@@ -384,15 +389,16 @@ const SearchBoxItem = styled.li.withConfig({
   .itemTitle {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 40%;
     text-align: center;
     margin-left: 5%;
     height: 100%;
     justify-content: space-around;
+    font-weight: 900;
 
     & > div:nth-child(2) {
       margin-bottom: 10%;
-      font-size: x-large;
+      font-size: 1.2rem;
     }
   }
 
@@ -403,10 +409,11 @@ const SearchBoxItem = styled.li.withConfig({
     text-align: center;
     height: 100%;
     justify-content: space-around;
+    font-weight: 900;
 
     & > div:nth-child(2) {
       margin-bottom: 10%;
-      font-size: x-large;
+      font-size: 1.2rem;
     }
   }
 `;
@@ -416,7 +423,7 @@ const NotificationCount = styled.div`
   background-color: #848679;
   color: white;
   border-radius: 10px;
-  margin-left: 25%;
+  margin-left: 9%;
   text-align: center;
 `;
 
@@ -476,6 +483,7 @@ export default function MainNavigation({ setMenuOpen }) {
   const location = useLocation();
   const [toasts, setToasts] = useState([]);
   const [eventSource, setEventSource] = useState(null);
+
   const profile = getCookie("profile");
   const name = getCookie("name");
   const email = getCookie("email");
@@ -508,10 +516,37 @@ export default function MainNavigation({ setMenuOpen }) {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      console.log("sidebar 호출");
-      tryFunc(fetchNotificationCount, onNotificationCountSuccess, dispatch)();
-    }
+    const fetchAndHandleNotification = async () => {
+      if (isLoggedIn && showMenu === true) {
+        try {
+          const data = await fetchNotificationCount();
+          onNotificationCountSuccess(data);
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        }
+      }
+    };
+
+    fetchAndHandleNotification();
   }, [showMenu, location, trigger, isLoggedIn]);
 
   useEffect(() => {
@@ -554,44 +589,76 @@ export default function MainNavigation({ setMenuOpen }) {
     });
   };
 
-  const markAllNotificationAsRead = async () => {
-    const response = await patchApi("/notification/allRead");
-    console.log("markAllNotification 실행 함수");
-    return response;
-  };
-
-  const onAllReadSuccess = (data) => {
-    alert("알림을 모두 읽음 처리하였습니다.");
-    setShowMenu(false);
-    setMenuOpen(false);
-    navigate(`${location.pathname}?${queryParams.toString()}`);
-  };
-
   const onNotificationReadHandler = (e) => {
     e.stopPropagation();
     if (window.confirm("알림을 모두 읽음 처리하시겠습니까?")) {
-      tryFunc(markAllNotificationAsRead, onAllReadSuccess, dispatch)();
+      patchApi("/notification/allRead")
+        .then((response) => {
+          alert("알림을 모두 읽음 처리하였습니다.");
+          setShowMenu(false);
+          setMenuOpen(false);
+          navigate(`${location.pathname}?${queryParams.toString()}`);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        });
     } else {
       alert("알림 읽음 처리가 취소되었습니다.");
     }
   };
 
-  const fetchNotificationDelete = async () => {
-    const response = await deleteApi("/notification/deleteAll");
-    return response;
-  };
-
-  const onNotificationDeleteSuccess = (data) => {
-    alert("알림이 모두 삭제 처리되었습니다.");
-    setShowMenu(false);
-    setMenuOpen(false);
-    navigate(`${location.pathname}?${queryParams.toString()}`);
-  };
 
   const onNotificationDeleteHandler = (e) => {
     e.stopPropagation();
     if (window.confirm("알림을 모두 삭제하시겠습니까?")) {
-      tryFunc(fetchNotificationDelete, onNotificationDeleteSuccess, dispatch)();
+      deleteApi("/notification/deleteAll")
+        .then((response) => {
+          alert("알림이 모두 삭제 처리되었습니다.");
+          setShowMenu(false);
+          setMenuOpen(false);
+          navigate(`${location.pathname}?${queryParams.toString()}`);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        });
     } else {
       alert("알림 삭제 처리가 취소되었습니다");
     }
@@ -617,12 +684,7 @@ export default function MainNavigation({ setMenuOpen }) {
     }
   }, [location, isLoggedIn]);
 
-  const projectFetchApi = async (inputValue) => {
-    const response = await getApi(
-      `/projects?search=${inputValue}&page=${page}&size=6`
-    );
-    return response.data;
-  };
+ 
 
   const onProjectFetchSuccessHandler = useCallback(
     (data) => {
@@ -641,11 +703,36 @@ export default function MainNavigation({ setMenuOpen }) {
 
     const projectFetch = (inputValue) => {
       console.log("inputValue: ", inputValue);
-      tryFunc(
-        projectFetchApi,
-        onProjectFetchSuccessHandler,
-        dispatch
-      )(inputValue);
+      getApi(`/projects?search=${inputValue}&page=${page}&size=6`)
+        .then((response) => {
+          onProjectFetchSuccessHandler(response.data);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            console.log(location.pathname);
+            if (location.pathname === "/" || location.pathname === "/auth") {
+              alert("로그인이 만료되었습니다.");
+              setShowBox(false);
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+              return;
+            }
+            dispatch(setIsLoggedIn(false));
+            setShowBox(false);
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        });
     };
 
     if (inView && page <= maxPage) {
@@ -666,21 +753,31 @@ export default function MainNavigation({ setMenuOpen }) {
   };
 
   useEffect(() => {
-    if (
-      dropdownRefSearchbar.current &&
-      dropdownRefSearchbar.current.parentElement
-    ) {
-      const childRect = dropdownRefSearchbar.current.getBoundingClientRect();
-      const parentRect =
-        dropdownRefSearchbar.current.parentElement.getBoundingClientRect();
+    const updatePosition = () => {
+      if (
+        dropdownRefSearchbar.current &&
+        dropdownRefSearchbar.current.parentElement
+      ) {
+        const childRect = dropdownRefSearchbar.current.getBoundingClientRect();
+        const parentRect =
+          dropdownRefSearchbar.current.parentElement.getBoundingClientRect();
 
-      const relativeTop = childRect.top - parentRect.top;
+        const relativeTop = childRect.top - parentRect.top;
 
-      setSearchBoxPosition({
-        top: relativeTop + childRect.height + 20,
-        left: childRect.x,
-      });
-    }
+        setSearchBoxPosition({
+          top: relativeTop + childRect.height + 20,
+          left: childRect.x,
+        });
+      }
+    };
+
+    updatePosition();
+
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+    };
   }, [showBox]);
 
   const fetchMemberInfo = async () => {
@@ -727,30 +824,47 @@ export default function MainNavigation({ setMenuOpen }) {
     navigate("/logout");
   };
 
-  const fetchDataBasedOnInput = async (inputValue) => {
-    const response = await getApi(
-      `/projects?search=${inputValue}&page=1&size=6`
-    );
-    return response.data;
-  };
 
   const onfetchDataBasedOnInputSuccessHanlder = (data) => {
-    console.log("fetDataBasedOnInputSucessHnadler 실행");
+    console.log("fetDataBasedOnInputSucessHandler 실행");
     console.log(data.data);
     setSearchList([...data.data]);
     setMaxPage(data.pageInfo.totalPages);
     setPage(2);
   };
 
-  console.log("test");
+
 
   const debouncedProjectFetch = debounce((inputValue) => {
     console.log("inputValue: ", inputValue);
-    tryFunc(
-      fetchDataBasedOnInput,
-      onfetchDataBasedOnInputSuccessHanlder,
-      dispatch
-    )(inputValue);
+    getApi(`/projects?search=${inputValue}&page=1&size=6`)
+      .then((response) => {
+        onfetchDataBasedOnInputSuccessHanlder(response.data);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          console.log("로케이션");
+          console.log(location.pathname);
+          if (location.pathname === "/auth") {
+            alert("로그인이 만료되었습니다.");
+            setShowBox(false);
+            navigate(
+              `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+            );
+          }
+        } else if (error === undefined) {
+          console.error("An undefined error occured!");
+          alert("알 수 없는 오류가 발생했습니다.");
+          navigate("/error");
+        } else if (error.code === "ERR_NETWORK") {
+          console.error("네트워크 에러 발생:", error);
+          alert(
+            "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+          );
+          setMenuOpen(false);
+          navigate("/error");
+        }
+      });
   }, 500);
 
   const onClickHandler = useCallback(() => {

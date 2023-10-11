@@ -39,7 +39,7 @@ const ProjectContainer = styled.div`
     justify-content: center;
     align-items: center;
     font-weight: 900;
-    font-size: x-large;
+    font-size: 1.1rem;
     margin-left: 1.1%;
     text-align: center;
   }
