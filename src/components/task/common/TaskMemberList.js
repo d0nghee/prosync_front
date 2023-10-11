@@ -42,7 +42,8 @@ export default function TaskMemberList({
         }
 
         alert("담당자 삭제가 완료되었습니다.");
-      }
+      },
+      dispatch
     )();
   };
 
@@ -90,6 +91,7 @@ export default function TaskMemberList({
                     setMemberId(member.memberId);
                     setMemberProfile({ show: true });
                   }}
+                  bold="true"
                 >
                   <img src={member.profileImage} alt="회원이미지" />
                   <div>{member.name}</div>
@@ -149,7 +151,7 @@ export default function TaskMemberList({
 
 const MemberBoxes = styled.div`
   max-height: 500px;
-  width: 300px;
+  width: 320px;
   border: 1px solid #dad7cd;
   padding: 1rem;
   border-radius: 10px;
@@ -197,14 +199,15 @@ const MemberInfo = styled.div`
   gap: 1rem;
 
   & > img {
-    width: 50px;
-    height: 50px;
-    border-radius: 2rem;
+    width: 65px;
+    height: 65px;
+    border-radius: 5rem;
     cursor: pointer;
+    border: 5px solid rgba(255, 0, 0, 0);
   }
 
   & > img:hover {
-    border: 1px solid red;
+    border: ${({ bold }) => (bold ? "5px solid #cdb4db" : "none")};
   }
 `;
 

@@ -3,14 +3,20 @@ import { styled } from "styled-components";
 import { deleteFileApi } from "../../util/api";
 import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
+import { useDispatch } from "react-redux";
 
-export default function FileList({ fileList, deleteFile, projectMember }) {
-  const navigate = useNavigate();
-
+export default function FileList({
+  fileList,
+  deleteFile,
+  projectMember,
+  deleteButton,
+}) {
+  const dispatch = useDispatch();
   const deleteHandler = (fileInfoId) => {
     tryFunc(
       async () => await deleteFileApi(fileInfoId),
-      (response) => deleteFile(fileInfoId)
+      (response) => deleteFile(fileInfoId),
+      dispatch
     )();
   };
   return (
@@ -20,17 +26,14 @@ export default function FileList({ fileList, deleteFile, projectMember }) {
         fileList.map((file) => (
           <Item key={file.fileId}>
             <FileInfo file={file} />
-            {projectMember &&
-              projectMember.status === "ACTIVE" &&
-              (projectMember.authority === "ADMIN" ||
-                projectMember.authority === "WRITER") && (
-                <button
-                  type="button"
-                  onClick={() => deleteHandler(file.fileInfoId)}
-                >
-                  삭제
-                </button>
-              )}
+            {deleteButton && (
+              <button
+                type="button"
+                onClick={() => deleteHandler(file.fileInfoId)}
+              >
+                삭제
+              </button>
+            )}
           </Item>
         ))}
     </List>
