@@ -47,7 +47,6 @@ const taskListSlice = createSlice({
             taskMembers = taskMembers.filter(
               (member) => member.memberProjectId !== memberProjectId
             );
-            console.log("taskmembers", taskMembers);
             state.list[index].list[idx] = {
               ...statusList.list[idx],
               taskMembers,
@@ -113,7 +112,8 @@ export const postTask = (projectId, taskStatusId, task) => {
       () => postTaskApi(projectId, taskStatusId, task),
       (taskId) => {
         dispatch(taskListAction.addTask(...task, taskId));
-      }
+      },
+      dispatch
     )();
   };
 };
@@ -124,7 +124,8 @@ export const patchTask = (taskId, task) => {
       () => patchTaskApi(taskId, task),
       (response) => {
         dispatch(taskListAction.updateTask(task));
-      }
+      },
+      dispatch
     )();
   };
 };
@@ -133,7 +134,8 @@ export const deleteTask = (taskId, projectId, params) => {
   return async (dispatch) => {
     await tryFunc(
       () => deleteTaskApi(taskId),
-      (response) => dispatch(getTasks(projectId, params))
+      (response) => dispatch(getTasks(projectId, params)),
+      dispatch
     )();
   };
 };
@@ -148,7 +150,8 @@ export const getTasks = (projectId, params) => {
             list: response.data,
             pageInfo: response.pageInfo,
           })
-        )
+        ),
+      dispatch
     )();
   };
 };

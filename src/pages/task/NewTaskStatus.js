@@ -39,7 +39,8 @@ export default function NewTaskStatus({ onClose, editTask }) {
             color,
           })
         );
-      }
+      },
+      dispatch
     )();
 
     onClose();

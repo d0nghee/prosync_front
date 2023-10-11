@@ -1,12 +1,13 @@
-import { redirect, useParams } from 'react-router-dom';
-import { deleteApi, getFileApi, getTaskApi } from '../../util/api';
-import Task from '../../components/task/form/Task';
-import { useEffect, useState } from 'react';
-import CommentList from '../../components/comment/CommentList';
-import { styled } from 'styled-components';
-import { tryFunc } from '../../util/tryFunc';
-import axiosInstance from '../../util/axiosInstances';
-import { getCookie } from '../../util/cookies';
+import { redirect, useParams } from "react-router-dom";
+import { deleteApi, getFileApi, getTaskApi } from "../../util/api";
+import Task from "../../components/task/form/Task";
+import { useEffect, useState } from "react";
+import CommentList from "../../components/comment/CommentList";
+import { styled } from "styled-components";
+import { tryFunc } from "../../util/tryFunc";
+import axiosInstance from "../../util/axiosInstances";
+import { getCookie } from "../../util/cookies";
+import { useDispatch } from "react-redux";
 
 export default function TaskDetail() {
   const [task, setTask] = useState();
@@ -23,21 +24,24 @@ export default function TaskDetail() {
 
   const [projectMember, setProjectMember] = useState();
 
+  const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       await tryFunc(
         () => getTaskApi(`${params.taskId}`),
-        (task) => setTask(task)
+        (task) => setTask(task),
+        dispatch
       )();
       await tryFunc(
-        () => getFileApi(params.taskId, 'TASK'),
+        () => getFileApi(params.taskId, "TASK"),
         (taskFile) => {
           if (taskFile) {
             setTaskFiles(taskFile);
           }
-        }
+        },
+        dispatch
       )();
-      const memberId = getCookie('memberId');
+      const memberId = getCookie("memberId");
 
       try {
         await tryFunc(
@@ -45,7 +49,8 @@ export default function TaskDetail() {
             axiosInstance.get(
               `/projects/${params.projectId}/members/${memberId}`
             ),
-          (response) => setProjectMember(response.data)
+          (response) => setProjectMember(response.data),
+          dispatch
         )();
       } catch (error) {}
     })();
@@ -75,7 +80,7 @@ export async function action({ params }) {
     })
     .catch((error) => console.error(error));
 
-  return redirect('..');
+  return redirect("..");
 }
 
 const TaskSection = styled.div`
