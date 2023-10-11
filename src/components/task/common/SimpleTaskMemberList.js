@@ -111,6 +111,7 @@ const ProfileImage = styled.img`
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
+  border: 1px solid #d6ccc2;
 `;
 
 const AddBedge = styled.div`

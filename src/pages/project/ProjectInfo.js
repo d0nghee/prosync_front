@@ -50,7 +50,7 @@ export default function ProjectInfo({ projectMembers }) {
                     </div>
                     <div>
                       <Link to={`/projects/${params.projectId}/members`}>
-                        <GrUserSettings size="25px" />
+                        <GrUserSettings size="27px" />
                       </Link>
                     </div>
                   </>
@@ -85,8 +85,10 @@ export default function ProjectInfo({ projectMembers }) {
                 </Link>
               </SideInfo>
             </Detail>
-            <h2>프로젝트 소개</h2>
-            <Intro>{data.data.intro}</Intro>
+            <div>
+              <IntroTitle>프로젝트 소개</IntroTitle>
+              <Intro>{data.data.intro}</Intro>
+            </div>
           </ProjectInformation>
         </Total>
       </Section>
@@ -98,6 +100,11 @@ export default function ProjectInfo({ projectMembers }) {
   );
 }
 
+const IntroTitle = styled.div`
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 1rem 0;
+`;
 const Edit = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -108,7 +115,7 @@ const Edit = styled.div`
     border-radius: 1rem;
   }
 
-  & > div:not(:last-child) {
+  & > div:not(:first-child) {
     &:hover {
       background-color: #d9d9d9;
     }
