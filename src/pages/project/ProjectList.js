@@ -24,6 +24,7 @@ export default function ProjectList() {
   const [loading, setLoading] = useState(false);
   const [star, setStar] = useState(false);
   const dispatch = useDispatch();
+  const [currentMenu, setCurrentMenu] = useState('최신 순');
 
   const getProjectList = async () => {
     let url = location.pathname + location.search;
@@ -64,6 +65,7 @@ export default function ProjectList() {
   // 북마크 필터
   const bookmarkFilterHandler = () => {
     console.log('bookmark');
+
     navigate(`/projects?bookmark=true&page=1`);
     currentFilter.current = { bookmark: true, type: '', query: '' };
   };
@@ -111,6 +113,8 @@ export default function ProjectList() {
           onDefault={defaultProjectListHandler}
           onBookmarkFilter={bookmarkFilterHandler}
           onendDateSorting={endDateSortingHandler}
+          currentMenu={currentMenu}
+          setCurrentMenu={setCurrentMenu}
         />
         <ProjectSearchBar onSearch={ProjectSerachHandler} />
       </TopBarContainer>

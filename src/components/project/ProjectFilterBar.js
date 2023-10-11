@@ -6,35 +6,36 @@ export default function ProjectFilterBar({
   onBookmarkFilter,
   onendDateSorting,
   onDefault,
+  currentMenu,
+  setCurrentMenu,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [menu, setMenu] = useState('정렬'); // 초기 상태 값을 설정
 
   const menuHandler = () => {
     setIsOpen((pre) => !pre);
   };
 
   const defaultFilter = () => {
-    setMenu('최신 순');
+    setCurrentMenu('최신 순');
     setIsOpen(false);
     onDefault();
   };
 
   const bookmarkFilter = () => {
-    setMenu('내 북마크');
+    setCurrentMenu('내 북마크');
     setIsOpen(false);
     onBookmarkFilter();
   };
 
   const endDateFilter = () => {
-    setMenu('마감일 임박 순');
+    setCurrentMenu('마감 임박 순');
     setIsOpen(false);
     onendDateSorting();
   };
 
   return (
     <DropdownContainer>
-      <MenuButton onClick={menuHandler}>{menu}</MenuButton>
+      <MenuButton onClick={menuHandler}>{currentMenu}</MenuButton>
       {isOpen && (
         <MenuList>
           <MenuItem onClick={defaultFilter}>최신 순</MenuItem>

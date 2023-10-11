@@ -21,6 +21,7 @@ export async function loader({ params }) {
   const projectId = params.projectId;
 
   const data = await getApi(`/projects/${projectId}`);
+  console.log('loaderdata', data);
 
   return data;
 }
