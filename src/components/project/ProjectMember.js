@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import Member from './Member';
 import { deleteApi, postApi } from '../../util/api';
 import InviteModal from './InviteModal';
+import { useDispatch } from 'react-redux';
+import { tryFunc } from '../../util/tryFunc';
 
 export default function ProjectMember({ members, projectId }) {
   const [checkMembers, setCheckMembers] = useState({});
@@ -11,6 +13,7 @@ export default function ProjectMember({ members, projectId }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [inviteLink, setInviteLink] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const initialCheckStatus = members
@@ -65,13 +68,20 @@ export default function ProjectMember({ members, projectId }) {
     );
     setUpdateMembers(updatedMembers);
   };
-  const handleInvite = async () => {
-    const response = await postApi(`/projects/${projectId}/invitation`);
-    const inviteCode = response.data.data.inviteCode;
-    console.log(response);
+  const handleInvite = () => {
+    const invitePost = async () => {
+      const response = await postApi(`/projects/${projectId}/invitation`);
+      console.log('invitePost', response);
 
-    setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
-    setIsModalOpen(true);
+      return response;
+    };
+    const invitePostSuccess = (response) => {
+      console.log('invitePostSuccess');
+      const inviteCode = response.data.data.inviteCode;
+      setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
+      setIsModalOpen(true);
+    };
+    tryFunc(invitePost, (response) => invitePostSuccess(response), dispatch)();
   };
 
   return (

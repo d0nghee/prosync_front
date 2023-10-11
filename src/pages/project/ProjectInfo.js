@@ -1,12 +1,12 @@
-import { useLoaderData, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import TeamMembers from "../../components/project/TeamMembers";
-import { useInView } from "react-intersection-observer";
-import styled from "styled-components";
-import { getCookie } from "../../util/cookies";
-import { GrUserSettings } from "react-icons/gr";
-import { AiFillEdit } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useLoaderData, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import TeamMembers from '../../components/project/TeamMembers';
+import { useInView } from 'react-intersection-observer';
+import styled from 'styled-components';
+import { getCookie } from '../../util/cookies';
+import { GrUserSettings } from 'react-icons/gr';
+import { AiFillEdit } from 'react-icons/ai';
+import { useEffect, useState } from 'react';
 
 export default function ProjectInfo({ projectMembers }) {
   const data = useLoaderData();
@@ -24,8 +24,8 @@ export default function ProjectInfo({ projectMembers }) {
   useEffect(() => {
     if (projectMembers) {
       const admin =
-        projectMembers.find((member) => member.authority === "ADMIN")
-          .memberId === getCookie("memberId");
+        projectMembers.find((member) => member.authority === 'ADMIN')
+          .memberId === getCookie('memberId');
       setIsAdmin(admin);
     }
   }, [params.projectId, projectMembers]);
@@ -39,7 +39,7 @@ export default function ProjectInfo({ projectMembers }) {
               <h1>{data.data.title}</h1>
               <Edit>
                 <div>
-                  <span>{data.data.modifiedAt.replace("T", " ")} 업데이트</span>
+                  <span>{data.data.modifiedAt.replace('T', ' ')} 업데이트</span>
                 </div>
                 {isAdmin && (
                   <>
@@ -77,7 +77,7 @@ export default function ProjectInfo({ projectMembers }) {
                   </li>
                   <li>
                     <span>공개 여부</span>
-                    <span>{data.data.isPublic ? "YES" : "NO"}</span>
+                    <span>{data.data.isPublic ? 'YES' : 'NO'}</span>
                   </li>
                 </ProjectSideInfo>
                 <Link to={`/projects/${params.projectId}/tasks`}>
