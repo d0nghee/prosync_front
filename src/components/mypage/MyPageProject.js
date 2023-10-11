@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getApi, postApi } from '../../util/api'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { PostItem, Container, PageButton, PaginationContainer, PostTitle, PostListContainer, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
+import { PostItem, Container, PageButton, PaginationContainer, PostTitle, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
 import { tryFunc } from '../../util/tryFunc';
 import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 import Loading from '../common/Loading';
@@ -10,13 +10,13 @@ import ProjectSearchBar from '../project/ProjectSearchBar';
 import PaginationButton from './PaginationButton';
 import ProjectFilterBar from '../project/ProjectFilterBar';
 import MyPageProjectProject from './MyPageProjectProject';
-
-
+import { useDispatch } from 'react-redux';
 
 
 
 export default function MyProject() {
   const navi = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +62,7 @@ export default function MyProject() {
     tryFunc(
       fetchMyproject,
       onFetchMyprojectSuccess,
-      onFetchMyprojectErrorHandler)();
+      dispatch)();
   }, [currentPage, location.search, location.pathname, book]);
 
 
@@ -76,25 +76,6 @@ export default function MyProject() {
   const handlePageChange = (next) => {
     let url = QueryParamHandler(next);
     navi(url);
-  }
-
-  const onFetchMyprojectErrorHandler = {
-    500: (err) => {
-      console.log("Server Error : ", err);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    401: (err) => {
-      console.log(err.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navi(
-        `/auth?mode=login$returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (err) => {
-      console.error("Unknown Error : ", err);
-      alert("프로젝트 목록을 들고 오던 중 오류가 발생했습니다.");
-    }
   }
 
   const defaultProjectListHandler = () => {

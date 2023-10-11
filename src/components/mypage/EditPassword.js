@@ -10,6 +10,7 @@ import PasswordCheck from "../signup/PasswordCheck";
 import { passwordValidate } from "../../util/regex";
 import DoubleCheck from "../signup/DoubleCheck";
 import styled from 'styled-components'
+import PwImage from '../../assets/icon/mypage_icon4.png'
 
 export default function EditPassword() {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ export default function EditPassword() {
   const modifyPassword = () => {
     if (!passwordValidate(mypage.memberInfo.password)) {
       alert("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요.");
-      
+
       setIsPasswordNotCorrect(true);
       return;
     }
@@ -61,34 +62,47 @@ export default function EditPassword() {
   };
 
   return (
-    <PassGridContainer>
+    <>
       <Banner>
+        <PwImg src={PwImage} />
+        <BannerElement>
         <Word>
           비밀번호 변경
         </Word>
+        <DesciptionContent>
+          비밀번호는 특수문자를 포함한 8~15 글자로 입력하세요.
+        </DesciptionContent>
+        </BannerElement>
       </Banner>
-      <Div>
-        <PasswordLabel>변경 비밀번호 입력 : &nbsp;</PasswordLabel>
-        <InputText
-          type="password"
-          name="password"
-          id="password"
-          onChange={handleChange}
-        />
+
+      <FirstItem>
+        <Div>
+          <PasswordLabel>변경 비밀번호 입력 :</PasswordLabel>
+          <InputText
+            type="password"
+            name="password"
+            id="password"
+            onChange={handleChange}
+          />
+        </Div>
         <PasswordCheck isPasswordNotCorrect={isPasswordNotCorrect} />
-      </Div>
-      <Div>
-        <PasswordLabel> 비밀번호 재입력 :&nbsp;</PasswordLabel>
-        <Div style={{ flexDirection : "row", marginLeft :"70px"}}>
+      </FirstItem>
+
+
+      <SecItem>
+        <PasswordLabel> 비밀번호 재입력 :</PasswordLabel>
         <InputText type="password" name="pw" id="pw" onChange={handleChange} />
+        <Div>
+        </Div>
+        <PasswordCheck isPasswordNotCorrect={isPasswordNotCorrect} />
+      </SecItem>
+      <DivPw>
         <DoubleCheck
           First={mypage.memberInfo.password}
           Second={mypage.memberInfo.pw}
         />
-        </Div>
-        <PasswordCheck isPasswordNotCorrect={isPasswordNotCorrect} />
-      </Div>
-      <Div style={{ justifyContent: "center" }}>
+      </DivPw>
+      <ButtonContainer>
         <Button
           backgroundColor={
             !(mypage.memberInfo.password === mypage.memberInfo.pw)
@@ -108,42 +122,71 @@ export default function EditPassword() {
           color="#FFDAB9"
           onClick={() => navi("/")}
         ></Button>
-      </Div>
-    </PassGridContainer>
+      </ButtonContainer>
+    </>
   );
 }
 
-const Banner = styled.div`
-  margin-left : 200px;
-  align-self : flex-start;
-
-`
-const Word = styled.p`
-  font-size: 3em;
+const PwImg = styled.img`
+  width: 200px;
+  height: 200px;
 `
 
-const PassGridContainer = styled.div`
+const BannerElement = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 1000px;
-  height: 600px;
-  margin-bottom: 20px;
+`
+
+const DesciptionContent = styled.div`
+  font-weight: 320;
+  font-size: 22px;
+  margin-left: 20px;
+`
+
+const Banner = styled.div`
+  grid-column: 1/7;
+  display: flex;
+  flex-direction: row;
+  margin-left: 100px;
+`
+const Word = styled.h1`
+  margin-top: 50px;
+  text-align: left;
+  margin-left: 30px;
 `
 
 const Div = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-  margin : 0px 0px 0px 400px;
+  
+`
+const DivPw = styled.div`
+  grid-row: 3/3;
+  grid-column: 5/6;
+  margin-left: 60px;
+  margin-top: 58px;
+`
+
+const ButtonContainer = styled.div`
+  grid-row : 4/4;
+  grid-column: 3/6;
+`
+
+const FirstItem = styled.div`
+  margin-top: 200px;
+  margin-left: 150px;
+  grid-row: 2/2;
+  grid-column: 2/6;
+`
+
+const SecItem = styled.div`
+  margin-top: 60px;
+  margin-left: 163px;
+  grid-row: 3/3;
+  grid-column: 2/6;
+  
 `
 const PasswordLabel = styled.label`
- font-size: 18px;
+  font-size: 18px;
   font-weight: 500;
   margin-bottom: 10px; 
-  margin-right: 130px;
+  margin-right: 20px;
 `

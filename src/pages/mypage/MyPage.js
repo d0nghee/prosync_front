@@ -40,15 +40,13 @@ export default function MyPage() {
   }
 
   return (
-    <>
-      <GridContainer>
+    <GridContainer>
 
-        <SideMenu />
-        <Content>
-          {content}
-        </Content>
+      <SideMenu />
+      <Content>
+        {content}
+      </Content>
 
-      </GridContainer>
-    </>
+    </GridContainer>
   );
 }

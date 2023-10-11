@@ -497,6 +497,8 @@ export default function MainNavigation({ setMenuOpen }) {
   const [isMenuItemHovered, setIsMenuItemHovered] = useState(false);
   const [memberProfile, setMemberProfile] = useState({ show: false });
 
+
+
   const fetchNotificationCount = async () => {
     const response = await getApi('/notification/count');
     return response.data;

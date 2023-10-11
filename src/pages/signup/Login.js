@@ -18,7 +18,6 @@ export default function Login() {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
   const navigate = useNavigate();
-  const signup = useSelector((state) => state.signup);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
