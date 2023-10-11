@@ -24,6 +24,7 @@ import EmailCheck from "./EmailCheck";
 import VerifyCheck from "./VerifyCheck";
 import NameCheck from "./NameCheck";
 import PasswordCheck from "./PasswordCheck";
+import { tryFunc } from "../../util/tryFunc";
 
 
 

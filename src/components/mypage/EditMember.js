@@ -19,6 +19,7 @@ import NameCheck from "../../components/signup/NameCheck";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
+import MypageImg from '../../assets/icon/mypage_icon3.png'
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -183,28 +184,37 @@ export default function EditMember() {
   };
 
   return (
-    <ProfileGridContainer>
-      <ProfileImage src={mypage.memberInfo.profileImage} />
-      <div
-        style={{
-          justifyContent: "center",
-          width: "100%",
-          marginTop: "30px",
-          marginLeft: "5rem",
-        }}
-      >
-        <FileContainer>
+    // <ProfileGridContainer>
+    <>
+
+      <FileContainer>
+        <ProfileImage src={mypage.memberInfo.profileImage} />
+      </FileContainer>
+      <ImageContainer>
+        <SettingImg src={MypageImg} alt="Mypage Icon" />
+        <ContentHeader>
+          프로필 수정
+        </ContentHeader>
+      </ImageContainer>
+      <InputContainer>
+        <div
+          style={{
+            width: "100%",
+            marginTop: "30px",
+            marginLeft: "5rem",
+          }}
+        >
           <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
           <FileInput
             type="file"
             id="file-upload"
             onChange={handleFileChange}
           ></FileInput>
-        </FileContainer>
-      </div>
+        </div>
+      </InputContainer>
       <DivContainer>
         <CustomDiv>
-          <Label>이름 입력 : &nbsp;</Label>
+          <Label>이름 입력 : &nbsp;&nbsp;&nbsp;&nbsp;</Label>
           <InputText
             type="text"
             name="name"
@@ -225,24 +235,27 @@ export default function EditMember() {
           <IntroCheck isIntroNotCorrect={isIntroNotCorrect} />
         </CustomDiv>
       </DivContainer>
-      <CustomDiv style={{ justifyContent: "center" }}>
-        <Button
-          backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
-          width="20%"
-          label="수정"
-          color="#FFDAB9"
-          onClick={handleEdit}
-          disabled={!hasChanges()}
-        ></Button>
-        <Button
-          backgroundColor="#E9967A"
-          width="20%"
-          label="취소"
-          color="#FFDAB9"
-          onClick={handleCancel}
-        ></Button>
-      </CustomDiv>
-    </ProfileGridContainer>
+      <ButtonContainer>
+        <CustomDiv style={{ justifyContent: "center" }}>
+          <Button
+            backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
+            width="300px"
+            label="수정"
+            color="#FFDAB9"
+            onClick={handleEdit}
+            disabled={!hasChanges()}
+          ></Button>
+          <Button
+            backgroundColor="#E9967A"
+            width="100%"
+            label="취소"
+            color="#FFDAB9"
+            onClick={handleCancel}
+          ></Button>
+        </CustomDiv>
+      </ButtonContainer>
+    </>
+    // </ProfileGridContainer>
   );
 }
 
@@ -254,6 +267,7 @@ const ProfileImage = styled.img`
 `;
 
 const CustomFileUpload = styled.label`
+  width: 150px;
   border: 1px solid #ccc;
   display: inline-block;
   padding: 6px 12px;
@@ -270,34 +284,54 @@ const CustomFileUpload = styled.label`
 
 const FileInput = styled.input`
   display: none;
+
 `;
 
-const ProfileGridContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-gap: 20px;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  margin-left: 20px;
-  max-width: 1200px;
-`;
-
-const FileContainer = styled.div`
-  grid-column: span 2;
-  grid-row: span 1;
+const ImageContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
+  width: 500px;
+  height: 200px;
+  grid-column: 2/2;
+`
+
+const ContentHeader = styled.h1`
+  margin-top: 50px;
+  text-align: center;
+  margin-left: 40px;
+`
+
+const InputContainer = styled.div`
+  margin-left: 200px;
+  margin-top: 120px;
+  grid-column: 5/5;
+  grid-row : 2/2;
+`
+const FileContainer = styled.div`
+  margin-top: 80px;
+  grid-column: 4/4;
+  grid-row: 1/2;
+  
 `;
 const DivContainer = styled.div`
+  width: 1000px;
+  margin-top: 300px;
+  margin-left: 250px;
   grid-column: 1/6;
-  grid-row: span 1;
+  grid-row: 3/4;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
-const ButtonContainer = styled.div``;
+const ButtonContainer = styled.div`
+  margin-left: 80px;
+  width: 500px;
+  grid-column: 3/4;
+  grid-row : 6/6;
+`;
+
+const SettingImg = styled.img`
+  width: 200px;
+`

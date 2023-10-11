@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { escape } from "lodash";
 import { setError } from "../redux/reducers/error/error-slice";
-import { darkScrollbar } from "@mui/material";
+
 
 export const tryFunc =
   (fun, onSuccess, dispatch) =>

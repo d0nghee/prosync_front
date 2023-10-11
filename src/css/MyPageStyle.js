@@ -41,8 +41,10 @@ export const ProjectSearchBarContainer = styled.div`
 `
 
 export const PaginationGridContainer = styled.div`
-  grid-row: 6/6;
-  grid-column: 4/4;
+  margin-top: 60px;
+  margin-left : 40px;
+  grid-row: 5/5;
+  grid-column: 3/6;
 
 `
 
@@ -53,13 +55,34 @@ export const FilterContainer = styled.div`
 `
 
 export const ProjectContent = styled.div`
-  margin-top: 20px;
-  grid-column: 2/6;
-  grid-row : 2/4;
-  display: flex;
-  flex-direction: row;
-  margin-right: 20px;
+  margin-top: 70px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 20px;
 `
+
+export const PostItem = styled.div`
+  width: 250px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  height: 300px;
+  margin-right: 20px;
+
+  &:hover {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  }
+
+  /* @media (max-width: 1200px) {
+    width: calc(45% - 20px);
+  }
+
+  @media (max-width: 768px) {
+    width: calc(100% - 20px);
+  } */
+`;
 
 export const Footer = styled.div`
     background-color: bisque;
@@ -116,7 +139,7 @@ export const InputText = styled.input`
     margin-bottom: 10px;
 `
 export const InputTextArea = styled.textarea`
-    width: 40%;
+    width: 70%;
     height: 10vh;
     border: 2px solid #7B69B7;
     border-radius: 5px;
@@ -160,7 +183,8 @@ export const BookmarkListItem = styled.div`
 
 export const PaginationContainer = styled.div`
   /* 페이지 버튼 컨테이너 스타일 */
-  text-align: center;
+    grid-column: 3/6;
+    grid-row: 5/5;
 `;
 
 export const PageButton = styled.button`
@@ -198,46 +222,27 @@ export const ListItemContainer = styled.div`
 
 // 프로젝트 리스트
 export const PostListContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  height: 60vh;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap : 20px;
 `;
 
 export const ProjectImage = styled.img`
-    width : 120px;
+    margin-top: 1px;
+    margin-bottom: 5px;
+    margin-right: 50px;
+    width : 200px;
     object-fit: cover;
     cursor: pointer;
 `
 
-export const PostItem = styled.div`
-  width: calc(30% - 20px);
-  margin-bottom: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  height: 15rem;
-  margin-right: 20px;
 
-  &:hover {
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
-  }
-
-  /* @media (max-width: 1200px) {
-    width: calc(45% - 20px);
-  }
-
-  @media (max-width: 768px) {
-    width: calc(100% - 20px);
-  } */
-`;
 
 export const BookmarkWrapper = styled.div`
-  
-  align-items: center;
-  text-align: center;
+  display: flex;
+  flex-direction: row;
   margin-bottom: 10px;
+  justify-self: start;
 `;
 
 export const ProjectTitle = styled.div`
@@ -245,15 +250,23 @@ export const ProjectTitle = styled.div`
   font-weight: bold;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  margin-right: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const PostDescription = styled.div`
   font-size: 14px;
   color: #555;
+  text-align: left;
 `;
 export const PostName = styled.span`
+  font-size: 18px;
   font-weight: bold;
+  text-align: left;
+
 `;
 
 export const PostsDate = styled.span`

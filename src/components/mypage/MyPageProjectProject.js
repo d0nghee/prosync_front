@@ -8,12 +8,15 @@ import styled from 'styled-components';
 import { postApi } from '../../util/api';
 
 const StarButton = styled.button`
+
+  width: 20px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
-  margin-left: auto;
   font-size: 18px; // 글꼴 크기 감소
+  margin-right: 10px;
+  margin-bottom: 7px;
 `;
 
 const StarImage = styled.img`
@@ -24,6 +27,7 @@ const StarImage = styled.img`
 export default function MyPageProjectProject({
     projects: {
         title = '',
+        createdAt = '',
         startDate = '',
         endDate = '',
         projectImage = '',
@@ -47,9 +51,12 @@ export default function MyPageProjectProject({
         postApi(`/bookmark/${projectId}`).then(() => {
             setIsBook(!isBook);
             onBookmarkChange();
+        }).catch((res) => {
+            if (res.code === "ERR_BAD_REQUEST") {
+                alert("잘못된 요청입니다.");
+            }
         })
     }
-
     useEffect(() => {
         if (bookmarkId) {
             setIsBook(true);
@@ -81,16 +88,31 @@ export default function MyPageProjectProject({
             </ProjectImage>
             <PostDescription>
                 <PostName>
-                    {name}
+                    관리자 : {name}
                 </PostName>
             </PostDescription>
             <PostDescription>
 
                 <PostsDate>
-                    {startDate} to {endDate}
+                    생성일 : {createdAt}
                 </PostsDate>
 
             </PostDescription>
+            <PostDescription>
+
+                <PostsDate>
+                    시작일 : {startDate}
+                </PostsDate>
+
+            </PostDescription>
+            <PostDescription>
+
+                <PostsDate>
+                    종료일 : {endDate}
+                </PostsDate>
+
+            </PostDescription>
+
         </>
     )
 }
