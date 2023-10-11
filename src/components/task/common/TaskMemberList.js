@@ -100,7 +100,7 @@ export default function TaskMemberList({
             ) : (
               // status = QUIT (삭제 가능하도록 처리)
               <div key={member.memberProjectId}>
-                <MemberInfo>
+                <MemberInfo bold="true">
                   <img src={member.profileImage} alt="회원이미지" />
                   <QuitMember>
                     <span>{member.name}</span>
@@ -199,15 +199,15 @@ const MemberInfo = styled.div`
   gap: 1rem;
 
   & > img {
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
     border-radius: 5rem;
     cursor: pointer;
-    border: 5px solid rgba(255, 0, 0, 0);
+    border: 1px solid #d6ccc2;
   }
 
   & > img:hover {
-    border: ${({ bold }) => (bold ? "5px solid #cdb4db" : "none")};
+    border: ${({ bold }) => (bold ? "3px solid #cdb4db" : "none")};
   }
 `;
 

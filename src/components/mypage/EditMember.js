@@ -12,7 +12,7 @@ import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../util/cookies";
-import { getApi, patchApi, postFileApi } from "../../util/api";
+import { getApi, postFileApi } from "../../util/api";
 import { introValidate, nameValidate } from "../../util/regex";
 import IntroCheck from "../../components/signup/IntroCheck";
 import NameCheck from "../../components/signup/NameCheck";
@@ -59,7 +59,7 @@ export default function EditMember() {
           alert("유저 정보를 찾지 못하였습니다.");
         }
       });
-  }, [location, image]);
+  }, [location, image, dispatch]);
 
   const hasChanges = () => {
     if (!originalInfo) return false;
@@ -117,7 +117,7 @@ export default function EditMember() {
             maxAge: 60 * 60 * 24 * 30,
           });
           alert("프로필을 수정하였습니다.");
-          navi("/");
+          window.location.reload();
         });
       })
       .catch((error) => {
@@ -175,6 +175,7 @@ export default function EditMember() {
           });
           setImage(file[0].path);
           alert("프로필 이미지가 변경되었습니다.");
+          window.location.reload();
         },
         dispatch
       )();
