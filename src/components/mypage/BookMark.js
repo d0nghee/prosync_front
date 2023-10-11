@@ -2,17 +2,26 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { deleteApi, getApi, postApi } from '../../util/api'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBookCheck, setIsBookCheck, setPageInfo, setPostsData } from '../../redux/reducers/member/mypageSlice';
-import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage, NullPost } from '../../css/MyPageStyle'
+import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage, NullPost, BookmarkWrapper } from '../../css/MyPageStyle'
 import BookmarkIcon from './BookmarkIcon'
 import Loading from '../common/Loading';
 import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
 import { tryFunc } from '../../util/tryFunc';
-import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
+import styled from 'styled-components';
 
+
+const StarButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  font-size: 18px; // 글꼴 크기 감소
+`;
 
 const bookmarkIcon = {
-  marginRight: "10px",
-  cursor: "pointer",
+  width: "20px",
+  height: "20px"
 }
 
 const postTitleStyle = {
@@ -68,11 +77,16 @@ export default function BookMark(props) {
   }
 
   const subscribeFetch = useCallback((idx) => {
-    tryFunc(fetchSubscribe(idx), onFetchSubscribeSuccess, onFetchBookmarkErrorHandler)();
+    tryFunc(fetchSubscribe(idx), onFetchSubscribeSuccess, dispatch)();
   }, [subscribeState, currentPage]);
 
   const fetchBookmark = async () => {
-    const res = await getApi(`/bookmark-list?page=${currentPage}`);
+    const res = await getApi(`/bookmark-list?page=${currentPage}`)
+      .catch((res) => {
+        if (res.code === "ERR_BAD_REQUEST") {
+          alert("잘못된 요청입니다.");
+        }
+      });
     setLoading(false);
     return res.data;
   }
@@ -81,7 +95,12 @@ export default function BookMark(props) {
 
     dispatch(setIsBookCheck({ page: currentPage, projectId: projectId }))
 
-    postApi(`/bookmark/${projectId}`);
+    postApi(`/bookmark/${projectId}`)
+      .catch((res) => {
+        if (res.code === "ERR_BAD_REQUEST") {
+          alert("잘못된 요청입니다.");
+        }
+      });
     setUse(!use);
     setLoading(false);
   }
@@ -90,29 +109,8 @@ export default function BookMark(props) {
 
   }
 
-  const onFetchBookmarkErrorHandler = {
-    500: (err) => {
-      console.log("loading : ", loading);
-      setLoading(false);
-      console.log("Server Error : ", err);
-      alert("서버에서 오류가 발생했습니다.")
-    },
-    401: (err) => {
-      console.log(err.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navi(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (err) => {
-      console.error("Unknown error : ", err);
-      alert("요청 중 오류가 발생했습니다.");
-    }
-  }
 
   const onFetchBookmarkSuccess = (data) => {
-    console.log("데이터", data)
     const resbookmark = data.data;
     const pageInfo = data.pageInfo;
     let buttons = [];
@@ -125,21 +123,25 @@ export default function BookMark(props) {
         <PostItem
           key={post.bookmarkId}
         >
+          <BookmarkWrapper>
+            <StarButton
+              onClick={() => subscribeFetch(post.projectId)}
+            >
+              <BookmarkIcon
+                isBookCheck={subscribeState[currentPage]?.[post.projectId]}
+                style={bookmarkIcon}
+              />
+            </StarButton>
 
-          <BookmarkIcon
-            style={bookmarkIcon}
-            onClick={() => subscribeFetch(post.projectId)}
-            isBookCheck={subscribeState[currentPage]?.[post.projectId]}
-          />
-
-          <ProjectTitle
-            onMouseEnter={() => handleMouseEnter(idx)}
-            onMouseLeave={() => handleMouseLeave(idx)}
-            style={hoverState[idx] ? HoverStyle : postTitleStyle}
-            onClick={() => handleTitleClick(idx)}
-          >
-            {post.title}
-          </ProjectTitle>
+            <ProjectTitle
+              onMouseEnter={() => handleMouseEnter(idx)}
+              onMouseLeave={() => handleMouseLeave(idx)}
+              style={hoverState[idx] ? HoverStyle : postTitleStyle}
+              onClick={() => handleTitleClick(idx)}
+            >
+              {post.title}
+            </ProjectTitle>
+          </BookmarkWrapper>
           <ProjectImage
             src={post.projectImage}
             onClick={() => handleTitleClick(idx)}
@@ -181,7 +183,7 @@ export default function BookMark(props) {
 
   useEffect(() => {
     setLoading(true);
-    tryFunc(fetchBookmark, onFetchBookmarkSuccess, onFetchBookmarkErrorHandler)();
+    tryFunc(fetchBookmark, onFetchBookmarkSuccess, dispatch)();
   }, [subscribeState, currentPage, use]);
 
 
@@ -204,9 +206,7 @@ export default function BookMark(props) {
       {items.length === 0 ? (
         <>
           <NullPost>
-            
-              북마크한 프로젝트가 없습니다.
-            
+            북마크한 프로젝트가 없습니다.
           </NullPost>
         </>
       ) : (
