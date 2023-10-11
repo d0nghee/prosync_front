@@ -239,10 +239,10 @@ const SideInfo = styled.div`
       width: 63px;
       height: 63px;
       border-radius: 5rem;
-      border: 5px solid rgba(255, 0, 0, 0);
+      border: 1px solid #d6ccc2;
     }
     img:hover {
-      border: 5px solid #cdb4db;
+      border: 2px solid #cdb4db;
     }
   }
 `;
