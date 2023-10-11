@@ -133,7 +133,7 @@ export const handleErrorCode = (
           navigate('/');
           break;
         case 'TASK_EXISTS': // 업무 리소스 존재
-          alert('이미 업무가 존재합니다.');
+          alert('해당 업무상태를 사용하는 업무가 존재합니다.');
           break;
         case 'TASK_MEMBER_EXISTS': // 업무 멤버 리소스 존재
           alert('이미 업무에 멤버가 등록되어있습니다.');

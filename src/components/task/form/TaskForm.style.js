@@ -13,7 +13,6 @@ export const MarkdownInput = styled(ReactQuill)`
     font-size: 1.3rem;
     line-height: 1.5;
     height: 650px;
-    border: ${({ isError }) => (isError ? "3px solid #ff8fab" : "none")};
 
     a {
       text-decoration: underline;
@@ -24,10 +23,9 @@ export const MarkdownInput = styled(ReactQuill)`
 export const TaskTitle = styled.input`
   max-height: 100px;
   width: 100%;
-  font-size: 2.5rem;
+  font-size: 2rem;
   padding: 1rem 1.5rem 1rem 0rem;
   border: none;
-  border-bottom: ${({ isError }) => (isError ? "3px solid #ff8fab" : "none")};
   outline: none;
   margin: 0.2rem 1rem 0.2rem 0;
   padding: 1rem 0;
@@ -69,8 +67,8 @@ export const SideInput = styled.input`
   height: 40px;
   padding: 5px;
   font-size: 1rem;
-  border: ${({ isError }) => (isError ? "3px solid #ff8fab" : "none")};
   outline: none;
+  border: none;
 `;
 
 export const TaskArea = styled.div`

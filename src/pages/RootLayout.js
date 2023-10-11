@@ -75,12 +75,17 @@ export default function RootLayout() {
   }, [hasError, errorData, dispatch]);
 
   return (
-    <>
+    <Container>
       <MainNavigation setMenuOpen={setMenuOpen} />
       <StyledOutletContainer menuOpen={menuOpen}>
         <Outlet />
       </StyledOutletContainer>
       <Footer />
-    </>
+    </Container>
   );
 }
+
+
+const Container = styled.div`
+  position: relative;
+`

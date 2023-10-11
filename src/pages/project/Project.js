@@ -12,8 +12,13 @@ export default function Project() {
 
   useEffect(() => {
     tryFunc(
-      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
-      (projectMembers) => setProjectMembers(projectMembers),
+      () => getProjectMembersApi(params.projectId, { size: 100 }),
+      (projectMembers) => {
+        const members = projectMembers.filter(
+          (member) => member.status === 'ACTIVE'
+        );
+        setProjectMembers(members);
+      },
       dispatch
     )();
   }, [params.projectId]);

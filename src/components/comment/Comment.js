@@ -1,8 +1,8 @@
 import { styled } from "styled-components";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { patchCommentApi, deleteCommentApi, postFileApi } from "../../util/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { GiCancel } from "react-icons/gi";
 import SimpleFileList from "../file/SimpleFileList";
@@ -10,19 +10,43 @@ import { RiAttachment2 } from "react-icons/ri";
 import * as t from "../task/form/TaskForm.style";
 import SelectedFiles from "../file/SelectedFiles";
 import { tryFunc } from "../../util/tryFunc";
+import useFormInput from "../../hooks/use-form-input";
+import ReactQuill from "react-quill";
+import { useDispatch } from "react-redux";
+import MemberProfile from "../common/MemberProfile";
 
 export default function Comment({ comment, memberId, onRemove }) {
-  const navigate = useNavigate();
-  const [activeCommentId, setActiveCommentId] = useState(false);
-  const contentRef = useRef();
+  const [activeComment, setActiveComment] = useState(false);
   const [originalContent, setOriginalContent] = useState(comment.content);
   const params = useParams();
   const [commentFiles, setCommentFiles] = useState(comment.fileList);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
+  const {
+    value: commentValue,
+    setHandler: commentSetHandler,
+    blurHandler: commentBlurHandler,
+    hasError: commentHasError,
+  } = useFormInput(
+    (value) =>
+      value.replace(/<[^>]*>/g, "").trim() !== "" &&
+      value.replace(/<[^>]*>/g, "").length <= 300
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    commentSetHandler(comment.content);
+  }, [comment.content, commentSetHandler]);
+
   const contentUpdateHandler = (event, commentId) => {
     event.preventDefault();
-    const content = event.target[2].value;
+
+    if (commentHasError) {
+      alert("댓글은 1 ~ 300자 이내로 작성해주세요.");
+      return;
+    }
+    const content = commentValue;
 
     const fileIds =
       selectedFiles.length !== 0
@@ -40,20 +64,21 @@ export default function Comment({ comment, memberId, onRemove }) {
           }
         }
 
-        setOriginalContent(content);
-        setActiveCommentId(null);
+        setActiveComment(false);
         setSelectedFiles([]);
-      }
+        setOriginalContent(commentValue);
+      },
+      dispatch
     )();
   };
 
-  const editHanlder = (commentId) => {
-    setActiveCommentId(commentId);
+  const editHandler = () => {
+    setActiveComment(true);
   };
 
   const cancelHandler = () => {
-    setActiveCommentId(null);
-    contentRef.current.value = originalContent;
+    setActiveComment(false);
+    commentSetHandler(originalContent);
   };
 
   const deleteHandler = async (commentId) => {
@@ -64,7 +89,8 @@ export default function Comment({ comment, memberId, onRemove }) {
         () => {
           onRemove(commentId);
           window.alert("삭제가 완료되었습니다.");
-        }
+        },
+        dispatch
       )();
     }
   };
@@ -77,10 +103,14 @@ export default function Comment({ comment, memberId, onRemove }) {
       // api 요청
       tryFunc(
         async () => await postFileApi(fileList),
-        (files) => setSelectedFiles(files)
+        (files) => setSelectedFiles(files),
+        dispatch
       )();
     }
   };
+
+  const [memberProfile, setMemberProfile] = useState({ show: false });
+
   return (
     <>
       <form
@@ -89,22 +119,17 @@ export default function Comment({ comment, memberId, onRemove }) {
       >
         <CommentArea>
           <Details>
-            {memberId === comment.memberInfo.memberId &&
-            activeCommentId !== comment.commentId ? (
+            {memberId === comment.memberInfo.memberId && !activeComment ? (
               <>
                 {/* 편집 시작*/}
-                <AiOutlineEdit
-                  onClick={() => editHanlder(comment.commentId)}
-                  size="30px"
-                />
+                <AiOutlineEdit onClick={editHandler} size="30px" />
                 {/* 삭제 */}
                 <AiOutlineDelete
                   size="28px"
                   onClick={() => deleteHandler(comment.commentId)}
                 />
               </>
-            ) : memberId === comment.memberInfo.memberId &&
-              activeCommentId === comment.commentId ? (
+            ) : memberId === comment.memberInfo.memberId && activeComment ? (
               <>
                 {/* 파일 등록 */}
                 <FileInputContainer>
@@ -127,16 +152,20 @@ export default function Comment({ comment, memberId, onRemove }) {
             )}
             <Date>최근 수정: {comment.modifiedAt}</Date>
           </Details>
-          <Box>
+          <Box edit={activeComment}>
             <SideInfo>
-              <div>
+              <div
+                onClick={() => {
+                  setMemberProfile({ show: true });
+                }}
+              >
                 <img
                   src={comment.memberInfo.profileImage}
                   alt="작성자 이미지"
                 />
-                <div>{comment.memberInfo.name}</div>
+                {!activeComment && <div>{comment.memberInfo.name}</div>}
               </div>
-              {commentFiles && commentFiles.length !== 0 && (
+              {!activeComment && commentFiles && commentFiles.length !== 0 && (
                 <SimpleFileList
                   files={commentFiles}
                   updateFiles={(files) => setCommentFiles(files)}
@@ -144,11 +173,22 @@ export default function Comment({ comment, memberId, onRemove }) {
                 />
               )}
             </SideInfo>
-            <Content
-              defaultValue={originalContent}
-              disabled={activeCommentId !== comment.commentId}
-              ref={contentRef}
-            />
+            {!activeComment ? (
+              <Content
+                dangerouslySetInnerHTML={{ __html: `${commentValue}` }}
+              />
+            ) : (
+              <CommentInput
+                theme="snow"
+                id="comment"
+                name="comment"
+                placeholder="댓글을 입력하세요."
+                onBlur={commentBlurHandler}
+                onChange={commentSetHandler}
+                isError={commentHasError}
+                defaultValue={commentValue}
+              />
+            )}
           </Box>
         </CommentArea>
       </form>
@@ -158,9 +198,32 @@ export default function Comment({ comment, memberId, onRemove }) {
           updateFiles={(files) => setSelectedFiles(files)}
         />
       )}
+      {memberProfile.show && (
+        <MemberProfile
+          onClose={() => setMemberProfile({ show: false })}
+          memberInformation={{
+            isOthers: true,
+            memberId: comment.memberInfo.memberId,
+            projectId: params.projectId,
+          }}
+        />
+      )}
     </>
   );
 }
+
+const CommentInput = styled(ReactQuill)`
+  flex: 5;
+  height: 120px;
+
+  .ql-editor {
+    font-size: 1rem;
+    line-height: 1.5;
+
+    a {
+      text-decoration: underline;
+    }
+`;
 
 const SideInfo = styled.div`
   display: flex;
@@ -173,8 +236,13 @@ const SideInfo = styled.div`
     gap: 1rem;
 
     img {
-      width: 50px;
-      height: 50px;
+      width: 63px;
+      height: 63px;
+      border-radius: 5rem;
+      border: 5px solid rgba(255, 0, 0, 0);
+    }
+    img:hover {
+      border: 5px solid #cdb4db;
     }
   }
 `;
@@ -197,16 +265,16 @@ const Box = styled.div`
   gap: 1rem;
 
   & > div:first-child {
-    flex: 1.3;
+    flex: ${({ edit }) => (edit ? 0.5 : 1.3)};
     overflow: hidden;
     justify-content: center;
   }
 `;
 
-const Content = styled.textarea`
+const Content = styled.div`
   width: 100%;
-  height: 100px;
-  padding: 1rem;
+  height: 130px;
+  padding: 0.3rem 1rem;
   background-color: #f5f5f5;
   border-radius: 10px;
   border: none;

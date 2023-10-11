@@ -13,6 +13,7 @@ const Container = styled.div`
   border-radius: 25px;
   box-shadow: 1px 1px 2px 2px gray;
   max-height: 22rem;
+  padding: 3% 2% 3% 2%;
 
   &:hover {
     box-shadow: 2px 2px 3px 4px black;
@@ -28,7 +29,7 @@ const Container = styled.div`
     align-items: center;
 
     & > *:nth-child(1) {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
 
     & > img {
@@ -41,7 +42,7 @@ const Container = styled.div`
   & > img {
     align-self: center;
     object-fit: fill;
-    width: 80%;
+    width: 75%;
     height: 50%;
   }
 
@@ -81,7 +82,7 @@ const MyProject = ({ project }) => {
       }}
     >
       <div className="project-upper">
-        <div>{project.title} 프로젝트</div>
+        <div>{project.title}</div>
         {project.bookmarkId ? (
           <img src={bookmark_on} />
         ) : (

@@ -76,7 +76,6 @@ export const Contents = styled.div`
   display: flex;
   border-radius: 1rem;
   margin: 0 0.5rem;
-  padding: 0 1rem;
   height: 8rem;
   display: flex;
   align-items: center;
@@ -111,7 +110,7 @@ export const LinkContents = styled(Link)`
   display: flex;
   border-radius: 1rem;
   margin: 0 0.5rem;
-  padding: 0 1rem;
+  padding: ${({ writer }) => (writer ? "0 1rem" : "0 2.5rem 0 1rem")};
   height: 8rem;
   display: flex;
   align-items: center;

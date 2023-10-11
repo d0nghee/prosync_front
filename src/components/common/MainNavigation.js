@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { getCookie } from '../../util/cookies';
-import ProfileCard from './ProfileCard';
-import { useDispatch } from 'react-redux';
-import { setCookie } from './../../util/cookies';
-import { deleteApi, getApi, patchApi } from '../../util/api';
-import { useCallback } from 'react';
-import { useRef } from 'react';
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { getCookie } from "../../util/cookies";
+import ProfileCard from "./ProfileCard";
+import { useDispatch } from "react-redux";
+import { setCookie } from "./../../util/cookies";
+import { deleteApi, getApi, patchApi } from "../../util/api";
+import { useCallback } from "react";
+import { useRef } from "react";
 import {
   faBars,
   faMagnifyingGlass,
@@ -19,17 +19,18 @@ import {
   faFileSignature,
   faEnvelope,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { styled } from 'styled-components';
-import { useInView } from 'react-intersection-observer';
-import ToastMessage from './ToastMessage';
-import { useIsLoggedIn } from './useIsLoggedIn';
-import { useSelector } from 'react-redux';
-import { tryFunc } from '../../util/tryFunc';
-import { debounce } from '../../util/debounce';
-import { IoLogoSoundcloud } from 'react-icons/io5';
-import MemberProfile from './MemberProfile';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { styled } from "styled-components";
+import { useInView } from "react-intersection-observer";
+import ToastMessage from "./ToastMessage";
+import { useIsLoggedIn } from "./useIsLoggedIn";
+import { useSelector } from "react-redux";
+import { tryFunc } from "../../util/tryFunc";
+import { debounce } from "../../util/debounce";
+import { IoLogoSoundcloud } from "react-icons/io5";
+import MemberProfile from "./MemberProfile";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 
 const Header = styled.header`
   display: flex;
@@ -145,7 +146,8 @@ const Header = styled.header`
     background-color: white;
     cursor: pointer;
     font-weight: bolder;
-    font-family: 'Lato', sans-serif;
+    font-family: "Lato", sans-serif;
+    font-family: "Lato", sans-serif;
 
     &:hover {
       color: rgb(158, 105, 194);
@@ -154,7 +156,7 @@ const Header = styled.header`
 `;
 
 const SideNavbar = styled.div.withConfig({
-  shouldForwardProp: (prop) => !['show'].includes(prop),
+  shouldForwardProp: (prop) => !["show"].includes(prop),
 })`
   position: fixed;
   top: 0;
@@ -163,8 +165,7 @@ const SideNavbar = styled.div.withConfig({
   z-index: 1500;
   height: 100vh;
   width: 13vw;
-  transform: ${(props) =>
-    props.show ? 'translateX(0%)' : 'translateX(-150%)'};
+  transform: ${(props) => props.show ? "translateX(0%)" : "translateX(-150%)"};
   transition: transform 0.5s ease-in-out;
   color: white;
 
@@ -318,11 +319,11 @@ const SearchBar = styled.input`
 `;
 
 const SearchBox = styled.ul.withConfig({
-  shouldForwardProp: (prop) => !['searchBoxPosition', 'show'].includes(prop),
+  shouldForwardProp: (prop) => !["searchBoxPosition", "show"].includes(prop),
 })`
   background-color: rgb(238, 242, 249);
   box-shadow: 2px 2px 8px gray;
-  display: ${(props) => (props.show ? 'flex' : 'none')};
+  display: ${(props) => (props.show ? "flex" : "none")};
   position: absolute;
   flex-direction: column;
   list-style-type: none;
@@ -344,7 +345,7 @@ const SearchBox = styled.ul.withConfig({
 `;
 
 const SearchBoxItem = styled.li.withConfig({
-  shouldForwardProp: (prop) => !['pointHover'].includes(prop),
+  shouldForwardProp: (prop) => !["pointHover"].includes(prop),
 })`
   padding: 8px;
   background-color: white;
@@ -355,10 +356,12 @@ const SearchBoxItem = styled.li.withConfig({
   z-index: 1000;
   display: flex;
   align-items: center;
-  height: ${(props) => (props.pointHover ? '8rem' : '4.5rem')};
-  cursor: ${(props) => (props.pointHover ? 'pointer' : null)};
-  padding-top: ${(props) => (!props.pointHover ? '4.5%' : null)};
-  padding-left: ${(props) => (!props.pointHover ? '10%' : null)};
+  height: ${(props) => (props.pointHover ? "8rem" : "4.5rem")};
+  cursor: ${(props) => (props.pointHover ? "pointer" : null)};
+  padding-top: ${(props) => (!props.pointHover ? "4.5%" : null)};
+  padding-left: ${(props) => (!props.pointHover ? "10%" : null)};
+  height: ${(props) => (props.pointHover ? "8rem" : "4.5rem")};
+ 
 
   &.no-project {
     color: gray;
@@ -367,12 +370,14 @@ const SearchBoxItem = styled.li.withConfig({
   }
 
   &:hover {
-    font-size: ${(props) => (props.pointHover ? 'larger' : null)};
-    font-weight: ${(props) => (props.pointHover ? '700' : null)};
-    color: ${(props) => (props.pointHover ? 'white' : null)};
-    background-color: ${(props) => (props.pointHover ? 'rgb(50,62,92)' : null)};
-    transform: ${(props) => (props.pointHover ? 'scale(1.03)' : null)};
-    transition: ${(props) => (props.pointHover ? 'transform 0.3s ease' : null)};
+    font-size: ${(props) => (props.pointHover ? "larger" : null)};
+    font-weight: ${(props) => (props.pointHover ? "700" : null)};
+    color: ${(props) => (props.pointHover ? "white" : null)};
+    background-color: ${(props) => (props.pointHover ? "rgb(50,62,92)" : null)};
+    transform: ${(props) => (props.pointHover ? "scale(1.03)" : null)};
+    transition: ${(props) => (props.pointHover ? "transform 0.3s ease" : null)};
+    font-size: ${(props) => (props.pointHover ? "larger" : null)};
+    font-weight: ${(props) => (props.pointHover ? "700" : null)};
   }
 
   & > img {
@@ -384,15 +389,16 @@ const SearchBoxItem = styled.li.withConfig({
   .itemTitle {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 40%;
     text-align: center;
     margin-left: 5%;
     height: 100%;
     justify-content: space-around;
+    font-weight: 900;
 
     & > div:nth-child(2) {
       margin-bottom: 10%;
-      font-size: x-large;
+      font-size: 1.2rem;
     }
   }
 
@@ -403,10 +409,11 @@ const SearchBoxItem = styled.li.withConfig({
     text-align: center;
     height: 100%;
     justify-content: space-around;
+    font-weight: 900;
 
     & > div:nth-child(2) {
       margin-bottom: 10%;
-      font-size: x-large;
+      font-size: 1.2rem;
     }
   }
 `;
@@ -416,7 +423,7 @@ const NotificationCount = styled.div`
   background-color: #848679;
   color: white;
   border-radius: 10px;
-  margin-left: 25%;
+  margin-left: 9%;
   text-align: center;
 `;
 
@@ -472,14 +479,15 @@ export default function MainNavigation({ setMenuOpen }) {
 
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const location = useLocation();
   const [toasts, setToasts] = useState([]);
   const [eventSource, setEventSource] = useState(null);
-  const profile = getCookie('profile');
-  const name = getCookie('name');
-  const email = getCookie('email');
-  const memberId = getCookie('memberId');
+
+  const profile = getCookie("profile");
+  const name = getCookie("name");
+  const email = getCookie("email");
+  const memberId = getCookie("memberId");
   const [profileUpdate, setProfileUpdate] = useState(false);
   const dispatch = useDispatch();
 
@@ -490,28 +498,55 @@ export default function MainNavigation({ setMenuOpen }) {
   const [notificationCount, setNotificationCount] = useState(0);
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({
-    top: '0px',
-    left: '0px',
+    top: "0px",
+    left: "0px",
   });
   const trigger = useSelector((state) => state.trigger.trigger);
   const [isMenuItemHovered, setIsMenuItemHovered] = useState(false);
   const [memberProfile, setMemberProfile] = useState({ show: false });
 
   const fetchNotificationCount = async () => {
-    const response = await getApi('/notification/count');
+    const response = await getApi("/notification/count");
     return response.data;
   };
 
   const onNotificationCountSuccess = (data) => {
     setNotificationCount(data);
-    console.log('sidebar count 성공');
+    console.log("sidebar count 성공");
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      console.log('sidebar 호출');
-      tryFunc(fetchNotificationCount, onNotificationCountSuccess, dispatch)();
-    }
+    const fetchAndHandleNotification = async () => {
+      if (isLoggedIn && showMenu === true) {
+        try {
+          const data = await fetchNotificationCount();
+          onNotificationCountSuccess(data);
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        }
+      }
+    };
+
+    fetchAndHandleNotification();
   }, [showMenu, location, trigger, isLoggedIn]);
 
   useEffect(() => {
@@ -521,10 +556,10 @@ export default function MainNavigation({ setMenuOpen }) {
       }
     };
 
-    document.addEventListener('mousedown', hideContextMenu);
+    document.addEventListener("mousedown", hideContextMenu);
 
     return () => {
-      document.removeEventListener('mousedown', hideContextMenu);
+      document.removeEventListener("mousedown", hideContextMenu);
     };
   }, [isContextMenuOpen]);
 
@@ -538,10 +573,10 @@ export default function MainNavigation({ setMenuOpen }) {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -554,46 +589,78 @@ export default function MainNavigation({ setMenuOpen }) {
     });
   };
 
-  const markAllNotificationAsRead = async () => {
-    const response = await patchApi('/notification/allRead');
-    console.log('markAllNotification 실행 함수');
-    return response;
-  };
-
-  const onAllReadSuccess = (data) => {
-    alert('알림을 모두 읽음 처리하였습니다.');
-    setShowMenu(false);
-    setMenuOpen(false);
-    navigate(`${location.pathname}?${queryParams.toString()}`);
-  };
-
   const onNotificationReadHandler = (e) => {
     e.stopPropagation();
-    if (window.confirm('알림을 모두 읽음 처리하시겠습니까?')) {
-      tryFunc(markAllNotificationAsRead, onAllReadSuccess, dispatch)();
+    if (window.confirm("알림을 모두 읽음 처리하시겠습니까?")) {
+      patchApi("/notification/allRead")
+        .then((response) => {
+          alert("알림을 모두 읽음 처리하였습니다.");
+          setShowMenu(false);
+          setMenuOpen(false);
+          navigate(`${location.pathname}?${queryParams.toString()}`);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        });
     } else {
-      alert('알림 읽음 처리가 취소되었습니다.');
+      alert("알림 읽음 처리가 취소되었습니다.");
     }
   };
 
-  const fetchNotificationDelete = async () => {
-    const response = await deleteApi('/notification/deleteAll');
-    return response;
-  };
-
-  const onNotificationDeleteSuccess = (data) => {
-    alert('알림이 모두 삭제 처리되었습니다.');
-    setShowMenu(false);
-    setMenuOpen(false);
-    navigate(`${location.pathname}?${queryParams.toString()}`);
-  };
 
   const onNotificationDeleteHandler = (e) => {
     e.stopPropagation();
-    if (window.confirm('알림을 모두 삭제하시겠습니까?')) {
-      tryFunc(fetchNotificationDelete, onNotificationDeleteSuccess, dispatch)();
+    if (window.confirm("알림을 모두 삭제하시겠습니까?")) {
+      deleteApi("/notification/deleteAll")
+        .then((response) => {
+          alert("알림이 모두 삭제 처리되었습니다.");
+          setShowMenu(false);
+          setMenuOpen(false);
+          navigate(`${location.pathname}?${queryParams.toString()}`);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        });
     } else {
-      alert('알림 삭제 처리가 취소되었습니다');
+      alert("알림 삭제 처리가 취소되었습니다");
     }
   };
 
@@ -617,12 +684,7 @@ export default function MainNavigation({ setMenuOpen }) {
     }
   }, [location, isLoggedIn]);
 
-  const projectFetchApi = async (inputValue) => {
-    const response = await getApi(
-      `/projects?search=${inputValue}&page=${page}&size=6`
-    );
-    return response.data;
-  };
+ 
 
   const onProjectFetchSuccessHandler = useCallback(
     (data) => {
@@ -635,17 +697,42 @@ export default function MainNavigation({ setMenuOpen }) {
   );
 
   useEffect(() => {
-    console.log('inView:' + inView);
-    console.log('page:' + page);
-    console.log('maxPage:' + maxPage);
+    console.log("inView:" + inView);
+    console.log("page:" + page);
+    console.log("maxPage:" + maxPage);
 
     const projectFetch = (inputValue) => {
-      console.log('inputValue: ', inputValue);
-      tryFunc(
-        projectFetchApi,
-        onProjectFetchSuccessHandler,
-        dispatch
-      )(inputValue);
+      console.log("inputValue: ", inputValue);
+      getApi(`/projects?search=${inputValue}&page=${page}&size=6`)
+        .then((response) => {
+          onProjectFetchSuccessHandler(response.data);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            console.log(location.pathname);
+            if (location.pathname === "/" || location.pathname === "/auth") {
+              alert("로그인이 만료되었습니다.");
+              setShowBox(false);
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+              return;
+            }
+            dispatch(setIsLoggedIn(false));
+            setShowBox(false);
+          } else if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          }
+        });
     };
 
     if (inView && page <= maxPage) {
@@ -654,7 +741,7 @@ export default function MainNavigation({ setMenuOpen }) {
   }, [inView, page, maxPage, inputValue]);
 
   const toggleMenu = () => {
-    console.log('toggleMenu동작');
+    console.log("toggleMenu동작");
     async function nullCheckAndSetState() {
       await nullableCheck();
 
@@ -666,43 +753,53 @@ export default function MainNavigation({ setMenuOpen }) {
   };
 
   useEffect(() => {
-    if (
-      dropdownRefSearchbar.current &&
-      dropdownRefSearchbar.current.parentElement
-    ) {
-      const childRect = dropdownRefSearchbar.current.getBoundingClientRect();
-      const parentRect =
-        dropdownRefSearchbar.current.parentElement.getBoundingClientRect();
+    const updatePosition = () => {
+      if (
+        dropdownRefSearchbar.current &&
+        dropdownRefSearchbar.current.parentElement
+      ) {
+        const childRect = dropdownRefSearchbar.current.getBoundingClientRect();
+        const parentRect =
+          dropdownRefSearchbar.current.parentElement.getBoundingClientRect();
 
-      const relativeTop = childRect.top - parentRect.top;
+        const relativeTop = childRect.top - parentRect.top;
 
-      setSearchBoxPosition({
-        top: relativeTop + childRect.height + 20,
-        left: childRect.x,
-      });
-    }
+        setSearchBoxPosition({
+          top: relativeTop + childRect.height + 20,
+          left: childRect.x,
+        });
+      }
+    };
+
+    updatePosition();
+
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+    };
   }, [showBox]);
 
   const fetchMemberInfo = async () => {
-    const res = await getApi('/members');
+    const res = await getApi("/members");
     return res.data;
   };
 
   const onFetchMemberInfoSuccessHandler = (data) => {
-    setCookie('profile', data.profileImage, {
-      path: '/',
+    setCookie("profile", data.profileImage, {
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
-    setCookie('name', data.name, {
-      path: '/',
+    setCookie("name", data.name, {
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
-    setCookie('email', data.email, {
-      path: '/',
+    setCookie("email", data.email, {
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
-    setCookie('memberId', data.memberId, {
-      path: '/',
+    setCookie("memberId", data.memberId, {
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
 
@@ -710,54 +807,71 @@ export default function MainNavigation({ setMenuOpen }) {
   };
 
   const nullableCheck = useCallback(async () => {
-    console.log('nullableCheck 중');
-    console.log(getCookie('profile'));
+    console.log("nullableCheck 중");
+    console.log(getCookie("profile"));
     if (
       isLoggedIn &&
-      (!getCookie('profile') ||
-        !getCookie('name') ||
-        !getCookie('email') ||
-        !getCookie('memberId'))
+      (!getCookie("profile") ||
+        !getCookie("name") ||
+        !getCookie("email") ||
+        !getCookie("memberId"))
     ) {
       tryFunc(fetchMemberInfo, onFetchMemberInfoSuccessHandler, dispatch)();
     }
   }, [isLoggedIn]);
 
   const handleButtonClick = () => {
-    navigate('/logout');
+    navigate("/logout");
   };
 
-  const fetchDataBasedOnInput = async (inputValue) => {
-    const response = await getApi(
-      `/projects?search=${inputValue}&page=1&size=6`
-    );
-    return response.data;
-  };
 
   const onfetchDataBasedOnInputSuccessHanlder = (data) => {
-    console.log('fetDataBasedOnInputSucessHnadler 실행');
+    console.log("fetDataBasedOnInputSucessHandler 실행");
     console.log(data.data);
     setSearchList([...data.data]);
     setMaxPage(data.pageInfo.totalPages);
     setPage(2);
   };
 
-  console.log('test');
+
 
   const debouncedProjectFetch = debounce((inputValue) => {
-    console.log('inputValue: ', inputValue);
-    tryFunc(
-      fetchDataBasedOnInput,
-      onfetchDataBasedOnInputSuccessHanlder,
-      dispatch
-    )(inputValue);
+    console.log("inputValue: ", inputValue);
+    getApi(`/projects?search=${inputValue}&page=1&size=6`)
+      .then((response) => {
+        onfetchDataBasedOnInputSuccessHanlder(response.data);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          console.log("로케이션");
+          console.log(location.pathname);
+          if (location.pathname === "/auth") {
+            alert("로그인이 만료되었습니다.");
+            setShowBox(false);
+            navigate(
+              `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+            );
+          }
+        } else if (error === undefined) {
+          console.error("An undefined error occured!");
+          alert("알 수 없는 오류가 발생했습니다.");
+          navigate("/error");
+        } else if (error.code === "ERR_NETWORK") {
+          console.error("네트워크 에러 발생:", error);
+          alert(
+            "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+          );
+          setMenuOpen(false);
+          navigate("/error");
+        }
+      });
   }, 500);
 
   const onClickHandler = useCallback(() => {
     if (!isLoggedIn) {
-      alert('로그인한 회원만 이용가능합니다.');
+      alert("로그인한 회원만 이용가능합니다.");
       setShowBox(false);
-      navigate('/auth?mode=login');
+      navigate("/auth?mode=login");
       return;
     }
 
@@ -771,15 +885,15 @@ export default function MainNavigation({ setMenuOpen }) {
   const searchChangeHandler = useCallback(
     (event) => {
       if (!isLoggedIn) {
-        alert('로그인한 회원만 이용가능합니다.');
+        alert("로그인한 회원만 이용가능합니다.");
         setShowBox(false);
-        navigate('/auth?mode=login');
+        navigate("/auth?mode=login");
       }
 
       const newInputValue = event.target.value;
 
-      if (newInputValue === '' || newInputValue === null) {
-        console.log('newInputValue가 비었음');
+      if (newInputValue === "" || newInputValue === null) {
+        console.log("newInputValue가 비었음");
         setSearchList([]);
         setShowBox(false);
 
@@ -791,13 +905,13 @@ export default function MainNavigation({ setMenuOpen }) {
         setPage(1);
         setMaxPage(1);
         setSearchList([]);
-        console.log('진짜 검색어 받자마자 데이터 받아오는 로직');
+        console.log("진짜 검색어 받자마자 데이터 받아오는 로직");
         debouncedProjectFetch(newInputValue);
 
-        console.log('searchChangeHandler');
+        console.log("searchChangeHandler");
         console.log(searchList);
 
-        console.log('바뀌는중');
+        console.log("바뀌는중");
         console.log(newInputValue + `로 전환했음`);
       }
     },
@@ -831,7 +945,7 @@ export default function MainNavigation({ setMenuOpen }) {
                       <div
                         className="profile"
                         onClick={() => {
-                          navigate('/user/profile');
+                          navigate("/user/profile");
                         }}
                       >
                         <img src={profile}></img>
@@ -843,23 +957,23 @@ export default function MainNavigation({ setMenuOpen }) {
                       <div>Menu</div>
                     </div>
                     <div className="sidemenu-container">
-                      <div onClick={() => navigate('/')}>
+                      <div onClick={() => navigate("/")}>
                         <FontAwesomeIcon icon={faHouse} />
                         <div>HOME</div>
                       </div>
-                      <div onClick={() => navigate('/user/profile')}>
+                      <div onClick={() => navigate("/user/profile")}>
                         <FontAwesomeIcon icon={faUser} />
                         <div>MyPage</div>
                       </div>
-                      <div onClick={() => navigate('/user/myproject')}>
+                      <div onClick={() => navigate("/user/myprojects")}>
                         <FontAwesomeIcon icon={faFileInvoice} />
                         <div>Managed Project</div>
                       </div>
-                      <div onClick={() => navigate('/user/bookmark')}>
+                      <div onClick={() => navigate("/user/bookmark")}>
                         <FontAwesomeIcon icon={faBookmark} />
                         <div>Bookmark</div>
                       </div>
-                      <div onClick={() => navigate('/notification')}>
+                      <div onClick={() => navigate("/notification")}>
                         <FontAwesomeIcon icon={faEnvelope} />
                         <div
                           className="notification-menu"
@@ -892,7 +1006,7 @@ export default function MainNavigation({ setMenuOpen }) {
                           ) : null}
                         </div>
                       </div>
-                      <div onClick={() => navigate('/notification/projects')}>
+                      <div onClick={() => navigate("/notification/projects")}>
                         <FontAwesomeIcon icon={faFileSignature} />
                         <div>Project Log</div>
                       </div>
@@ -956,7 +1070,7 @@ export default function MainNavigation({ setMenuOpen }) {
                   <FontAwesomeIcon
                     icon={faBell}
                     size="2x"
-                    onClick={() => navigate('/notification')}
+                    onClick={() => navigate("/notification")}
                   />
                   <div className="notification-info">알림</div>
                 </div>

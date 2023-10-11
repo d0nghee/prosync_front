@@ -117,7 +117,8 @@ export const getTaskStatus = (projectId) => {
   return async (dispatch) => {
     await tryFunc(
       () => getTaskStatusApi(projectId),
-      (response) => dispatch(taskStatusActions.setList(response))
+      (response) => dispatch(taskStatusActions.setList(response)),
+      dispatch
     )();
   };
 };
@@ -137,7 +138,8 @@ export const patchSequenceOfStatus = (taskStatusId, sequence, projectId) => {
         const seq = updatedStatus.seq;
         await tryFunc(
           () => patchTaskStatusApi(taskStatusId, { seq }),
-          () => {}
+          () => {},
+          dispatch
         )();
       }
     } else {
@@ -157,7 +159,7 @@ export const patchSequenceOfStatus = (taskStatusId, sequence, projectId) => {
           () => {
             dispatch(taskStatusActions.resetSeqList());
           },
-          {}
+          dispatch
         )();
       }
     }
@@ -176,7 +178,8 @@ export const patchStatus = (taskStatus) => {
       () => {
         dispatch(taskStatusActions.updateStatus(taskStatus));
         alert("수정이 완료되었습니다.");
-      }
+      },
+      dispatch
     )();
   };
 };
