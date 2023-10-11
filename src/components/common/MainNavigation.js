@@ -208,6 +208,7 @@ const SideNavbar = styled.div.withConfig({
       width: 20%;
       height: 30%;
       object-fit: fill;
+      border-radius: 50% 50%;
     }
 
     & > div:nth-child(3) {
