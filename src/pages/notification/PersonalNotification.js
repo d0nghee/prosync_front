@@ -118,20 +118,7 @@ const PersonalNotification = (props) => {
     setNotReadCount(data);
   };
 
-  const countErrorHandler = {
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("알림 읽기 처리 중 오류가 발생했습니다.");
-    },
-  };
+
 
   useEffect(() => {
     console.log("count 불림");
@@ -149,28 +136,7 @@ const PersonalNotification = (props) => {
     setIsLoading(false);
   };
 
-  const getNotificationListErrorHandler = {
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    404: (error) => {
-      console.error("Not Found:", error);
-      alert("알림 정보를 찾을 수 없습니다.");
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("알림 목록을 가져오는 중 오류가 발생하였습니다.");
-    },
-  };
+
 
   useEffect(() => {
     const getNotiList = async () => {
@@ -198,25 +164,7 @@ const PersonalNotification = (props) => {
     navigate(`${location.pathname}?${queryParams.toString()}`);
   };
 
-  const allReadErrorHandler = {
-    401: (error) => {
-      console.log("여기지나감");
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("알림 목록을 가져오는 중 오류가 발생하였습니다.");
-    },
-  };
+
 
   const AllRead = useCallback(() => {
     if (window.confirm("모든 알림을 읽음 처리하시겠습니까?")) {

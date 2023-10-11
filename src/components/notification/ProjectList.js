@@ -6,9 +6,9 @@ import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
-import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
 
 const StyledProjectList = styled.div`
   width: 100%;
@@ -65,6 +65,7 @@ const ProjectList = () => {
   const [selectedProject, setSelectedProject] = useState("");
   const location = useLocation();
   const [projectCount, setProjectCount] = useState(0);
+  const dispatch = useDispatch();
 
   const fetchProjects = async () => {
     const response = await getApi(`/projectlog/admin?page=${page}&size=6`);
@@ -80,30 +81,13 @@ const ProjectList = () => {
     setProjectCount(data.pageInfo.totalElements);
   };
 
-  const onFetchProjectsErrorHandler = {
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("프로젝트 목록을 들고 오던 중 오류가 발생하였습니다.");
-    },
-  };
+ 
 
   const projectFetch = useCallback(() => {
     tryFunc(
       fetchProjects,
       onFetchProjectsSuccess,
-      onFetchProjectsErrorHandler
+      dispatch
     )();
   }, [projects, maxPage]);
 

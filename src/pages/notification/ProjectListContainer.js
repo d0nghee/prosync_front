@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { tryFunc } from "../../util/tryFunc";
 import ListLoadingSpinner from './../../components/common/ListLoadingSpinner';
+import { useDispatch } from "react-redux";
 
 const codeInformation = [
   {
@@ -114,6 +115,7 @@ const ProjectListContainer = () => {
   const queryParams = new URLSearchParams(location.search);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const fetchLogList = async () => {
     const response = await getApi(
@@ -130,33 +132,12 @@ const ProjectListContainer = () => {
     setIsLoading(false);
   }
 
-  const onFetchLogListErrorHandler = {
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
-    403: (error) => {
-      console.log(error.response.status);
-      alert("해당 메뉴에 접근 권한이 없습니다.");
-    },
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("로그 목록을 가져오는 중 오류가 발생하였습니다.");
-    },
-  }
+ 
 
   useEffect(() => {
     setIsLoading(true);
     console.log("Log 정보를 위해 useEffect에서 데이터 요청함");
-    tryFunc(fetchLogList, onFetchLogListSuccess, onFetchLogListErrorHandler)();    
+    tryFunc(fetchLogList, onFetchLogListSuccess, dispatch)();    
   }, [location, projectId]);
 
   return (
