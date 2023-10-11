@@ -33,8 +33,7 @@ export default function TableViewList({
   projectMember,
 }) {
   const [showNewStatusModal, setShowNewStatusModal] = useState(false);
-
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
   const [projectMembers, setProjectMembers] = useState();
@@ -45,7 +44,8 @@ export default function TableViewList({
   useEffect(() => {
     tryFunc(
       async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
-      (projectMembers) => setProjectMembers(projectMembers)
+      (projectMembers) => setProjectMembers(projectMembers),
+      dispatch
     )();
   }, [params.projectId]);
 
@@ -54,7 +54,6 @@ export default function TableViewList({
   // ------------------------------------ //
 
   const [showAssignees, setShowAssignees] = useState();
-  const dispatch = useDispatch();
 
   // 체크박스
   useEffect(() => {
@@ -302,7 +301,14 @@ export default function TableViewList({
                 )}
               {task.taskId !== editTaskId ? (
                 <>
-                  <tv.LinkContents to={`${task.taskId}`}>
+                  <tv.LinkContents
+                    to={`${task.taskId}`}
+                    writer={
+                      projectMember &&
+                      projectMember.status === "ACTIVE" &&
+                      projectMember.authority !== "READER"
+                    }
+                  >
                     {task.title.length > 40 ? (
                       <div>{task.title.substring(0, 40)}...</div>
                     ) : (
@@ -313,6 +319,7 @@ export default function TableViewList({
                         <SimpleTaskMemberList
                           taskMembers={task.taskMembers}
                           taskId={task.taskId}
+                          bottom="90px"
                         />
                       </tv.Assignee>
                     ) : (

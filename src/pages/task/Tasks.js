@@ -96,7 +96,8 @@ export default function Tasks() {
           () => deleteApi(`/projects/${params.projectId}/members`),
           () => {
             navigate("/");
-          }
+          },
+          dispatch
         )();
       }
     }

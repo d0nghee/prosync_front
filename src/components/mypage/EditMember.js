@@ -18,6 +18,7 @@ import IntroCheck from "../../components/signup/IntroCheck";
 import NameCheck from "../../components/signup/NameCheck";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { tryFunc } from "../../util/tryFunc";
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export default function EditMember() {
   const location = useLocation();
   const [isNameNotCorrect, setIsNameNotCorrect] = useState(false);
   const [isIntroNotCorrect, setIsIntroNotCorrect] = useState(false);
-  const [image, setImage] = useState('https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png');
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     getApi("/members")
@@ -83,7 +84,9 @@ export default function EditMember() {
       if (introValidate(mypage.memberInfo.intro)) {
         setIsIntroNotCorrect(false);
       }
-      alert("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.");
+      alert(
+        "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
+      );
       setIsNameNotCorrect(true);
       return;
     }
@@ -91,7 +94,9 @@ export default function EditMember() {
     setIsNameNotCorrect(false);
 
     if (!introValidate(mypage.memberInfo.intro)) {
-      alert("소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.");
+      alert(
+        "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
+      );
       setIsIntroNotCorrect(true);
 
       return;
@@ -123,15 +128,17 @@ export default function EditMember() {
           error.response.data.resultCode === "INCORRECT_FORMAT_NAME"
         ) {
           setIsIntroNotCorrect("true");
-          alert("이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.");
-
+          alert(
+            "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
+          );
         } else if (
           error.response.status === "422" &&
           error.response.data.resultCode === "INCORRECT_FORMAT_INTRO"
         ) {
           setIsNameNotCorrect("true");
-          alert("소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.");
-
+          alert(
+            "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
+          );
         } else {
           alert("서버 오류로 인해 프로필 수정을 실패하였습니다.");
 
@@ -149,12 +156,29 @@ export default function EditMember() {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    console.log("시발", files)
-    postFileApi(files)
-      .then((res) => {
-        console.log("응답", res);
-      })
 
+    if (files.length !== 1) {
+      alert("한건만 선택하세요.");
+      return;
+    }
+    (async () => {
+      await tryFunc(
+        () => postFileApi(files),
+        async (file) => {
+          await axiosInstance.patch("/members/profile", {
+            ...mypage.memberInfo,
+            fileId: file[0].fileId,
+          });
+          setCookie("profile", file[0].path, {
+            path: "/",
+            maxAge: 60 * 60 * 24 * 30,
+          });
+          setImage(file[0].path);
+          alert("프로필 이미지가 변경되었습니다.");
+        },
+        dispatch
+      )();
+    })();
   };
 
   return (
@@ -169,39 +193,36 @@ export default function EditMember() {
         }}
       >
         <FileContainer>
-          <CustomFileUpload htmlFor="file-upload">
-            이미지 변경
-          </CustomFileUpload>
+          <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
           <FileInput
             type="file"
             id="file-upload"
             onChange={handleFileChange}
-          >
-          </FileInput>
+          ></FileInput>
         </FileContainer>
       </div>
       <DivContainer>
-      <CustomDiv>
-        <Label>이름 입력 : &nbsp;</Label>
-        <InputText
-          type="text"
-          name="name"
-          id="name"
-          value={mypage.memberInfo.name}
-          onChange={handleChange}
-        />
-        <NameCheck isNameNotCorrect={isNameNotCorrect} />
-      </CustomDiv>
-      <CustomDiv>
-        <Label>소개글 입력 :&nbsp;</Label>
-        <InputTextArea
-          name="intro"
-          id="intro"
-          value={mypage.memberInfo.intro}
-          onChange={handleChange}
-        />
-        <IntroCheck isIntroNotCorrect={isIntroNotCorrect} />
-      </CustomDiv>
+        <CustomDiv>
+          <Label>이름 입력 : &nbsp;</Label>
+          <InputText
+            type="text"
+            name="name"
+            id="name"
+            value={mypage.memberInfo.name}
+            onChange={handleChange}
+          />
+          <NameCheck isNameNotCorrect={isNameNotCorrect} />
+        </CustomDiv>
+        <CustomDiv>
+          <Label>소개글 입력 :&nbsp;</Label>
+          <InputTextArea
+            name="intro"
+            id="intro"
+            value={mypage.memberInfo.intro}
+            onChange={handleChange}
+          />
+          <IntroCheck isIntroNotCorrect={isIntroNotCorrect} />
+        </CustomDiv>
       </DivContainer>
       <CustomDiv style={{ justifyContent: "center" }}>
         <Button
@@ -236,7 +257,7 @@ const CustomFileUpload = styled.label`
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
-  background-color: #7B69B7;
+  background-color: #7b69b7;
   color: #fff;
   border-radius: 5px;
   transition: background-color 0.3s ease;
@@ -260,7 +281,7 @@ const ProfileGridContainer = styled.div`
   margin: 0 auto;
   margin-left: 20px;
   max-width: 1200px;
-`
+`;
 
 const FileContainer = styled.div`
   grid-column: span 2;
@@ -268,7 +289,7 @@ const FileContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 const DivContainer = styled.div`
   grid-column: 1/6;
   grid-row: span 1;
@@ -276,7 +297,6 @@ const DivContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`
+`;
 
-const ButtonContainer = styled.div`
-`
+const ButtonContainer = styled.div``;

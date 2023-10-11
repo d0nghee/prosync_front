@@ -22,7 +22,6 @@ export default function Task({
   const params = useParams();
   const pageInfo = useSelector((state) => state.taskList.pageInfo);
 
-
   const taskDeleteHandler = () => {
     const proceed = window.confirm("정말 삭제하시겠습니까?");
     if (proceed) {
@@ -99,6 +98,7 @@ export default function Task({
                         fileList={taskFiles}
                         deleteFile={deleteFile}
                         projectMember={projectMember}
+                        deleteButton={false}
                       />
                     )}
                   </t.FileInputContainer>
@@ -157,7 +157,7 @@ export default function Task({
 const TaskTitle = styled.div`
   max-height: 100px;
   width: 100%;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   padding: 1rem 0;
   overflow: auto;
 `;

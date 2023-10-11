@@ -6,7 +6,7 @@ export default function FileInfo({ file }) {
       <a href={file.path} download={file.fileNmae}>
         {file.fileNmae}
         <div>
-          {file.fileName} ({file.size}KB)
+          {file.fileName} ({(file.size / 1024).toFixed(2)}KB)
         </div>
       </a>
     </Info>

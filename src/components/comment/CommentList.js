@@ -4,17 +4,20 @@ import { postCommentApi, postFileApi } from "../../util/api";
 import { useParams } from "react-router-dom";
 import { getCookie } from "../../util/cookies";
 import { getCommentsApi } from "../../util/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import * as t from "../task/form/TaskForm.style";
 import SelectedFiles from "../file/SelectedFiles";
 import { tryFunc } from "../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import useFormInput from "../../hooks/use-form-input";
+import { useDispatch } from "react-redux";
 
 export default function CommentList({ projectMember }) {
+  const dispatch = useDispatch();
   const [comments, setComments] = useState();
   const params = useParams();
-  const navigate = useNavigate();
 
   const cookieMemberId = getCookie("memberId");
 
@@ -62,7 +65,8 @@ export default function CommentList({ projectMember }) {
           page: currentPage,
           size,
         }),
-      (comments) => setComments(comments)
+      (comments) => setComments(comments),
+      dispatch
     )();
   }, [params.taskId, currentPage]);
 
@@ -95,9 +99,9 @@ export default function CommentList({ projectMember }) {
 
   const saveHandler = (event) => {
     event.preventDefault();
-    const content = event.target[0].value;
+    const content = commentValue;
 
-    if (content.trim() === "") {
+    if (!commentIsValid) {
       setContentError(true);
       return;
     }
@@ -139,9 +143,12 @@ export default function CommentList({ projectMember }) {
           });
           setSelectedFiles([]);
           event.target[0].value = "";
-        }
+        },
+        dispatch
       )();
     })();
+
+    handleReset();
   };
 
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -152,8 +159,29 @@ export default function CommentList({ projectMember }) {
       // api 요청
       tryFunc(
         async () => await postFileApi(fileList),
-        (files) => setSelectedFiles((prv) => [...prv, ...files])
+        (files) => setSelectedFiles((prv) => [...prv, ...files]),
+        dispatch
       )();
+    }
+  };
+
+  const {
+    value: commentValue,
+    isValid: commentIsValid,
+    setHandler: commentSetHandler,
+    blurHandler: commentBlurHandler,
+    hasError: commentHasError,
+  } = useFormInput(
+    (value) =>
+      value.replace(/<[^>]*>/g, "").trim() !== "" &&
+      value.replace(/<[^>]*>/g, "").length <= 300
+  );
+
+  const quillRef = useRef();
+
+  const handleReset = () => {
+    if (quillRef.current) {
+      quillRef.current.getEditor().setContents([]);
     }
   };
 
@@ -171,23 +199,33 @@ export default function CommentList({ projectMember }) {
                   {/* 댓글 입력 */}
                   {contentError && (
                     <t.ErrorMessage>
-                      댓글의 입력값을 다시 확인하세요!
+                      댓글은 1 ~ 300자 이내로 작성해주세요.
                     </t.ErrorMessage>
                   )}
+                  {/* <textarea type="text" placeholder="댓글을 입력하세요." /> */}
+                  <CommentInput
+                    theme="snow"
+                    id="comment"
+                    name="comment"
+                    placeholder="댓글을 입력하세요."
+                    // value={commentValue}
+                    onBlur={commentBlurHandler}
+                    onChange={commentSetHandler}
+                    isError={commentHasError}
+                    ref={quillRef}
+                  />
                   <Save>
-                    <textarea type="text" placeholder="댓글을 입력하세요." />
+                    {/* 파일 등록 */}
+                    <FileInputContainer>
+                      <div>파일 첨부</div>
+                      <t.StyledFileInput
+                        type="file"
+                        onChange={handleFileChange}
+                        multiple
+                      />
+                    </FileInputContainer>
                     <button>등록</button>
                   </Save>
-
-                  {/* 파일 등록 */}
-                  <FileInputContainer>
-                    <t.StyledButton>파일 등록</t.StyledButton>
-                    <t.StyledFileInput
-                      type="file"
-                      onChange={handleFileChange}
-                      multiple
-                    />
-                  </FileInputContainer>
                 </form>
                 {/* 선택된 파일들 */}
                 {selectedFiles && selectedFiles.length !== 0 && (
@@ -200,14 +238,16 @@ export default function CommentList({ projectMember }) {
             )}
           {comments && comments.data.length !== 0 && (
             <>
-              {comments.data.map((comment) => (
-                <Comment
-                  comment={comment}
-                  key={comment.commentId}
-                  memberId={cookieMemberId}
-                  onRemove={removeComment}
-                />
-              ))}
+              <List>
+                {comments.data.map((comment) => (
+                  <Comment
+                    comment={comment}
+                    key={comment.commentId}
+                    memberId={cookieMemberId}
+                    onRemove={removeComment}
+                  />
+                ))}
+              </List>
               <Page>
                 <PageButton
                   onClick={handlePrevClick}
@@ -241,21 +281,41 @@ export default function CommentList({ projectMember }) {
     </Total>
   );
 }
+
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  padding: 2rem 0;
+`;
+const CommentInput = styled(ReactQuill)`
+  width: 100%;
+  height: 150px;
+  .ql-editor {
+    font-size: 1.2rem;
+    line-height: 1.5;
+
+    a {
+      text-decoration: underline;
+    }
+`;
+
 const Total = styled.div`
   width: 90%;
 `;
 
 const Save = styled.div`
-  display: flex;
-  height: 150px;
   border-radius: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 3rem;
 
   button {
-    flex: 1;
-    padding: 1.3rem;
+    padding: 1rem 2rem;
+    border-radius: 10px;
     font-size: 1rem;
-    background-color: #4361ee;
-    color: #f1faee;
+    background-color: #d9d9d9;
     border: #dad7cd;
   }
 
@@ -320,10 +380,17 @@ const PageButton = styled.button`
 const FileInputContainer = styled.div`
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  font-weight: bold;
-  width: 200px;
-  margin-top: 10px;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #d9d9d9;
+  border: #dad7cd;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  & > button:hover {
+    opacity: 0.7;
+  }
 `;

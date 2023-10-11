@@ -1,10 +1,15 @@
 import { Outlet } from "react-router-dom";
+import { styled } from "styled-components";
 
 export default function TasksRoot() {
   return (
     <>
-      <div style={{ margin: "1rem" }}> </div>
+      <Root />
       <Outlet />
     </>
   );
 }
+
+const Root = styled.div`
+  margin: 5rem;
+`;

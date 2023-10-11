@@ -8,6 +8,7 @@ export default function SimpleTaskMemberList({
   taskId,
   isTable,
   updateTask,
+  bottom,
 }) {
   const [showTaskList, setShowTaskList] = useState(false);
 
@@ -25,7 +26,7 @@ export default function SimpleTaskMemberList({
                     : setShowTaskList((prv) => !prv)
                 }
               >
-                <UserName>{member.name}</UserName>
+                <UserName custombottom={bottom}>{member.name}</UserName>
                 <ProfileImage src={member.profileImage} />
               </UserBox>
             ) : (
@@ -98,7 +99,7 @@ const UserName = styled.div`
   background-color: #1b263b;
   padding: 10px;
   color: white;
-  bottom: 85px;
+  bottom: ${({ custombottom }) => custombottom || "60px"};
   border-radius: 10px;
   font-size: 0.8rem;
   font-weight: bold;

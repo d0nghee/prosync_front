@@ -7,6 +7,7 @@ import { taskStatusActions } from "../../../redux/reducers/task/taskStatus-slice
 import { RiDeleteBin6Line, RiEditLine } from "react-icons/ri";
 import { FiEdit2 } from "react-icons/fi";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
+import { tryFunc } from "../../../util/tryFunc";
 
 export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const [editStatus, setEditState] = useState(false);
@@ -18,18 +19,18 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const statusList = useSelector((state) => state.taskStatus.list);
 
   const deleteTaskStatus = (statusId) => {
-    //TODO: 에러처리
-    (async () => {
-      const response = await deleteTaskStatusApi(statusId);
-      if (response.response && response.response.status === 409) {
-        alert("업무상태를 사용하는 업무가 존재합니다.");
-      } else {
-        const proceed = window.confirm("정말 삭제하시겠습니까?");
-        if (proceed) {
+    const proceed = window.confirm("정말 삭제하시겠습니까?");
+
+    if (proceed) {
+      tryFunc(
+        () => deleteTaskStatusApi(statusId),
+        () => {
           dispatch(taskStatusActions.removeStatus(statusId));
-        }
-      }
-    })();
+          alert("삭제가 완료되었습니다.");
+        },
+        dispatch
+      )();
+    }
   };
 
   const statusClickHandler = (taskStatus) => {
