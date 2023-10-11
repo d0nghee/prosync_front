@@ -26,12 +26,39 @@ export const SideBar = styled.div`
 `
 
 export const Content = styled.div`
-     margin-left: 10px;
+  margin-left: 10px;
   display: grid;
   grid-template-columns: 80px 200px 200px 200px 200px;
   grid-template-rows: 50px 200px 200px 200px;
   gap: 15px;
   text-align: center;
+`
+
+export const ProjectSearchBarContainer = styled.div`
+  grid-column: 3/5;
+  display: flex;
+  flex-direction: row;
+`
+
+export const PaginationGridContainer = styled.div`
+  margin-top: 60px;
+  margin-left : 40px;
+  grid-row: 5/5;
+  grid-column: 3/6;
+
+`
+
+export const FilterContainer = styled.div`
+  grid-column: 5/5;
+  display: flex;
+  flex-direction: row;
+`
+
+export const ProjectContent = styled.div`
+  margin-top: 70px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 20px;
 `
 
 export const PostItem = styled.div`
@@ -210,8 +237,6 @@ export const ProjectImage = styled.img`
 `
 
 
-
-`;
 
 export const BookmarkWrapper = styled.div`
   display: flex;
