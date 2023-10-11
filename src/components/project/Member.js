@@ -64,36 +64,20 @@ export default function Member({ member, isChecked, onCheckboxChange }) {
   // 위임 수락
   const handleConfirm = () => {
     console.log('handleConfirm');
-    tryFunc(mandateAdmin, mandateAdminSuccess, mandateAdminError)();
+    tryFunc(
+      mandateAdmin,
+      navigate(`/projects/${member.projectId}`),
+      dispatch
+    )();
     setIsModalOpen(false);
   };
 
   const mandateAdmin = async () => {
-    console.log('mandateAdmin');
     const response = patchApi(
       `/project-members/${member.memberProjectId}`,
       adminData
     );
     return response;
-  };
-
-  const mandateAdminSuccess = () => {
-    navigate(`/projects/${member.projectId}`);
-  };
-
-  const mandateAdminError = {
-    500: (error) => {
-      console.error('Server Error:', error);
-      alert('서버에서 오류가 발생했습니다.');
-    },
-    404: (error) => {
-      console.error('Not Found:', error);
-      alert('프로젝트 정보를 찾을 수 없습니다.');
-    },
-    default: (error) => {
-      console.error('Unknown error:', error);
-      alert('프로젝트 목록을 가져오는 중 오류가 발생하였습니다.');
-    },
   };
 
   const handleAdminButtonClick = () => {

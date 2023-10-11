@@ -5,6 +5,7 @@ import { tryFunc } from '../../util/tryFunc';
 import { useNavigate } from 'react-router-dom';
 import bookmarkOff from '../../assets/images/bookmark-off.png';
 import bookmarkOn from '../../assets/images/bookmark-on.png';
+import { useDispatch } from 'react-redux';
 
 export default function Project({
   projects: {
@@ -20,6 +21,7 @@ export default function Project({
 }) {
   const [isStarred, setIsStarred] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleStarClick = (e) => {
     e.stopPropagation();
@@ -28,17 +30,17 @@ export default function Project({
 
   const changeBookmark = async () => {
     if (isStarred) {
-      console.log('isStar 호출');
-      deleteApi(`/bookmark/${projectId}`).then(() => {
-        setIsStarred(false);
-        onStarChange();
-      });
+      tryFunc(
+        await deleteApi(`/bookmark/${projectId}`),
+        setIsStarred(false),
+        dispatch
+      );
     } else {
-      console.log('!isStar 호출');
-      postApi(`/bookmark/${projectId}`).then(() => {
-        setIsStarred(true);
-        onStarChange();
-      });
+      tryFunc(
+        await postApi(`/bookmark/${projectId}`),
+        setIsStarred(true),
+        dispatch
+      );
     }
   };
 

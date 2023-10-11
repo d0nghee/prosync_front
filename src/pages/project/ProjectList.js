@@ -7,6 +7,7 @@ import Pagination from '../../components/project/Pagination';
 import ProjectFilterBar from '../../components/project/ProjectFilterBar';
 import ProjectSearchBar from '../../components/project/ProjectSearchBar';
 import { tryFunc } from '../../util/tryFunc';
+import { useDispatch } from 'react-redux';
 
 export default function ProjectList() {
   const [projects, setProjects] = useState([]);
@@ -22,6 +23,7 @@ export default function ProjectList() {
   });
   const [loading, setLoading] = useState(false);
   const [star, setStar] = useState(false);
+  const dispatch = useDispatch();
 
   const getProjectList = async () => {
     let url = location.pathname + location.search;
@@ -34,29 +36,10 @@ export default function ProjectList() {
     setLoading(false);
   };
 
-  const getProjectListErrorHandler = {
-    500: (error) => {
-      console.error('Server Error:', error);
-      alert('서버에서 오류가 발생했습니다.');
-    },
-    404: (error) => {
-      console.error('Not Found:', error);
-      alert('프로젝트 정보를 찾을 수 없습니다.');
-    },
-    default: (error) => {
-      console.error('Unknown error:', error);
-      alert('프로젝트 목록을 가져오는 중 오류가 발생하였습니다.');
-    },
-  };
-
   useEffect(() => {
     console.log('useEffect called');
     setLoading(true);
-    tryFunc(
-      getProjectList,
-      getProjectListSuccess,
-      getProjectListErrorHandler
-    )();
+    tryFunc(getProjectList, getProjectListSuccess, dispatch)();
   }, [location.pathname, location.search]);
 
   // 필터에 맞는 프로젝트 데이터 세팅
