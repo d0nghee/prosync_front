@@ -7,6 +7,7 @@ import { styled } from "styled-components";
 import { tryFunc } from "../../util/tryFunc";
 import axiosInstance from "../../util/axiosInstances";
 import { getCookie } from "../../util/cookies";
+import { useDispatch } from "react-redux";
 
 export default function TaskDetail() {
   const [task, setTask] = useState();
@@ -23,11 +24,13 @@ export default function TaskDetail() {
 
   const [projectMember, setProjectMember] = useState();
 
+  const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       await tryFunc(
         () => getTaskApi(`${params.taskId}`),
-        (task) => setTask(task)
+        (task) => setTask(task),
+        dispatch
       )();
       await tryFunc(
         () => getFileApi(params.taskId, "TASK"),
@@ -35,7 +38,8 @@ export default function TaskDetail() {
           if (taskFile) {
             setTaskFiles(taskFile);
           }
-        }
+        },
+        dispatch
       )();
       const memberId = getCookie("memberId");
 
@@ -45,7 +49,8 @@ export default function TaskDetail() {
             axiosInstance.get(
               `/projects/${params.projectId}/members/${memberId}`
             ),
-          (response) => setProjectMember(response.data)
+          (response) => setProjectMember(response.data),
+          dispatch
         )();
       } catch (error) {}
     })();

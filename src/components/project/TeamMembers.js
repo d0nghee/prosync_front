@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MemberProfile from "../common/MemberProfile";
+import styled from "styled-components";
 
 export default function Example({ projectMembers }) {
   const [memberProfile, setMemberProfile] = useState({ show: false });
@@ -21,36 +22,33 @@ export default function Example({ projectMembers }) {
             </p>
           </div>
           <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-            {projectMembers.map(
-              (member) =>
-                member.status === "ACTIVE" && (
-                  <li key={member.memberId}>
-                    <div className="flex items-center gap-x-6">
-                      <img
-                        className="h-16 w-16 rounded-full"
-                        src={member.profileImage}
-                        alt=""
-                        onClick={() => {
-                          setMemberInfo({
-                            memberId: member.memberId,
-                            projectId: member.projectId,
-                          });
-                          setMemberProfile({ show: true });
-                        }}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <div>
-                        <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">
-                          {member.name}
-                        </h3>
-                        <p className="text-sm font-semibold leading-6 text-indigo-600">
-                          {member.authority}
-                        </p>
-                      </div>
-                    </div>
-                  </li>
-                )
-            )}
+            {projectMembers.map((member) => (
+              <li key={member.memberId}>
+                <div className="flex items-center gap-x-6">
+                  <MemberImage
+                    className="h-16 w-16 rounded-full"
+                    src={member.profileImage}
+                    alt=""
+                    onClick={() => {
+                      setMemberInfo({
+                        memberId: member.memberId,
+                        projectId: member.projectId,
+                      });
+                      setMemberProfile({ show: true });
+                    }}
+                    style={{ cursor: "pointer" }}
+                  />
+                  <div>
+                    <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">
+                      {member.name}
+                    </h3>
+                    <p className="text-sm font-semibold leading-6 text-indigo-600">
+                      {member.authority}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -67,3 +65,15 @@ export default function Example({ projectMembers }) {
     </>
   );
 }
+
+const MemberImage = styled.img`
+  border-radius: 5rem;
+  width: 80px;
+  height: 80px;
+  border: 5px solid rgba(255, 0, 0, 0);
+
+  &:hover {
+    cursor: pointer;
+    border: 5px solid #cdb4db;
+  }
+`;

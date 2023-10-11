@@ -1,11 +1,13 @@
 import { styled } from "styled-components";
 import { AiFillCaretDown } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileCard({ name, image, setMemberProfile }) {
+  const navigate= useNavigate();
   return (
-    <ProfileContainer onClick={() => setMemberProfile({show:true})}>
-      {image && <ProfileImage src={image} alt={image} />}
-      {name && <div>{name} 님 반갑습니다</div>}
+    <ProfileContainer>
+      {image && <ProfileImage src={image} alt={image} onClick={() => setMemberProfile({show:true})}/>}
+      {name && <div onClick={() => {navigate('/user/profile')}}>{name} 님 반갑습니다</div>}
       <div className="profile-notification">프로필</div>
     </ProfileContainer>
   );

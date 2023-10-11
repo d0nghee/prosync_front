@@ -132,6 +132,12 @@ export default function MyProject() {
           padding="0px"
           margin="0px 20px 0px 0px"
         >
+      <ProjectSearchBarContainer>
+        <ProjectSearchBar
+          onSearch={searchHandler}
+          padding="0px"
+          margin="0px 20px 0px 0px"
+        >
         </ProjectSearchBar>
       </ProjectSearchBarContainer>
       <FilterContainer>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 // TODO: 메뉴 밖 누르면 자동으로 닫히기
@@ -8,10 +8,28 @@ export default function ProjectFilterBar({
   onDefault,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [menu, setMenu] = useState('정렬');
+  const [menu, setMenu] = useState('정렬'); // 초기 상태 값을 설정
 
   const menuHandler = () => {
     setIsOpen((pre) => !pre);
+  };
+
+  const defaultFilter = () => {
+    setMenu('최신 순');
+    setIsOpen(false);
+    onDefault();
+  };
+
+  const bookmarkFilter = () => {
+    setMenu('내 북마크');
+    setIsOpen(false);
+    onBookmarkFilter();
+  };
+
+  const endDateFilter = () => {
+    setMenu('마감일 임박 순');
+    setIsOpen(false);
+    onendDateSorting();
   };
 
   return (
@@ -19,30 +37,9 @@ export default function ProjectFilterBar({
       <MenuButton onClick={menuHandler}>{menu}</MenuButton>
       {isOpen && (
         <MenuList>
-          <MenuItem
-            onClick={() => {
-              onDefault();
-              setMenu('최신 순');
-            }}
-          >
-            최신 순
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onBookmarkFilter();
-              setMenu('내 북마크');
-            }}
-          >
-            내 북마크
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onendDateSorting();
-              setMenu('마감일 임박 순');
-            }}
-          >
-            마감일 임박 순
-          </MenuItem>
+          <MenuItem onClick={defaultFilter}>최신 순</MenuItem>
+          <MenuItem onClick={bookmarkFilter}>내 북마크</MenuItem>
+          <MenuItem onClick={endDateFilter}>마감일 임박 순</MenuItem>
         </MenuList>
       )}
     </DropdownContainer>

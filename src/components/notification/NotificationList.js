@@ -5,8 +5,8 @@ import { deleteApi, patchApi } from "../../util/api";
 import NotificationTitle from "./NotificationTitle";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 import { tryFunc } from "../../util/tryFunc";
+import { useDispatch } from "react-redux";
 
 
 
@@ -63,6 +63,7 @@ const NotificationList = ({ notiPageList }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const dispatch = useDispatch();
 
   const handleCheckboxChange = useCallback((id, isChecked) => {
     if (isChecked) {
@@ -126,24 +127,14 @@ const NotificationList = ({ notiPageList }) => {
     
   };
 
-  const onNotiUpdateErrorHandler = {
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(`/auth?mode=login&returnUrl=${location.pathname}${location.search}`);
-    },
-    default: (error) => {
-      console.error("Unknown error:", error);
-    },
-  };
+
 
   const notiUpdateHandler = useCallback((isUpdateOrDelete) => {
     if (isUpdateOrDelete === "ALLDELETE" || selectedTargetIds.size > 0) {
       tryFunc(
         updateNoficiations,
         onNotiUpdateSuccessHandler,
-        onNotiUpdateErrorHandler
+        dispatch
       )(isUpdateOrDelete);
     } else {
       alert("0개의 알림을 선택하셨습니다. 1개 이상의 알림을 선택해주세요.");

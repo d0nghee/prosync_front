@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-export default function ProjectSearchBar({ onSearch, padding, margin}) {
+export default function ProjectSearchBar({ onSearch, padding, margin }) {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e) => {
@@ -41,16 +41,23 @@ export default function ProjectSearchBar({ onSearch, padding, margin}) {
 const SearchBarContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
+  margin-left: 50px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #cbdfea;
 `;
 
 const SearchInput = styled.input`
+  width: 100%;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-  width: 100%;
-  margin: 20px;
+  border: none;
+  border-radius: 4px;
+  &:focus {
+    outline: none;
+  }
 `;
 
 const SearchButton = styled.button`

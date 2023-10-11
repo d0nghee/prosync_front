@@ -9,6 +9,8 @@ import {
   postFileApi,
 } from '../../util/api';
 import DeleteProjectModal from './DeleteProjectModal';
+import { tryFunc } from '../../util/tryFunc';
+import { useDispatch } from 'react-redux';
 
 export default function ProjectForm({ project = {}, method }) {
   const [img, setImg] = useState('');
@@ -25,6 +27,7 @@ export default function ProjectForm({ project = {}, method }) {
   const [imgName, setImgName] = useState();
   const [newImg, setNewImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (method === 'PATCH') {
@@ -41,14 +44,20 @@ export default function ProjectForm({ project = {}, method }) {
       'https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_project_image.jpg'
     )
       return;
-    const response = await getFileApi(project.projectId, 'PROJECT');
-    console.log(response);
 
-    if (response.length > 0) {
-      setImgName(response[response.length - 1].fileName);
-      setImg(project.projectImage);
-      console.log('projectImage', project.projectImage);
-    } else return;
+    const setImgNameSuccess = (response) => {
+      if (response.length > 0) {
+        setImgName(response[response.length - 1].fileName);
+        setImg(project.projectImage);
+        console.log('projectImage', project.projectImage);
+      } else return;
+    };
+
+    tryFunc(
+      async () => await getFileApi(project.projectId, 'PROJECT'),
+      (response) => setImgNameSuccess(response),
+      dispatch
+    )();
   }
 
   async function ProjectHandler() {
@@ -56,23 +65,47 @@ export default function ProjectForm({ project = {}, method }) {
     if (method === 'POST') {
       //이미지 없을때 생성
       if (img === null || img === '') {
-        const project = await postApi('/projects', projectData);
-        const projectId = await project.data.projectId;
-        navigate(`/projects/${projectId}`);
+        const noImagePostSuccess = (response) => {
+          console.log('noImageCreateSuccess');
+          const projectId = response.data.projectId;
+          navigate(`/projects/${projectId}`);
+        };
+
+        const getNoImagePost = async () => {
+          const response = await postApi('/projects', projectData);
+          return response;
+        };
+        tryFunc(
+          getNoImagePost,
+          (response) => noImagePostSuccess(response),
+          dispatch
+        )();
+
         return;
       }
       // 이미지 있을때 생성
       else {
         const imgData = await postFileApi(img);
-        console.log('post imgData', imgData);
         const data = {
           ...projectData,
           fileId: imgData[0].fileId,
         };
+        const ImagePost = async () => {
+          const response = await postApi('/projects', data);
+          return response;
+        };
 
-        const project = await postApi('/projects', data);
-        const projectId = await project.data.projectId;
-        navigate(`/projects/${projectId}`);
+        const ImagePostSuccess = (response) => {
+          console.log('ImagePostSuccess');
+          const projectId = response.data.projectId;
+          navigate(`/projects/${projectId}`);
+        };
+
+        tryFunc(
+          ImagePost,
+          (response) => ImagePostSuccess(response),
+          dispatch
+        )();
       }
 
       // 프로젝트 수정
@@ -83,11 +116,17 @@ export default function ProjectForm({ project = {}, method }) {
           ...projectData,
           projectImage: null,
         };
-        await patchApi(`/projects/${project.projectId}`, updateData).then(
-          () => {
-            navigate(`/projects/${project.projectId}`);
-          }
-        );
+
+        const patchNoImage = async () => {
+          await patchApi(`/projects/${project.projectId}`, updateData);
+        };
+
+        tryFunc(
+          patchNoImage,
+          navigate(`/projects/${project.projectId}`),
+          dispatch
+        )();
+
         return;
         // 이미지 변경후 수정
       } else {
@@ -100,12 +139,15 @@ export default function ProjectForm({ project = {}, method }) {
           fileId: test,
         };
 
-        await patchApi(`/projects/${project.projectId}`, updateData).then(
-          () => {
-            navigate(`/projects/${project.projectId}`);
-            console.log('imgData', imgData);
-          }
-        );
+        const patchImage = async () => {
+          await patchApi(`/projects/${project.projectId}`, updateData);
+        };
+
+        tryFunc(
+          patchImage,
+          navigate(`/projects/${project.projectId}`),
+          dispatch
+        )();
       }
     }
   }

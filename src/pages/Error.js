@@ -2,9 +2,11 @@ import React from "react";
 import { useRouteError } from "react-router-dom";
 import MainNavigation from "../components/common/MainNavigation";
 import PageContent from "../components/common/PageContent";
+import { useState } from "react";
 
 export default function ErrorPage() {
   const error = useRouteError();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   let title = "An error occurred!";
   let message = "Something went wrong";
@@ -21,7 +23,7 @@ export default function ErrorPage() {
 
   return (
     <>
-      <MainNavigation />
+      <MainNavigation setMenuOpen={setMenuOpen}/>
       <PageContent title={title} message={message} />
     </>
   );

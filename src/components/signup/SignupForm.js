@@ -134,7 +134,7 @@ export default function SignupForm() {
       }).catch((error) => {
 
         if (error.response.status===422 && error.response.data.resultCode==="INCORRECT_FORMAT_EMAIL") {
-          alert("잘 못된 이메일 형식입니다.")
+          alert("잘못된 이메일 형식입니다.")
           return;
 
         }

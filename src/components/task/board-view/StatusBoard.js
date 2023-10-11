@@ -33,7 +33,8 @@ export default function StatusBoard({ list, projectMember }) {
         tryFunc(
           async () => await patchTaskApi(task.taskId, { taskStatusId }),
           (response) =>
-            dispatch(taskListAction.moveTask({ task, taskStatusId }))
+            dispatch(taskListAction.moveTask({ task, taskStatusId })),
+          dispatch
         )();
       }
     } else {

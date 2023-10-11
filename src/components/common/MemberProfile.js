@@ -11,6 +11,7 @@ import { style } from "@mui/system";
 const MemberProfile = ({ onClose, memberInformation }) => {
   const [memberProfile, setMemberProfile] = useState({});
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   const fetchMemberProfile = async (memberInformation) => {
     console.log("memberInformation");
@@ -29,10 +30,13 @@ const MemberProfile = ({ onClose, memberInformation }) => {
   const fetchMemberProfileSuccessHandler = (data) => {
     console.log("fetchMemberProfileSuccessHandler");
     console.log(data);
-    setMemberProfile(data);
+    const dateTimeString = data.createdAt;
+    setMemberProfile({...data,createdAt: dateTimeString.split(' ')[0]});
+    setLoading(false);
   };
 
   useEffect(() => {
+    setLoading(true); 
     tryFunc(
       fetchMemberProfile,
       fetchMemberProfileSuccessHandler,
@@ -42,36 +46,42 @@ const MemberProfile = ({ onClose, memberInformation }) => {
 
   console.log(memberProfile);
 
-  return (
-    <Modal onClose={onClose}>
+
+return (
+  <Modal onClose={onClose}>
+    {loading ? (
+      <Loading>Loading...</Loading>
+    ) : (
       <Profile>
-        <div className="board" />
-        <Information>
-          <img src={memberProfile.profileImage} />
-          <TextLine>
-            <div className="nameEmail">
-              <div>사용자 :</div>
-              <div>{memberProfile.nameEmail}</div>
+      <div className="board" />
+      <Information>
+        <img src={memberProfile.profileImage} />
+        <TextLine>
+          <div className="nameEmail">
+            <div>사용자 :</div>
+            <div>{memberProfile.nameEmail}</div>
+          </div>
+          <div className="createdAt">
+            <div>생성날짜 :</div>
+            <div>{memberProfile.createdAt}</div>
+          </div>
+          {memberProfile.authority && (
+            <div className="authority">
+              <div>Authority: </div>
+              <div>{memberProfile.authority}</div>
             </div>
-            <div className="createdAt">
-              <div>생성날짜 :</div>
-              <div>{memberProfile.createdAt}</div>
-            </div>
-            {memberProfile.authority && (
-              <div className="authority">
-                <div>Authority: </div>
-                <div>{memberProfile.authority}</div>
-              </div>
-            )}
-          </TextLine>
-        </Information>
-        <Introduction>
-          <div>Intro</div>
-          <div>{memberProfile.intro}</div>
-        </Introduction>
-      </Profile>
-    </Modal>
-  );
+          )}
+        </TextLine>
+      </Information>
+      <Introduction>
+        <div>Intro</div>
+        <div>{memberProfile.intro}</div>
+      </Introduction>
+    </Profile>
+    )}
+   
+  </Modal>
+);
 };
 
 export default MemberProfile;
@@ -176,3 +186,18 @@ const Introduction = styled.div`
     font-weight: 700;
   }
 `;
+
+const Loading = styled.div`
+display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 47rem;
+  width: 40rem;
+  border-radius: 30px;
+  background-color: #a2d2ff;
+  padding-top: 45%;
+  padding-left: 27%;
+  font-size: 4rem;
+  font-weight: 800;
+
+`

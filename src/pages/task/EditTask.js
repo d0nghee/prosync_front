@@ -43,7 +43,7 @@ export default function EditTask() {
     tryFunc(
       async () => await getFileApi(params.taskId, "TASK"),
       (files) => setTaskFiles(files)
-    );
+    )();
   }, [dispatch, params.taskId]);
 
   const addComment = (comment) => {

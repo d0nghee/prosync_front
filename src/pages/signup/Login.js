@@ -18,7 +18,7 @@ export default function Login() {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const signup = useSelector((state) => state.signup);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
@@ -85,7 +85,6 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    setLoading(true);
     const errorHandlers = {
       401: (error) => {
         console.log(error.response.status);
@@ -118,9 +117,7 @@ export default function Login() {
       }
     };
 
-    tryFunc(loginFunc, onLoginSuccess, dispatch)().finally(() =>
-      setLoading(false)
-    );
+    tryFunc(loginFunc, onLoginSuccess, dispatch)();
   };
 
   const handleSignup = () => {
@@ -149,7 +146,6 @@ export default function Login() {
         />
       </LoginButtonContainer>
 
-      {loading && <Loading />}
     </div>
   );
 }

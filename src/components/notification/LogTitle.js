@@ -8,7 +8,6 @@ const TitleContainer = styled.div`
   align-items: center;
   margin-bottom: -0.5%;
   position: relative;
-  color: blueviolet;
   box-shadow: 2px 2px 2px gray;
   font-weight: 900;
   border: #707070;

@@ -51,7 +51,8 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   useEffect(() => {
     tryFunc(
       async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
-      (projectMembers) => setProjectMembers(projectMembers)
+      (projectMembers) => setProjectMembers(projectMembers),
+      dispatch
     )();
     if (method === "POST") {
       dispatch(taskMembersAction.setTaskMembers([]));
@@ -86,15 +87,15 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     hasError: detailHasError,
   } = useFormInput(
     (value) =>
-      value.trim() !== "" &&
-      value.trim() !== "<p><br></p>" &&
-      value.length <= 800
+      value.replace(/<[^>]*>/g, "").trim() !== "" &&
+      value.replace(/<[^>]*>/g, "").length <= 1000
   );
 
   useEffect(() => {
     tryFunc(
       async () => await getTaskStatusApi(params.projectId),
-      (list) => dispatch(taskStatusActions.setList(list))
+      (list) => dispatch(taskStatusActions.setList(list)),
+      dispatch
     )();
 
     if (task) {
@@ -196,7 +197,8 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       // api 요청
       tryFunc(
         () => postFileApi(fileList),
-        (files) => setSelectedFiles((prv) => [...prv, ...files])
+        (files) => setSelectedFiles((prv) => [...prv, ...files]),
+        dispatch
       )();
     }
   };
@@ -260,14 +262,18 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                   </div>
                   {detailHasError && (
                     <t.OneErrorMessage>
-                      상세내용은 1자 이상 800자 이내로 입력해주세요.
+                      상세내용은 1자 이상 1000자 이내로 입력해주세요.
                     </t.OneErrorMessage>
                   )}
                 </div>
                 {taskFiles && taskFiles.length !== 0 && (
                   <div>
                     <div>현재 파일 목록</div>
-                    <FileList fileList={taskFiles} deleteFile={deleteFile} />
+                    <FileList
+                      fileList={taskFiles}
+                      deleteFile={deleteFile}
+                      deleteButton={true}
+                    />
                   </div>
                 )}
                 <div>

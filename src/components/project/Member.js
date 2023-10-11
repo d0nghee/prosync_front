@@ -1,22 +1,19 @@
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import AdminModal from './AdminModal';
+
 import { tryFunc } from '../../util/tryFunc';
 import { patchApi } from '../../util/api';
 import { useNavigate } from 'react-router-dom';
-import {
-  selectCheckbox,
-  toggleCheckbox,
-} from '../../redux/reducers/member/memberCheckboxSlice';
+
 import {
   addAuthority,
   removeAuthority,
 } from '../../redux/reducers/member/memberAuthoritySlice';
 import { useSelector } from 'react-redux';
 
-export default function Member({ member }) {
-  const checkboxState = useSelector(selectCheckbox);
+export default function Member({ member, isChecked, onCheckboxChange }) {
+  // const checkboxState = useSelector(selectCheckbox);
   const dispatch = useDispatch();
   const originalAuthority = member.authority;
   const [newAuthority, setNewAuthority] = useState('');
@@ -24,8 +21,6 @@ export default function Member({ member }) {
   const buttonRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const isChecked =
-    checkboxState.checkbox[member.memberProjectId]?.checked || false;
   const adminData = {
     authority: 'ADMIN',
   };
@@ -69,12 +64,15 @@ export default function Member({ member }) {
   // 위임 수락
   const handleConfirm = () => {
     console.log('handleConfirm');
-    tryFunc(mandateAdmin, mandateAdminSuccess, mandateAdminError)();
+    tryFunc(
+      mandateAdmin,
+      navigate(`/projects/${member.projectId}`),
+      dispatch
+    )();
     setIsModalOpen(false);
   };
 
   const mandateAdmin = async () => {
-    console.log('mandateAdmin');
     const response = patchApi(
       `/project-members/${member.memberProjectId}`,
       adminData
@@ -82,45 +80,22 @@ export default function Member({ member }) {
     return response;
   };
 
-  const mandateAdminSuccess = () => {
-    navigate('/projects');
-  };
-
-  const mandateAdminError = {
-    500: (error) => {
-      console.error('Server Error:', error);
-      alert('서버에서 오류가 발생했습니다.');
-    },
-    404: (error) => {
-      console.error('Not Found:', error);
-      alert('프로젝트 정보를 찾을 수 없습니다.');
-    },
-    default: (error) => {
-      console.error('Unknown error:', error);
-      alert('프로젝트 목록을 가져오는 중 오류가 발생하였습니다.');
-    },
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleAdminButtonClick = () => {
-    handleOpenModal();
-  };
-
-  const handleMemberCheck = () => {
-    dispatch(toggleCheckbox({ id: member.memberProjectId }));
+    const isConfirmed = window.confirm('정말로 ADMIN 권한을 위임하시겠습니까?');
+    if (isConfirmed) {
+      handleConfirm();
+    }
   };
 
   return (
     <>
       <MemberContainer>
         <LeftContainer>
-          <CheckboxContainer>
-            <HiddenCheckbox checked={isChecked} onChange={handleMemberCheck} />
-            <StyledCheckbox checked={isChecked} />
-          </CheckboxContainer>
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={onCheckboxChange}
+          />
           <ProfileImage
             src={member.profileImage}
             alt={`${member.name}'s profile`}
@@ -154,11 +129,6 @@ export default function Member({ member }) {
           </StyledAuthoritySelect>
         </CenterContainer>
       </MemberContainer>
-      <AdminModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        handleConfirm={handleConfirm}
-      />
     </>
   );
 }
@@ -168,7 +138,12 @@ const MemberContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  background: #f5f6f9;
+  background: #f8f9f6;
+  padding: 20px;
+
+  &:hover {
+    background-color: #f3f3f3;
+  }
 `;
 
 const LeftContainer = styled.div`
@@ -188,28 +163,6 @@ const CenterContainer = styled.div`
   flex: 1;
 `;
 
-const CheckboxContainer = styled.div`
-  margin-left: 20px;
-  display: inline-block;
-  vertical-align: middle;
-`;
-
-const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
-  opacity: 0;
-  position: absolute;
-  cursor: pointer;
-`;
-
-const StyledCheckbox = styled.div`
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background: ${(props) => (props.checked ? '#5B67CA' : '#E0E0E0')};
-  border-radius: 4px;
-  transition: all 150ms;
-  cursor: pointer;
-`;
-
 const ProfileImage = styled.img`
   width: 50px;
   height: 50px;
@@ -218,7 +171,7 @@ const ProfileImage = styled.img`
 `;
 
 const MemberName = styled.span`
-  margin-left: 10px;
+  margin-left: 30px;
   cursor: pointer;
 `;
 
@@ -239,7 +192,7 @@ const StyledAuthoritySelect = styled.select`
 
 const AdminButton = styled.button`
   display: block;
-  position: absolute;
+
   top: 100%; // 이름 바로 아래에 위치
   left: 0; // 이름의 왼쪽에 정렬
   background-color: #6672fb;

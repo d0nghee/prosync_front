@@ -74,6 +74,7 @@ const LogContainer = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-top: 0.3%;
   }
 
   & > div:nth-child(2):hover {
@@ -86,6 +87,8 @@ const LogContainer = styled.div`
     left: 80%;
     top: 20%;
     width: 20%;
+    padding-top: 0.3%;
+
   }
 
   
@@ -113,13 +116,13 @@ const Code = styled.div`
   padding: 0.5%;
   color: white;
   font-weight: 800;
-  font-size: smaller;
+  font-size: 1rem;
   border-radius: 10px;
-  width: 16%;
+  width: 20%;
   text-align: center;
   position: absolute;
   height: 80%;
-  padding-top: 1%;
+  padding-top: 0.7%;
 `;
 
 const Log = ({ log }) => {
