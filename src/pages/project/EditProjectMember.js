@@ -62,8 +62,25 @@ export default function EditProjectMember() {
 
 export async function loader({ params }) {
   const projectId = params.projectId;
-  const data = await getApi(`/projects/${projectId}/members`);
-  return data;
+  try {
+    const data = await getApi(`/projects/${projectId}/members`);
+    return data;
+  } catch (error) {
+    console.log(error);
+    if (error === undefined) {
+      console.error("An undefined error occured!");
+      alert("알 수 없는 오류가 발생했습니다.");
+    } else if (error.code === "ERR_NETWORK") {
+      console.error("네트워크 에러 발생:", error);
+      alert(
+        "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+      );
+      
+    } else if (error.response && error.response.status === 401) {
+      alert('로그인이 만료되었습니다.');
+    } 
+  }
+  
 }
 const Container = styled.div`
   /* position: relative; */

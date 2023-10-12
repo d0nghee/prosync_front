@@ -7,7 +7,7 @@ let maxDelay = 120000;     // 120초
 function initializeEventSource(setEventSource, addToast, timerIds) {
   const memberId = getCookie("memberId");
   const newEventSource = new EventSource(
-    `http://localhost:8080/api/v1/subscribe/${memberId}`
+    `http://13.209.219.235:8080/api/v1/subscribe/${memberId}`
   );
 
   newEventSource.addEventListener("open", () => {
