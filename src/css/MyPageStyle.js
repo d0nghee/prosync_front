@@ -1,14 +1,9 @@
 import styled from 'styled-components'
 
-export const GridContainer = styled.div`
-    margin: 40px 0 0 20px;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr 6fr;
-    grid-template-rows: 1fr ;
-    grid-gap: 10px;
-    height: 100%;
-    width: 100%;
+export const MypageContainer = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: row;
 `
 
 export const Header = styled.div`
@@ -19,6 +14,7 @@ export const Header = styled.div`
 `
 
 export const SideBar = styled.div`
+    margin-top: 20px;
     color: white;
     display: flex;
     flex-direction: column;
@@ -26,16 +22,18 @@ export const SideBar = styled.div`
 `
 
 export const Content = styled.div`
+  width: 60%;
   margin-left: 10px;
   display: grid;
-  grid-template-columns: 80px 200px 200px 200px 200px;
-  grid-template-rows: 50px 200px 200px 200px;
+  grid-template-columns: 200px 200px 200px 200px;
+  grid-template-rows: 50px 200px 200px 200px 200px;
   gap: 15px;
   text-align: center;
 `
 
 export const ProjectSearchBarContainer = styled.div`
-  grid-column: 3/5;
+  margin-top: 15px;
+  grid-column: 2/5;
   display: flex;
   flex-direction: row;
 `
@@ -43,32 +41,34 @@ export const ProjectSearchBarContainer = styled.div`
 export const PaginationGridContainer = styled.div`
   margin-top: 60px;
   margin-left : 40px;
-  grid-row: 5/5;
-  grid-column: 3/6;
+  grid-row: 6/6;
+  grid-column: 2/5;
 
 `
 
 export const FilterContainer = styled.div`
+  margin-top: 15px;
   grid-column: 5/5;
   display: flex;
   flex-direction: row;
 `
 
 export const ProjectContent = styled.div`
-  margin-top: 70px;
+  margin-left: 50px;
+  margin-top: 50px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr); 
+  grid-template-columns: repeat(4, 1fr); 
   gap: 20px;
 `
 
 export const PostItem = styled.div`
-  width: 250px;
+  width: 270px;
   margin-bottom: 20px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
   transition: all 0.3s ease;
-  height: 300px;
+  height: 350px;
   margin-right: 20px;
 
   &:hover {
@@ -131,7 +131,7 @@ export const ListItemButton = styled.button`
 `
 
 export const InputText = styled.input`
-    width: 40%;
+    width: 400px;
     border: 2px #7B69B7 solid;
     border-radius: 5px;
     padding: 10px;
@@ -140,7 +140,7 @@ export const InputText = styled.input`
 `
 export const InputTextArea = styled.textarea`
     width: 70%;
-    height: 10vh;
+    height: 15vh;
     border: 2px solid #7B69B7;
     border-radius: 5px;
     padding: 10px;
@@ -189,6 +189,8 @@ export const PaginationContainer = styled.div`
 
 export const PageButton = styled.button`
   /* 페이지 버튼 스타일 */
+  width: 40px;
+  height: 40px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -223,7 +225,7 @@ export const ListItemContainer = styled.div`
 // 프로젝트 리스트
 export const PostListContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap : 20px;
 `;
 
@@ -233,17 +235,13 @@ export const ProjectImage = styled.img`
     margin-right: 50px;
     width : 200px;
     object-fit: cover;
+    max-height: 150px;
+    overflow-y: auto;
     cursor: pointer;
+    
 `
 
 
-
-export const BookmarkWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 10px;
-  justify-self: start;
-`;
 
 export const ProjectTitle = styled.div`
   font-size: 18px;
@@ -258,6 +256,7 @@ export const ProjectTitle = styled.div`
 `;
 
 export const PostDescription = styled.div`
+  margin-top: 10px;
   font-size: 14px;
   color: #555;
   text-align: left;
@@ -275,6 +274,4 @@ export const PostsDate = styled.span`
 `;
 
 export const NullPost = styled.div`
-  grid-column: 3/3;
-  grid-row: 3/3;
 `
