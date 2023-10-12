@@ -1,32 +1,33 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export const FormContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 `;
 
 export const InputContent = styled.input`
-    width: 40%;
-    height: 2rem;
-    border-top : 0;
-    border-left : 0;
-    border-right : 0;
-    margin-top: 1.5rem;
-    font-size: large;
+  width: ${({ wid }) => wid || "65%"};
+  height: 2rem;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font-size: large;
+  outline: none;
 `;
 
 export const LabelContent = styled.label`
-    text-align: left;
-    width: 40%;
-    margin-top: 1.5rem;
-    font-size: larger;
-    font-weight: 60;
+  text-align: left;
+  width: 40%;
+  font-size: larger;
+  font-weight: 60;
 `;
 
 export const LoginButtonContainer = styled.div`
-    margin-top : 5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: center;
+  width: 100%;
+`;

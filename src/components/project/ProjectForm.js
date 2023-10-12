@@ -134,15 +134,11 @@ export default function ProjectForm({ project = {}, method }) {
           ...projectData,
         };
 
-        const patchNoImage = async () => {
-          setIsLoading(true);
-
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
-
-        tryFunc(
-          patchNoImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
         return;
@@ -157,14 +153,13 @@ export default function ProjectForm({ project = {}, method }) {
           projectImage: null,
         };
 
-        const patchNoImage = async () => {
-          setIsLoading(true);
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
+        setIsLoading(true);
 
-        tryFunc(
-          patchNoImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
 
@@ -182,15 +177,13 @@ export default function ProjectForm({ project = {}, method }) {
           fileId: test,
         };
 
-        const patchImage = async () => {
-          setIsLoading(true);
+        setIsLoading(true);
 
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
-
-        tryFunc(
-          patchImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
       }
