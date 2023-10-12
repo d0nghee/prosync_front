@@ -1,25 +1,27 @@
-import { useEffect, useState } from "react";
-import ProjectMember from "../../components/project/ProjectMember";
-import ProjectMemberSearchBar from "../../components/project/ProjectMemberSearchBar";
-import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
-import { getApi, patchApi } from "../../util/api";
-import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { selectMembers } from "../../redux/reducers/member/memberAuthoritySlice";
-import { tryFunc } from "../../util/tryFunc";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from 'react';
+import ProjectMember from '../../components/project/ProjectMember';
+import ProjectMemberSearchBar from '../../components/project/ProjectMemberSearchBar';
+import { useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
+import { getApi, patchApi } from '../../util/api';
+import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
+import { tryFunc } from '../../util/tryFunc';
+import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 export default function EditProjectMember() {
-  const data = useRouteLoaderData("editmember");
+  const data = useRouteLoaderData('editmember');
   const [members, setMembers] = useState(data.data.data);
   const { projectId } = useParams();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const authorityState = useSelector(selectMembers);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (input) => {
-    console.log("handleInputChange");
+    console.log('handleInputChange');
     setSearch(input);
   };
 
@@ -28,17 +30,28 @@ export default function EditProjectMember() {
   }, [search]);
 
   const getMemberHandler = async () => {
-    tryFunc(
-      await getApi(`/projects/${projectId}/members?search=${search}`),
-      (response) => setMembers(response.data.data),
-      dispatch
-    )();
+    const getMembers = async () => {
+      setIsLoading(true);
+
+      const response = await getApi(
+        `/projects/${projectId}/members?search=${search}`
+      );
+      return response;
+    };
+
+    const getMembersSuccess = (response) => {
+      setIsLoading(false);
+      setMembers(response.data.data);
+    };
+
+    tryFunc(getMembers, (response) => getMembersSuccess(response), dispatch)();
   };
 
   const submitHandler = () => {
-    const isConfirmed = window.confirm("변경사항을 저장하시겠습니까?");
+    const isConfirmed = window.confirm('변경사항을 저장하시겠습니까?');
 
     if (!isConfirmed) return;
+    setIsLoading(true);
     const patchMemberAuthority = authorityState.map((item) => {
       return patchApi(`/project-members/${item.memberProjectId}`, {
         authority: item.authority,
@@ -49,12 +62,17 @@ export default function EditProjectMember() {
       setMembers((prevMembers) => [...prevMembers]);
       navigate(`/projects/${projectId}`);
     });
+    setIsLoading(true);
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <Container>
       <SubmitButton onClick={submitHandler}>저장</SubmitButton>
-      <ProjectMemberSearchBar onSearch={handleInputChange} />
+      <SearchBarContainer>
+        <ProjectMemberSearchBar onSearch={handleInputChange} />
+      </SearchBarContainer>
       <ProjectMember members={members} projectId={projectId} />
     </Container>
   );
@@ -83,7 +101,7 @@ export async function loader({ params }) {
   
 }
 const Container = styled.div`
-  /* position: relative; */
+  height: 1000px;
 `;
 
 const SubmitButton = styled.button`
@@ -99,4 +117,9 @@ const SubmitButton = styled.button`
   &:hover {
     background-color: #5b67ca;
   }
+`;
+const SearchBarContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;

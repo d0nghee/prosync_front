@@ -11,9 +11,10 @@ import {
 import DeleteProjectModal from './DeleteProjectModal';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 export default function ProjectForm({ project = {}, method }) {
-  const [img, setImg] = useState('');
+  const [img, setImg] = useState(null);
   const [projectData, setProjectData] = useState({
     title: project.title || '',
     intro: project.intro || '',
@@ -27,11 +28,12 @@ export default function ProjectForm({ project = {}, method }) {
   const [imgName, setImgName] = useState();
   const [newImg, setNewImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const [currentImg, setCurrentImg] = useState();
 
   useEffect(() => {
     if (method === 'PATCH') {
-      console.log('patch useEffect');
       setImgData();
     }
   }, []);
@@ -61,17 +63,29 @@ export default function ProjectForm({ project = {}, method }) {
   }
 
   async function ProjectHandler() {
+    console.log('img', img);
+    if (
+      !projectData.title ||
+      !projectData.intro ||
+      !projectData.startDate ||
+      !projectData.endDate
+    ) {
+      alert('필요한 데이터를 모두 입력해주세요.');
+      return;
+    }
     // 프로젝트 생성
     if (method === 'POST') {
       //이미지 없을때 생성
       if (img === null || img === '') {
         const noImagePostSuccess = (response) => {
-          console.log('noImageCreateSuccess');
+          setIsLoading(true);
           const projectId = response.data.projectId;
           navigate(`/projects/${projectId}`);
         };
 
         const getNoImagePost = async () => {
+          setIsLoading(false);
+
           const response = await postApi('/projects', projectData);
           return response;
         };
@@ -91,12 +105,15 @@ export default function ProjectForm({ project = {}, method }) {
           fileId: imgData[0].fileId,
         };
         const ImagePost = async () => {
+          setIsLoading(true);
           const response = await postApi('/projects', data);
           return response;
         };
 
         const ImagePostSuccess = (response) => {
           console.log('ImagePostSuccess');
+          setIsLoading(false);
+
           const projectId = response.data.projectId;
           navigate(`/projects/${projectId}`);
         };
@@ -110,14 +127,43 @@ export default function ProjectForm({ project = {}, method }) {
 
       // 프로젝트 수정
     } else if (method === 'PATCH' && project.projectId) {
+      console.log('img들어왓다', img);
+      console.log('imgqqq', newImg);
+
+      // 이미지 수정 없이 기존 이미지 그대로
+      if (newImg === undefined && img) {
+        console.log('탄다1');
+
+        const updateData = {
+          ...projectData,
+        };
+
+        const patchNoImage = async () => {
+          setIsLoading(true);
+
+          await patchApi(`/projects/${project.projectId}`, updateData);
+        };
+
+        tryFunc(
+          patchNoImage,
+          navigate(`/projects/${project.projectId}`),
+          dispatch
+        )();
+        return;
+      }
+
       // 이미지 지울고 수정
       if (img === null || img === '') {
+        console.log('탄다2');
+
         const updateData = {
           ...projectData,
           projectImage: null,
         };
 
         const patchNoImage = async () => {
+          setIsLoading(true);
+
           await patchApi(`/projects/${project.projectId}`, updateData);
         };
 
@@ -130,6 +176,8 @@ export default function ProjectForm({ project = {}, method }) {
         return;
         // 이미지 변경후 수정
       } else {
+        console.log('탄다3');
+
         const imgData = await postFileApi(img);
         console.log('imgData', imgData);
         const test = await imgData[0].fileId;
@@ -140,6 +188,8 @@ export default function ProjectForm({ project = {}, method }) {
         };
 
         const patchImage = async () => {
+          setIsLoading(true);
+
           await patchApi(`/projects/${project.projectId}`, updateData);
         };
 
@@ -212,8 +262,11 @@ export default function ProjectForm({ project = {}, method }) {
 
   const handleImageDelete = () => {
     setImg(null);
+    setNewImg(null);
     setImgName(null);
   };
+
+  if (isLoading) return <LoadingSpinner />; // 로딩 메시지
 
   return (
     <ProjectContainer>
@@ -231,7 +284,7 @@ export default function ProjectForm({ project = {}, method }) {
           onChange={handleInputChange}
         />
         <Label>프로젝트 소개</Label>
-        {newImg ? <SelectedImage src={newImg} /> : <SelectedImage src={img} />}
+
         <TextArea
           name="intro"
           value={projectData.intro}
@@ -272,16 +325,18 @@ export default function ProjectForm({ project = {}, method }) {
 
         <Label>프로젝트 이미지</Label>
         <ImageInfoContainer>
-          <label onClick={imgClickHandler}>
-            {method === 'PATCH' && imgName}
-          </label>
-          {imgName && (
-            <DeleteImageButton onClick={handleImageDelete}>
-              ❌
-            </DeleteImageButton>
-          )}
+          {(newImg || img) && <SelectedImage src={newImg ? newImg : img} />}
+          <LabelContainer>
+            <label onClick={imgClickHandler}>{imgName}</label>
+            {img && (
+              <DeleteImageButton onClick={handleImageDelete}>
+                ❌
+              </DeleteImageButton>
+            )}
+          </LabelContainer>
         </ImageInfoContainer>
-        <Input type="file" onChange={handleImageChange} />
+
+        <ImgInput type="file" onChange={handleImageChange} />
 
         <CheckboxContainer>
           <Label>
@@ -313,7 +368,8 @@ const ImageInfoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  /* margin-bottom: 10px; */
 `;
 
 const DeleteImageButton = styled.button`
@@ -337,13 +393,8 @@ const ProjectContainer = styled.div`
   margin-top: 30px;
   width: 70%;
   padding: 20px;
-  height: 800px;
+  height: 1000px;
   gap: 40px; // 메인과 사이드 간의 간격 조절
-`;
-const SelectedImage = styled.img`
-  max-width: 50%; // 이미지의 최대 너비를 컨테이너 너비로 제한
-  height: auto; // 원본 이미지의 비율을 유지
-  margin-bottom: 15px; // 다른 요소와의 간격 조절
 `;
 
 const MainContentContainer = styled.div`
@@ -351,20 +402,35 @@ const MainContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* border: 2px solid #5b67ca; */
+  padding: 20px;
+  height: 800px;
 `;
 
 const SideContentContainer = styled.div`
   flex-basis: 250px; // 또는 원하는 너비로 설정
+  height: 700px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  justify-content: space-between; // 사이드 컨텐츠의 상단과 하단 내용을 분리
+  /* justify-content: space-between;  */
+  border: 2px solid #5b67ca;
+  padding: 20px;
+`;
+const SelectedImage = styled.img`
+  max-width: 100%;
+  height: 300px;
+  margin-bottom: 15px;
+`;
+const LabelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   gap: 5px;
-  margin-top: auto; // 버튼을 사이드 컨테이너의 하단으로 이동
 `;
 const Input = styled.input`
   padding: 8px;
@@ -372,8 +438,20 @@ const Input = styled.input`
   border-top: none;
   border-right: none;
   border-left: none;
+  height: 30px;
+
   border-bottom: 2px solid #5b67ca;
-  flex: 1;
+`;
+
+const ImgInput = styled.input`
+  padding: 8px;
+  margin-bottom: 10px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  height: 40px;
+
+  border-bottom: 2px solid #5b67ca;
 `;
 
 const TextArea = styled.textarea`
@@ -382,8 +460,10 @@ const TextArea = styled.textarea`
   border-top: none;
   border-right: none;
   border-left: none;
-  border-bottom: 2px solid #5b67ca;
-  height: 300px;
+  border: 2px solid #5b67ca;
+  height: 450px;
+  resize: none;
+  font-size: 18px;
 `;
 
 const Label = styled.label`
@@ -391,6 +471,7 @@ const Label = styled.label`
   font-weight: bold;
   display: flex;
   align-items: center;
+  font-size: 20px;
 `;
 
 const Radio = styled.input.attrs({ type: 'radio' })`

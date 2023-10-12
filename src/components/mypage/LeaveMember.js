@@ -5,8 +5,6 @@ import { Content, GridContainer, InputText } from '../../css/MyPageStyle'
 import { deleteApi } from '../../util/api'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 
-
-import { tryFunc } from '../../util/tryFunc'
 import { useDispatch } from 'react-redux'
 import DeleteImg from '../../assets/icon/mypage_icon5.png'
 
