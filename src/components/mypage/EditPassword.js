@@ -10,6 +10,7 @@ import PasswordCheck from "../signup/PasswordCheck";
 import { passwordValidate } from "../../util/regex";
 import DoubleCheck from "../signup/DoubleCheck";
 import styled from 'styled-components'
+
 import PwImage from '../../assets/icon/mypage_icon4.png'
 
 export default function EditPassword() {
@@ -37,6 +38,7 @@ export default function EditPassword() {
   const modifyPassword = () => {
     if (!passwordValidate(mypage.memberInfo.password)) {
       alert("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요.");
+
 
       setIsPasswordNotCorrect(true);
       return;

@@ -276,8 +276,20 @@ const CustomFileUpload = styled.label`
 const FileInput = styled.input`
   display: none;
 
+
 `;
 
+const ProfileGridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  margin-left: 20px;
+  max-width: 1200px;
+`;
 const ImageContainer = styled.div`
   margin-left: 100px;
   margin-top: 70px;
@@ -293,6 +305,12 @@ const ContentHeader = styled.h1`
   text-align: center;
   margin-left: 40px;
 `
+const FileContainer = styled.div`
+  margin-top: 80px;
+  grid-column: 3/4;
+  grid-row: 1/2;
+  
+`;
 
 const InputContainer = styled.div`
   margin-left: 230px;
@@ -300,12 +318,6 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
 `
-const FileContainer = styled.div`
-  margin-top: 80px;
-  grid-column: 3/4;
-  grid-row: 1/2;
-  
-`;
 const DivContainer = styled.div`
   margin-left: 100px;
   grid-column: 1/10;
