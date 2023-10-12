@@ -51,6 +51,7 @@ export default function EditProjectMember() {
     const isConfirmed = window.confirm('변경사항을 저장하시겠습니까?');
 
     if (!isConfirmed) return;
+    setIsLoading(true);
     const patchMemberAuthority = authorityState.map((item) => {
       return patchApi(`/project-members/${item.memberProjectId}`, {
         authority: item.authority,
@@ -61,6 +62,7 @@ export default function EditProjectMember() {
       setMembers((prevMembers) => [...prevMembers]);
       navigate(`/projects/${projectId}`);
     });
+    setIsLoading(true);
   };
 
   if (isLoading) return <LoadingSpinner />;
@@ -68,7 +70,9 @@ export default function EditProjectMember() {
   return (
     <Container>
       <SubmitButton onClick={submitHandler}>저장</SubmitButton>
-      <ProjectMemberSearchBar onSearch={handleInputChange} />
+      <SearchBarContainer>
+        <ProjectMemberSearchBar onSearch={handleInputChange} />
+      </SearchBarContainer>
       <ProjectMember members={members} projectId={projectId} />
     </Container>
   );
@@ -96,4 +100,9 @@ const SubmitButton = styled.button`
   &:hover {
     background-color: #5b67ca;
   }
+`;
+const SearchBarContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { getCookie } from '../../util/cookies';
 import { GrUserSettings } from 'react-icons/gr';
 import { AiFillEdit } from 'react-icons/ai';
+import { useEffect, useState } from 'react';
 
 export default function ProjectInfo({ projectMembers }) {
   const data = useLoaderData();

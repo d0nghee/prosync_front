@@ -74,6 +74,7 @@ export default function ProjectMember({ members, projectId }) {
     setUpdateMembers(updatedMembers);
   };
   const handleInvite = () => {
+    setIsLoading(true);
     const invitePost = async () => {
       const response = await postApi(`/projects/${projectId}/invitation`);
       console.log('invitePost', response);
@@ -85,6 +86,7 @@ export default function ProjectMember({ members, projectId }) {
       const inviteCode = response.data.data.inviteCode;
       setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
       setIsModalOpen(true);
+      setIsLoading(false);
     };
     tryFunc(invitePost, (response) => invitePostSuccess(response), dispatch)();
   };
