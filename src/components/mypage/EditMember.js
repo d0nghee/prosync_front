@@ -157,7 +157,7 @@ export default function EditMember() {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-
+    console.log("파일kkkk", files)
     if (files.length !== 1) {
       alert("한건만 선택하세요.");
       return;
@@ -186,35 +186,26 @@ export default function EditMember() {
   return (
     // <ProfileGridContainer>
     <>
-
-      <FileContainer>
-        <ProfileImage src={mypage.memberInfo.profileImage} />
-      </FileContainer>
       <ImageContainer>
         <SettingImg src={MypageImg} alt="Mypage Icon" />
         <ContentHeader>
           프로필 수정
         </ContentHeader>
       </ImageContainer>
+      <FileContainer>
+        <ProfileImage src={mypage.memberInfo.profileImage} />
       <InputContainer>
-        <div
-          style={{
-            width: "100%",
-            marginTop: "30px",
-            marginLeft: "5rem",
-          }}
-        >
-          <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
-          <FileInput
-            type="file"
-            id="file-upload"
-            onChange={handleFileChange}
-          ></FileInput>
-        </div>
+        <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
+        <FileInput
+          type="file"
+          id="file-upload"
+          onChange={handleFileChange}
+        ></FileInput>
       </InputContainer>
+      </FileContainer>
       <DivContainer>
         <CustomDiv>
-          <Label>이름 입력 : &nbsp;&nbsp;&nbsp;&nbsp;</Label>
+          <Label>이름 입력 : &nbsp;&nbsp;&nbsp;</Label>
           <InputText
             type="text"
             name="name"
@@ -239,7 +230,7 @@ export default function EditMember() {
         <CustomDiv style={{ justifyContent: "center" }}>
           <Button
             backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
-            width="300px"
+            width="30%"
             label="수정"
             color="#FFDAB9"
             onClick={handleEdit}
@@ -247,7 +238,7 @@ export default function EditMember() {
           ></Button>
           <Button
             backgroundColor="#E9967A"
-            width="100%"
+            width="30%"
             label="취소"
             color="#FFDAB9"
             onClick={handleCancel}
@@ -261,15 +252,15 @@ export default function EditMember() {
 
 const ProfileImage = styled.img`
   width: 20rem;
+  height: 20rem;
   border: 5px solid #7b69b7;
   border-radius: 10rem;
-  margin-left: 100px;
+  margin-left: 150px;
 `;
 
 const CustomFileUpload = styled.label`
   width: 150px;
   border: 1px solid #ccc;
-  display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
   background-color: #7b69b7;
@@ -288,11 +279,13 @@ const FileInput = styled.input`
 `;
 
 const ImageContainer = styled.div`
+  margin-left: 100px;
+  margin-top: 70px;
   display: flex;
   flex-direction: row;
   width: 500px;
   height: 200px;
-  grid-column: 2/2;
+  grid-column: 1/2;
 `
 
 const ContentHeader = styled.h1`
@@ -302,23 +295,21 @@ const ContentHeader = styled.h1`
 `
 
 const InputContainer = styled.div`
-  margin-left: 200px;
-  margin-top: 120px;
-  grid-column: 5/5;
-  grid-row : 2/2;
+  margin-left: 230px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 `
 const FileContainer = styled.div`
   margin-top: 80px;
-  grid-column: 4/4;
+  grid-column: 3/4;
   grid-row: 1/2;
   
 `;
 const DivContainer = styled.div`
-  width: 1000px;
-  margin-top: 300px;
-  margin-left: 250px;
-  grid-column: 1/6;
-  grid-row: 3/4;
+  margin-left: 100px;
+  grid-column: 1/10;
+  grid-row: 4/5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -326,10 +317,10 @@ const DivContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-left: 80px;
-  width: 500px;
-  grid-column: 3/4;
-  grid-row : 6/6;
+  margin-left: 130px;
+  width: 700px;
+  grid-column: 1/3;
+  grid-row : 5/5;
 `;
 
 const SettingImg = styled.img`

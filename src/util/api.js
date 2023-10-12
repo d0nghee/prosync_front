@@ -43,10 +43,13 @@ const deleteApi = async (url, data) => {
 
 // 파일
 const postFileApi = async (files) => {
+  console.log("파일123123",files)
   const formData = new FormData();
   for (let i = 0; i < files.length; i++) {
     formData.append("files", files[i]);
+    console.log("반복",i)
   }
+  console.log("파일",formData)
 
   try {
     const response = await axiosInstance.post("/files", formData, {

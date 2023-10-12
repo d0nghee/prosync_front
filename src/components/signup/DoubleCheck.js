@@ -15,7 +15,7 @@ export default function DoubleCheck(props) {
       return <div style={{ width :"50px" ,color: "green", marginLeft: "2rem", marginTop : "10px"}}>일치함</div>;
     } else {
       dispatch(setIsPasswordMatch(false));
-      return <div style={{ width :"50px" ,color: "red", marginLeft: "2rem", marginTop : "10px"}}>불일치</div>;
+      return <div style={{ width :"50px" ,color: "red", marginLeft: "2rem", marginTop : "22px"}}>불일치</div>;
     }
   };
 

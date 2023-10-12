@@ -90,7 +90,7 @@ export default function EditPassword() {
 
 
       <SecItem>
-        <PasswordLabel> 비밀번호 재입력 :</PasswordLabel>
+        <PasswordLabel style={{marginLeft : "19px"}}> 비밀번호 재입력 :</PasswordLabel>
         <InputText type="password" name="pw" id="pw" onChange={handleChange} />
         <Div>
         </Div>
@@ -109,18 +109,20 @@ export default function EditPassword() {
               ? "gray"
               : "#7B69B7"
           }
-          width="20%"
+          width="30%"
           label="수정"
           color="#FFDAB9"
           onClick={modifyPassword}
+          fontSize="20px"
           disabled={!(mypage.memberInfo.password === mypage.memberInfo.pw)}
         ></Button>
         <Button
           backgroundColor="#E9967A"
-          width="20%"
+          width="30%"
           label="취소"
           color="#FFDAB9"
           onClick={() => navi("/")}
+          fontSize="20px"
         ></Button>
       </ButtonContainer>
     </>
@@ -144,7 +146,8 @@ const DesciptionContent = styled.div`
 `
 
 const Banner = styled.div`
-  grid-column: 1/7;
+  margin-top: 100px;
+  grid-column: 1/9;
   display: flex;
   flex-direction: row;
   margin-left: 100px;
@@ -160,28 +163,28 @@ const Div = styled.div`
 `
 const DivPw = styled.div`
   grid-row: 3/3;
-  grid-column: 5/6;
-  margin-left: 60px;
-  margin-top: 58px;
+  grid-column: 6/6;
+  margin-left: 50px;
+  margin-top: 80px;
 `
 
 const ButtonContainer = styled.div`
   grid-row : 4/4;
-  grid-column: 3/6;
+  grid-column: 2/6;
 `
 
 const FirstItem = styled.div`
-  margin-top: 200px;
-  margin-left: 150px;
+  margin-top: 220px;
+
   grid-row: 2/2;
-  grid-column: 2/6;
+  grid-column: 2/7;
 `
 
 const SecItem = styled.div`
-  margin-top: 60px;
-  margin-left: 163px;
+  margin-top: 80px;
+
   grid-row: 3/3;
-  grid-column: 2/6;
+  grid-column: 2/7;
   
 `
 const PasswordLabel = styled.label`

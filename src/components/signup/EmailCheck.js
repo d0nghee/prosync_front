@@ -7,7 +7,7 @@ const EmailCheck = () => {
   return (
     <>
       {isEmailValid ? (
-        <p style={{ color: "green", marginLeft: "2rem" ,fontWeight: "800"}}>통과</p>
+        <div style={{ marginTop : "20px",textAlign : "center", color: "green", marginLeft: "2rem" ,fontWeight: "800"}}>통과</div>
       ) : null}
     </>
   );
