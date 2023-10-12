@@ -1,18 +1,17 @@
-import { configureStore, createStore } from '@reduxjs/toolkit';
-import calendarReducer from '../reducers/task/calendar-slice';
+import { configureStore, createStore } from "@reduxjs/toolkit";
+import calendarReducer from "../reducers/task/calendar-slice";
 import taskStatusReducer from "../reducers/task/taskStatus-slice";
-import taskMembersReducer from '../reducers/task/taskMembers-slice';
-import taskListReducer from '../reducers/task/taskList-slice';
-import signupReducer from '../reducers/member/signupSlice';
-import loginReducer from '../reducers/member/loginSlice';
-import mypageSlice from '../reducers/member/mypageSlice';
-import memberCheckboxSlice from '../reducers/member/memberCheckboxSlice';
-import memberAuthoritySlice from '../reducers/member/memberAuthoritySlice';
-import mypageReducer from '../reducers/member/mypageSlice';
-import triggerReducer from '../reducers/notification/notificationTrigger-slice';
-import errorReducer from '../reducers/error/error-slice';
-import sideBarReducer from '../reducers/common/sidebar-slice';
-
+import taskMembersReducer from "../reducers/task/taskMembers-slice";
+import taskListReducer from "../reducers/task/taskList-slice";
+import signupReducer from "../reducers/member/signupSlice";
+import loginReducer from "../reducers/member/loginSlice";
+import mypageSlice from "../reducers/member/mypageSlice";
+import memberCheckboxSlice from "../reducers/member/memberCheckboxSlice";
+import memberAuthoritySlice from "../reducers/member/memberAuthoritySlice";
+import mypageReducer from "../reducers/member/mypageSlice";
+import triggerReducer from "../reducers/notification/notificationTrigger-slice";
+import errorReducer from "../reducers/error/error-slice";
+import sideBarReducer from "../reducers/common/sidebar-slice";
 
 export const store = configureStore({
   reducer: {
@@ -23,7 +22,7 @@ export const store = configureStore({
     signup: signupReducer,
     login: loginReducer,
     mypage: mypageReducer,
-    trigger : triggerReducer,
+    trigger: triggerReducer,
     authority: memberAuthoritySlice,
     memberCheckbox: memberCheckboxSlice,
     error: errorReducer,

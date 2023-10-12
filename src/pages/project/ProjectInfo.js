@@ -22,7 +22,7 @@ export default function ProjectInfo({ projectMembers }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (projectMembers) {
+    if (projectMembers && projectMembers.length !== 0) {
       const admin =
         projectMembers.find((member) => member.authority === "ADMIN")
           .memberId === getCookie("memberId");
@@ -94,7 +94,7 @@ export default function ProjectInfo({ projectMembers }) {
       </Section>
 
       <Section ref={ref2} inView={inView2}>
-        {projectMembers && <TeamMembers projectMembers={projectMembers} />}
+        <TeamMembers projectMembers={projectMembers} />
       </Section>
     </>
   );
