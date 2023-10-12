@@ -30,11 +30,14 @@ export default function EditProjectMember() {
   }, [search]);
 
   const getMemberHandler = async () => {
+    if (search === null || search === '') {
+      setMembers([]);
+    }
     const getMembers = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       const response = await getApi(
-        `/projects/${projectId}/members?search=${search}`
+        `/projects/${projectId}/members?size=100&search=${search}`
       );
       return response;
     };
@@ -86,19 +89,17 @@ export async function loader({ params }) {
   } catch (error) {
     console.log(error);
     if (error === undefined) {
-      console.error("An undefined error occured!");
-      alert("알 수 없는 오류가 발생했습니다.");
-    } else if (error.code === "ERR_NETWORK") {
-      console.error("네트워크 에러 발생:", error);
+      console.error('An undefined error occured!');
+      alert('알 수 없는 오류가 발생했습니다.');
+    } else if (error.code === 'ERR_NETWORK') {
+      console.error('네트워크 에러 발생:', error);
       alert(
-        "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+        '서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요.'
       );
-      
     } else if (error.response && error.response.status === 401) {
       alert('로그인이 만료되었습니다.');
-    } 
+    }
   }
-  
 }
 const Container = styled.div`
   height: 1000px;

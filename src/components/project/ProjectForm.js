@@ -1,25 +1,25 @@
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import {
   deleteApi,
   getFileApi,
   patchApi,
   postApi,
   postFileApi,
-} from "../../util/api";
-import DeleteProjectModal from "./DeleteProjectModal";
-import { tryFunc } from "../../util/tryFunc";
-import { useDispatch } from "react-redux";
-import LoadingSpinner from "../common/LoadingSpinner";
+} from '../../util/api';
+import DeleteProjectModal from './DeleteProjectModal';
+import { tryFunc } from '../../util/tryFunc';
+import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 export default function ProjectForm({ project = {}, method }) {
   const [img, setImg] = useState(null);
   const [projectData, setProjectData] = useState({
-    title: project.title || "",
-    intro: project.intro || "",
-    startDate: project.startDate || "",
-    endDate: project.endDate || "",
+    title: project.title || '',
+    intro: project.intro || '',
+    startDate: project.startDate || '',
+    endDate: project.endDate || '',
     isPublic: project.isPublic || true,
     projectImage: project.projectImage,
     fileId: project.fileId,
@@ -30,10 +30,9 @@ export default function ProjectForm({ project = {}, method }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const [currentImg, setCurrentImg] = useState();
 
   useEffect(() => {
-    if (method === "PATCH") {
+    if (method === 'PATCH') {
       setImgData();
     }
   }, []);
@@ -43,7 +42,7 @@ export default function ProjectForm({ project = {}, method }) {
   async function setImgData() {
     if (
       project.projectImage ===
-      "https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_project_image.jpg"
+      'https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_project_image.jpg'
     )
       return;
 
@@ -51,32 +50,32 @@ export default function ProjectForm({ project = {}, method }) {
       if (response.length > 0) {
         setImgName(response[response.length - 1].fileName);
         setImg(project.projectImage);
-        console.log("projectImage", project.projectImage);
+        console.log('projectImage', project.projectImage);
       } else return;
     };
 
     tryFunc(
-      async () => await getFileApi(project.projectId, "PROJECT"),
+      async () => await getFileApi(project.projectId, 'PROJECT'),
       (response) => setImgNameSuccess(response),
       dispatch
     )();
   }
 
   async function ProjectHandler() {
-    console.log("img", img);
+    console.log('img', img);
     if (
       !projectData.title ||
       !projectData.intro ||
       !projectData.startDate ||
       !projectData.endDate
     ) {
-      alert("필요한 데이터를 모두 입력해주세요.");
+      alert('필요한 데이터를 모두 입력해주세요.');
       return;
     }
     // 프로젝트 생성
-    if (method === "POST") {
+    if (method === 'POST') {
       //이미지 없을때 생성
-      if (img === null || img === "") {
+      if (img === null || img === '') {
         const noImagePostSuccess = (response) => {
           setIsLoading(true);
           const projectId = response.data.projectId;
@@ -86,7 +85,7 @@ export default function ProjectForm({ project = {}, method }) {
         const getNoImagePost = async () => {
           setIsLoading(false);
 
-          const response = await postApi("/projects", projectData);
+          const response = await postApi('/projects', projectData);
           return response;
         };
         tryFunc(
@@ -106,12 +105,12 @@ export default function ProjectForm({ project = {}, method }) {
         };
         const ImagePost = async () => {
           setIsLoading(true);
-          const response = await postApi("/projects", data);
+          const response = await postApi('/projects', data);
           return response;
         };
 
         const ImagePostSuccess = (response) => {
-          console.log("ImagePostSuccess");
+          console.log('ImagePostSuccess');
           setIsLoading(false);
 
           const projectId = response.data.projectId;
@@ -126,13 +125,10 @@ export default function ProjectForm({ project = {}, method }) {
       }
 
       // 프로젝트 수정
-    } else if (method === "PATCH" && project.projectId) {
-      console.log("img들어왓다", img);
-      console.log("imgqqq", newImg);
-
+    } else if (method === 'PATCH' && project.projectId) {
       // 이미지 수정 없이 기존 이미지 그대로
       if (newImg === undefined && img) {
-        console.log("탄다1");
+        console.log('탄다1');
 
         const updateData = {
           ...projectData,
@@ -149,8 +145,8 @@ export default function ProjectForm({ project = {}, method }) {
       }
 
       // 이미지 지울고 수정
-      if (img === null || img === "") {
-        console.log("탄다2");
+      if (img === null || img === '') {
+        console.log('탄다2');
 
         const updateData = {
           ...projectData,
@@ -170,10 +166,10 @@ export default function ProjectForm({ project = {}, method }) {
         return;
         // 이미지 변경후 수정
       } else {
-        console.log("탄다3");
+        console.log('탄다3');
 
         const imgData = await postFileApi(img);
-        console.log("imgData", imgData);
+        console.log('imgData', imgData);
         const test = await imgData[0].fileId;
 
         const updateData = {
@@ -196,17 +192,17 @@ export default function ProjectForm({ project = {}, method }) {
 
   // 취소 버튼
   const cancelHandler = () => {
-    navigate("..");
+    navigate('..');
   };
 
   // 입력 값 변경시 호출 되는 핸들러
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
-    if (name === "isPublic") {
+    if (name === 'isPublic') {
       setProjectData((Data) => ({
         ...Data,
-        [name]: value === "1" ? true : false,
+        [name]: value === '1' ? true : false,
       }));
     } else {
       setProjectData((Data) => ({ ...Data, [name]: value }));
@@ -217,7 +213,7 @@ export default function ProjectForm({ project = {}, method }) {
   const handleImageChange = (event) => {
     const file = event.target.files;
     if (file.length > 1) {
-      alert("한건만 선택하세요.");
+      alert('한건만 선택하세요.');
       setImg();
       return;
     }
@@ -231,13 +227,13 @@ export default function ProjectForm({ project = {}, method }) {
     reader.readAsDataURL(file[0]);
     setImg(file);
     setImgName(file[0].name);
-    console.log("fileName", file[0].name);
+    console.log('fileName', file[0].name);
   };
 
   // 프로젝트 삭제
   const deleteProjectHandler = async () => {
     await deleteApi(`/projects/${project.projectId}`);
-    navigate("/projects");
+    navigate('/projects');
   };
 
   const modalOpenHandler = () => {
@@ -287,12 +283,12 @@ export default function ProjectForm({ project = {}, method }) {
       <SideContentContainer>
         <ButtonContainer>
           <Button onClick={ProjectHandler}>
-            {method === "PATCH" ? "수정" : "생성"}
+            {method === 'PATCH' ? '수정' : '생성'}
           </Button>
           <Button $cancel onClick={cancelHandler}>
             취소
           </Button>
-          {method === "PATCH" ? (
+          {method === 'PATCH' ? (
             <Button $cancel onClick={modalOpenHandler}>
               프로젝트 삭제
             </Button>
@@ -466,7 +462,7 @@ const Label = styled.label`
   font-size: 20px;
 `;
 
-const Radio = styled.input.attrs({ type: "radio" })`
+const Radio = styled.input.attrs({ type: 'radio' })`
   margin-right: 5px;
 
   &:checked {
@@ -482,8 +478,8 @@ const CheckboxContainer = styled.div`
 
 const Button = styled.button`
   padding: 8px 15px;
-  background-color: ${(props) => (props.$cancel ? "#fff" : "#5B67CA")};
-  color: ${(props) => (props.$cancel ? "#5B67CA" : "#fff")};
+  background-color: ${(props) => (props.$cancel ? '#fff' : '#5B67CA')};
+  color: ${(props) => (props.$cancel ? '#5B67CA' : '#fff')};
   border: 2px solid transparent;
   border-radius: 10px;
   cursor: pointer;
@@ -492,7 +488,7 @@ const Button = styled.button`
   margin-bottom: 10px;
 
   &:hover {
-    background-color: ${(props) => (props.$cancel ? "#f0f0f0" : "#0056b3")};
+    background-color: ${(props) => (props.$cancel ? '#f0f0f0' : '#0056b3')};
     border-color: #5b67ca;
   }
 `;

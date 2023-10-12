@@ -1,36 +1,40 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { calendarActions } from "../../../redux/reducers/task/calendar-slice";
-import MyCalendar from "../../common/Calendar";
-import moment from "moment/moment";
-import * as t from "./TaskForm.style";
-import { useEffect, useState } from "react";
-import "react-quill/dist/quill.snow.css";
-import TaskStatus from "../common/TaskStatus";
-import TaskStatusList from "../common/TaskStatusList";
-import { AiFillCaretDown } from "react-icons/ai";
-import NewTaskStatus from "../../../pages/task/NewTaskStatus";
-import TaskMemberList from "../common/TaskMemberList";
-import { AiOutlineUserAdd } from "react-icons/ai";
-import { taskStatusActions } from "../../../redux/reducers/task/taskStatus-slice";
-import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
-import NaviButton from "../../common/Button";
-import { requestApi } from "../../../redux/reducers/task/taskMembers-slice";
-import { postFileApi, getTaskStatusApi, postTaskApi } from "../../../util/api";
-import FileList from "../../file/FileList";
-import SelectedFiles from "../../file/SelectedFiles";
-import { patchTask } from "../../../redux/reducers/task/taskList-slice";
-import useFormInput from "../../../hooks/use-form-input";
-import { tryFunc } from "../../../util/tryFunc";
-import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
-import { getProjectMembersApi } from "../../../util/api";
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { calendarActions } from '../../../redux/reducers/task/calendar-slice';
+import MyCalendar from '../../common/Calendar';
+import moment from 'moment/moment';
+import * as t from './TaskForm.style';
+import { useEffect, useState } from 'react';
+import 'react-quill/dist/quill.snow.css';
+import TaskStatus from '../common/TaskStatus';
+import TaskStatusList from '../common/TaskStatusList';
+import { AiFillCaretDown } from 'react-icons/ai';
+import NewTaskStatus from '../../../pages/task/NewTaskStatus';
+import TaskMemberList from '../common/TaskMemberList';
+import { AiOutlineUserAdd } from 'react-icons/ai';
+import { taskStatusActions } from '../../../redux/reducers/task/taskStatus-slice';
+import SimpleTaskMemberList from '../common/SimpleTaskMemberList';
+import NaviButton from '../../common/Button';
+import { requestApi } from '../../../redux/reducers/task/taskMembers-slice';
+import {
+  postFileApi,
+  getTaskStatusApi,
+  getProjectMembersApi,
+  postTaskApi,
+} from '../../../util/api';
+import FileList from '../../file/FileList';
+import SelectedFiles from '../../file/SelectedFiles';
+import { patchTask } from '../../../redux/reducers/task/taskList-slice';
+import useFormInput from '../../../hooks/use-form-input';
+import { tryFunc } from '../../../util/tryFunc';
+import { taskMembersAction } from '../../../redux/reducers/task/taskMembers-slice';
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const [projectMembers, setProjectMembers] = useState();
+  const [projectMembers, setProjectMembers] = useState();
   const [showProjectMembers, setShowProjectMembers] = useState(false);
   const showStatusList = useSelector((state) => state.taskStatus.show);
   const [taskStatus, setTaskStatus] = useState();
@@ -43,20 +47,18 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     (state) => state.taskMembers.originalMembers
   );
 
-  const [projectMembers, setProjectMembers] = useState();
-
+  //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
   useEffect(() => {
     tryFunc(
-      () => getProjectMembersApi(params.projectId, { size: 100 }),
-      (members) => setProjectMembers(members),
+      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
+      (projectMembers) => setProjectMembers(projectMembers),
       dispatch
     )();
-
-    if (method === "POST") {
+    if (method === 'POST') {
       dispatch(taskMembersAction.setTaskMembers([]));
       dispatch(calendarActions.resetDate());
     }
-  }, [params.projectId, dispatch, method]);
+  }, [params.projectId]);
 
   // FORM 유효성 검증
   const {
@@ -66,7 +68,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     changeHandler: classificationChangeHandler,
     blurHandler: classificationBlurHandler,
     hasError: classificationHasError,
-  } = useFormInput((value) => value.trim() !== "" && value.length <= 20);
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 20);
 
   const {
     value: titleValue,
@@ -75,7 +77,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     changeHandler: titleChangeHandler,
     blurHandler: titleBlurHandler,
     hasError: titleHasError,
-  } = useFormInput((value) => value.trim() !== "" && value.length <= 50);
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 50);
 
   const {
     value: detailValue,
@@ -85,8 +87,8 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     hasError: detailHasError,
   } = useFormInput(
     (value) =>
-      value.replace(/<[^>]*>/g, "").trim() !== "" &&
-      value.replace(/<[^>]*>/g, "").length <= 1000
+      value.replace(/<[^>]*>/g, '').trim() !== '' &&
+      value.replace(/<[^>]*>/g, '').length <= 1000
   );
 
   useEffect(() => {
@@ -109,13 +111,11 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const saveHandler = (event) => {
     event.preventDefault();
 
-    if (method === "POST" && !taskStatus) {
+    if (method === 'POST' && !taskStatus) {
       setTaskStatus({ error: true });
       setShowErrorMessage(true);
       return;
     }
-    console.log("title", titleValue);
-    console.log(titleIsValid, classificationIsValid, detailIsValid, "test");
     if (!titleIsValid || !classificationIsValid || !detailIsValid) {
       setShowErrorMessage(true);
       return;
@@ -139,7 +139,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     };
 
     (async () => {
-      if (method === "PATCH") {
+      if (method === 'PATCH') {
         requestData.taskId = +params.taskId;
         await dispatch(
           requestApi(params.taskId, originalMembers, checkedMembers)
@@ -147,7 +147,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
         await dispatch(patchTask(params.taskId, requestData));
         dispatch(calendarActions.resetDate());
         navigate(`/projects/${projectId}/tasks/${params.taskId}`);
-      } else if (method === "POST") {
+      } else if (method === 'POST') {
         //TODO : 에러처리 (try func X)
         const taskId = await postTaskApi(
           params.projectId,
@@ -166,8 +166,8 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const showCalendar = useSelector((state) => state.calendar.show);
 
   const calendarHandler = (event) => {
-    const startDate = moment(event[0]).format("YYYY-MM-DD");
-    const endDate = moment(event[1]).format("YYYY-MM-DD");
+    const startDate = moment(event[0]).format('YYYY-MM-DD');
+    const endDate = moment(event[1]).format('YYYY-MM-DD');
     dispatch(calendarActions.changeDatesAndShow({ startDate, endDate }));
   };
 
@@ -232,7 +232,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
               <t.ButtonArea>
                 <NaviButton
                   type="button"
-                  onClick={() => navigate("..")}
+                  onClick={() => navigate('..')}
                   name="취소"
                 />
                 <NaviButton name="저장" color="#4361ee" fontcolor="white" />
@@ -319,7 +319,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                         </div>
                       ) : (
                         <div
-                          style={{ paddingBottom: "10px" }}
+                          style={{ paddingBottom: '10px' }}
                           onClick={() => setShowProjectMembers((prv) => !prv)}
                         >
                           업무 담당자를 등록하세요.
@@ -339,7 +339,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                             toggleList={() =>
                               setShowProjectMembers((prv) => !prv)
                             }
-                            taskId={task ? task.taskId : ""}
+                            taskId={task ? task.taskId : ''}
                           />
                         </t.Wrapper>
                       </>

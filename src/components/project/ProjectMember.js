@@ -6,50 +6,62 @@ import InviteModal from './InviteModal';
 import { useDispatch } from 'react-redux';
 import { tryFunc } from '../../util/tryFunc';
 import LoadingSpinner from '../common/LoadingSpinner';
-import NoContent from './NoContent';
 
 export default function ProjectMember({ members, projectId }) {
   const [checkMembers, setCheckMembers] = useState({});
-  const [isChecked, setIsChecked] = useState(false);
-  const [updateMembers, setUpdateMembers] = useState(members);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [inviteLink, setInviteLink] = useState('');
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [filteredMembers, setFilteredMembers] = useState([]);
+  const [allChecked, setAllChecked] = useState(false);
+
+  // ADMIN , QUIT 필터 처리
+  useEffect(() => {
+    const result = members.filter(
+      (member) => member.authority !== 'ADMIN' && member.status !== 'QUIT'
+    );
+    setFilteredMembers(result);
+  }, [members]);
 
   useEffect(() => {
-    const initialCheckStatus = members
-      ? members
-          .filter(
-            (member) => member.authority !== 'ADMIN' && member.status !== 'QUIT'
-          )
-          .reduce((acc, member) => {
-            acc[member.memberProjectId] = false;
-            return acc;
-          }, {})
-      : {};
-    setCheckMembers(initialCheckStatus);
-  }, [updateMembers, members]);
+    console.log(members, 'members');
+    console.log(checkMembers, 'checkmember');
+  }, [checkMembers]);
 
-  const allcheckHandler = () => {
-    const newStatus = Object.keys(checkMembers).reduce((acc, key) => {
-      acc[key] = !isChecked;
+  // 필터 처리된 멤버들로 checkMember 초기화
+  useEffect(() => {
+    const initialCheckStatus = filteredMembers.reduce((acc, member) => {
+      acc[member.memberProjectId] = allChecked;
       return acc;
     }, {});
-    setIsChecked((pre) => !pre);
+    setCheckMembers(initialCheckStatus);
+  }, [filteredMembers, allChecked]);
+
+  // 모두 체크 , 체크 해제
+  const allCheckMembers = () => {
+    setAllChecked((prev) => !prev); // 모든 체크박스의 상태를 변경
+
+    const newStatus = { ...checkMembers };
+    filteredMembers.forEach((member) => {
+      newStatus[member.memberProjectId] = !allChecked;
+    });
 
     setCheckMembers(newStatus);
   };
 
+  // 체크 박스 변화 시
   const handleCheckboxChange = (memberProjectId) => {
-    setCheckMembers((prev) => ({
-      ...prev,
-      [memberProjectId]: !prev[memberProjectId],
-    }));
+    setCheckMembers((prevCheckMembers) => {
+      const currentCheckedStatus = prevCheckMembers[memberProjectId];
+      return {
+        ...prevCheckMembers,
+        [memberProjectId]: !currentCheckedStatus,
+      };
+    });
   };
 
-  // 멤버 삭제
+  // 멤버 삭제 Promise
   const deleteMemberHandler = async () => {
     const isConfirmed = window.confirm(
       '선택된 멤버를 정말로 삭제하시겠습니까?'
@@ -61,18 +73,16 @@ export default function ProjectMember({ members, projectId }) {
       (memberProjectId) => checkMembers[memberProjectId]
     );
 
-    // 각 memberProjectId에 대한 삭제 요청 생성
     setIsLoading(true);
     const deleteRequests = checkedMemberProjectIds.map((memberProjectId) =>
       deleteApi(`/project-members/${memberProjectId}`)
     );
     await Promise.all(deleteRequests);
-    const updatedMembers = members.filter(
-      (member) => !checkedMemberProjectIds.includes(member.memberProjectId)
-    );
+
     setIsLoading(false);
-    setUpdateMembers(updatedMembers);
   };
+
+  // 초대 링크 생성
   const handleInvite = () => {
     setIsLoading(true);
     const invitePost = async () => {
@@ -81,13 +91,17 @@ export default function ProjectMember({ members, projectId }) {
 
       return response;
     };
+    // 초대 코드 생성 성공
     const invitePostSuccess = (response) => {
       console.log('invitePostSuccess');
       const inviteCode = response.data.data.inviteCode;
-      setInviteLink(`http://prosyncfront.s3-website.ap-northeast-2.amazonaws.com/projects/invite/${inviteCode}`);
+      setInviteLink(
+        `http://prosyncfront.s3-website.ap-northeast-2.amazonaws.com/projects/invite/${inviteCode}`
+      );
       setIsModalOpen(true);
       setIsLoading(false);
     };
+    //예외처리
     tryFunc(invitePost, (response) => invitePostSuccess(response), dispatch)();
   };
 
@@ -101,7 +115,7 @@ export default function ProjectMember({ members, projectId }) {
         inviteLink={inviteLink}
       />
       <MenuContainer>
-        <input type="checkbox" onClick={allcheckHandler}></input>
+        <input type="checkbox" onClick={allCheckMembers}></input>
         <div>
           <StyledButton onClick={handleInvite}>초대 링크 생성</StyledButton>
 
@@ -109,24 +123,17 @@ export default function ProjectMember({ members, projectId }) {
         </div>
       </MenuContainer>
       <MembersContainer>
-        {members && members.length > 0 ? (
-          members
-            .filter(
-              (member) =>
-                member.authority !== 'ADMIN' && member.status !== 'QUIT'
-            )
-            .map((member, index) => (
-              <Member
-                key={index}
-                member={member}
-                isChecked={checkMembers[member.memberProjectId]}
-                onCheckboxChange={() =>
-                  handleCheckboxChange(member.memberProjectId)
-                }
-              />
-            ))
+        {filteredMembers && filteredMembers.length > 0 ? (
+          filteredMembers.map((member, index) => (
+            <Member
+              key={index}
+              member={member}
+              isChecked={checkMembers[member.memberProjectId]}
+              onCheckChange={() => handleCheckboxChange(member.memberProjectId)}
+            />
+          ))
         ) : (
-          <NoContent body={'멤버가 없습니다'} />
+          <NoMembers>멤버가 없습니다</NoMembers>
         )}
       </MembersContainer>
     </Container>
@@ -150,6 +157,11 @@ const MembersContainer = styled.div`
 
 const NoMembers = styled.div`
   color: #888;
+  font-size: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const MenuContainer = styled.div`
