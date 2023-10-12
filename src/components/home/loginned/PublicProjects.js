@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PublicProjectsList from './PublicProjectsList';
 
 const Container = styled.div`
-  max-height: 80rem;
+  max-height: 90rem;
   width: 75%;
   display: flex;
   flex-direction: column;

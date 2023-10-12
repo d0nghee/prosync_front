@@ -7,7 +7,7 @@ const PageContainer = styled.div`
   margin-left: 25%;
   margin-top: 5%;
   width: 50%;
-  margin-bottom: 2%;
+  margin-bottom: 10%;
 `;
 
 const ButtonWrap = styled.div`

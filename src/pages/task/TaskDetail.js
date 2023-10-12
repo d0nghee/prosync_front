@@ -87,3 +87,4 @@ const TaskSection = styled.div`
   width: 70%;
   margin: 0 auto;
 `;
+

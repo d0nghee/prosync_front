@@ -106,20 +106,23 @@ export default function Login() {
         alert("Unknown Error");
       },
     };
+    
 
     const onLoginSuccess = async () => {
       try {
         await fetchMemberInfo();
         console.log("fetchMemberInfo 완료");
         const returnUrl = params.get("returnUrl");
-        navigate(returnUrl || "/");
         dispatch(setIsLoggedIn(true));
+        navigate(returnUrl || "/");
       } catch (error) {
         console.log("member 데이터 정보 읽어오기 실패");
       }
     };
 
     tryFunc(loginFunc, onLoginSuccess, dispatch)();
+
+
   };
 
   const handleSignup = () => {
