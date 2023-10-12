@@ -1,25 +1,25 @@
-import { useEffect, useState } from 'react';
-import ProjectMember from '../../components/project/ProjectMember';
-import ProjectMemberSearchBar from '../../components/project/ProjectMemberSearchBar';
-import { useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
-import { getApi, patchApi } from '../../util/api';
-import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
-import { tryFunc } from '../../util/tryFunc';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from "react";
+import ProjectMember from "../../components/project/ProjectMember";
+import ProjectMemberSearchBar from "../../components/project/ProjectMemberSearchBar";
+import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
+import { getApi, patchApi } from "../../util/api";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { selectMembers } from "../../redux/reducers/member/memberAuthoritySlice";
+import { tryFunc } from "../../util/tryFunc";
+import { useDispatch } from "react-redux";
 
 export default function EditProjectMember() {
-  const data = useRouteLoaderData('editmember');
+  const data = useRouteLoaderData("editmember");
   const [members, setMembers] = useState(data.data.data);
   const { projectId } = useParams();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const authorityState = useSelector(selectMembers);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleInputChange = (input) => {
-    console.log('handleInputChange');
+    console.log("handleInputChange");
     setSearch(input);
   };
 
@@ -36,7 +36,7 @@ export default function EditProjectMember() {
   };
 
   const submitHandler = () => {
-    const isConfirmed = window.confirm('변경사항을 저장하시겠습니까?');
+    const isConfirmed = window.confirm("변경사항을 저장하시겠습니까?");
 
     if (!isConfirmed) return;
     const patchMemberAuthority = authorityState.map((item) => {
@@ -62,7 +62,7 @@ export default function EditProjectMember() {
 
 export async function loader({ params }) {
   const projectId = params.projectId;
-  const data = await getApi(`/projects/${projectId}/members`);
+  const data = await getApi(`/projects/${projectId}/members`, { size: 100 });
   return data;
 }
 const Container = styled.div`

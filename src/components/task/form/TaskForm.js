@@ -16,25 +16,21 @@ import { taskStatusActions } from "../../../redux/reducers/task/taskStatus-slice
 import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 import NaviButton from "../../common/Button";
 import { requestApi } from "../../../redux/reducers/task/taskMembers-slice";
-import {
-  postFileApi,
-  getTaskStatusApi,
-  getProjectMembersApi,
-  postTaskApi,
-} from "../../../util/api";
+import { postFileApi, getTaskStatusApi, postTaskApi } from "../../../util/api";
 import FileList from "../../file/FileList";
 import SelectedFiles from "../../file/SelectedFiles";
 import { patchTask } from "../../../redux/reducers/task/taskList-slice";
 import useFormInput from "../../../hooks/use-form-input";
 import { tryFunc } from "../../../util/tryFunc";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
+import { getProjectMembersApi } from "../../../util/api";
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [projectMembers, setProjectMembers] = useState();
+  // const [projectMembers, setProjectMembers] = useState();
   const [showProjectMembers, setShowProjectMembers] = useState(false);
   const showStatusList = useSelector((state) => state.taskStatus.show);
   const [taskStatus, setTaskStatus] = useState();
@@ -47,18 +43,20 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     (state) => state.taskMembers.originalMembers
   );
 
-  //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
+  const [projectMembers, setProjectMembers] = useState();
+
   useEffect(() => {
     tryFunc(
-      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
-      (projectMembers) => setProjectMembers(projectMembers),
+      () => getProjectMembersApi(params.projectId, { size: 100 }),
+      (members) => setProjectMembers(members),
       dispatch
     )();
+
     if (method === "POST") {
       dispatch(taskMembersAction.setTaskMembers([]));
       dispatch(calendarActions.resetDate());
     }
-  }, [params.projectId]);
+  }, [params.projectId, dispatch, method]);
 
   // FORM 유효성 검증
   const {
@@ -116,6 +114,8 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       setShowErrorMessage(true);
       return;
     }
+    console.log("title", titleValue);
+    console.log(titleIsValid, classificationIsValid, detailIsValid, "test");
     if (!titleIsValid || !classificationIsValid || !detailIsValid) {
       setShowErrorMessage(true);
       return;

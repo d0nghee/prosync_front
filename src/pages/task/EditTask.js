@@ -8,10 +8,8 @@ import CommentList from "../../components/comment/CommentList";
 import { styled } from "styled-components";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { tryFunc } from "../../util/tryFunc";
-import { useNavigate } from "react-router-dom";
 
 export default function EditTask() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [task, setTask] = useState();
   const params = useParams();
@@ -32,12 +30,14 @@ export default function EditTask() {
       (response) => {
         setTask(response.data);
         dispatch(taskMembersAction.setTaskMembers(response.taskMembers));
-      }
+      },
+      dispatch
     )();
 
     tryFunc(
       async () => await getCommentsApi(`${params.taskId}`),
-      (comments) => setComments(comments)
+      (comments) => setComments(comments),
+      dispatch
     )();
 
     tryFunc(
