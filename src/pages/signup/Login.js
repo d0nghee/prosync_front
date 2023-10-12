@@ -10,8 +10,10 @@ import {
 } from "../../redux/reducers/member/loginSlice";
 import { getCookie, setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
-import Loading from "../../components/common/Loading";
 import { tryFunc } from "../../util/tryFunc";
+import LoginImg from '../../assets/images/login_image.jpeg'
+import { Page, SideContent, SideImage, Image } from "../../css/SignupStyle";
+import styled, { keyframes } from 'styled-components'
 
 export default function Login() {
 
@@ -51,7 +53,7 @@ export default function Login() {
   const loginFunc = async () => {
     const response = await postApi('/login', login.loginFormData);
 
-    
+
     const header = response.headers;
     const access = await header.authorization;
     const refresh = await header.refresh;
@@ -98,7 +100,7 @@ export default function Login() {
         console.log(error.response.status);
         alert("이메일 형식이 잘못되었습니다.")
       },
-      
+
       default: (error) => {
         console.error("Unknown error:", error);
         alert("Unknown Error");
@@ -128,27 +130,47 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <div>
-        <LoginForm
-         onChange={handleInputChange}
-         onEnter={handleLogin}
-         ></LoginForm>
-      </div>
-      <LoginButtonContainer>
-        <CustomButton
-          backgroundColor="#7B69B7"
-          label="로그인"
-          onClick={handleLogin}
-          
-        />
-        <CustomButton
-          label="회원가입"
-          backgroundColor="#7E99A1"
-          onClick={handleSignup}
-        />
-      </LoginButtonContainer>
-
-    </div>
+    <Page>
+      <SideImage>
+        <Image src={LoginImg}></Image>
+      </SideImage>
+      <LoginContainer>
+        <div>
+          <LoginForm
+            onChange={handleInputChange}
+            onEnter={handleLogin}
+          ></LoginForm>
+        </div>
+        <LoginButtonContainer>
+          <CustomButton
+            width="40%"
+            backgroundColor="#9BC1BC"
+            label="로그인"
+            fontSize="18px"
+            onClick={handleLogin}
+          />
+          <SignupButton
+            onClick={handleSignup}
+          >
+            회원가입 하러가기
+          </SignupButton>
+        </LoginButtonContainer>
+      </LoginContainer>
+    </Page>
   );
 }
+
+
+const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 50%;
+  justify-content: center;
+  margin-right: 80px;
+`
+
+const SignupButton = styled.div`
+  font-weight: 700;
+  cursor: pointer;
+`

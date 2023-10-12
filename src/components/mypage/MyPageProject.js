@@ -6,11 +6,14 @@ import { tryFunc } from '../../util/tryFunc';
 import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 import Loading from '../common/Loading';
 
-import ProjectSearchBar from '../project/ProjectSearchBar';
+import SearchBar from './SearchBar'
 import PaginationButton from './PaginationButton';
 import ProjectFilterBar from '../project/ProjectFilterBar';
 import MyPageProjectProject from './MyPageProjectProject';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import NoContent from '../../assets/icon/mypage.icon6.png'
+
 
 
 
@@ -126,21 +129,23 @@ export default function MyProject() {
   return (
     <>
       {isLoading && <Loading />}
-      <ProjectSearchBarContainer>
-        <ProjectSearchBar
-          onSearch={searchHandler}
-          padding="0px"
-          margin="0px 20px 0px 0px"
-        >
-        </ProjectSearchBar>
-      </ProjectSearchBarContainer>
-      <FilterContainer>
-        <ProjectFilterBar
-          onDefault={defaultProjectListHandler}
-          onBookmarkFilter={bookmarkFilterHandler}
-          onendDateSorting={endDateHandler}
-        />
-      </FilterContainer>
+     
+        <ProjectSearchBarContainer>
+          <SearchBar
+            onSearch={searchHandler}
+            padding="0px"
+            margin="0px 20px 0px 0px"
+          >
+          </SearchBar>
+        </ProjectSearchBarContainer >
+        <FilterContainer>
+          <ProjectFilterBar
+            onDefault={defaultProjectListHandler}
+            onBookmarkFilter={bookmarkFilterHandler}
+            onendDateSorting={endDateHandler}
+          />
+        </FilterContainer>
+      
 
       {
         <>
@@ -157,7 +162,12 @@ export default function MyProject() {
                     />
                   </PostItem>
                 ))) : (
-                <NullPost>내가 속한 프로젝트가 없습니다.</NullPost>
+                <NullPost>
+                  <NoContentImg src={NoContent}/>
+                  <NoContentComment>
+                    내가 속한 프로젝트가 없습니다.
+                  </NoContentComment>
+                </NullPost>
               )
             }
 
@@ -188,3 +198,14 @@ export default function MyProject() {
     </>
   )
 }
+
+const NoContentImg = styled.img`
+  grid-column: 1/10;
+  margin-left: 300px;
+`
+
+const NoContentComment = styled.div`
+  font-size: 20px;
+  margin-left: 200px;
+  grid-column: 1/10;
+`

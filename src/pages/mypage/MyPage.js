@@ -4,16 +4,14 @@ import BookMark from "../../components/mypage/BookMark";
 import MyPageproject from "../../components/mypage/MyPageProject";
 import EditPassword from "../../components/mypage/EditPassword";
 import LeaveMember from "../../components/mypage/LeaveMember";
-import { GridContainer, Header, Content, Footer } from "../../css/MyPageStyle";
-import { useDispatch, useSelector } from "react-redux";
+import { GridContainer, Header, Content, Footer, MypageContainer } from "../../css/MyPageStyle";
 import SideMenu from "../../components/mypage/SideMenu";
 import {
   useNavigate,
-  useParams,
-  useRouteLoaderData,
   useLocation,
 } from "react-router-dom";
-import MyPageProject from "../../components/mypage/MyPageProject";
+import styled from 'styled-components';
+
 
 export default function MyPage() {
   const navi = useNavigate();
@@ -40,13 +38,19 @@ export default function MyPage() {
   }
 
   return (
-    <GridContainer>
-
-      <SideMenu />
+    <MypageContainer>
+      <Side>
+        <SideMenu />
+      </Side>
       <Content>
         {content}
       </Content>
-
-    </GridContainer>
+    </MypageContainer>
   );
 }
+
+const Side = styled.div`
+  margin-top: 30px;
+  margin-left: 150px;
+  width: 20%;
+`

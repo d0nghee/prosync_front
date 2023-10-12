@@ -22,33 +22,38 @@ export default function Example({ projectMembers }) {
             </p>
           </div>
           <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-            {projectMembers.map((member) => (
-              <li key={member.memberId}>
-                <div className="flex items-center gap-x-6">
-                  <MemberImage
-                    className="h-16 w-16 rounded-full"
-                    src={member.profileImage}
-                    alt=""
-                    onClick={() => {
-                      setMemberInfo({
-                        memberId: member.memberId,
-                        projectId: member.projectId,
-                      });
-                      setMemberProfile({ show: true });
-                    }}
-                    style={{ cursor: "pointer" }}
-                  />
-                  <div>
-                    <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">
-                      {member.name}
-                    </h3>
-                    <p className="text-sm font-semibold leading-6 text-indigo-600">
-                      {member.authority}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
+            {projectMembers &&
+              projectMembers.length !== 0 &&
+              projectMembers.map(
+                (member) =>
+                  member.status === "ACTIVE" && (
+                    <li key={member.memberId}>
+                      <div className="flex items-center gap-x-6">
+                        <MemberImage
+                          className="h-16 w-16 rounded-full"
+                          src={member.profileImage}
+                          alt=""
+                          onClick={() => {
+                            setMemberInfo({
+                              memberId: member.memberId,
+                              projectId: member.projectId,
+                            });
+                            setMemberProfile({ show: true });
+                          }}
+                          style={{ cursor: "pointer" }}
+                        />
+                        <div>
+                          <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">
+                            {member.name}
+                          </h3>
+                          <p className="text-sm font-semibold leading-6 text-indigo-600">
+                            {member.authority}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  )
+              )}
           </ul>
         </div>
       </div>

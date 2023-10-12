@@ -4,7 +4,6 @@ export const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top : 9rem;
 `;
 
 export const InputContent = styled.input`
@@ -26,7 +25,7 @@ export const LabelContent = styled.label`
 `;
 
 export const LoginButtonContainer = styled.div`
-    margin-top : 3rem;
+    margin-top : 5rem;
     display: flex;
     flex-direction: column;
     align-items: center;

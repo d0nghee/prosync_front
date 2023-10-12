@@ -39,19 +39,22 @@ const taskListSlice = createSlice({
 
       if (state.list.length !== 0) {
         state.list.forEach((statusList, index) => {
-          const idx = statusList.list.findIndex(
-            (task) => task.taskId === taskId
-          );
-          if (idx !== -1) {
-            let taskMembers = statusList.list[idx].taskMembers;
-            taskMembers = taskMembers.filter(
-              (member) => member.memberProjectId !== memberProjectId
+          try {
+            const idx = statusList.list.findIndex(
+              (task) => task.taskId === taskId
             );
-            state.list[index].list[idx] = {
-              ...statusList.list[idx],
-              taskMembers,
-            };
-          }
+
+            if (idx !== -1) {
+              let taskMembers = statusList.list[idx].taskMembers;
+              taskMembers = taskMembers.filter(
+                (member) => member.memberProjectId !== memberProjectId
+              );
+              state.list[index].list[idx] = {
+                ...statusList.list[idx],
+                taskMembers,
+              };
+            }
+          } catch (error) {}
         });
       }
     },
