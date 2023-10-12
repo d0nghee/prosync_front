@@ -51,6 +51,7 @@ const FooterContainer = styled.div`
   /* margin-top: 7%; */
   z-index: 5;
   background-color: #edf2f4;
+  border-top: 2px solid gray;
 `;
 
 const StyledFooter = styled.div`
@@ -62,13 +63,7 @@ const StyledFooter = styled.div`
   padding: 0;
 `;
 
-const Line = styled.hr`
-  width: 100%;
-  margin-top: 2%;
-  height: 3px;
-  background-color: lightgray;
-  border: 0;
-`;
+
 
 
 const Logo = styled.div`
@@ -105,7 +100,6 @@ const openInNewTab = (url) => {
 export default function Footer() {
   return (
     <FooterContainer>
-      <Line />
       <StyledFooter>
         {footerItems.map((item) => {
           switch (item.type) {

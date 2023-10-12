@@ -15,6 +15,7 @@ import ListLoadingSpinner from "../../common/ListLoadingSpinner";
 const Container = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 20%;
 
   & > .loading-spinner {
     width: 100%;

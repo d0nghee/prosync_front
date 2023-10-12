@@ -7,14 +7,14 @@ import PublicProjects from "./../components/home/loginned/PublicProjects";
 import MyProjects from "../components/home/loginned/MyProjects";
 
 const HomeContainer = styled.div`
-  height: 200rem;
+  height: 220rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 const LoginHomeContainer = styled.div`
-  /* height: 160rem; */
+  /* height: 200rem; */
   display: flex;
   flex-direction: column;
   align-items: center;

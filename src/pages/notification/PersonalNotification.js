@@ -73,21 +73,26 @@ const codeInformation = [
   },
   {
     id: 9,
+    code: "PROJECT_EXIT",
+    value: "프로젝트탈퇴",
+  },
+  {
+    id: 10,
     code: "COMMENT_ADD",
     value: "댓글추가",
   },
   {
-    id: 10,
+    id: 11,
     code: "COMMENT_REMOVE",
     value: "댓글삭제",
   },
   {
-    id: 11,
+    id: 12,
     code: "COMMENT_MODIFICATION",
     value: "댓글수정",
   },
   {
-    id: 12,
+    id: 13,
     code: "CHANGE_AUTHORITY",
     value: "권한변경",
   },
