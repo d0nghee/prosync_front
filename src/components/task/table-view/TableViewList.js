@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import TaskMemberList from "../common/TaskMemberList";
 import { FiEdit2 } from "react-icons/fi";
 import * as t from "../form/TaskForm.style";
-import { getProjectMembersApi } from "../../../util/api";
 import TaskStatusList from "../common/TaskStatusList";
 import {
   MdNavigateBefore,
@@ -24,6 +23,7 @@ import { tryFunc } from "../../../util/tryFunc";
 import { useNavigate } from "react-router-dom";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
 import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
+import { getProjectMembersApi } from "../../../util/api";
 
 export default function TableViewList({
   onChangePage,
@@ -35,16 +35,15 @@ export default function TableViewList({
   const [showNewStatusModal, setShowNewStatusModal] = useState(false);
   const dispatch = useDispatch();
 
-  //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
-  const [projectMembers, setProjectMembers] = useState();
   const params = useParams();
   const tasks = useSelector((state) => state.taskList.list);
   const pageInfo = useSelector((state) => state.taskList.pageInfo);
+  const [projectMembers, setProjectMembers] = useState();
 
   useEffect(() => {
     tryFunc(
-      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
-      (projectMembers) => setProjectMembers(projectMembers),
+      () => getProjectMembersApi(params.projectId, { size: 100 }),
+      (members) => setProjectMembers(members),
       dispatch
     )();
   }, [params.projectId]);

@@ -44,15 +44,13 @@ export default function TaskDetail() {
       const memberId = getCookie("memberId");
 
       try {
-        await tryFunc(
-          () =>
-            axiosInstance.get(
-              `/projects/${params.projectId}/members/${memberId}`
-            ),
-          (response) => setProjectMember(response.data),
-          dispatch
-        )();
-      } catch (error) {}
+        const response = await axiosInstance.get(
+          `/projects/${params.projectId}/members/${memberId}`
+        );
+        setProjectMember(await response.data);
+      } catch (error) {
+        console.log("GUEST");
+      }
     })();
   }, [params.projectId, params.taskId]);
 
@@ -89,3 +87,4 @@ const TaskSection = styled.div`
   width: 70%;
   margin: 0 auto;
 `;
+

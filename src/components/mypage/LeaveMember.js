@@ -39,7 +39,8 @@ export default function LeaveMember() {
           alert("탈퇴되었습니다.");
           navi("/logout");
         }).catch((res) => {
-          if (res.response.status === "403") {
+          
+          if (res.response.status === 403) {
             alert("관리 중인 프로젝트가 있습니다. ADMIN 권한을 위임하고 진행해주세요.");
           }
         })  

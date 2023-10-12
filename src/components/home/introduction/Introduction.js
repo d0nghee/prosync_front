@@ -75,7 +75,7 @@ const publicDataList = [
 
 const IntroductionContainer = styled.div`
   width: 100%;
-  height: 150rem;
+  height: 170rem;
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -99,7 +99,11 @@ const IntroductionContainer = styled.div`
     padding-top: 1%;
     height: 7%;
 
+  }
 
+  & > .footer-spare {
+    height: 6%;
+    background-color: rgb(151,138,220);
   }
 
 
@@ -112,6 +116,7 @@ const Introduction = () => {
       <Service isPersonal={'personal'} dataList={personalDataList}/>
       <div className="public-title">프로젝트 업무 서비스</div>
       <Service isPersonal={'pulbic'} dataList={publicDataList}/>
+      <div className="footer-spare"/>
     </IntroductionContainer>
   );
 };
