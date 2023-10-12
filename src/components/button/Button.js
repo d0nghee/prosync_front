@@ -2,7 +2,7 @@ import React from "react";
 
 
 function Button(props) {
-  const { disabled, onClick, label, color, backgroundColor, width, height, margin } = props;
+  const { fontSize, marginTop, disabled, onClick, label, color, backgroundColor, width, height, margin } = props;
 
   const buttonStyle = {
     width : width || '30%', //'30%',
@@ -13,7 +13,9 @@ function Button(props) {
     border : color || 'none',
     cursor : 'pointer',
     transition : 'background-color 0.3s ease',
-    borderRadius : '3px'
+    borderRadius : '3px',
+    fontSize : fontSize || '15px',
+    marginTop : marginTop || '0px',
   }
 
  

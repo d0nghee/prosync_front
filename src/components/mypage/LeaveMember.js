@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { Content, GridContainer, InputText } from '../../css/MyPageStyle'
 import { deleteApi } from '../../util/api'
 import { useLoaderData, useNavigate } from 'react-router-dom'
+
+
 import { tryFunc } from '../../util/tryFunc'
 import { useDispatch } from 'react-redux'
 import DeleteImg from '../../assets/icon/mypage_icon5.png'
@@ -37,7 +39,7 @@ export default function LeaveMember() {
           alert("탈퇴되었습니다.");
           navi("/logout");
         }).catch((res) => {
-          if (res.code === "ACCESS_FORBIDDEN") {
+          if (res.response.status === "403") {
             alert("관리 중인 프로젝트가 있습니다. ADMIN 권한을 위임하고 진행해주세요.");
           }
         })  
@@ -71,7 +73,8 @@ export default function LeaveMember() {
           <Button
             onClick={handleLeaveMember}
             label="탈퇴"
-            width="20vw"
+            width="100px"
+            fontSize="20px"
           ></Button>
         </ButtonContainer>
       </Div>
@@ -80,12 +83,16 @@ export default function LeaveMember() {
 }
 
 const Div = styled.div`
-  grid-column: 3/5;
-  grid-row: 3/3;
+  grid-column: 2/6;
+  grid-row: 4/4;
+  display: flex;
 `
 
 const ImageContainer = styled.div`
+
+  grid-row : 2/3;
   grid-column: 1/6;
+  margin-top: 80px;
   margin-left: 100px;
   display: flex;
   flex-direction: row;
@@ -96,7 +103,8 @@ const ImgDiv = styled.img`
 `
 
 const ButtonContainer = styled.div`
-  margin-left: 70px;
+  margin-left: 50px;
+  margin-bottom: 20px;
 `
 
 const BannerElement = styled.div`

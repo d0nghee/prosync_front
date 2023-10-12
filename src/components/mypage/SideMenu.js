@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { SideBar, SideMenuDetail, List, ListItem } from '../../css/MyPageStyle'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import styled from 'styled-components';
 
 
 export default function SideMenu() {
