@@ -257,11 +257,13 @@ const Details = styled.div`
 const CommentArea = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const Box = styled.div`
   display: flex;
-  max-height: 100px;
+  align-items: center;
+  max-height: 180px;
   gap: 1rem;
 
   & > div:first-child {

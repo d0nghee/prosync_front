@@ -356,7 +356,7 @@ export default function SignupForm() {
                   ? "#7B69B7"
                   : "gray"
               }
-              label="생성"
+              label="회원가입"
               onClick={handleCreateButtonClick}
               disabled={
                 !(
@@ -366,7 +366,7 @@ export default function SignupForm() {
                 )
               }
               modalCheck="회원가입"
-              width="65%"
+              width="70%"
             ></Button>
           </SideContent>
         </SideTotal>

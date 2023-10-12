@@ -25,7 +25,7 @@ export const Image = styled.img`
 export const SideTotal = styled.div`
   display: flex;
   align-items: center;
-  width: 50%;
+  width: 60%;
   justify-content: center;
 `;
 
@@ -117,4 +117,8 @@ export const CheckButton = styled.button`
   border-radius: 3px;
   font-size: 15px;
   margin-top: 0px;
+
+  &:hover {
+    opacity: 0.7;
+  }
 `;

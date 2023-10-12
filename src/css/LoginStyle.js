@@ -8,7 +8,7 @@ export const FormContainer = styled.div`
 `;
 
 export const InputContent = styled.input`
-  width: ${({ wid }) => wid || "65%"};
+  width: ${({ wid }) => wid || "70%"};
   height: 2rem;
   border-top: 0;
   border-left: 0;
