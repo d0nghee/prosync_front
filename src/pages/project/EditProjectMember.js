@@ -76,7 +76,7 @@ export default function EditProjectMember() {
 
 export async function loader({ params }) {
   const projectId = params.projectId;
-  const data = await getApi(`/projects/${projectId}/members`);
+  const data = await getApi(`/projects/${projectId}/members`, { size: 100 });
   return data;
 }
 const Container = styled.div`

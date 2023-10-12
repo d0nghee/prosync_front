@@ -38,6 +38,7 @@ export default function SignupForm() {
 
   const [isVerifyCodeVisible, setIsVerifyCodeVisible] = useState(false);
   const [isVerifyCodeButtonVisible, setIsVerifyCodeButtonVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
   const location = useLocation();
   const [isNameNotCorrect, setIsNameNotCorrect] = useState(false);
   const [isPasswordNotCorrect, setIsPasswordNotCorrect] = useState(false);
@@ -194,7 +195,8 @@ export default function SignupForm() {
       .then(async (res) => {
         alert("전송되었습니다.")
         setIsVerifyCodeVisible(!isVerifyCodeVisible);
-
+        setVisible(true);
+        console.log("버튼", visible)
       }).catch(error => {
         alert("인증번호가 잘못되었습니다.")
         console.log(error);
@@ -207,12 +209,10 @@ export default function SignupForm() {
       .then(async (res) => {
         alert('인증 번호가 일치합니다');
         setIsVerifyCodeButtonVisible(true);
-
       })
       .catch(error => {
         console.log(error);
         alert("인증번호가 일치하지 않습니다.");
-        
       })
   }
 
@@ -244,12 +244,12 @@ export default function SignupForm() {
           <DivContainer>
             <LabelContent>Verify Code</LabelContent>
             <Button
-              backgroundColor={isVerifyCodeButtonVisible ? "gray" :"#7B69B7"}
+              backgroundColor={visible ? "gray" :"#7B69B7"}
               label="전송"
-              width="18%"
+              width="80px"
               height="2.2rem"
               onClick={handleVerifiedEmail}
-              disabled={isVerifyCodeButtonVisible}
+              disabled={visible}
             />
           </DivContainer>
 
@@ -312,6 +312,7 @@ export default function SignupForm() {
             onClick={handleCreateButtonClick}
             disabled={!(signup.isEmailValid && signup.isPasswordMatch && isVerifyCodeButtonVisible)}
             modalCheck='생성'
+            marginTop="30px"
           ></Button>
         </SideContent>
       </Page>

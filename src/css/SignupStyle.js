@@ -4,32 +4,37 @@ import Button from '../components/button/Button'
 export const Page = styled.div`
     display: flex;
     flex-direction: row;
+    margin-top: 5px;
+    height: 800px;
 `
 
 export const SideImage = styled.div`
     height: 100%;
-    width: 60%;
+    width: 50%;
     margin-right: 5rem;
     text-align: center;
 `
 
 export const Image = styled.img`
-    height: 40%;
-    width: 67%;
+    height: 836px;
+    width: 100%;
     object-fit: cover;
 `
 
 export const SideContent = styled.div`
-    margin-top: 5rem;
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
     height: 100%;
     width: 50%;
+    margin-left: 170px;
 `
 
 export const ConfirmEmail = styled.button`
     position: relative;
-    margin: 15px;
+    margin: 23px;
+    width: 80px;
+    height: 2.2rem;
     background-color: #7B69B7;
     color: white;
     border: none;
@@ -44,7 +49,7 @@ export const ConfirmEmail = styled.button`
 `
 export const DisableButton = styled.button`
     position: relative;
-    margin: 15px;
+    margin: 23px;
     background-color: gray;
     color: white;
     border: none;
@@ -55,7 +60,8 @@ export const DisableButton = styled.button`
 export const DivContainer = styled.div`
     display: flex;
     flex-direction : row;
-    width: 500px;
+    width: 100%;
+    margin-bottom: 20px;
 `
 
 export const ButtonContainer = styled.div`
@@ -84,6 +90,6 @@ const fadeIn = keyframes`
 `;
 
 export const VerifyCodeButton = styled(Button)`
-    margin-left: 1rem;
+    margin-left: 1.5rem;
     animation : ${fadeIn} 0.3s ease-in-out;
 `

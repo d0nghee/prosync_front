@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { tryFunc } from '../../util/tryFunc';
 import BookMarkOn from '../../assets/images/bookmark-on.png';
 import BookMarkOff from '../../assets/images/bookmark-off.png'
-import { BookmarkWrapper, ProjectTitle, ProjectImage, PostDescription, PostName, PostsDate } from '../../css/MyPageStyle';
+import { PostDescription, PostName, PostsDate } from '../../css/MyPageStyle';
 import styled from 'styled-components';
 import { postApi } from '../../util/api';
 
@@ -15,8 +15,7 @@ const StarButton = styled.button`
   cursor: pointer;
   padding: 0;
   font-size: 18px; // 글꼴 크기 감소
-  margin-right: 10px;
-  margin-bottom: 7px;
+
 `;
 
 const StarImage = styled.img`
@@ -68,51 +67,98 @@ export default function MyPageProjectProject({
     }
 
     return (
-        <>
+        <Container>
             <BookmarkWrapper>
+                <ProjectTitle onClick={clickHandler}>
+                    {title}
+                </ProjectTitle>
                 <StarButton
                     onClick={handleBookMark}>
                     <StarImage
                         src={isBook ? BookMarkOn : BookMarkOff} alt="Star"
                     />
                 </StarButton>
-                <ProjectTitle
-                    onClick={clickHandler}
-                >
-                    {title}
-                </ProjectTitle>
             </BookmarkWrapper>
-            <ProjectImage
-                src={projectImage}
-                onClick={clickHandler}>
+
+            <ProjectImage>
+                <ImageContent
+                    onClick={clickHandler}
+                    src={projectImage}
+                ></ImageContent>
             </ProjectImage>
-            <PostDescription>
-                <PostName>
-                    관리자 : {name}
-                </PostName>
-            </PostDescription>
-            <PostDescription>
 
-                <PostsDate>
-                    생성일 : {createdAt}
-                </PostsDate>
-
-            </PostDescription>
-            <PostDescription>
-
-                <PostsDate>
-                    시작일 : {startDate}
-                </PostsDate>
-
-            </PostDescription>
-            <PostDescription>
-
-                <PostsDate>
-                    종료일 : {endDate}
-                </PostsDate>
-
-            </PostDescription>
-
-        </>
+            <Footer>
+                <Dates>
+                    <label>프로젝트 기간</label>
+                    <div>{startDate}</div>
+                    <div>{endDate}</div>
+                </Dates>
+                <Author>{name}</Author>
+            </Footer>
+        </Container>
     )
 }
+
+const Container = styled.div`
+    background-color: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
+  margin: 4px;
+  border: 1px solid white;
+  &:hover {
+    border: 1px solid #333;
+  }
+`
+
+const BookmarkWrapper = styled.header`
+    display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f5d5d5; // 더 부드러운 색상의 경계선
+  padding-bottom: 8px;
+  border: 1px solid grey;
+  padding: 10px;
+  background-color: #fffff7;
+`
+
+const ProjectTitle = styled.h1`
+    font-size: 15px; // 글꼴 크기 감소
+    cursor: pointer;
+  margin: 0;
+`
+
+const ProjectImage = styled.div`
+    background-color: black;
+  height: 160px;
+
+  background-image: url(${(props) => props.image});
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  cursor: pointer;
+`
+
+const ImageContent = styled.img`
+    width: 100%;
+  height: 100%;
+  border: 1px solid gray;
+  object-fit: cover;
+`
+
+const Footer = styled.footer`
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  border-top: 1px solid #f5d5d5; // 더 부드러운 색상의 경계선
+  padding-top: 8px;
+  height: 50px;
+`
+const Dates = styled.div`
+    font-size: 12px;
+`
+
+const Author = styled.div`
+    font-size: 12px;
+`

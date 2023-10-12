@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { getCookie } from "../../util/cookies";
 
-let initialDelay = 1000;  // 1초
-let maxDelay = 120000;     // 120초
+let initialDelay = 1000; // 1초
+let maxDelay = 120000; // 120초
 
 function initializeEventSource(setEventSource, addToast, timerIds) {
   const memberId = getCookie("memberId");
@@ -12,7 +12,7 @@ function initializeEventSource(setEventSource, addToast, timerIds) {
 
   newEventSource.addEventListener("open", () => {
     console.log("SSE 연결 성공");
-    initialDelay = 1000;  
+    initialDelay = 1000;
   });
 
   // 정상적인 알람 메시지 도착
@@ -35,10 +35,10 @@ function initializeEventSource(setEventSource, addToast, timerIds) {
     if (data.type === "error") {
       if (data.message === "SSE 구독 오류 발생") {
         console.log("구독 오류");
-        reconnectWithBackoff(initialDelay, setEventSource, addToast,timerIds);
+        reconnectWithBackoff(initialDelay, setEventSource, addToast, timerIds);
       } else if (data.message === "SSE 전송 오류 발생") {
         console.log("전송 오류");
-        alert('알림 전송 오류가 발생했습니다. 새로고침을 눌러주세요.');
+        alert("알림 전송 오류가 발생했습니다. 새로고침을 눌러주세요.");
       }
     }
   };
@@ -49,7 +49,7 @@ function initializeEventSource(setEventSource, addToast, timerIds) {
     console.log(event);
     if (event.target.readyState === EventSource.CLOSED) {
       console.log("SSE closed");
-      reconnectWithBackoff(initialDelay, setEventSource, addToast,timerIds);
+      reconnectWithBackoff(initialDelay, setEventSource, addToast, timerIds);
     } else if (event.target.readyState === EventSource.CONNECTING) {
       console.log("SSE reconnecting");
     } else {
