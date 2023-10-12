@@ -18,16 +18,13 @@ export default function ProjectMember({ members, projectId }) {
 
   // ADMIN , QUIT 필터 처리
   useEffect(() => {
+    console.log('member filter 진입');
+
     const result = members.filter(
       (member) => member.authority !== 'ADMIN' && member.status !== 'QUIT'
     );
     setFilteredMembers(result);
   }, [members]);
-
-  useEffect(() => {
-    console.log(members, 'members');
-    console.log(checkMembers, 'checkmember');
-  }, [checkMembers]);
 
   // 필터 처리된 멤버들로 checkMember 초기화
   useEffect(() => {
@@ -36,7 +33,7 @@ export default function ProjectMember({ members, projectId }) {
       return acc;
     }, {});
     setCheckMembers(initialCheckStatus);
-  }, [filteredMembers, allChecked]);
+  }, [allChecked, filteredMembers]);
 
   // 모두 체크 , 체크 해제
   const allCheckMembers = () => {
@@ -69,16 +66,30 @@ export default function ProjectMember({ members, projectId }) {
 
     if (!isConfirmed) return;
 
-    const checkedMemberProjectIds = Object.keys(checkMembers).filter(
-      (memberProjectId) => checkMembers[memberProjectId]
-    );
+    const checkedMemberProjectIds = Object.keys(checkMembers)
+      .filter((memberProjectId) => checkMembers[memberProjectId])
+      .map((id) => +id);
 
     setIsLoading(true);
+    // 삭제된 멤버들을 filteredMembers에서 제거
+    const updateMembers = () => {
+      const updatedFilteredMembers = filteredMembers.filter(
+        (member) => !checkedMemberProjectIds.includes(member.memberProjectId)
+      );
+      setFilteredMembers(updatedFilteredMembers);
+      console.log('filter', updatedFilteredMembers);
+    };
+
     const deleteRequests = checkedMemberProjectIds.map((memberProjectId) =>
-      deleteApi(`/project-members/${memberProjectId}`)
+      // deleteApi(`/project-members/${memberProjectId}`)
+      tryFunc(
+        () => deleteApi(`/project-members/${memberProjectId}`),
+        updateMembers,
+        dispatch
+      )()
     );
     await Promise.all(deleteRequests);
-
+    // updateMembers();
     setIsLoading(false);
   };
 

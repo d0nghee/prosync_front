@@ -12,6 +12,7 @@ import DeleteProjectModal from './DeleteProjectModal';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '../common/LoadingSpinner';
+import useFormInput from '../../hooks/use-form-input';
 
 export default function ProjectForm({ project = {}, method }) {
   const [img, setImg] = useState(null);
@@ -32,10 +33,48 @@ export default function ProjectForm({ project = {}, method }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    titleSetHandler(projectData.title);
+    introSetHandler(projectData.intro);
+
     if (method === 'PATCH') {
       setImgData();
     }
   }, []);
+
+  const {
+    value: titleValue,
+    isValid: titleIsValid,
+    setHandler: titleSetHandler,
+    changeHandler: titleChangeHandler,
+    blurHandler: titleBlurHandler,
+    hasError: titleHasError,
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 50);
+
+  const {
+    value: introValue,
+    isValid: introIsValid,
+    setHandler: introSetHandler,
+    changeHandler: introChangeHandler,
+    blurHandler: introBlurHandler,
+    hasError: introHasError,
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 500);
+
+  function validateDates(startDateStr, endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    // 시작일과 종료일이 유효한 날짜인지 확인
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return false;
+    }
+
+    // 시작일 < 종료일
+    if (startDate > endDate) {
+      return false;
+    }
+
+    return true;
+  }
 
   // PATCH
   // 기존 이미지 파일 이름 설정
@@ -62,20 +101,25 @@ export default function ProjectForm({ project = {}, method }) {
   }
 
   async function ProjectHandler() {
-    console.log('img', img);
-    if (
-      !projectData.title ||
-      !projectData.intro ||
-      !projectData.startDate ||
-      !projectData.endDate
-    ) {
-      alert('필요한 데이터를 모두 입력해주세요.');
+    const validDate = validateDates(projectData.startDate, projectData.endDate);
+    if (!introIsValid || !titleIsValid) {
+      alert('입력 값을 다시 확인하세요');
       return;
     }
+    if (!validDate) {
+      alert('날짜를 다시 확인하세요');
+      return;
+    }
+
     // 프로젝트 생성
     if (method === 'POST') {
       //이미지 없을때 생성
       if (img === null || img === '') {
+        const data = {
+          ...projectData,
+          intro: introValue,
+          title: titleValue,
+        };
         const noImagePostSuccess = (response) => {
           setIsLoading(true);
           const projectId = response.data.projectId;
@@ -85,7 +129,7 @@ export default function ProjectForm({ project = {}, method }) {
         const getNoImagePost = async () => {
           setIsLoading(false);
 
-          const response = await postApi('/projects', projectData);
+          const response = await postApi('/projects', data);
           return response;
         };
         tryFunc(
@@ -101,6 +145,9 @@ export default function ProjectForm({ project = {}, method }) {
         const imgData = await postFileApi(img);
         const data = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
+
           fileId: imgData[0].fileId,
         };
         const ImagePost = async () => {
@@ -132,6 +179,8 @@ export default function ProjectForm({ project = {}, method }) {
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
         };
 
         await tryFunc(
@@ -150,6 +199,8 @@ export default function ProjectForm({ project = {}, method }) {
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
           projectImage: null,
         };
 
@@ -174,6 +225,8 @@ export default function ProjectForm({ project = {}, method }) {
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
           fileId: test,
         };
 
@@ -265,19 +318,37 @@ export default function ProjectForm({ project = {}, method }) {
       />
       <MainContentContainer>
         <Label>프로젝트명</Label>
+
         <Input
           type="text"
           name="title"
-          value={projectData.title}
-          onChange={handleInputChange}
+          value={titleValue}
+          // onChange={handleInputChange}
+          onChange={titleChangeHandler}
+          onBlur={titleBlurHandler}
+          isError={titleHasError}
+          placeholder="내용을 입력하세요"
         />
+        {titleHasError && (
+          <ErrorMessage>제목은 1자 이상 50자 이내로 입력해주세요.</ErrorMessage>
+        )}
+
         <Label>프로젝트 소개</Label>
 
         <TextArea
           name="intro"
-          value={projectData.intro}
-          onChange={handleInputChange}
+          value={introValue}
+          // onChange={handleInputChange}
+          onChange={introChangeHandler}
+          onBlur={introBlurHandler}
+          isError={introHasError}
+          placeholder="내용을 입력하세요"
         />
+        {introHasError && (
+          <ErrorMessage>
+            소개는 1자 이상 500자 이내로 입력해주세요.
+          </ErrorMessage>
+        )}
       </MainContentContainer>
 
       <SideContentContainer>
@@ -498,4 +569,9 @@ const DateContainer = styled.div`
   gap: 10px;
   margin-bottom: 10px;
   justify-content: center;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 0.8rem;
 `;

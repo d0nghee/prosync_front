@@ -9,6 +9,7 @@ import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice'
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { getCookie } from '../../util/cookies';
 
 export default function EditProjectMember() {
   const data = useRouteLoaderData('editmember');
@@ -19,6 +20,23 @@ export default function EditProjectMember() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const memberId = getCookie('memberId');
+    console.log('memberID', memberId);
+    if (members) {
+      console.log(members, 'members');
+      const adminId = members.find(
+        (member) => member.authority === 'ADMIN'
+      ).memberId;
+      console.log(adminId, 'admin');
+
+      if (adminId !== memberId) {
+        alert('접근 권한이 없습니다');
+        navigate('..');
+      }
+    }
+  }, []);
 
   const handleInputChange = (input) => {
     console.log('handleInputChange');
@@ -34,8 +52,7 @@ export default function EditProjectMember() {
       setMembers([]);
     }
     const getMembers = async () => {
-      // setIsLoading(true);
-
+      setIsLoading(true);
       const response = await getApi(
         `/projects/${projectId}/members?size=100&search=${search}`
       );
@@ -97,7 +114,8 @@ export async function loader({ params }) {
         '서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요.'
       );
     } else if (error.response && error.response.status === 401) {
-      alert('로그인이 만료되었습니다.');
+      alert('접근 권한이 없습니다');
+      window.location.href = '/';
     }
   }
 }
