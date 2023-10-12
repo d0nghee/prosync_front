@@ -30,7 +30,6 @@ export default function ProjectForm({ project = {}, method }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const [currentImg, setCurrentImg] = useState();
 
   useEffect(() => {
     if (method === 'PATCH') {
@@ -127,9 +126,6 @@ export default function ProjectForm({ project = {}, method }) {
 
       // 프로젝트 수정
     } else if (method === 'PATCH' && project.projectId) {
-      console.log('img들어왓다', img);
-      console.log('imgqqq', newImg);
-
       // 이미지 수정 없이 기존 이미지 그대로
       if (newImg === undefined && img) {
         console.log('탄다1');
@@ -163,7 +159,6 @@ export default function ProjectForm({ project = {}, method }) {
 
         const patchNoImage = async () => {
           setIsLoading(true);
-
           await patchApi(`/projects/${project.projectId}`, updateData);
         };
 
