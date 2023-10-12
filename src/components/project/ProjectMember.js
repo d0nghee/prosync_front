@@ -5,6 +5,8 @@ import { deleteApi, postApi } from '../../util/api';
 import InviteModal from './InviteModal';
 import { useDispatch } from 'react-redux';
 import { tryFunc } from '../../util/tryFunc';
+import LoadingSpinner from '../common/LoadingSpinner';
+import NoContent from './NoContent';
 
 export default function ProjectMember({ members, projectId }) {
   const [checkMembers, setCheckMembers] = useState({});
@@ -14,6 +16,7 @@ export default function ProjectMember({ members, projectId }) {
 
   const [inviteLink, setInviteLink] = useState('');
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const initialCheckStatus = members
@@ -59,6 +62,7 @@ export default function ProjectMember({ members, projectId }) {
     );
 
     // 각 memberProjectId에 대한 삭제 요청 생성
+    setIsLoading(true);
     const deleteRequests = checkedMemberProjectIds.map((memberProjectId) =>
       deleteApi(`/project-members/${memberProjectId}`)
     );
@@ -66,6 +70,7 @@ export default function ProjectMember({ members, projectId }) {
     const updatedMembers = members.filter(
       (member) => !checkedMemberProjectIds.includes(member.memberProjectId)
     );
+    setIsLoading(false);
     setUpdateMembers(updatedMembers);
   };
   const handleInvite = () => {
@@ -83,6 +88,8 @@ export default function ProjectMember({ members, projectId }) {
     };
     tryFunc(invitePost, (response) => invitePostSuccess(response), dispatch)();
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <Container>
@@ -117,7 +124,7 @@ export default function ProjectMember({ members, projectId }) {
               />
             ))
         ) : (
-          <NoMembers>멤버가 없습니다</NoMembers>
+          <NoContent body={'멤버가 없습니다'} />
         )}
       </MembersContainer>
     </Container>

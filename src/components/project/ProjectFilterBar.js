@@ -40,7 +40,7 @@ export default function ProjectFilterBar({
         <MenuList>
           <MenuItem onClick={defaultFilter}>최신 순</MenuItem>
           <MenuItem onClick={bookmarkFilter}>내 북마크</MenuItem>
-          <MenuItem onClick={endDateFilter}>마감일 임박 순</MenuItem>
+          <MenuItem onClick={endDateFilter}>마감 임박 순</MenuItem>
         </MenuList>
       )}
     </DropdownContainer>
@@ -49,7 +49,7 @@ export default function ProjectFilterBar({
 
 const DropdownContainer = styled.div`
   position: relative;
-  width: 200px;
+  width: 150px;
   display: inline-block;
 `;
 

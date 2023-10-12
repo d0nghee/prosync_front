@@ -1,25 +1,17 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import ProjectInfo from "./ProjectInfo";
-import { getProjectMembersApi } from "../../util/api";
-import { tryFunc } from "../../util/tryFunc";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import ProjectInfo from './ProjectInfo';
+import { getProjectMembersApi } from '../../util/api';
+import { tryFunc } from '../../util/tryFunc';
 
 export default function Project() {
   const [projectMembers, setProjectMembers] = useState();
   const params = useParams();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     tryFunc(
-      () => getProjectMembersApi(params.projectId, { size: 100 }),
-      (projectMembers) => {
-        const members = projectMembers.filter(
-          (member) => member.status === "ACTIVE"
-        );
-        setProjectMembers(members);
-      },
-      dispatch
+      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
+      (projectMembers) => setProjectMembers(projectMembers)
     )();
   }, [params.projectId]);
 

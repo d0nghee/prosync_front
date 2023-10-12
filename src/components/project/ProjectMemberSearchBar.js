@@ -28,8 +28,8 @@ const SearchBarContainer = styled.div`
   width: 100%;
   margin-top: 50px;
   max-width: 1100px;
-  margin-left: 300px;
-  margin-right: 300px;
+  /* margin-left: 300px; */
+  /* margin-right: 300px; */
 
   padding: 8px;
   border-radius: 8px;

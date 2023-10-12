@@ -8,6 +8,9 @@ import ProjectFilterBar from '../../components/project/ProjectFilterBar';
 import ProjectSearchBar from '../../components/project/ProjectSearchBar';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
+import NoContent from '../../components/project/NoContent';
+
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 export default function ProjectList() {
   const [projects, setProjects] = useState([]);
@@ -25,6 +28,7 @@ export default function ProjectList() {
   const [star, setStar] = useState(false);
   const dispatch = useDispatch();
   const [currentMenu, setCurrentMenu] = useState('최신 순');
+  const bodyComment = '일치하는 프로젝트가 없습니다';
 
   const getProjectList = async () => {
     let url = location.pathname + location.search;
@@ -104,10 +108,10 @@ export default function ProjectList() {
     });
   };
 
-  if (loading) return <div>Loading...</div>; // 로딩 메시지
+  if (loading) return <LoadingSpinner />; // 로딩 메시지
 
   return (
-    <>
+    <Container>
       <TopBarContainer>
         <ProjectFilterBar
           onDefault={defaultProjectListHandler}
@@ -128,15 +132,19 @@ export default function ProjectList() {
             />
           ))
         ) : (
-          <div>No Projects Found</div>
+          <NoItemContainer>
+            <NoContent body={bodyComment} />
+          </NoItemContainer>
         )}
       </ProjectGrid>
-      <Pagination
-        currentPage={Number(page)}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    </>
+      <PaginationWrapper>
+        <Pagination
+          currentPage={Number(page)}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </PaginationWrapper>
+    </Container>
   );
 }
 
@@ -146,14 +154,33 @@ const ProjectGrid = styled.div`
   grid-gap: 2;
   margin-left: 200px;
   margin-right: 200px;
+  margin-bottom: 20px;
 `;
 
 const TopBarContainer = styled.div`
   display: flex;
-  justify-content: space-between; // 좌측과 우측 요소를 양 끝으로 보냅니다.
+  justify-content: flex-end; // 오른쪽으로 붙임
   align-items: center;
+  padding: 10px 15px;
   margin-bottom: 20px;
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 30px;
+`;
+
+const PaginationWrapper = styled.div`
+  margin-top: 50px;
+`;
+
+const NoItemContainer = styled.div`
+  grid-column: 1 / -1; // 전체 컬럼을 차지
+  grid-row: 1 / -1; // 전체 행을 차지
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+`;
+
+const Container = styled.div`
+  height: 850px;
 `;

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import bookmarkOff from '../../assets/images/bookmark-off.png';
 import bookmarkOn from '../../assets/images/bookmark-on.png';
 import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 export default function Project({
   projects: {

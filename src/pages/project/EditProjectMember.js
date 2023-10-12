@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 export default function EditProjectMember() {
   const data = useRouteLoaderData('editmember');
@@ -17,6 +18,7 @@ export default function EditProjectMember() {
   const authorityState = useSelector(selectMembers);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (input) => {
     console.log('handleInputChange');
@@ -28,11 +30,21 @@ export default function EditProjectMember() {
   }, [search]);
 
   const getMemberHandler = async () => {
-    tryFunc(
-      await getApi(`/projects/${projectId}/members?search=${search}`),
-      (response) => setMembers(response.data.data),
-      dispatch
-    )();
+    const getMembers = async () => {
+      setIsLoading(true);
+
+      const response = await getApi(
+        `/projects/${projectId}/members?search=${search}`
+      );
+      return response;
+    };
+
+    const getMembersSuccess = (response) => {
+      setIsLoading(false);
+      setMembers(response.data.data);
+    };
+
+    tryFunc(getMembers, (response) => getMembersSuccess(response), dispatch)();
   };
 
   const submitHandler = () => {
@@ -51,6 +63,8 @@ export default function EditProjectMember() {
     });
   };
 
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <Container>
       <SubmitButton onClick={submitHandler}>저장</SubmitButton>
@@ -66,7 +80,7 @@ export async function loader({ params }) {
   return data;
 }
 const Container = styled.div`
-  /* position: relative; */
+  height: 1000px;
 `;
 
 const SubmitButton = styled.button`

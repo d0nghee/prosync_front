@@ -1,10 +1,8 @@
 import { useRouteLoaderData } from 'react-router-dom';
 import ProjectForm from '../../components/project/ProjectForm';
 import { getApi } from '../../util/api';
-import { tryFunc } from '../../util/tryFunc';
-import { useDispatch } from 'react-redux';
 
-export default function EditProejct() {
+export default function EditProject() {
   const data = useRouteLoaderData('edit');
   const project = data?.data || {};
 
