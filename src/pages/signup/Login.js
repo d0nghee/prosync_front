@@ -8,7 +8,7 @@ import {
   setIsLoggedIn,
   setLoginFormData,
 } from "../../redux/reducers/member/loginSlice";
-import { getCookie, setCookie } from "../../util/cookies";
+import { setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
 import { tryFunc } from "../../util/tryFunc";
 import LoginImg from "../../assets/images/login_image.jpeg";

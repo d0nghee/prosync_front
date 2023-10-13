@@ -25,7 +25,7 @@ import Loading from "../common/Loading";
 
 import SearchBar from "./SearchBar";
 import PaginationButton from "./PaginationButton";
-import ProjectFilterBar from "../project/ProjectFilterBar";
+import MypageFilterBar from './MypageFilterBar'
 import MyPageProjectProject from "./MyPageProjectProject";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -36,7 +36,6 @@ export default function MyProject() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [projectElement, setProjectElement] = useState([]);
   const [totalPages, setTotalPages] = useState();
@@ -58,8 +57,9 @@ export default function MyProject() {
   const onFetchMyprojectSuccess = (data) => {
     console.log("데이터", data);
     myprojectHandler(data);
-    setIsLoading(false);
-  };
+  }
+
+
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -71,8 +71,10 @@ export default function MyProject() {
   }, [location.search]);
 
   useEffect(() => {
-    setIsLoading(true);
-    tryFunc(fetchMyproject, onFetchMyprojectSuccess, dispatch)();
+    tryFunc(
+      fetchMyproject,
+      onFetchMyprojectSuccess,
+      dispatch)();
   }, [currentPage, location.search, location.pathname, book]);
 
   const myprojectHandler = (data) => {
@@ -132,43 +134,47 @@ export default function MyProject() {
 
   return (
     <>
-      {isLoading && <Loading />}
-
       <ProjectSearchBarContainer>
         <SearchBar
           onSearch={searchHandler}
           padding="0px"
           margin="0px 20px 0px 0px"
-        ></SearchBar>
-      </ProjectSearchBarContainer>
+        >
+        </SearchBar>
+      </ProjectSearchBarContainer >
       <FilterContainer>
-        <ProjectFilterBar
+        <MypageFilterBar
           onDefault={defaultProjectListHandler}
           onBookmarkFilter={bookmarkFilterHandler}
           onendDateSorting={endDateHandler}
         />
       </FilterContainer>
 
+
       {
         <>
           <ProjectContent>
-            {projectElement && projectElement.length > 0 ? (
-              projectElement.map((post) => (
-                <PostItem key={post.projectId}>
-                  <MyPageProjectProject
-                    projects={post}
-                    onBookmarkChange={bookmarkChangeHandler}
-                  />
-                </PostItem>
-              ))
-            ) : (
-              <NullPost>
-                <NoContentImg src={NoContent} />
-                <NoContentComment>
-                  내가 속한 프로젝트가 없습니다.
-                </NoContentComment>
-              </NullPost>
-            )}
+            {
+              projectElement && projectElement.length > 0 ? (
+                projectElement.map((post) => (
+                  <PostItem
+                    key={post.projectId}
+                  >
+                    <MyPageProjectProject
+                      projects={post}
+                      onBookmarkChange={bookmarkChangeHandler}
+                    />
+                  </PostItem>
+                ))) : (
+                <NullPost>
+                  <NoContentImg src={NoContent} />
+                  <NoContentComment>
+                    내가 속한 프로젝트가 없습니다.
+                  </NoContentComment>
+                </NullPost>
+              )
+            }
+
           </ProjectContent>
           <PaginationGridContainer>
             <PaginationContainer>

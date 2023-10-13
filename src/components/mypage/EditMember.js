@@ -11,16 +11,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "../../util/cookies";
-import { getApi, postFileApi } from "../../util/api";
+import { removeUserCookie, setCookie } from "../../util/cookies";
+import { deleteFileApi, getApi, patchApi, postFileApi } from "../../util/api";
 import { introValidate, nameValidate } from "../../util/regex";
 import IntroCheck from "../../components/signup/IntroCheck";
 import NameCheck from "../../components/signup/NameCheck";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
-import MypageImg from "../../assets/icon/mypage_icon3.png";
-import { patchApi } from "../../util/api";
+import MypageImg from '../../assets/icon/mypage_icon3.png'
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -84,6 +84,8 @@ export default function EditMember() {
           error.response.data.resultCode === "USER_NOT_FOUND"
         ) {
           alert("유저 정보를 찾지 못하였습니다.");
+          removeUserCookie();
+          dispatch(setIsLoggedIn(false));
         }
       });
   }, [location, image, dispatch]);
@@ -209,6 +211,8 @@ export default function EditMember() {
     })();
   };
 
+
+
   return (
     // <ProfileGridContainer>
     <>
@@ -218,16 +222,8 @@ export default function EditMember() {
       </ImageContainer>
       <FileContainer>
         <ProfileImage src={mypage.memberInfo.profileImage} />
-
         <InputContainer>
-          <FileButton>
-            <CustomFileUpload htmlFor="file-upload">
-              이미지 변경
-            </CustomFileUpload>
-            <ResetImageButton onClick={imageResetHandle}>
-              초기화
-            </ResetImageButton>
-          </FileButton>
+          <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
           <FileInput
             type="file"
             id="file-upload"
@@ -235,6 +231,11 @@ export default function EditMember() {
           ></FileInput>
         </InputContainer>
       </FileContainer>
+      <ResetButton
+        onClick={imageResetHandle}
+      >
+        X
+      </ResetButton>
       <DivContainer>
         <CustomDiv>
           <Label>이름 입력 : &nbsp;&nbsp;&nbsp;</Label>
@@ -366,27 +367,18 @@ const ButtonContainer = styled.div`
 
 const SettingImg = styled.img`
   width: 200px;
-`;
+`
 
-const ResetImageButton = styled.div`
-  width: 70px;
-  padding: 6px;
-  cursor: pointer;
-  background-color: white;
-  border: 1px solid #7b69b7;
-  color: #7b69b7;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #7b69b7;
-    color: white;
-  }
-`;
-
-const FileButton = styled.div`
-  display: flex;
-  width: 200px;
-  gap: 0.5rem;
-  align-items: center;
-`;
+const ResetButton = styled.button`
+  grid-column: 4/4;
+  grid-row: 1/3;
+  margin-top: 40px;
+  width: 30px;
+  height: 30px;
+  margin-left: 40%;
+  background-color: #7b69b7;
+  font-size: large;
+  border: 0px;
+  border-radius: 3px;
+  color: white;
+`
