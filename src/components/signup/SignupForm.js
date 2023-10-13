@@ -24,12 +24,6 @@ import EmailCheck from "./EmailCheck";
 import VerifyCheck from "./VerifyCheck";
 import NameCheck from "./NameCheck";
 import PasswordCheck from "./PasswordCheck";
-import { tryFunc } from "../../util/tryFunc";
-
-
-
-
-
 
 export default function SignupForm() {
   const dispatch = useDispatch();
@@ -242,7 +236,7 @@ export default function SignupForm() {
 
 
           <DivContainer>
-            <LabelContent>Verify Code</LabelContent>
+            <LabelContent style={{marginRight : "20px"}}>Verify Code</LabelContent>
             <Button
               backgroundColor={visible ? "gray" :"#7B69B7"}
               label="전송"
@@ -265,7 +259,7 @@ export default function SignupForm() {
               <VerifyCodeButton
                 backgroundColor={isVerifyCodeButtonVisible ? "gray" : "#7B69B7"}
                 label="인증번호 확인"
-                width="18%"
+                width="20%"
                 height="2.2rem"
                 onClick={handleVerifiedCodeSendToServer}
                 disabled={isVerifyCodeButtonVisible}
@@ -313,6 +307,7 @@ export default function SignupForm() {
             disabled={!(signup.isEmailValid && signup.isPasswordMatch && isVerifyCodeButtonVisible)}
             modalCheck='생성'
             marginTop="30px"
+            width="40%"
           ></Button>
         </SideContent>
       </Page>

@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { getApi, postApi } from '../../util/api'
+import { getApi } from '../../util/api'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { PostItem, Container, PageButton, PaginationContainer, PostTitle, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
+import { PostItem, PaginationContainer, PostTitle, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
 import { tryFunc } from '../../util/tryFunc';
-import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
-import Loading from '../common/Loading';
 
 import SearchBar from './SearchBar'
 import PaginationButton from './PaginationButton';
@@ -22,7 +20,6 @@ export default function MyProject() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [projectElement, setProjectElement] = useState([]);
   const [totalPages, setTotalPages] = useState();
@@ -44,7 +41,6 @@ export default function MyProject() {
   const onFetchMyprojectSuccess = (data) => {
     console.log("데이터", data)
     myprojectHandler(data);
-    setIsLoading(false);
   }
 
 
@@ -61,7 +57,6 @@ export default function MyProject() {
 
 
   useEffect(() => {
-    setIsLoading(true);
     tryFunc(
       fetchMyproject,
       onFetchMyprojectSuccess,
@@ -128,24 +123,22 @@ export default function MyProject() {
 
   return (
     <>
-      {isLoading && <Loading />}
-     
-        <ProjectSearchBarContainer>
-          <SearchBar
-            onSearch={searchHandler}
-            padding="0px"
-            margin="0px 20px 0px 0px"
-          >
-          </SearchBar>
-        </ProjectSearchBarContainer >
-        <FilterContainer>
-          <ProjectFilterBar
-            onDefault={defaultProjectListHandler}
-            onBookmarkFilter={bookmarkFilterHandler}
-            onendDateSorting={endDateHandler}
-          />
-        </FilterContainer>
-      
+      <ProjectSearchBarContainer>
+        <SearchBar
+          onSearch={searchHandler}
+          padding="0px"
+          margin="0px 20px 0px 0px"
+        >
+        </SearchBar>
+      </ProjectSearchBarContainer >
+      <FilterContainer>
+        <ProjectFilterBar
+          onDefault={defaultProjectListHandler}
+          onBookmarkFilter={bookmarkFilterHandler}
+          onendDateSorting={endDateHandler}
+        />
+      </FilterContainer>
+
 
       {
         <>
@@ -163,7 +156,7 @@ export default function MyProject() {
                   </PostItem>
                 ))) : (
                 <NullPost>
-                  <NoContentImg src={NoContent}/>
+                  <NoContentImg src={NoContent} />
                   <NoContentComment>
                     내가 속한 프로젝트가 없습니다.
                   </NoContentComment>

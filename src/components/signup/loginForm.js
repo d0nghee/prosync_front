@@ -21,9 +21,10 @@ export default function loginForm(props) {
   return (
     <FormContainer>
         <LabelContent>Mail</LabelContent>
-        <InputContent type='email' name='email' id='email' onChange={handleInputChange} onKeyPress={onKeyPress}/>
+        <InputContent type='email' name='email' id='email' onChange={handleInputChange} onKeyPress={onKeyPress} style={{marginBottom: "20px"}}/>
         <LabelContent>Password</LabelContent>
         <InputContent type='password' name='password' id='password' onChange={handleInputChange} onKeyPress={onKeyPress} />
     </FormContainer>
   )
 }
+

@@ -8,12 +8,12 @@ import {
   setIsLoggedIn,
   setLoginFormData,
 } from "../../redux/reducers/member/loginSlice";
-import { getCookie, setCookie } from "../../util/cookies";
+import { setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
 import { tryFunc } from "../../util/tryFunc";
 import LoginImg from '../../assets/images/login_image.jpeg'
-import { Page, SideContent, SideImage, Image } from "../../css/SignupStyle";
-import styled, { keyframes } from 'styled-components'
+import { Page, SideImage, Image } from "../../css/SignupStyle";
+import styled from 'styled-components'
 
 export default function Login() {
 
@@ -142,13 +142,11 @@ export default function Login() {
           ></LoginForm>
         </div>
         <LoginButtonContainer>
-          <CustomButton
-            width="40%"
-            backgroundColor="#9BC1BC"
-            label="로그인"
-            fontSize="18px"
+          <LoginButton
             onClick={handleLogin}
-          />
+          >
+            로그인
+          </LoginButton>
           <SignupButton
             onClick={handleSignup}
           >
@@ -167,10 +165,18 @@ const LoginContainer = styled.div`
   height: 100%;
   width: 50%;
   justify-content: center;
-  margin-right: 80px;
 `
 
 const SignupButton = styled.div`
   font-weight: 700;
   cursor: pointer;
+`
+
+const LoginButton = styled.button`
+  width: 40%;
+  height: 2.2rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  background-color: aquamarine;
+  border: 0px;
 `

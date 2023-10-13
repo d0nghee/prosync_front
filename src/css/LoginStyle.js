@@ -12,14 +12,13 @@ export const InputContent = styled.input`
     border-top : 0;
     border-left : 0;
     border-right : 0;
-    margin-top: 1.5rem;
     font-size: large;
+    margin-right: 20px;
 `;
 
 export const LabelContent = styled.label`
     text-align: left;
     width: 40%;
-    margin-top: 1.5rem;
     font-size: larger;
     font-weight: 60;
 `;
