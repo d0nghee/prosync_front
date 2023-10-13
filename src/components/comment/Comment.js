@@ -27,6 +27,7 @@ export default function Comment({ comment, memberId, onRemove }) {
     setHandler: commentSetHandler,
     blurHandler: commentBlurHandler,
     hasError: commentHasError,
+    isValid: commentIsValid,
   } = useFormInput(
     (value) =>
       value.replace(/<[^>]*>/g, "").trim() !== "" &&
@@ -36,17 +37,15 @@ export default function Comment({ comment, memberId, onRemove }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    commentSetHandler(comment.content);
-  }, [comment.content, commentSetHandler]);
+    commentSetHandler(comment ? comment.content : "");
+  }, []);
 
   const contentUpdateHandler = (event, commentId) => {
     event.preventDefault();
-
-    if (commentHasError) {
+    if (!commentIsValid) {
       alert("댓글은 1 ~ 300자 이내로 작성해주세요.");
       return;
     }
-    const content = commentValue;
 
     const fileIds =
       selectedFiles.length !== 0
@@ -54,7 +53,11 @@ export default function Comment({ comment, memberId, onRemove }) {
         : [];
 
     tryFunc(
-      () => patchCommentApi(params.taskId, commentId, { content, fileIds }),
+      () =>
+        patchCommentApi(params.taskId, commentId, {
+          content: commentValue,
+          fileIds,
+        }),
       () => {
         if (selectedFiles.length !== 0) {
           if (commentFiles && commentFiles.length !== 0) {

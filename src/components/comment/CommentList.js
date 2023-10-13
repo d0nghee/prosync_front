@@ -9,7 +9,6 @@ import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import * as t from "../task/form/TaskForm.style";
 import SelectedFiles from "../file/SelectedFiles";
 import { tryFunc } from "../../util/tryFunc";
-import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import useFormInput from "../../hooks/use-form-input";
 import { useDispatch } from "react-redux";
@@ -208,7 +207,6 @@ export default function CommentList({ projectMember }) {
                     id="comment"
                     name="comment"
                     placeholder="댓글을 입력하세요."
-                    // value={commentValue}
                     onBlur={commentBlurHandler}
                     onChange={commentSetHandler}
                     isError={commentHasError}
@@ -302,6 +300,7 @@ const CommentInput = styled(ReactQuill)`
 
 const Total = styled.div`
   width: 90%;
+  margin-bottom: 10rem;
 `;
 
 const Save = styled.div`
