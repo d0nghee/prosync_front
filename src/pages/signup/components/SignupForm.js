@@ -450,7 +450,7 @@ export default function SignupForm() {
               onClick={handleIdCheckButtonClick}
               disabled={signup.isEmailValid}
             >
-              중복확인
+              중복 확인
             </ConfrimButton>
             <EmailCheck />
           </DivContainer>
