@@ -211,19 +211,6 @@ export default function EditMember() {
     })();
   };
 
-  const imageResetHandle = () => {
-    patchApi("/members/profile", {
-      ...mypage.memberInfo,
-      profileImage: null,
-    }).then(() => {
-      setCookie("profile", "https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png", {
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
-      });
-      alert("수정");
-      window.location.reload();
-    });
-  }
 
 
   return (

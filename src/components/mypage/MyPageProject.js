@@ -25,7 +25,7 @@ import Loading from "../common/Loading";
 
 import SearchBar from "./SearchBar";
 import PaginationButton from "./PaginationButton";
-import ProjectFilterBar from "../project/ProjectFilterBar";
+import MypageFilterBar from './MypageFilterBar'
 import MyPageProjectProject from "./MyPageProjectProject";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -143,7 +143,7 @@ export default function MyProject() {
         </SearchBar>
       </ProjectSearchBarContainer >
       <FilterContainer>
-        <ProjectFilterBar
+        <MypageFilterBar
           onDefault={defaultProjectListHandler}
           onBookmarkFilter={bookmarkFilterHandler}
           onendDateSorting={endDateHandler}
