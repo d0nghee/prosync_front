@@ -3,8 +3,7 @@ import { useDispatch } from "react-redux";
 import { taskMembersAction } from "../../redux/reducers/task/taskMembers-slice";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getTaskApi, getCommentsApi, getFileApi } from "../../util/api";
-import CommentList from "../../components/comment/CommentList";
+import { getTaskApi, getFileApi } from "../../util/api";
 import { styled } from "styled-components";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { tryFunc } from "../../util/tryFunc";
@@ -13,7 +12,6 @@ export default function EditTask() {
   const dispatch = useDispatch();
   const [task, setTask] = useState();
   const params = useParams();
-  const [comments, setComments] = useState();
   const [taskFiles, setTaskFiles] = useState([]);
 
   const deleteFile = (fileInfoId) => {
@@ -35,23 +33,10 @@ export default function EditTask() {
     )();
 
     tryFunc(
-      async () => await getCommentsApi(`${params.taskId}`),
-      (comments) => setComments(comments),
-      dispatch
-    )();
-
-    tryFunc(
       async () => await getFileApi(params.taskId, "TASK"),
       (files) => setTaskFiles(files)
     )();
   }, [dispatch, params.taskId]);
-
-  const addComment = (comment) => {
-    setComments((prv) => {
-      const data = [...prv.data, comment];
-      return { data, pageInfo: prv.pageInfo };
-    });
-  };
 
   if (!task) {
     return <LoadingSpinner />;
@@ -65,7 +50,6 @@ export default function EditTask() {
         taskFiles={taskFiles}
         deleteFile={deleteFile}
       />
-      <CommentList comments={comments} addComment={addComment} />
     </TaskSection>
   );
 }
@@ -75,4 +59,5 @@ const TaskSection = styled.div`
   flex-direction: column;
   margin: 0 auto;
   width: 70%;
+  margin-bottom: 15rem;
 `;

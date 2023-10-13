@@ -211,7 +211,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
         <NewTaskStatus onClose={() => setShowModal((prv) => !prv)} />
       )}
       <form method={method} onSubmit={saveHandler}>
-        <t.TaskTotal>
+        <t.TaskTotal marginbtm={method === "POST" ? "15rem" : ""}>
           <t.DetailArea>
             {showErrorMessage && (
               <t.ErrorMessage>
