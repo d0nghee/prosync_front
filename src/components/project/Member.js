@@ -10,9 +10,13 @@ import {
   addAuthority,
   removeAuthority,
 } from '../../redux/reducers/member/memberAuthoritySlice';
-import { useSelector } from 'react-redux';
 
-export default function Member({ member, isChecked, onCheckboxChange }) {
+export default function Member({
+  member,
+  isChecked,
+
+  onCheckChange,
+}) {
   // const checkboxState = useSelector(selectCheckbox);
   const dispatch = useDispatch();
   const originalAuthority = member.authority;
@@ -86,16 +90,11 @@ export default function Member({ member, isChecked, onCheckboxChange }) {
       handleConfirm();
     }
   };
-
   return (
     <>
       <MemberContainer>
         <LeftContainer>
-          <input
-            type="checkbox"
-            checked={isChecked}
-            onChange={onCheckboxChange}
-          />
+          <input type="checkbox" checked={isChecked} onChange={onCheckChange} />
           <ProfileImage
             src={member.profileImage}
             alt={`${member.name}'s profile`}

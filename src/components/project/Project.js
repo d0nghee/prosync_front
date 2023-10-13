@@ -25,7 +25,7 @@ export default function Project({
 
   const handleStarClick = (e) => {
     e.stopPropagation();
-    tryFunc(changeBookmark)();
+    changeBookmark();
   };
 
   const changeBookmark = async () => {

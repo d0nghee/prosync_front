@@ -1,19 +1,35 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { getApi } from '../../util/api'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { PostItem, PaginationContainer, PostTitle, ProjectTitle, PostDescription, ProjectImage, BookmarkWrapper, PostName, PostsDate, NullPost, ProjectSearchBarContainer, ProjectContent, FilterContainer, PaginationGridContainer } from '../../css/MyPageStyle';
-import { tryFunc } from '../../util/tryFunc';
+import React, { useEffect, useRef, useState } from "react";
+import { getApi, postApi } from "../../util/api";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  PostItem,
+  Container,
+  PageButton,
+  PaginationContainer,
+  PostTitle,
+  ProjectTitle,
+  PostDescription,
+  ProjectImage,
+  BookmarkWrapper,
+  PostName,
+  PostsDate,
+  NullPost,
+  ProjectSearchBarContainer,
+  ProjectContent,
+  FilterContainer,
+  PaginationGridContainer,
+} from "../../css/MyPageStyle";
+import { tryFunc } from "../../util/tryFunc";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
+import Loading from "../common/Loading";
 
-import SearchBar from './SearchBar'
-import PaginationButton from './PaginationButton';
-import ProjectFilterBar from '../project/ProjectFilterBar';
-import MyPageProjectProject from './MyPageProjectProject';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import NoContent from '../../assets/icon/mypage.icon6.png'
-
-
-
+import SearchBar from "./SearchBar";
+import PaginationButton from "./PaginationButton";
+import ProjectFilterBar from "../project/ProjectFilterBar";
+import MyPageProjectProject from "./MyPageProjectProject";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+import NoContent from "../../assets/icon/mypage.icon6.png";
 
 export default function MyProject() {
   const navi = useNavigate();
@@ -25,10 +41,10 @@ export default function MyProject() {
   const [totalPages, setTotalPages] = useState();
   const [book, setBook] = useState(false);
   const queryParams = new URLSearchParams(location.search);
-  const page = queryParams.get('page') || 1;
+  const page = queryParams.get("page") || 1;
   const currentFilter = useRef({
-    type: '',
-    query: '',
+    type: "",
+    query: "",
     bookmark: false,
   });
 
@@ -36,10 +52,10 @@ export default function MyProject() {
     let url = location.pathname + location.search;
     const res = getApi(url);
     return res;
-  }
+  };
 
   const onFetchMyprojectSuccess = (data) => {
-    console.log("데이터", data)
+    console.log("데이터", data);
     myprojectHandler(data);
   }
 
@@ -47,14 +63,12 @@ export default function MyProject() {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const pageParam = searchParams.get('page');
+    const pageParam = searchParams.get("page");
     if (pageParam) {
       const nextPage = parseInt(pageParam);
       setCurrentPage(nextPage);
     }
-  }, [location.search])
-
-
+  }, [location.search]);
 
   useEffect(() => {
     tryFunc(
@@ -63,63 +77,60 @@ export default function MyProject() {
       dispatch)();
   }, [currentPage, location.search, location.pathname, book]);
 
-
   const myprojectHandler = (data) => {
-    console.log("데이터", data)
+    console.log("데이터", data);
     setProjectElement(data.data.data);
     setTotalPages(data.data.pageInfo.totalPages);
-  }
-
+  };
 
   const handlePageChange = (next) => {
     let url = QueryParamHandler(next);
     navi(url);
-  }
+  };
 
   const defaultProjectListHandler = () => {
     navi(`/user/myprojects?page=1`);
-    currentFilter.current = { bookmark: false, type: '', query: '' }
+    currentFilter.current = { bookmark: false, type: "", query: "" };
   };
 
   const bookmarkFilterHandler = () => {
     navi(`/user/myprojects?bookmark=true&page1`);
-    currentFilter.current = { bookmark: true, type: '', query: '' }
-  }
+    currentFilter.current = { bookmark: true, type: "", query: "" };
+  };
 
   const endDateHandler = () => {
     navi(`/user/myprojects?sort=endDate&page=1`);
-  }
+  };
 
   const searchHandler = (query) => {
-    console.log('search');
+    console.log("search");
     let url = QueryParamHandler(1, query);
     navi(url);
-    currentFilter.current = { ...currentFilter.current, query }
-  }
+    currentFilter.current = { ...currentFilter.current, query };
+  };
 
   const QueryParamHandler = (page, query) => {
     let newUrl = `/user/myprojects?page=${page}`;
 
-    if (currentFilter.current.type === 'endDate') {
-      newUrl += '&sort=endDate'
+    if (currentFilter.current.type === "endDate") {
+      newUrl += "&sort=endDate";
     }
     if (currentFilter.current.bookmark) {
-      newUrl += '&bookmark=true'
+      newUrl += "&bookmark=true";
     }
     if (query) {
       newUrl += `&search=${query}`;
-    }
-    else if (currentFilter.current.query) {
-      newUrl += `&search=${currentFilter.current.query}`
+    } else if (currentFilter.current.query) {
+      newUrl += `&search=${currentFilter.current.query}`;
     }
     return newUrl;
-  }
+  };
 
   const bookmarkChangeHandler = () => {
     setBook((prev) => {
       return !prev;
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -189,16 +200,16 @@ export default function MyProject() {
         </>
       }
     </>
-  )
+  );
 }
 
 const NoContentImg = styled.img`
   grid-column: 1/10;
   margin-left: 300px;
-`
+`;
 
 const NoContentComment = styled.div`
   font-size: 20px;
   margin-left: 200px;
   grid-column: 1/10;
-`
+`;

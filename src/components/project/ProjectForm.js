@@ -11,9 +11,11 @@ import {
 import DeleteProjectModal from './DeleteProjectModal';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../common/LoadingSpinner';
+import useFormInput from '../../hooks/use-form-input';
 
 export default function ProjectForm({ project = {}, method }) {
-  const [img, setImg] = useState('');
+  const [img, setImg] = useState(null);
   const [projectData, setProjectData] = useState({
     title: project.title || '',
     intro: project.intro || '',
@@ -27,14 +29,52 @@ export default function ProjectForm({ project = {}, method }) {
   const [imgName, setImgName] = useState();
   const [newImg, setNewImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    titleSetHandler(projectData.title);
+    introSetHandler(projectData.intro);
+
     if (method === 'PATCH') {
-      console.log('patch useEffect');
       setImgData();
     }
   }, []);
+
+  const {
+    value: titleValue,
+    isValid: titleIsValid,
+    setHandler: titleSetHandler,
+    changeHandler: titleChangeHandler,
+    blurHandler: titleBlurHandler,
+    hasError: titleHasError,
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 50);
+
+  const {
+    value: introValue,
+    isValid: introIsValid,
+    setHandler: introSetHandler,
+    changeHandler: introChangeHandler,
+    blurHandler: introBlurHandler,
+    hasError: introHasError,
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 500);
+
+  function validateDates(startDateStr, endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    // 시작일과 종료일이 유효한 날짜인지 확인
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return false;
+    }
+
+    // 시작일 < 종료일
+    if (startDate > endDate) {
+      return false;
+    }
+
+    return true;
+  }
 
   // PATCH
   // 기존 이미지 파일 이름 설정
@@ -61,18 +101,35 @@ export default function ProjectForm({ project = {}, method }) {
   }
 
   async function ProjectHandler() {
+    const validDate = validateDates(projectData.startDate, projectData.endDate);
+    if (!introIsValid || !titleIsValid) {
+      alert('입력 값을 다시 확인하세요');
+      return;
+    }
+    if (!validDate) {
+      alert('날짜를 다시 확인하세요');
+      return;
+    }
+
     // 프로젝트 생성
     if (method === 'POST') {
       //이미지 없을때 생성
       if (img === null || img === '') {
+        const data = {
+          ...projectData,
+          intro: introValue,
+          title: titleValue,
+        };
         const noImagePostSuccess = (response) => {
-          console.log('noImageCreateSuccess');
+          setIsLoading(true);
           const projectId = response.data.projectId;
           navigate(`/projects/${projectId}`);
         };
 
         const getNoImagePost = async () => {
-          const response = await postApi('/projects', projectData);
+          setIsLoading(false);
+
+          const response = await postApi('/projects', data);
           return response;
         };
         tryFunc(
@@ -88,15 +145,21 @@ export default function ProjectForm({ project = {}, method }) {
         const imgData = await postFileApi(img);
         const data = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
+
           fileId: imgData[0].fileId,
         };
         const ImagePost = async () => {
+          setIsLoading(true);
           const response = await postApi('/projects', data);
           return response;
         };
 
         const ImagePostSuccess = (response) => {
           console.log('ImagePostSuccess');
+          setIsLoading(false);
+
           const projectId = response.data.projectId;
           navigate(`/projects/${projectId}`);
         };
@@ -110,42 +173,70 @@ export default function ProjectForm({ project = {}, method }) {
 
       // 프로젝트 수정
     } else if (method === 'PATCH' && project.projectId) {
-      // 이미지 지울고 수정
-      if (img === null || img === '') {
+      // 이미지 수정 없이 기존 이미지 그대로
+      if (newImg === undefined && img) {
+        console.log('탄다1');
+
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
+        };
+
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
+          dispatch
+        )();
+        return;
+      }
+
+      // 이미지 지울고 수정
+      if (img === null || img === '') {
+        console.log('탄다2');
+
+        const updateData = {
+          ...projectData,
+          intro: introValue,
+          title: titleValue,
           projectImage: null,
         };
 
-        const patchNoImage = async () => {
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
+        setIsLoading(true);
 
-        tryFunc(
-          patchNoImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
 
         return;
         // 이미지 변경후 수정
       } else {
+        console.log('탄다3');
+
         const imgData = await postFileApi(img);
         console.log('imgData', imgData);
         const test = await imgData[0].fileId;
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
           fileId: test,
         };
 
-        const patchImage = async () => {
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
+        setIsLoading(true);
 
-        tryFunc(
-          patchImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
       }
@@ -212,8 +303,11 @@ export default function ProjectForm({ project = {}, method }) {
 
   const handleImageDelete = () => {
     setImg(null);
+    setNewImg(null);
     setImgName(null);
   };
+
+  if (isLoading) return <LoadingSpinner />; // 로딩 메시지
 
   return (
     <ProjectContainer>
@@ -224,19 +318,37 @@ export default function ProjectForm({ project = {}, method }) {
       />
       <MainContentContainer>
         <Label>프로젝트명</Label>
+
         <Input
           type="text"
           name="title"
-          value={projectData.title}
-          onChange={handleInputChange}
+          value={titleValue}
+          // onChange={handleInputChange}
+          onChange={titleChangeHandler}
+          onBlur={titleBlurHandler}
+          isError={titleHasError}
+          placeholder="내용을 입력하세요"
         />
+        {titleHasError && (
+          <ErrorMessage>제목은 1자 이상 50자 이내로 입력해주세요.</ErrorMessage>
+        )}
+
         <Label>프로젝트 소개</Label>
-        {newImg ? <SelectedImage src={newImg} /> : <SelectedImage src={img} />}
+
         <TextArea
           name="intro"
-          value={projectData.intro}
-          onChange={handleInputChange}
+          value={introValue}
+          // onChange={handleInputChange}
+          onChange={introChangeHandler}
+          onBlur={introBlurHandler}
+          isError={introHasError}
+          placeholder="내용을 입력하세요"
         />
+        {introHasError && (
+          <ErrorMessage>
+            소개는 1자 이상 500자 이내로 입력해주세요.
+          </ErrorMessage>
+        )}
       </MainContentContainer>
 
       <SideContentContainer>
@@ -272,16 +384,18 @@ export default function ProjectForm({ project = {}, method }) {
 
         <Label>프로젝트 이미지</Label>
         <ImageInfoContainer>
-          <label onClick={imgClickHandler}>
-            {method === 'PATCH' && imgName}
-          </label>
-          {imgName && (
-            <DeleteImageButton onClick={handleImageDelete}>
-              ❌
-            </DeleteImageButton>
-          )}
+          {(newImg || img) && <SelectedImage src={newImg ? newImg : img} />}
+          <LabelContainer>
+            <label onClick={imgClickHandler}>{imgName}</label>
+            {img && (
+              <DeleteImageButton onClick={handleImageDelete}>
+                ❌
+              </DeleteImageButton>
+            )}
+          </LabelContainer>
         </ImageInfoContainer>
-        <Input type="file" onChange={handleImageChange} />
+
+        <ImgInput type="file" onChange={handleImageChange} />
 
         <CheckboxContainer>
           <Label>
@@ -313,7 +427,8 @@ const ImageInfoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  /* margin-bottom: 10px; */
 `;
 
 const DeleteImageButton = styled.button`
@@ -337,13 +452,8 @@ const ProjectContainer = styled.div`
   margin-top: 30px;
   width: 70%;
   padding: 20px;
-  height: 800px;
+  height: 1000px;
   gap: 40px; // 메인과 사이드 간의 간격 조절
-`;
-const SelectedImage = styled.img`
-  max-width: 50%; // 이미지의 최대 너비를 컨테이너 너비로 제한
-  height: auto; // 원본 이미지의 비율을 유지
-  margin-bottom: 15px; // 다른 요소와의 간격 조절
 `;
 
 const MainContentContainer = styled.div`
@@ -351,20 +461,35 @@ const MainContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* border: 2px solid #5b67ca; */
+  padding: 20px;
+  height: 800px;
 `;
 
 const SideContentContainer = styled.div`
   flex-basis: 250px; // 또는 원하는 너비로 설정
+  height: 700px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  justify-content: space-between; // 사이드 컨텐츠의 상단과 하단 내용을 분리
+  /* justify-content: space-between;  */
+  border: 2px solid #5b67ca;
+  padding: 20px;
+`;
+const SelectedImage = styled.img`
+  max-width: 100%;
+  height: 300px;
+  margin-bottom: 15px;
+`;
+const LabelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   gap: 5px;
-  margin-top: auto; // 버튼을 사이드 컨테이너의 하단으로 이동
 `;
 const Input = styled.input`
   padding: 8px;
@@ -372,8 +497,20 @@ const Input = styled.input`
   border-top: none;
   border-right: none;
   border-left: none;
+  height: 30px;
+
   border-bottom: 2px solid #5b67ca;
-  flex: 1;
+`;
+
+const ImgInput = styled.input`
+  padding: 8px;
+  margin-bottom: 10px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  height: 40px;
+
+  border-bottom: 2px solid #5b67ca;
 `;
 
 const TextArea = styled.textarea`
@@ -382,8 +519,10 @@ const TextArea = styled.textarea`
   border-top: none;
   border-right: none;
   border-left: none;
-  border-bottom: 2px solid #5b67ca;
-  height: 300px;
+  border: 2px solid #5b67ca;
+  height: 450px;
+  resize: none;
+  font-size: 18px;
 `;
 
 const Label = styled.label`
@@ -391,6 +530,7 @@ const Label = styled.label`
   font-weight: bold;
   display: flex;
   align-items: center;
+  font-size: 20px;
 `;
 
 const Radio = styled.input.attrs({ type: 'radio' })`
@@ -429,4 +569,9 @@ const DateContainer = styled.div`
   gap: 10px;
   margin-bottom: 10px;
   justify-content: center;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 0.8rem;
 `;

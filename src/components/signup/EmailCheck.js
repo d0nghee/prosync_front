@@ -7,7 +7,17 @@ const EmailCheck = () => {
   return (
     <>
       {isEmailValid ? (
-        <div style={{ marginTop : "20px",textAlign : "center", color: "green", marginLeft: "2rem" ,fontWeight: "800"}}>통과</div>
+        <div
+          style={{
+            textAlign: "center",
+            color: "green",
+            marginLeft: "2rem",
+            fontWeight: "800",
+            border: "1px solid black",
+          }}
+        >
+          통과
+        </div>
       ) : null}
     </>
   );
