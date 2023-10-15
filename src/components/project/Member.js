@@ -11,24 +11,18 @@ import {
   removeAuthority,
 } from '../../redux/reducers/member/memberAuthoritySlice';
 
-export default function Member({
-  member,
-  isChecked,
-
-  onCheckChange,
-}) {
-  // const checkboxState = useSelector(selectCheckbox);
+export default function Member({ member, isChecked, onCheckChange }) {
   const dispatch = useDispatch();
   const originalAuthority = member.authority;
   const [newAuthority, setNewAuthority] = useState('');
   const [showButton, setShowButton] = useState(false);
   const buttonRef = useRef(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const adminData = {
     authority: 'ADMIN',
   };
 
+  // 위임하기 버튼 밖에 누르면 버튼 사라짐
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (buttonRef.current && !buttonRef.current.contains(event.target)) {
@@ -42,6 +36,7 @@ export default function Member({
     };
   }, []);
 
+  // 권한 변경 데이터 리덕스로
   const onChangeAuthority = (e) => {
     const selectedAuthority = e.target.value;
     console.log('onChangeAuthority');
@@ -61,35 +56,37 @@ export default function Member({
     }
   };
 
+  // 이름 누르면 밑에 위임하기 버튼 뜨게 하기
   const handleNameClick = () => {
     setShowButton((prev) => !prev);
   };
 
   // 위임 수락
   const handleConfirm = () => {
-    console.log('handleConfirm');
+    // 권한 변경
+    const mandateAdmin = async () => {
+      const response = patchApi(
+        `/project-members/${member.memberProjectId}`,
+        adminData
+      );
+      return response;
+    };
+
     tryFunc(
       mandateAdmin,
       navigate(`/projects/${member.projectId}`),
       dispatch
     )();
-    setIsModalOpen(false);
   };
 
-  const mandateAdmin = async () => {
-    const response = patchApi(
-      `/project-members/${member.memberProjectId}`,
-      adminData
-    );
-    return response;
-  };
-
+  // 위임하기 버튼 클릭
   const handleAdminButtonClick = () => {
     const isConfirmed = window.confirm('정말로 ADMIN 권한을 위임하시겠습니까?');
     if (isConfirmed) {
       handleConfirm();
     }
   };
+
   return (
     <>
       <MemberContainer>

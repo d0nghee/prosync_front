@@ -52,10 +52,18 @@ export default function Project({
     navigate(`/projects/${projectId}`);
   };
 
+  // 제목 길이 13이상이면 ... 붙이기
+  const truncatedTitle = (title, maxLength = 13) => {
+    if (title.length > maxLength) {
+      return title.substring(0, maxLength) + '...';
+    }
+    return title;
+  };
+
   return (
     <Container onClick={navigateHandler}>
       <Header>
-        <Title>{title}</Title>
+        <Title>{truncatedTitle(title)}</Title>
         <StarButton onClick={handleStarClick}>
           <StarImage src={isStarred ? bookmarkOn : bookmarkOff} alt="Star" />
         </StarButton>

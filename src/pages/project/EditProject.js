@@ -6,8 +6,6 @@ export default function EditProject() {
   const data = useRouteLoaderData('edit');
   const project = data?.data || {};
 
-  console.log('project', project);
-
   return (
     <>
       <ProjectForm method="PATCH" project={project} />
