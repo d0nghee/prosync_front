@@ -1,20 +1,25 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import Member from './Member';
-import { deleteApi, postApi } from '../../util/api';
+import { deleteApi, patchApi, postApi } from '../../util/api';
 import InviteModal from './InviteModal';
 import { useDispatch } from 'react-redux';
 import { tryFunc } from '../../util/tryFunc';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { useSelector } from 'react-redux';
+import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProjectMember({ members, projectId }) {
   const [checkMembers, setCheckMembers] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [allChecked, setAllChecked] = useState(false);
+  const authorityState = useSelector(selectMembers);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // ADMIN , QUIT 필터 처리
   useEffect(() => {
@@ -47,6 +52,30 @@ export default function ProjectMember({ members, projectId }) {
     setCheckMembers(newStatus);
   };
 
+  // 멤버 권한 변경사항들 promise all로 patch 처리
+  const submitHandler = async () => {
+    const isConfirmed = window.confirm('변경사항을 저장하시겠습니까?');
+
+    if (!isConfirmed) return;
+
+    setIsLoading(true);
+
+    const patchMemberAuthority = await authorityState.map((item) => {
+      return tryFunc(
+        patchApi(`/project-members/${item.memberProjectId}`, {
+          authority: item.authority,
+        }),
+        navigate(`/projects/${projectId}`),
+        dispatch
+      )();
+    });
+
+    Promise.all(patchMemberAuthority).then(() => {
+      setFilteredMembers((prevMembers) => [...prevMembers]);
+      setIsLoading(false);
+    });
+  };
+
   // 체크 박스 변화 시
   const handleCheckboxChange = (memberProjectId) => {
     setCheckMembers((prevCheckMembers) => {
@@ -60,11 +89,22 @@ export default function ProjectMember({ members, projectId }) {
 
   // 멤버 삭제 Promise
   const deleteMemberHandler = async () => {
+    const noSelectMember = Object.values(checkMembers).some(
+      (value) => value === true
+    );
+
+    if (!noSelectMember) {
+      alert('멤버를 선택 해주세요');
+      return;
+    }
+
     const isConfirmed = window.confirm(
       '선택된 멤버를 정말로 삭제하시겠습니까?'
     );
 
     if (!isConfirmed) return;
+
+    setIsLoading(true);
 
     const checkedMemberProjectIds = Object.keys(checkMembers)
       .filter((memberProjectId) => checkMembers[memberProjectId])
@@ -77,19 +117,18 @@ export default function ProjectMember({ members, projectId }) {
         (member) => !checkedMemberProjectIds.includes(member.memberProjectId)
       );
       setFilteredMembers(updatedFilteredMembers);
-      console.log('filter', updatedFilteredMembers);
     };
 
     const deleteRequests = checkedMemberProjectIds.map((memberProjectId) =>
-      // deleteApi(`/project-members/${memberProjectId}`)
       tryFunc(
         () => deleteApi(`/project-members/${memberProjectId}`),
         updateMembers,
         dispatch
       )()
     );
+
     await Promise.all(deleteRequests);
-    // updateMembers();
+
     setIsLoading(false);
   };
 
@@ -102,6 +141,7 @@ export default function ProjectMember({ members, projectId }) {
 
       return response;
     };
+
     // 초대 코드 생성 성공
     const invitePostSuccess = (response) => {
       console.log('invitePostSuccess');
@@ -112,7 +152,8 @@ export default function ProjectMember({ members, projectId }) {
       setIsModalOpen(true);
       setIsLoading(false);
     };
-    //예외처리
+
+    // 에러 처리
     tryFunc(invitePost, (response) => invitePostSuccess(response), dispatch)();
   };
 
@@ -128,9 +169,27 @@ export default function ProjectMember({ members, projectId }) {
       <MenuContainer>
         <input type="checkbox" onClick={allCheckMembers}></input>
         <div>
-          <StyledButton onClick={handleInvite}>초대 링크 생성</StyledButton>
-
-          <StyledButton onClick={deleteMemberHandler}>삭제</StyledButton>
+          <StyledButton
+            onClick={handleInvite}
+            color="#FFC107"
+            hoverColor="#FFA000"
+          >
+            초대 링크 생성
+          </StyledButton>
+          <StyledButton
+            onClick={deleteMemberHandler}
+            color="#F44336"
+            hoverColor="#d32f2f"
+          >
+            삭제
+          </StyledButton>
+          <StyledButton
+            onClick={submitHandler}
+            color="#4CAF50"
+            hoverColor="#45a049"
+          >
+            저장
+          </StyledButton>
         </div>
       </MenuContainer>
       <MembersContainer>
@@ -189,7 +248,6 @@ const MenuContainer = styled.div`
 const StyledButton = styled.button`
   padding: 8px 16px;
   margin-left: 8px;
-  background-color: #6672fb;
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -197,8 +255,10 @@ const StyledButton = styled.button`
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 
+  background-color: ${(props) => props.color || '#6672fb'};
+
   &:hover {
-    background-color: #5b67ca;
+    background-color: ${(props) => props.hoverColor || '#5b67ca'};
   }
 
   &:first-child {

@@ -13,6 +13,8 @@ import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '../common/LoadingSpinner';
 import useFormInput from '../../hooks/use-form-input';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
 export default function ProjectForm({ project = {}, method }) {
   const [img, setImg] = useState(null);
@@ -103,11 +105,11 @@ export default function ProjectForm({ project = {}, method }) {
   async function ProjectHandler() {
     const validDate = validateDates(projectData.startDate, projectData.endDate);
     if (!introIsValid || !titleIsValid) {
-      alert('입력 값을 다시 확인하세요');
+      setShowErrorMessage(true);
       return;
     }
     if (!validDate) {
-      alert('날짜를 다시 확인하세요');
+      setShowErrorMessage(true);
       return;
     }
 
@@ -306,119 +308,126 @@ export default function ProjectForm({ project = {}, method }) {
     setNewImg(null);
     setImgName(null);
   };
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   if (isLoading) return <LoadingSpinner />; // 로딩 메시지
 
   return (
-    <ProjectContainer>
-      <DeleteProjectModal
-        isOpen={isModalOpen}
-        onClose={modalCloseHandler}
-        onDelete={deleteProjectHandler}
-      />
-      <MainContentContainer>
-        <Label>프로젝트명</Label>
-
-        <Input
-          type="text"
-          name="title"
-          value={titleValue}
-          // onChange={handleInputChange}
-          onChange={titleChangeHandler}
-          onBlur={titleBlurHandler}
-          isError={titleHasError}
-          placeholder="내용을 입력하세요"
+    <>
+      {showErrorMessage && (
+        <ErrorMessage>입력값이 잘못되었습니다. 다시 확인해주세요.</ErrorMessage>
+      )}
+      <ProjectContainer>
+        <DeleteProjectModal
+          isOpen={isModalOpen}
+          onClose={modalCloseHandler}
+          onDelete={deleteProjectHandler}
         />
-        {titleHasError && (
-          <ErrorMessage>제목은 1자 이상 50자 이내로 입력해주세요.</ErrorMessage>
-        )}
+        <MainContentContainer>
+          <Label>프로젝트명</Label>
 
-        <Label>프로젝트 소개</Label>
+          <Input
+            type="text"
+            name="title"
+            value={titleValue}
+            onChange={titleChangeHandler}
+            onBlur={titleBlurHandler}
+            isError={titleHasError}
+            placeholder="내용을 입력하세요"
+          />
+          {titleHasError && (
+            <ErrorMessage>
+              제목은 1자 이상 50자 이내로 입력해주세요.
+            </ErrorMessage>
+          )}
 
-        <TextArea
-          name="intro"
-          value={introValue}
-          // onChange={handleInputChange}
-          onChange={introChangeHandler}
-          onBlur={introBlurHandler}
-          isError={introHasError}
-          placeholder="내용을 입력하세요"
-        />
-        {introHasError && (
-          <ErrorMessage>
-            소개는 1자 이상 500자 이내로 입력해주세요.
-          </ErrorMessage>
-        )}
-      </MainContentContainer>
+          <Label>프로젝트 소개</Label>
 
-      <SideContentContainer>
-        <ButtonContainer>
-          <Button onClick={ProjectHandler}>
-            {method === 'PATCH' ? '수정' : '생성'}
-          </Button>
-          <Button $cancel onClick={cancelHandler}>
-            취소
-          </Button>
-          {method === 'PATCH' ? (
-            <Button $cancel onClick={modalOpenHandler}>
-              프로젝트 삭제
+          <TextArea
+            theme="snow"
+            name="intro"
+            value={introValue}
+            onChange={introChangeHandler}
+            onBlur={introBlurHandler}
+            isError={introHasError}
+            placeholder="내용을 입력하세요"
+          />
+          {introHasError && (
+            <ErrorMessage>
+              소개는 1자 이상 500자 이내로 입력해주세요.
+            </ErrorMessage>
+          )}
+        </MainContentContainer>
+
+        <SideContentContainer>
+          <ButtonContainer>
+            <Button onClick={ProjectHandler}>
+              {method === 'PATCH' ? '수정' : '생성'}
             </Button>
-          ) : null}
-        </ButtonContainer>
+            <Button $cancel onClick={cancelHandler}>
+              취소
+            </Button>
+            {method === 'PATCH' ? (
+              <Button $cancel onClick={modalOpenHandler}>
+                프로젝트 삭제
+              </Button>
+            ) : null}
+          </ButtonContainer>
 
-        <Label>프로젝트 기간</Label>
-        <DateContainer>
-          <Input
-            type="date"
-            name="startDate"
-            value={projectData.startDate}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="date"
-            name="endDate"
-            value={projectData.endDate}
-            onChange={handleInputChange}
-          />
-        </DateContainer>
-
-        <Label>프로젝트 이미지</Label>
-        <ImageInfoContainer>
-          {(newImg || img) && <SelectedImage src={newImg ? newImg : img} />}
-          <LabelContainer>
-            <label onClick={imgClickHandler}>{imgName}</label>
-            {img && (
-              <DeleteImageButton onClick={handleImageDelete}>
-                ❌
-              </DeleteImageButton>
-            )}
-          </LabelContainer>
-        </ImageInfoContainer>
-
-        <ImgInput type="file" onChange={handleImageChange} />
-
-        <CheckboxContainer>
-          <Label>
-            <Radio
-              name="isPublic"
-              value="1"
-              checked={projectData.isPublic}
+          <Label>프로젝트 기간</Label>
+          <DateContainer>
+            <Input
+              type="date"
+              name="startDate"
+              value={projectData.startDate}
               onChange={handleInputChange}
             />
-            Public
-          </Label>
-          <Label>
-            <Radio
-              name="isPublic"
-              value="0"
-              checked={!projectData.isPublic}
+            <Input
+              type="date"
+              name="endDate"
+              value={projectData.endDate}
               onChange={handleInputChange}
             />
-            Private
-          </Label>
-        </CheckboxContainer>
-      </SideContentContainer>
-    </ProjectContainer>
+          </DateContainer>
+
+          <Label>프로젝트 이미지</Label>
+          <ImageInfoContainer>
+            {(newImg || img) && <SelectedImage src={newImg ? newImg : img} />}
+            <LabelContainer>
+              <label onClick={imgClickHandler}>{imgName}</label>
+              {img && (
+                <DeleteImageButton onClick={handleImageDelete}>
+                  ❌
+                </DeleteImageButton>
+              )}
+            </LabelContainer>
+          </ImageInfoContainer>
+
+          <ImgInput type="file" onChange={handleImageChange} />
+
+          <CheckboxContainer>
+            <Label>
+              <Radio
+                name="isPublic"
+                value="1"
+                checked={projectData.isPublic}
+                onChange={handleInputChange}
+              />
+              Public
+            </Label>
+            <Label>
+              <Radio
+                name="isPublic"
+                value="0"
+                checked={!projectData.isPublic}
+                onChange={handleInputChange}
+              />
+              Private
+            </Label>
+          </CheckboxContainer>
+        </SideContentContainer>
+      </ProjectContainer>
+    </>
   );
 }
 
@@ -428,7 +437,6 @@ const ImageInfoContainer = styled.div`
   align-items: center;
   gap: 8px;
   flex-direction: column;
-  /* margin-bottom: 10px; */
 `;
 
 const DeleteImageButton = styled.button`
@@ -453,7 +461,7 @@ const ProjectContainer = styled.div`
   width: 70%;
   padding: 20px;
   height: 1000px;
-  gap: 40px; // 메인과 사이드 간의 간격 조절
+  gap: 40px;
 `;
 
 const MainContentContainer = styled.div`
@@ -461,18 +469,16 @@ const MainContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* border: 2px solid #5b67ca; */
   padding: 20px;
   height: 800px;
 `;
 
 const SideContentContainer = styled.div`
-  flex-basis: 250px; // 또는 원하는 너비로 설정
+  flex-basis: 250px;
   height: 700px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* justify-content: space-between;  */
   border: 2px solid #5b67ca;
   padding: 20px;
 `;
@@ -523,6 +529,15 @@ const TextArea = styled.textarea`
   height: 450px;
   resize: none;
   font-size: 18px;
+  /* .ql-editor {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    height: 650px;
+
+    a {
+      text-decoration: underline;
+    } */
+  }
 `;
 
 const Label = styled.label`
@@ -570,8 +585,24 @@ const DateContainer = styled.div`
   margin-bottom: 10px;
   justify-content: center;
 `;
-
 const ErrorMessage = styled.div`
-  color: red;
+  background-color: #5b67ca;
+
+  padding: 0.5rem;
+  text-align: center;
+  color: white;
   font-size: 0.8rem;
+  margin-bottom: 1rem;
+  animation: fadeInDown 1s;
+
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -100%, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translateZ(0);
+    }
+  }
 `;

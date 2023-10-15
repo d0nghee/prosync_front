@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { debounce } from '../../util/debounce';
 
 export default function ProjectMemberSearchBar({ onSearch }) {
   const [query, setQuery] = useState('');
+  const debouncedSearch = debounce(onSearch, 300);
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
-    onSearch(e.target.value);
+    debouncedSearch(e.target.value);
   };
 
   return (
