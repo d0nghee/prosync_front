@@ -144,6 +144,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     (async () => {
       if (method === "PATCH") {
         requestData.taskId = +params.taskId;
+        //TODO: 쿠키 토큰 삭제시 alert창 2번 발생 오류 확인
         await dispatch(
           requestApi(params.taskId, originalMembers, checkedMembers)
         );

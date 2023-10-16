@@ -12,14 +12,14 @@ import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
 import { removeUserCookie, setCookie } from "../../util/cookies";
-import { getApi, postFileApi } from "../../util/api";
+import { getApi, postFileApi, patchApi } from "../../util/api";
 import { introValidate, nameValidate } from "../../util/regex";
 import IntroCheck from "../../components/signup/IntroCheck";
 import NameCheck from "../../components/signup/NameCheck";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
-import MypageImg from '../../assets/icon/mypage_icon3.png'
+import MypageImg from "../../assets/icon/mypage_icon3.png";
 import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 
 export default function EditMember() {
@@ -210,8 +210,6 @@ export default function EditMember() {
     })();
   };
 
-
-
   return (
     // <ProfileGridContainer>
     <>
@@ -230,11 +228,7 @@ export default function EditMember() {
           ></FileInput>
         </InputContainer>
       </FileContainer>
-      <ResetButton
-        onClick={imageResetHandle}
-      >
-        X
-      </ResetButton>
+      <ResetButton onClick={imageResetHandle}>X</ResetButton>
       <DivContainer>
         <CustomDiv>
           <Label>이름 입력 : &nbsp;&nbsp;&nbsp;</Label>
@@ -291,6 +285,7 @@ const ProfileImage = styled.img`
 `;
 
 const CustomFileUpload = styled.label`
+  margin-left: 30px;
   width: 110px;
   border: 1px solid #ccc;
   padding: 6px 12px;
@@ -366,7 +361,7 @@ const ButtonContainer = styled.div`
 
 const SettingImg = styled.img`
   width: 200px;
-`
+`;
 
 const ResetButton = styled.button`
   grid-column: 4/4;
@@ -380,4 +375,4 @@ const ResetButton = styled.button`
   border: 0px;
   border-radius: 3px;
   color: white;
-`
+`;
