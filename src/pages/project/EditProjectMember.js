@@ -2,34 +2,32 @@ import { useEffect, useState } from 'react';
 import ProjectMember from '../../components/project/ProjectMember';
 import ProjectMemberSearchBar from '../../components/project/ProjectMemberSearchBar';
 import { useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
-import { getApi, patchApi } from '../../util/api';
+import { getApi } from '../../util/api';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { getCookie } from '../../util/cookies';
+import { debounce } from '../../util/debounce';
 
 export default function EditProjectMember() {
   const data = useRouteLoaderData('editmember');
   const [members, setMembers] = useState(data.data.data);
   const { projectId } = useParams();
   const [search, setSearch] = useState('');
-  const authorityState = useSelector(selectMembers);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+  // admin인지 체크
   useEffect(() => {
+    setIsLoading(true);
     const memberId = getCookie('memberId');
     console.log('memberID', memberId);
     if (members) {
-      console.log(members, 'members');
       const adminId = members.find(
         (member) => member.authority === 'ADMIN'
       ).memberId;
-      console.log(adminId, 'admin');
 
       if (adminId !== memberId) {
         alert('접근 권한이 없습니다');
@@ -38,58 +36,46 @@ export default function EditProjectMember() {
     }
   }, []);
 
+  // 서치바 value 값 변화시 호출
   const handleInputChange = (input) => {
-    console.log('handleInputChange');
+    console.log(input, 'input');
     setSearch(input);
+
+    console.log('디바운스 서치');
   };
 
   useEffect(() => {
+    const getMemberHandler = () => {
+      if (search === null || search === '') {
+        setMembers([]);
+      }
+      const getMembers = async () => {
+        const response = await getApi(
+          `/projects/${projectId}/members?size=100&search=${search}`
+        );
+        return response;
+      };
+
+      const getMembersSuccess = (response) => {
+        setIsLoading(false);
+
+        setMembers(response.data.data);
+      };
+
+      tryFunc(
+        getMembers,
+        (response) => getMembersSuccess(response),
+        dispatch
+      )();
+    };
+
     getMemberHandler();
   }, [search]);
-
-  const getMemberHandler = async () => {
-    if (search === null || search === '') {
-      setMembers([]);
-    }
-    const getMembers = async () => {
-      setIsLoading(true);
-      const response = await getApi(
-        `/projects/${projectId}/members?size=100&search=${search}`
-      );
-      return response;
-    };
-
-    const getMembersSuccess = (response) => {
-      setIsLoading(false);
-      setMembers(response.data.data);
-    };
-
-    tryFunc(getMembers, (response) => getMembersSuccess(response), dispatch)();
-  };
-
-  const submitHandler = () => {
-    const isConfirmed = window.confirm('변경사항을 저장하시겠습니까?');
-
-    if (!isConfirmed) return;
-    setIsLoading(true);
-    const patchMemberAuthority = authorityState.map((item) => {
-      return patchApi(`/project-members/${item.memberProjectId}`, {
-        authority: item.authority,
-      });
-    });
-
-    Promise.all(patchMemberAuthority).then(() => {
-      setMembers((prevMembers) => [...prevMembers]);
-      navigate(`/projects/${projectId}`);
-    });
-    setIsLoading(true);
-  };
 
   if (isLoading) return <LoadingSpinner />;
 
   return (
     <Container>
-      <SubmitButton onClick={submitHandler}>저장</SubmitButton>
       <SearchBarContainer>
         <ProjectMemberSearchBar onSearch={handleInputChange} />
       </SearchBarContainer>
@@ -123,20 +109,6 @@ const Container = styled.div`
   height: 1000px;
 `;
 
-const SubmitButton = styled.button`
-  position: fixed;
-  bottom: 20px;
-  right: 200px;
-  padding: 10px 20px;
-  background-color: #6672fb;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: #5b67ca;
-  }
-`;
 const SearchBarContainer = styled.div`
   display: flex;
   justify-content: center;

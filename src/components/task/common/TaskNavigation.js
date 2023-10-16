@@ -8,7 +8,7 @@ import {
 import { styled } from "styled-components";
 import NaviButton from "../../common/Button";
 import { deleteTask } from "../../../redux/reducers/task/taskList-slice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { patchSequenceOfStatus } from "../../../redux/reducers/task/taskStatus-slice";
 import { MdFilterAlt } from "react-icons/md";
 import * as t from "../form/TaskForm.style";
@@ -27,6 +27,19 @@ export default function TaskNavigation({
   const pageInfo = useSelector((state) => state.taskList.pageInfo);
 
   const taskStatusList = useSelector((state) => state.taskStatus.list);
+
+  const [showStatusFilter, setShowStatusFilter] = useState(false);
+
+  const [checkedStatusIds, setCheckedStatusIds] = useState();
+
+  useEffect(() => {
+    if (taskStatusList.length !== 0) {
+      const ids = taskStatusList
+        .filter((one) => one.seq !== 0)
+        .map((one) => one.taskStatusId);
+      setCheckedStatusIds({ original: ids, current: ids });
+    }
+  }, [params.projectId, taskStatusList]);
 
   const updateHandler = () => {
     if (checkedTasks.length > 1) {
@@ -55,10 +68,6 @@ export default function TaskNavigation({
       alert("선택 대상이 없습니다.");
     }
   };
-
-  const [showStatusFilter, setShowStatusFilter] = useState(false);
-
-  const [checkedStatusIds, setCheckedStatusIds] = useState();
 
   const checkTaskStatus = (taskStatusId) => {
     if (checkedStatusIds.current.includes(taskStatusId)) {
@@ -124,8 +133,7 @@ export default function TaskNavigation({
           </NavItem>
           {projectMember &&
             projectMember.status === "ACTIVE" &&
-            (projectMember.authority === "ADMIN" ||
-              projectMember.authority === "WRITER") && (
+            projectMember.authority !== "READER" && (
               <StatusCheckBox>
                 <FilterIcon onClick={() => setShowStatusFilter((prv) => !prv)}>
                   <MdFilterAlt size="25px" />

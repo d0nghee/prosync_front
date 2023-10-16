@@ -24,6 +24,7 @@ export default function loginForm(props) {
 
   return (
     <FormContainer>
+      <h2>로그인</h2>
       <One>
         <LabelContent>Email</LabelContent>
         <InputContent

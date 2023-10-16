@@ -14,6 +14,7 @@ export default function TaskMemberList({
   toggleList,
   taskId,
   updateTask,
+  isWriter,
 }) {
   const dispatch = useDispatch();
   const [memberProfile, setMemberProfile] = useState({ show: false });
@@ -104,13 +105,15 @@ export default function TaskMemberList({
                   <img src={member.profileImage} alt="회원이미지" />
                   <QuitMember>
                     <span>{member.name}</span>
-                    <Quit
-                      onClick={() =>
-                        memberDeleteHandler(member.memberProjectId)
-                      }
-                    >
-                      삭제
-                    </Quit>
+                    {isWriter && (
+                      <Quit
+                        onClick={() =>
+                          memberDeleteHandler(member.memberProjectId)
+                        }
+                      >
+                        삭제
+                      </Quit>
+                    )}
                   </QuitMember>
                 </MemberInfo>
               </div>

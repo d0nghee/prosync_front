@@ -20,7 +20,6 @@ import { patchTask } from "../../../redux/reducers/task/taskList-slice";
 import ListLoadingSpinner from "../../common/ListLoadingSpinner";
 import Guidance from "../../common/Guidance";
 import { tryFunc } from "../../../util/tryFunc";
-import { useNavigate } from "react-router-dom";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
 import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 import { getProjectMembersApi } from "../../../util/api";
@@ -252,6 +251,11 @@ export default function TableViewList({
     return <Guidance text="업무가 존재하지 않습니다." />;
   }
 
+  const isWriter =
+    projectMember &&
+    projectMember.status === "ACTIVE" &&
+    projectMember.authority !== "READER";
+
   return (
     <>
       {showNewStatusModal && (
@@ -261,12 +265,7 @@ export default function TableViewList({
         </>
       )}
       <tv.Header>
-        {projectMember &&
-          projectMember.status === "ACTIVE" &&
-          (projectMember.authority === "ADMIN" ||
-            projectMember.authority === "WRITER") && (
-            <input type="checkbox" onChange={toggleAllCheck} />
-          )}
+        {isWriter && <input type="checkbox" onChange={toggleAllCheck} />}
         <tv.Title>
           <div>제목</div>
           <div>담당자</div>
@@ -286,28 +285,18 @@ export default function TableViewList({
               </tv.ErrorMessage>
             )}
             <tv.Item>
-              {projectMember &&
-                projectMember.status === "ACTIVE" &&
-                (projectMember.authority === "ADMIN" ||
-                  projectMember.authority === "WRITER") && (
-                  <div>
-                    <tv.CheckBox
-                      type="checkbox"
-                      onChange={() => toggleCheckbox(task.taskId)}
-                      checked={isChecked(task.taskId)}
-                    />
-                  </div>
-                )}
+              {isWriter && (
+                <div>
+                  <tv.CheckBox
+                    type="checkbox"
+                    onChange={() => toggleCheckbox(task.taskId)}
+                    checked={isChecked(task.taskId)}
+                  />
+                </div>
+              )}
               {task.taskId !== editTaskId ? (
                 <>
-                  <tv.LinkContents
-                    to={`${task.taskId}`}
-                    writer={
-                      projectMember &&
-                      projectMember.status === "ACTIVE" &&
-                      projectMember.authority !== "READER"
-                    }
-                  >
+                  <tv.LinkContents to={`${task.taskId}`} writer={isWriter}>
                     {task.title.length > 40 ? (
                       <div>{task.title.substring(0, 40)}...</div>
                     ) : (
@@ -319,6 +308,7 @@ export default function TableViewList({
                           taskMembers={task.taskMembers}
                           taskId={task.taskId}
                           bottom="90px"
+                          isWriter={isWriter}
                         />
                       </tv.Assignee>
                     ) : (
@@ -333,19 +323,16 @@ export default function TableViewList({
 
                     <div>{task.classification}</div>
                   </tv.LinkContents>
-                  {projectMember &&
-                    projectMember.status === "ACTIVE" &&
-                    (projectMember.authority === "ADMIN" ||
-                      projectMember.authority === "WRITER") && (
-                      <tv.EditButton
-                        type="button"
-                        onClick={() =>
-                          editButtonHandler(task.taskId, task.taskMembers)
-                        }
-                      >
-                        <FiEdit2 />
-                      </tv.EditButton>
-                    )}
+                  {isWriter && (
+                    <tv.EditButton
+                      type="button"
+                      onClick={() =>
+                        editButtonHandler(task.taskId, task.taskMembers)
+                      }
+                    >
+                      <FiEdit2 />
+                    </tv.EditButton>
+                  )}
                 </>
               ) : (
                 // 수정버튼 클릭시
@@ -441,6 +428,11 @@ export default function TableViewList({
                                   updateTaskStatus={updateTaskStatus}
                                   showStatusModal={() =>
                                     setShowNewStatusModal(true)
+                                  }
+                                  currentStatusId={
+                                    taskStatus
+                                      ? taskStatus.taskStatusId
+                                      : task.taskStatusId
                                   }
                                 />
                               </t.Wrapper>
