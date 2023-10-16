@@ -2,7 +2,7 @@ import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function TaskCard({ task, dragStart }) {
+export default function TaskCard({ task, dragStart, isWriter }) {
   const params = useParams();
   const navigate = useNavigate();
 
@@ -26,6 +26,7 @@ export default function TaskCard({ task, dragStart }) {
             <SimpleTaskMemberList
               taskMembers={task.taskMembers}
               taskId={task.taskId}
+              isWriter={isWriter}
             />
           </Assignee>
         ) : (

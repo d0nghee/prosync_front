@@ -5,27 +5,17 @@ import { taskListAction } from "../../../redux/reducers/task/taskList-slice";
 import { useDispatch } from "react-redux";
 import { tryFunc } from "../../../util/tryFunc";
 
-export default function StatusBoard({ list, projectMember }) {
+export default function StatusBoard({ list, projectMember, isWriter }) {
   const dispatch = useDispatch();
   const handleDragStart = (event, task) => {
-    if (
-      projectMember &&
-      projectMember.status === "ACTIVE" &&
-      (projectMember.authority === "ADMIN" ||
-        projectMember.authority === "WRITER")
-    ) {
+    if (isWriter) {
       event.dataTransfer.setData("task", task);
     }
   };
 
   const handleDrop = (event, taskStatusId) => {
     event.preventDefault();
-    if (
-      projectMember &&
-      projectMember.status === "ACTIVE" &&
-      (projectMember.authority === "ADMIN" ||
-        projectMember.authority === "WRITER")
-    ) {
+    if (isWriter) {
       let task = event.dataTransfer.getData("task");
 
       if (task) {
@@ -56,6 +46,7 @@ export default function StatusBoard({ list, projectMember }) {
                 key={task.taskId}
                 task={task}
                 dragStart={handleDragStart}
+                isWriter={isWriter}
               />
             ))}
           </Board>

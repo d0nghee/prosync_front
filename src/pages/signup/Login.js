@@ -165,7 +165,7 @@ const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 50%;
+  width: 35%;
   justify-content: center;
   gap: 3rem;
 `;
