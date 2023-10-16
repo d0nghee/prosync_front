@@ -5,7 +5,6 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 import { useState } from "react";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import FileInfo from "./FileInfo";
-import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
 import * as t from "../task/form/TaskForm.style";
 import { useDispatch } from "react-redux";
@@ -16,7 +15,6 @@ export default function SimpleFileList({
   isAuthenticated,
 }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [showList, setShowList] = useState(false);
   const deleteHandler = (fileInfoId) => {

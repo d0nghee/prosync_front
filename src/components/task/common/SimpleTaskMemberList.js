@@ -9,6 +9,7 @@ export default function SimpleTaskMemberList({
   isTable,
   updateTask,
   bottom,
+  isWriter,
 }) {
   const [showTaskList, setShowTaskList] = useState(false);
 
@@ -53,6 +54,7 @@ export default function SimpleTaskMemberList({
                 taskMembers={taskMembers}
                 taskId={taskId}
                 updateTask={updateTask}
+                isWriter={isWriter}
               />
             </Wrapper>
           </>

@@ -255,6 +255,7 @@ export default function SignupForm() {
 
         <SideTotal>
           <SideContent>
+            <h2>회원가입</h2>
             <One>
               <LabelContent>Email</LabelContent>
               <DivContainer>

@@ -15,6 +15,10 @@ export default function BoardViewList({ projectMember, currentIndex }) {
   const dispatch = useDispatch();
   const taskStatusList = useSelector((state) => state.taskStatus.list);
   const params = useParams();
+  const isWriter =
+    projectMember &&
+    projectMember.status === "ACTIVE" &&
+    projectMember.authority !== "READER";
 
   useEffect(() => {
     dispatch(taskListAction.updateTaskSeq(taskStatusList));
@@ -28,12 +32,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
 
   // 보드 드래그앤 드롭
   const handleDragStart = (event, taskStatusId) => {
-    if (
-      projectMember &&
-      projectMember.status === "ACTIVE" &&
-      (projectMember.authority === "ADMIN" ||
-        projectMember.authority === "WRITER")
-    ) {
+    if (isWriter) {
       event.dataTransfer.setData("taskStatusId", taskStatusId);
     }
   };
@@ -76,6 +75,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
                     index={index}
                     projectMember={projectMember}
                     wid={currentIndex * 425}
+                    isWriter={isWriter}
                   />
                 </div>
                 {index === list.length - 1 && (
