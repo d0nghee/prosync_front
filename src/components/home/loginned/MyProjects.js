@@ -31,7 +31,7 @@ const Container = styled.div`
       color: white;
       font-size: 1.2rem;
       text-align: center;
-      padding: 1.5% 1% 0% 1%;
+      padding: 1% 1% 0% 1%;
       font-weight: 900;
       cursor: pointer;
       transition: all 0.5s;
@@ -51,7 +51,7 @@ const Container = styled.div`
     padding-bottom: 1%;
     text-align: center;
     border-radius: 10px;
-    padding-top: 0.6%;
+    padding-top: 0.7%;
     align-self: end;
     cursor: pointer;
     transition: all 0.5s;

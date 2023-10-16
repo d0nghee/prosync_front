@@ -42,6 +42,12 @@ const Header = styled.header`
   box-shadow: 0px 0px 4px 0.5px;
   height: 7rem;
 
+  & .signup-login-container {
+    display: flex;
+    width: 10%;
+    justify-content: space-around;
+  }
+
   & > nav {
     width: 100%;
     display: flex;
@@ -63,6 +69,7 @@ const Header = styled.header`
     font-weight: bolder;
     position: relative;
     width: 100%;
+    justify-content: space-evenly;
   }
 
   & .toggleIcon {
@@ -689,12 +696,16 @@ export default function MainNavigation({ setMenuOpen }) {
   useEffect(() => {
     // 멤버 관련 정보 소실 대비
     if (isLoggedIn) {
-      console.log('location');
+      console.log("location");
       console.log(location);
-      if (!(location.pathname==='/auth' && location.search.includes('?mode=login'))) {
-        console.log('탄다');
+      if (
+        !(
+          location.pathname === "/auth" &&
+          location.search.includes("?mode=login")
+        )
+      ) {
+        console.log("탄다");
         nullableCheck();
-
       }
     }
   }, [location, isLoggedIn]);
@@ -1065,15 +1076,14 @@ export default function MainNavigation({ setMenuOpen }) {
             )}
             {/* 로그인 전 */}
             {!isLoggedIn && (
-              <li className="sign-up">
-                <NavLink to="/auth?mode=signup">signup</NavLink>
-              </li>
-            )}
-
-            {!isLoggedIn && (
-              <li className="login">
-                <NavLink to="/auth?mode=login">login</NavLink>
-              </li>
+              <div className="signup-login-container">
+                <li className="sign-up">
+                  <NavLink to="/auth?mode=signup">signup</NavLink>
+                </li>
+                <li className="login">
+                  <NavLink to="/auth?mode=login">login</NavLink>
+                </li>
+              </div>
             )}
             {isLoggedIn && (
               <li className="addtiontab">
