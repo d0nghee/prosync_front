@@ -28,6 +28,7 @@ import { patchTask } from "../../../redux/reducers/task/taskList-slice";
 import useFormInput from "../../../hooks/use-form-input";
 import { tryFunc } from "../../../util/tryFunc";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
+import { removeUserCookie } from "../../../util/cookies";
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const params = useParams();
@@ -47,7 +48,6 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     (state) => state.taskMembers.originalMembers
   );
 
-  //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
   useEffect(() => {
     tryFunc(
       async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
@@ -151,14 +151,27 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
         dispatch(calendarActions.resetDate());
         navigate(`/projects/${projectId}/tasks/${params.taskId}`);
       } else if (method === "POST") {
-        //TODO : 에러처리 (try func X)
-        const taskId = await postTaskApi(
-          params.projectId,
-          taskStatus.taskStatusId,
-          requestData
-        );
-        await dispatch(requestApi(taskId, originalMembers, checkedMembers));
-        navigate(`/projects/${projectId}/tasks/${taskId}`);
+        try {
+          const taskId = await postTaskApi(
+            params.projectId,
+            taskStatus.taskStatusId,
+            requestData
+          );
+          await dispatch(requestApi(taskId, originalMembers, checkedMembers));
+          navigate(`/projects/${projectId}/tasks/${taskId}`);
+        } catch (error) {
+          const status = error.response.status;
+          if (status === 401) {
+            alert("로그인이 만료되었습니다.");
+            removeUserCookie();
+            navigate("/login");
+          } else if (status === 500) {
+            navigate("/error");
+          } else if (status === 403) {
+            alert("메뉴에 대한 권한이 없습니다.");
+            navigate("/");
+          }
+        }
       }
     })();
   };
