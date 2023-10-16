@@ -87,6 +87,7 @@ export const handleErrorCode = (
           alert("회원 정보를 찾지 못했습니다.");
           break;
         case "PROJECT_NOT_FOUND": // 프로젝트 리소스 찾기 실패
+          navigate("/");
           alert("프로젝트 정보를 찾지 못했습니다");
           break;
         case "PROJECT_LINK_NOT_FOUND": // 프로젝트 링크 리소스 찾기 실패
@@ -95,12 +96,15 @@ export const handleErrorCode = (
           break;
         case "PROJECT_MEMBER_NOT_FOUND": // 프로젝트 멤버 리소스 찾기 실패
           alert("프로젝트에 속한 멤버 정보를 찾지 못했습니다");
+          window.location.reload();
           break;
         case "PROJECT_INVITE_CODE_NOT_FOUND": // 프로젝트 초대 코드 리소스 찾기 실패
           alert("프로젝트 초대 링크를 찾지 못했습니다");
+          navigate("/");
           break;
         case "TASK_NOT_FOUND": // 업무 리소스 찾기 실패
           alert("업무 정보를 찾지 못했습니다");
+          navigate("/");
           break;
         case "TASK_MEMBER_NOT_FOUND": // 업무 멤버 리소스 찾기 실패
           alert("업무에 속한 멤버 정보를 찾지 못했습니다");
@@ -110,11 +114,9 @@ export const handleErrorCode = (
           break;
         case "FILE_NOT_FOUND": // 파일 리소스 찾기 실패
           alert("파일을 찾지 못했습니다");
-
           break;
         case "NOTIFICATION_NOT_FOUND": // 알림 리소스 찾기 실패
           alert("알림을 찾지 못했습니다");
-
           break;
         default:
           navigate("/error");

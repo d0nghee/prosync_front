@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import Button from '../button/Button';
-import styled from 'styled-components';
-import { Content, GridContainer, InputText } from '../../css/MyPageStyle';
-import { deleteApi } from '../../util/api';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react'
+import Button from '../button/Button'
+import styled from 'styled-components'
+import { InputText } from '../../css/MyPageStyle'
+import { deleteApi } from '../../util/api'
+import { useNavigate } from 'react-router-dom'
 
-import { tryFunc } from '../../util/tryFunc';
-import { useDispatch } from 'react-redux';
-import DeleteImg from '../../assets/icon/mypage_icon5.png';
+import { useDispatch } from 'react-redux'
+import DeleteImg from '../../assets/icon/mypage_icon5.png'
+import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice'
+import { removeUserCookie } from '../../util/cookies'
+
+
 
 const CustomStyle = {
-  border: '3px blue solid',
-  width: '30vw',
-  height: '3vw',
-  fontSize: '20px',
-  fontStyle: 'italic',
+  border: "3px blue solid",
+  width: "30vw",
+  height: "3vw",
+  fontSize: "20px",
+  fontStyle: "italic",
 };
 
 export default function LeaveMember() {
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputMessage, setInputMessage] = useState("");
   const navi = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,22 +32,23 @@ export default function LeaveMember() {
 
   console.log(inputMessage);
 
-  const handleLeaveMember = async () => {
-    if (inputMessage === '탈퇴합니다') {
-      await deleteApi('/members')
+  const handleLeaveMember = () => {
+    if (inputMessage === "탈퇴합니다") {
+      deleteApi("/members")
         .then(() => {
-          alert('탈퇴되었습니다.');
-          navi('/logout');
-        })
-        .catch((res) => {
-          if (res.response.status === '403') {
+          removeUserCookie();
+          alert("탈퇴되었습니다.");
+          navi("/");
+          dispatch(setIsLoggedIn(false));
+        }).catch((res) => {
+          if (res.response.status === 403) {
             alert(
-              '관리 중인 프로젝트가 있습니다. ADMIN 권한을 위임하고 진행해주세요.'
+              "관리 중인 프로젝트가 있습니다. ADMIN 권한을 위임하고 진행해주세요."
             );
           }
-        });
+        })
     } else {
-      alert('정확하게 입력해주세요.');
+      alert("정확하게 입력해주세요.");
     }
   };
 
@@ -66,14 +70,13 @@ export default function LeaveMember() {
           placeholder="탈퇴합니다"
           onChange={handleChange}
         />
-        <ButtonContainer>
-          <Button
-            onClick={handleLeaveMember}
-            label="탈퇴"
-            width="100px"
-            fontSize="20px"
-          ></Button>
-        </ButtonContainer>
+        <Button
+          onClick={handleLeaveMember}
+          label="탈퇴"
+          width="100px"
+          fontSize="20px"
+          height="3vw"
+        ></Button>
       </Div>
     </>
   );
@@ -83,6 +86,8 @@ const Div = styled.div`
   grid-column: 2/6;
   grid-row: 4/4;
   display: flex;
+  align-items: flex-start;
+  gap: 1rem;
 `;
 
 const ImageContainer = styled.div`
@@ -96,11 +101,6 @@ const ImageContainer = styled.div`
 const ImgDiv = styled.img`
   width: 200px;
   height: 200px;
-`;
-
-const ButtonContainer = styled.div`
-  margin-left: 50px;
-  margin-bottom: 20px;
 `;
 
 const BannerElement = styled.div`

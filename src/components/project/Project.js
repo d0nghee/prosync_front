@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import bookmarkOff from '../../assets/images/bookmark-off.png';
 import bookmarkOn from '../../assets/images/bookmark-on.png';
 import { useDispatch } from 'react-redux';
-import LoadingSpinner from '../common/LoadingSpinner';
 
 export default function Project({
   projects: {
@@ -26,7 +25,7 @@ export default function Project({
 
   const handleStarClick = (e) => {
     e.stopPropagation();
-    tryFunc(changeBookmark)();
+    changeBookmark();
   };
 
   const changeBookmark = async () => {
@@ -53,10 +52,18 @@ export default function Project({
     navigate(`/projects/${projectId}`);
   };
 
+  // 제목 길이 13이상이면 ... 붙이기
+  const truncatedTitle = (title, maxLength = 13) => {
+    if (title.length > maxLength) {
+      return title.substring(0, maxLength) + '...';
+    }
+    return title;
+  };
+
   return (
     <Container onClick={navigateHandler}>
       <Header>
-        <Title>{title}</Title>
+        <Title>{truncatedTitle(title)}</Title>
         <StarButton onClick={handleStarClick}>
           <StarImage src={isStarred ? bookmarkOn : bookmarkOff} alt="Star" />
         </StarButton>

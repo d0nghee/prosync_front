@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { getCookie } from '../../util/cookies';
 import { GrUserSettings } from 'react-icons/gr';
 import { AiFillEdit } from 'react-icons/ai';
+import { useEffect, useState } from 'react';
 
 export default function ProjectInfo({ projectMembers }) {
   const data = useLoaderData();
@@ -72,7 +73,14 @@ export default function ProjectInfo({ projectMembers }) {
                   </li>
                   <li>
                     <span>프로젝트 구성원</span>
-                    <span>{projectMembers ? projectMembers.length : 0}명</span>
+                    <span>
+                      {projectMembers
+                        ? projectMembers.filter(
+                            (member) => member.status === 'ACTIVE'
+                          ).length
+                        : 0}
+                      명
+                    </span>
                   </li>
                   <li>
                     <span>공개 여부</span>
@@ -151,11 +159,10 @@ const ProjectSideInfo = styled.ul`
 
     span:first-child {
       display: inline-block;
-      min-width: 80px;
       font-weight: 700;
       line-height: 150%;
       color: hsl(230, 4%, 50%);
-      width: 120px;
+      width: 180px;
     }
 
     span:last-child {

@@ -69,6 +69,7 @@ export default function TasksList({
 
 const List = styled.div`
   width: ${(props) => props.wid || "80%"};
+  margin-bottom: 15rem;
 `;
 
 const Total = styled.div`

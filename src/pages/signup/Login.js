@@ -8,15 +8,20 @@ import {
   setIsLoggedIn,
   setLoginFormData,
 } from "../../redux/reducers/member/loginSlice";
-import { getCookie, setCookie } from "../../util/cookies";
+import { setCookie } from "../../util/cookies";
 import { getApi, postApi } from "../../util/api";
 import { tryFunc } from "../../util/tryFunc";
-import LoginImg from '../../assets/images/login_image.jpeg'
-import { Page, SideContent, SideImage, Image } from "../../css/SignupStyle";
-import styled, { keyframes } from 'styled-components'
+import LoginImg from "../../assets/images/login_image.jpeg";
+import {
+  Page,
+  SideContent,
+  SideImage,
+  Image,
+  SideTotal,
+} from "../../css/SignupStyle";
+import styled, { keyframes } from "styled-components";
 
 export default function Login() {
-
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
   const navigate = useNavigate();
@@ -25,9 +30,9 @@ export default function Login() {
   const params = new URLSearchParams(location.search);
 
   const handleInputChange = (name, value) => {
-    if (name === 'email') {
+    if (name === "email") {
       handleEmailChange(value);
-    } else if (name === 'password') {
+    } else if (name === "password") {
       handlePasswordChange(value);
     }
   };
@@ -51,8 +56,7 @@ export default function Login() {
   };
 
   const loginFunc = async () => {
-    const response = await postApi('/login', login.loginFormData);
-
+    const response = await postApi("/login", login.loginFormData);
 
     const header = response.headers;
     const access = await header.authorization;
@@ -90,7 +94,9 @@ export default function Login() {
     const errorHandlers = {
       401: (error) => {
         console.log(error.response.status);
-        alert("일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요.");
+        alert(
+          "일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요."
+        );
       },
       404: (error) => {
         console.log(error.response.status);
@@ -98,7 +104,7 @@ export default function Login() {
       },
       422: (error) => {
         console.log(error.response.status);
-        alert("이메일 형식이 잘못되었습니다.")
+        alert("이메일 형식이 잘못되었습니다.");
       },
 
       default: (error) => {
@@ -112,8 +118,8 @@ export default function Login() {
         await fetchMemberInfo();
         console.log("fetchMemberInfo 완료");
         const returnUrl = params.get("returnUrl");
-        navigate(returnUrl || "/");
         dispatch(setIsLoggedIn(true));
+        navigate(returnUrl || "/");
       } catch (error) {
         console.log("member 데이터 정보 읽어오기 실패");
       }
@@ -131,43 +137,40 @@ export default function Login() {
       <SideImage>
         <Image src={LoginImg}></Image>
       </SideImage>
-      <LoginContainer>
-        <div>
+      <SideTotal>
+        <LoginContainer>
           <LoginForm
             onChange={handleInputChange}
             onEnter={handleLogin}
           ></LoginForm>
-        </div>
-        <LoginButtonContainer>
-          <CustomButton
-            width="40%"
-            backgroundColor="#9BC1BC"
-            label="로그인"
-            fontSize="18px"
-            onClick={handleLogin}
-          />
-          <SignupButton
-            onClick={handleSignup}
-          >
-            회원가입 하러가기
-          </SignupButton>
-        </LoginButtonContainer>
-      </LoginContainer>
+          <LoginButtonContainer>
+            <CustomButton
+              width="100%"
+              backgroundColor="#9BC1BC"
+              label="로그인"
+              fontSize="18px"
+              onClick={handleLogin}
+            />
+            <SignupButton onClick={handleSignup}>
+              회원가입 하러가기
+            </SignupButton>
+          </LoginButtonContainer>
+        </LoginContainer>
+      </SideTotal>
     </Page>
   );
 }
-
 
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 50%;
+  width: 35%;
   justify-content: center;
-  margin-right: 80px;
-`
+  gap: 3rem;
+`;
 
 const SignupButton = styled.div`
   font-weight: 700;
   cursor: pointer;
-`
+`;

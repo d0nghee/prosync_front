@@ -36,6 +36,11 @@ export default function Task({
     return <LoadingSpinner />;
   }
 
+  const isWriter =
+    projectMember &&
+    projectMember.status === "ACTIVE" &&
+    projectMember.authority !== "READER";
+
   return (
     <>
       {task && (
@@ -49,28 +54,25 @@ export default function Task({
                   type="button"
                   onClick={() => navigate(`..`)}
                 />
-                {projectMember &&
-                  projectMember.status === "ACTIVE" &&
-                  (projectMember.authority === "ADMIN" ||
-                    projectMember.authority === "WRITER") && (
-                    <>
-                      <NaviButton
-                        type="button"
-                        name="수정"
-                        color="#4361ee"
-                        fontcolor="white"
-                        to="edit"
-                        onClick={() => navigate("edit")}
-                      />
-                      <NaviButton
-                        type="submit"
-                        name="삭제"
-                        color="#ca5329"
-                        fontcolor="white"
-                        onClick={taskDeleteHandler}
-                      />
-                    </>
-                  )}
+                {isWriter && (
+                  <>
+                    <NaviButton
+                      type="button"
+                      name="수정"
+                      color="#4361ee"
+                      fontcolor="white"
+                      to="edit"
+                      onClick={() => navigate("edit")}
+                    />
+                    <NaviButton
+                      type="submit"
+                      name="삭제"
+                      color="#ca5329"
+                      fontcolor="white"
+                      onClick={taskDeleteHandler}
+                    />
+                  </>
+                )}
               </t.ButtonArea>
             </t.TopNav>
             <t.TaskArea>
@@ -113,6 +115,7 @@ export default function Task({
                         taskMembers={task.taskMembers}
                         taskId={task.data.taskId}
                         updateTask={updateTask}
+                        isWriter={isWriter}
                       />
                     ) : (
                       <div>지정된 담당자가 없습니다.</div>

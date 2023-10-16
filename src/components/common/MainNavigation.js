@@ -39,8 +39,8 @@ const Header = styled.header`
   flex-direction: row;
   padding: 1rem 0rem;
   color: black;
-  box-shadow: 0px 0px 15px 0.5px;
-  height: 9rem;
+  box-shadow: 0px 0px 4px 0.5px;
+  height: 7rem;
 
   & > nav {
     width: 100%;
@@ -525,15 +525,7 @@ export default function MainNavigation({ setMenuOpen }) {
           const data = await fetchNotificationCount();
           onNotificationCountSuccess(data);
         } catch (error) {
-          if (error.response && error.response.status === 401) {
-            if (location.pathname === "/") {
-              alert("로그인이 만료되었습니다.");
-              navigate(
-                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-              );
-            }
-            dispatch(setIsLoggedIn(false));
-          } else if (error === undefined) {
+          if (error === undefined) {
             console.error("An undefined error occured!");
             alert("알 수 없는 오류가 발생했습니다.");
             navigate("/error");
@@ -544,7 +536,16 @@ export default function MainNavigation({ setMenuOpen }) {
             );
             setMenuOpen(false);
             navigate("/error");
-          }
+          } else if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } 
+
         }
       }
     };
@@ -603,15 +604,10 @@ export default function MainNavigation({ setMenuOpen }) {
           navigate(`${location.pathname}?${queryParams.toString()}`);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            if (location.pathname === "/") {
-              alert("로그인이 만료되었습니다.");
-              navigate(
-                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-              );
-            }
-            dispatch(setIsLoggedIn(false));
-          } else if (error === undefined) {
+         
+        
+        
+          if (error === undefined) {
             console.error("An undefined error occured!");
             alert("알 수 없는 오류가 발생했습니다.");
             navigate("/error");
@@ -622,8 +618,20 @@ export default function MainNavigation({ setMenuOpen }) {
             );
             setMenuOpen(false);
             navigate("/error");
-          }
-        });
+          } else if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } 
+
+        }
+        
+        
+        );
     } else {
       alert("알림 읽음 처리가 취소되었습니다.");
     }
@@ -641,15 +649,7 @@ export default function MainNavigation({ setMenuOpen }) {
           navigate(`${location.pathname}?${queryParams.toString()}`);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            if (location.pathname === "/") {
-              alert("로그인이 만료되었습니다.");
-              navigate(
-                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-              );
-            }
-            dispatch(setIsLoggedIn(false));
-          } else if (error === undefined) {
+          if (error === undefined) {
             console.error("An undefined error occured!");
             alert("알 수 없는 오류가 발생했습니다.");
             navigate("/error");
@@ -660,7 +660,15 @@ export default function MainNavigation({ setMenuOpen }) {
             );
             setMenuOpen(false);
             navigate("/error");
-          }
+          } else if (error.response && error.response.status === 401) {
+            if (location.pathname === "/") {
+              alert("로그인이 만료되었습니다.");
+              navigate(
+                `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+              );
+            }
+            dispatch(setIsLoggedIn(false));
+          } 
         });
     } else {
       alert("알림 삭제 처리가 취소되었습니다");
@@ -711,7 +719,20 @@ export default function MainNavigation({ setMenuOpen }) {
           onProjectFetchSuccessHandler(response.data);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
+
+
+          if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            setMenuOpen(false);
+            navigate("/error");
+          } else if (error.response && error.response.status === 401) {
             console.log(location.pathname);
             if (location.pathname === "/" || location.pathname === "/auth") {
               alert("로그인이 만료되었습니다.");
@@ -723,18 +744,8 @@ export default function MainNavigation({ setMenuOpen }) {
             }
             dispatch(setIsLoggedIn(false));
             setShowBox(false);
-          } else if (error === undefined) {
-            console.error("An undefined error occured!");
-            alert("알 수 없는 오류가 발생했습니다.");
-            navigate("/error");
-          } else if (error.code === "ERR_NETWORK") {
-            console.error("네트워크 에러 발생:", error);
-            alert(
-              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
-            );
-            setMenuOpen(false);
-            navigate("/error");
-          }
+          } 
+
         });
     };
 
@@ -845,17 +856,10 @@ export default function MainNavigation({ setMenuOpen }) {
         onfetchDataBasedOnInputSuccessHanlder(response.data);
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          console.log("로케이션");
-          console.log(location.pathname);
-          if (location.pathname === "/auth") {
-            alert("로그인이 만료되었습니다.");
-            setShowBox(false);
-            navigate(
-              `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-            );
-          }
-        } else if (error === undefined) {
+
+
+        
+        if (error === undefined) {
           console.error("An undefined error occured!");
           alert("알 수 없는 오류가 발생했습니다.");
           navigate("/error");
@@ -866,7 +870,17 @@ export default function MainNavigation({ setMenuOpen }) {
           );
           setMenuOpen(false);
           navigate("/error");
-        }
+        } else if (error.response && error.response.status === 401) {
+          console.log("로케이션");
+          console.log(location.pathname);
+          if (location.pathname === "/auth") {
+            alert("로그인이 만료되었습니다.");
+            setShowBox(false);
+            navigate(
+              `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+            );
+          }
+        } 
       });
   }, 500);
 

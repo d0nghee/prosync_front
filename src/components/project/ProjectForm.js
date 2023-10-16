@@ -12,6 +12,9 @@ import DeleteProjectModal from './DeleteProjectModal';
 import { tryFunc } from '../../util/tryFunc';
 import { useDispatch } from 'react-redux';
 import LoadingSpinner from '../common/LoadingSpinner';
+import useFormInput from '../../hooks/use-form-input';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
 export default function ProjectForm({ project = {}, method }) {
   const [img, setImg] = useState(null);
@@ -30,13 +33,50 @@ export default function ProjectForm({ project = {}, method }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const [currentImg, setCurrentImg] = useState();
 
   useEffect(() => {
+    titleSetHandler(projectData.title);
+    introSetHandler(projectData.intro);
+
     if (method === 'PATCH') {
       setImgData();
     }
   }, []);
+
+  const {
+    value: titleValue,
+    isValid: titleIsValid,
+    setHandler: titleSetHandler,
+    changeHandler: titleChangeHandler,
+    blurHandler: titleBlurHandler,
+    hasError: titleHasError,
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 50);
+
+  const {
+    value: introValue,
+    isValid: introIsValid,
+    setHandler: introSetHandler,
+    changeHandler: introChangeHandler,
+    blurHandler: introBlurHandler,
+    hasError: introHasError,
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 500);
+
+  function validateDates(startDateStr, endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    // 시작일과 종료일이 유효한 날짜인지 확인
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return false;
+    }
+
+    // 시작일 < 종료일
+    if (startDate > endDate) {
+      return false;
+    }
+
+    return true;
+  }
 
   // PATCH
   // 기존 이미지 파일 이름 설정
@@ -63,20 +103,25 @@ export default function ProjectForm({ project = {}, method }) {
   }
 
   async function ProjectHandler() {
-    console.log('img', img);
-    if (
-      !projectData.title ||
-      !projectData.intro ||
-      !projectData.startDate ||
-      !projectData.endDate
-    ) {
-      alert('필요한 데이터를 모두 입력해주세요.');
+    const validDate = validateDates(projectData.startDate, projectData.endDate);
+    if (!introIsValid || !titleIsValid) {
+      setShowErrorMessage(true);
       return;
     }
+    if (!validDate) {
+      setShowErrorMessage(true);
+      return;
+    }
+
     // 프로젝트 생성
     if (method === 'POST') {
       //이미지 없을때 생성
       if (img === null || img === '') {
+        const data = {
+          ...projectData,
+          intro: introValue,
+          title: titleValue,
+        };
         const noImagePostSuccess = (response) => {
           setIsLoading(true);
           const projectId = response.data.projectId;
@@ -86,7 +131,7 @@ export default function ProjectForm({ project = {}, method }) {
         const getNoImagePost = async () => {
           setIsLoading(false);
 
-          const response = await postApi('/projects', projectData);
+          const response = await postApi('/projects', data);
           return response;
         };
         tryFunc(
@@ -102,6 +147,9 @@ export default function ProjectForm({ project = {}, method }) {
         const imgData = await postFileApi(img);
         const data = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
+
           fileId: imgData[0].fileId,
         };
         const ImagePost = async () => {
@@ -127,26 +175,21 @@ export default function ProjectForm({ project = {}, method }) {
 
       // 프로젝트 수정
     } else if (method === 'PATCH' && project.projectId) {
-      console.log('img들어왓다', img);
-      console.log('imgqqq', newImg);
-
       // 이미지 수정 없이 기존 이미지 그대로
       if (newImg === undefined && img) {
         console.log('탄다1');
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
         };
 
-        const patchNoImage = async () => {
-          setIsLoading(true);
-
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
-
-        tryFunc(
-          patchNoImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
         return;
@@ -158,18 +201,18 @@ export default function ProjectForm({ project = {}, method }) {
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
           projectImage: null,
         };
 
-        const patchNoImage = async () => {
-          setIsLoading(true);
+        setIsLoading(true);
 
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
-
-        tryFunc(
-          patchNoImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
 
@@ -184,18 +227,18 @@ export default function ProjectForm({ project = {}, method }) {
 
         const updateData = {
           ...projectData,
+          intro: introValue,
+          title: titleValue,
           fileId: test,
         };
 
-        const patchImage = async () => {
-          setIsLoading(true);
+        setIsLoading(true);
 
-          await patchApi(`/projects/${project.projectId}`, updateData);
-        };
-
-        tryFunc(
-          patchImage,
-          navigate(`/projects/${project.projectId}`),
+        await tryFunc(
+          () => patchApi(`/projects/${project.projectId}`, updateData),
+          (response) => {
+            window.location.href = `/projects/${response.data.projectId}`;
+          },
           dispatch
         )();
       }
@@ -265,101 +308,126 @@ export default function ProjectForm({ project = {}, method }) {
     setNewImg(null);
     setImgName(null);
   };
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   if (isLoading) return <LoadingSpinner />; // 로딩 메시지
 
   return (
-    <ProjectContainer>
-      <DeleteProjectModal
-        isOpen={isModalOpen}
-        onClose={modalCloseHandler}
-        onDelete={deleteProjectHandler}
-      />
-      <MainContentContainer>
-        <Label>프로젝트명</Label>
-        <Input
-          type="text"
-          name="title"
-          value={projectData.title}
-          onChange={handleInputChange}
+    <>
+      {showErrorMessage && (
+        <ErrorMessage>입력값이 잘못되었습니다. 다시 확인해주세요.</ErrorMessage>
+      )}
+      <ProjectContainer>
+        <DeleteProjectModal
+          isOpen={isModalOpen}
+          onClose={modalCloseHandler}
+          onDelete={deleteProjectHandler}
         />
-        <Label>프로젝트 소개</Label>
+        <MainContentContainer>
+          <Label>프로젝트명</Label>
 
-        <TextArea
-          name="intro"
-          value={projectData.intro}
-          onChange={handleInputChange}
-        />
-      </MainContentContainer>
+          <Input
+            type="text"
+            name="title"
+            value={titleValue}
+            onChange={titleChangeHandler}
+            onBlur={titleBlurHandler}
+            isError={titleHasError}
+            placeholder="내용을 입력하세요"
+          />
+          {titleHasError && (
+            <ErrorMessage>
+              제목은 1자 이상 50자 이내로 입력해주세요.
+            </ErrorMessage>
+          )}
 
-      <SideContentContainer>
-        <ButtonContainer>
-          <Button onClick={ProjectHandler}>
-            {method === 'PATCH' ? '수정' : '생성'}
-          </Button>
-          <Button $cancel onClick={cancelHandler}>
-            취소
-          </Button>
-          {method === 'PATCH' ? (
-            <Button $cancel onClick={modalOpenHandler}>
-              프로젝트 삭제
+          <Label>프로젝트 소개</Label>
+
+          <TextArea
+            theme="snow"
+            name="intro"
+            value={introValue}
+            onChange={introChangeHandler}
+            onBlur={introBlurHandler}
+            isError={introHasError}
+            placeholder="내용을 입력하세요"
+          />
+          {introHasError && (
+            <ErrorMessage>
+              소개는 1자 이상 500자 이내로 입력해주세요.
+            </ErrorMessage>
+          )}
+        </MainContentContainer>
+
+        <SideContentContainer>
+          <ButtonContainer>
+            <Button onClick={ProjectHandler}>
+              {method === 'PATCH' ? '수정' : '생성'}
             </Button>
-          ) : null}
-        </ButtonContainer>
+            <Button $cancel onClick={cancelHandler}>
+              취소
+            </Button>
+            {method === 'PATCH' ? (
+              <Button $cancel onClick={modalOpenHandler}>
+                프로젝트 삭제
+              </Button>
+            ) : null}
+          </ButtonContainer>
 
-        <Label>프로젝트 기간</Label>
-        <DateContainer>
-          <Input
-            type="date"
-            name="startDate"
-            value={projectData.startDate}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="date"
-            name="endDate"
-            value={projectData.endDate}
-            onChange={handleInputChange}
-          />
-        </DateContainer>
-
-        <Label>프로젝트 이미지</Label>
-        <ImageInfoContainer>
-          {(newImg || img) && <SelectedImage src={newImg ? newImg : img} />}
-          <LabelContainer>
-            <label onClick={imgClickHandler}>{imgName}</label>
-            {img && (
-              <DeleteImageButton onClick={handleImageDelete}>
-                ❌
-              </DeleteImageButton>
-            )}
-          </LabelContainer>
-        </ImageInfoContainer>
-
-        <ImgInput type="file" onChange={handleImageChange} />
-
-        <CheckboxContainer>
-          <Label>
-            <Radio
-              name="isPublic"
-              value="1"
-              checked={projectData.isPublic}
+          <Label>프로젝트 기간</Label>
+          <DateContainer>
+            <Input
+              type="date"
+              name="startDate"
+              value={projectData.startDate}
               onChange={handleInputChange}
             />
-            Public
-          </Label>
-          <Label>
-            <Radio
-              name="isPublic"
-              value="0"
-              checked={!projectData.isPublic}
+            <Input
+              type="date"
+              name="endDate"
+              value={projectData.endDate}
               onChange={handleInputChange}
             />
-            Private
-          </Label>
-        </CheckboxContainer>
-      </SideContentContainer>
-    </ProjectContainer>
+          </DateContainer>
+
+          <Label>프로젝트 이미지</Label>
+          <ImageInfoContainer>
+            {(newImg || img) && <SelectedImage src={newImg ? newImg : img} />}
+            <LabelContainer>
+              <label onClick={imgClickHandler}>{imgName}</label>
+              {img && (
+                <DeleteImageButton onClick={handleImageDelete}>
+                  ❌
+                </DeleteImageButton>
+              )}
+            </LabelContainer>
+          </ImageInfoContainer>
+
+          <ImgInput type="file" onChange={handleImageChange} />
+
+          <CheckboxContainer>
+            <Label>
+              <Radio
+                name="isPublic"
+                value="1"
+                checked={projectData.isPublic}
+                onChange={handleInputChange}
+              />
+              Public
+            </Label>
+            <Label>
+              <Radio
+                name="isPublic"
+                value="0"
+                checked={!projectData.isPublic}
+                onChange={handleInputChange}
+              />
+              Private
+            </Label>
+          </CheckboxContainer>
+        </SideContentContainer>
+      </ProjectContainer>
+    </>
   );
 }
 
@@ -369,7 +437,6 @@ const ImageInfoContainer = styled.div`
   align-items: center;
   gap: 8px;
   flex-direction: column;
-  /* margin-bottom: 10px; */
 `;
 
 const DeleteImageButton = styled.button`
@@ -394,7 +461,7 @@ const ProjectContainer = styled.div`
   width: 70%;
   padding: 20px;
   height: 1000px;
-  gap: 40px; // 메인과 사이드 간의 간격 조절
+  gap: 40px;
 `;
 
 const MainContentContainer = styled.div`
@@ -402,18 +469,16 @@ const MainContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* border: 2px solid #5b67ca; */
   padding: 20px;
   height: 800px;
 `;
 
 const SideContentContainer = styled.div`
-  flex-basis: 250px; // 또는 원하는 너비로 설정
+  flex-basis: 250px;
   height: 700px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* justify-content: space-between;  */
   border: 2px solid #5b67ca;
   padding: 20px;
 `;
@@ -464,6 +529,15 @@ const TextArea = styled.textarea`
   height: 450px;
   resize: none;
   font-size: 18px;
+  /* .ql-editor {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    height: 650px;
+
+    a {
+      text-decoration: underline;
+    } */
+  }
 `;
 
 const Label = styled.label`
@@ -510,4 +584,25 @@ const DateContainer = styled.div`
   gap: 10px;
   margin-bottom: 10px;
   justify-content: center;
+`;
+const ErrorMessage = styled.div`
+  background-color: #5b67ca;
+
+  padding: 0.5rem;
+  text-align: center;
+  color: white;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  animation: fadeInDown 1s;
+
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -100%, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translateZ(0);
+    }
+  }
 `;

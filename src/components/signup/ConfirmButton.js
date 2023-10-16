@@ -2,7 +2,7 @@ import { ConfirmEmail, DisableButton } from "../../css/SignupStyle";
 
 function ConfirmButton(props) {
 
-    const { disabled, onClick, style } = props;
+    const { disabled, onClick } = props;
     
     const check = () => {
         if (disabled === true) {

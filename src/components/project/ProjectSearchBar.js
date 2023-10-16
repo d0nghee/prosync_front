@@ -9,13 +9,24 @@ export default function ProjectSearchBar({ onSearch }) {
     onSearch(query);
   };
 
+  const handleEnterDown = (e) => {
+    if (e.key === 'Enter') {
+      onSearch(query);
+    }
+  };
+
+  const inputChange = (e) => {
+    setQuery(e.target.value);
+  };
+
   return (
     <SearchBarContainer>
       <SearchInput
         type="text"
         placeholder="Search..."
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={inputChange}
+        onKeyDown={handleEnterDown}
       />
       <SearchButton onClick={handleSubmit}>Search</SearchButton>
     </SearchBarContainer>

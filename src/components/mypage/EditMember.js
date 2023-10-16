@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "../../util/cookies";
-import { getApi, postFileApi } from "../../util/api";
+import { removeUserCookie, setCookie } from "../../util/cookies";
+import { deleteFileApi, getApi, patchApi, postFileApi } from "../../util/api";
 import { introValidate, nameValidate } from "../../util/regex";
 import IntroCheck from "../../components/signup/IntroCheck";
 import NameCheck from "../../components/signup/NameCheck";
@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
 import MypageImg from '../../assets/icon/mypage_icon3.png'
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -30,6 +31,31 @@ export default function EditMember() {
   const [isNameNotCorrect, setIsNameNotCorrect] = useState(false);
   const [isIntroNotCorrect, setIsIntroNotCorrect] = useState(false);
   const [image, setImage] = useState("");
+
+  const imageResetHandle = () => {
+    if (
+      mypage.memberInfo.profileImage !==
+      "https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png"
+    ) {
+      patchApi("/members/profile", {
+        ...mypage.memberInfo,
+        profileImage: null,
+      }).then(() => {
+        setCookie(
+          "profile",
+          "https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png",
+          {
+            path: "/",
+            maxAge: 60 * 60 * 24 * 30,
+          }
+        );
+        alert("프로필 이미지가 삭제되었습니다.");
+        window.location.reload();
+      });
+    } else {
+      alert("등록된 프로필 이미지가 없습니다.");
+    }
+  };
 
   useEffect(() => {
     getApi("/members")
@@ -58,6 +84,8 @@ export default function EditMember() {
           error.response.data.resultCode === "USER_NOT_FOUND"
         ) {
           alert("유저 정보를 찾지 못하였습니다.");
+          removeUserCookie();
+          dispatch(setIsLoggedIn(false));
         }
       });
   }, [location, image, dispatch]);
@@ -157,7 +185,7 @@ export default function EditMember() {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    console.log("파일kkkk", files)
+    console.log("파일kkkk", files);
     if (files.length !== 1) {
       alert("한건만 선택하세요.");
       return;
@@ -183,26 +211,31 @@ export default function EditMember() {
     })();
   };
 
+
+
   return (
     // <ProfileGridContainer>
     <>
       <ImageContainer>
         <SettingImg src={MypageImg} alt="Mypage Icon" />
-        <ContentHeader>
-          프로필 수정
-        </ContentHeader>
+        <ContentHeader>프로필 수정</ContentHeader>
       </ImageContainer>
       <FileContainer>
         <ProfileImage src={mypage.memberInfo.profileImage} />
-      <InputContainer>
-        <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
-        <FileInput
-          type="file"
-          id="file-upload"
-          onChange={handleFileChange}
-        ></FileInput>
-      </InputContainer>
+        <InputContainer>
+          <CustomFileUpload htmlFor="file-upload">이미지 변경</CustomFileUpload>
+          <FileInput
+            type="file"
+            id="file-upload"
+            onChange={handleFileChange}
+          ></FileInput>
+        </InputContainer>
       </FileContainer>
+      <ResetButton
+        onClick={imageResetHandle}
+      >
+        X
+      </ResetButton>
       <DivContainer>
         <CustomDiv>
           <Label>이름 입력 : &nbsp;&nbsp;&nbsp;</Label>
@@ -227,7 +260,7 @@ export default function EditMember() {
         </CustomDiv>
       </DivContainer>
       <ButtonContainer>
-        <CustomDiv style={{ justifyContent: "center" }}>
+        <CustomDiv style={{ justifyContent: "center", gap: "1rem" }}>
           <Button
             backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
             width="30%"
@@ -259,7 +292,7 @@ const ProfileImage = styled.img`
 `;
 
 const CustomFileUpload = styled.label`
-  width: 150px;
+  width: 110px;
   border: 1px solid #ccc;
   padding: 6px 12px;
   cursor: pointer;
@@ -275,8 +308,6 @@ const CustomFileUpload = styled.label`
 
 const FileInput = styled.input`
   display: none;
-
-
 `;
 
 const ProfileGridContainer = styled.div`
@@ -298,18 +329,17 @@ const ImageContainer = styled.div`
   width: 500px;
   height: 200px;
   grid-column: 1/2;
-`
+`;
 
 const ContentHeader = styled.h1`
   margin-top: 50px;
   text-align: center;
   margin-left: 40px;
-`
+`;
 const FileContainer = styled.div`
   margin-top: 80px;
   grid-column: 3/4;
   grid-row: 1/2;
-  
 `;
 
 const InputContainer = styled.div`
@@ -317,7 +347,7 @@ const InputContainer = styled.div`
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-`
+`;
 const DivContainer = styled.div`
   margin-left: 100px;
   grid-column: 1/10;
@@ -332,9 +362,23 @@ const ButtonContainer = styled.div`
   margin-left: 130px;
   width: 700px;
   grid-column: 1/3;
-  grid-row : 5/5;
+  grid-row: 5/5;
 `;
 
 const SettingImg = styled.img`
   width: 200px;
+`
+
+const ResetButton = styled.button`
+  grid-column: 4/4;
+  grid-row: 1/3;
+  margin-top: 40px;
+  width: 30px;
+  height: 30px;
+  margin-left: 40%;
+  background-color: #7b69b7;
+  font-size: large;
+  border: 0px;
+  border-radius: 3px;
+  color: white;
 `

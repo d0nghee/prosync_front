@@ -9,12 +9,15 @@ import {
   taskStatusActions,
 } from "../../redux/reducers/task/taskStatus-slice";
 import { tryFunc } from "../../util/tryFunc";
-import { useNavigate } from "react-router-dom";
 import { taskListAction } from "../../redux/reducers/task/taskList-slice";
 import { useSelector } from "react-redux";
 
-export default function NewTaskStatus({ onClose, editTask }) {
-  const navigate = useNavigate();
+export default function NewTaskStatus({
+  onClose,
+  editTask,
+  currentStatusId,
+  updateStatusForForm,
+}) {
   const nameRef = useRef();
   const colorRef = useRef();
   const taskList = useSelector((state) => state.taskList.list);
@@ -46,9 +49,9 @@ export default function NewTaskStatus({ onClose, editTask }) {
     onClose();
   };
 
-  const editHandler = (event) => {
+  const editHandler = async (event) => {
     // 업무 상태 수정
-    dispatch(
+    await dispatch(
       patchStatus({
         taskStatusId: editTask.taskStatusId,
         color: colorRef.current.value,
@@ -63,6 +66,15 @@ export default function NewTaskStatus({ onClose, editTask }) {
       const updatedTask = { ...task, taskStatus: nameRef.current.value };
       dispatch(taskListAction.updateTask(updatedTask));
     });
+
+    // form의 상태 업데이트
+    if (editTask.taskStatusId === currentStatusId) {
+      updateStatusForForm({
+        taskStatusId: editTask.taskStatusId,
+        color: colorRef.current.value,
+        taskStatus: nameRef.current.value,
+      });
+    }
 
     onClose();
   };

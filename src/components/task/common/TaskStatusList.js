@@ -9,7 +9,11 @@ import { FiEdit2 } from "react-icons/fi";
 import NewTaskStatus from "../../../pages/task/NewTaskStatus";
 import { tryFunc } from "../../../util/tryFunc";
 
-export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
+export default function TaskStatusList({
+  showStatusModal,
+  updateTaskStatus,
+  currentStatusId,
+}) {
   const [editStatus, setEditState] = useState(false);
   const editStatusHandler = () => {
     setEditState((prv) => !prv);
@@ -19,6 +23,10 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
   const statusList = useSelector((state) => state.taskStatus.list);
 
   const deleteTaskStatus = (statusId) => {
+    if (currentStatusId === statusId) {
+      alert("현재 업무에 선택된 업무상태는 삭제할 수 없습니다.");
+      return;
+    }
     const proceed = window.confirm("정말 삭제하시겠습니까?");
 
     if (proceed) {
@@ -53,6 +61,8 @@ export default function TaskStatusList({ showStatusModal, updateTaskStatus }) {
         <NewTaskStatus
           onClose={() => setEditTaskStatus({ show: false })}
           editTask={editTaskStatus}
+          currentStatusId={currentStatusId}
+          updateStatusForForm={updateTaskStatus}
         />
       )}
       <StatusBox>

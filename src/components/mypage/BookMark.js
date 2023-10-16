@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { deleteApi, getApi, postApi } from '../../util/api'
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { getApi } from '../../util/api'
+import { useDispatch } from 'react-redux';
 import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage, NullPost, BookmarkWrapper, PostDescription, PostName, PostsDate, ProjectContent, PaginationGridContainer } from '../../css/MyPageStyle'
 import PaginationButton from './PaginationButton';
-import BookmarkIcon from './BookmarkIcon'
-import Loading from '../common/Loading';
-import { useNavigate, useRouteLoaderData, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { tryFunc } from '../../util/tryFunc';
 import styled from 'styled-components';
 import MyPageProjectProject from './MyPageProjectProject';
@@ -14,14 +12,11 @@ import NoContent from '../../assets/icon/mypage.icon6.png'
 
 export default function BookMark(props) {
 
-
   const location = useLocation();
-  const mypage = useSelector(state => state.mypage);
-  const navi = useNavigate();
   const dispatch = useDispatch();
 
 
-  const [loading, setLoading] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [book, setBook] = useState(false);
   const [bookMarkList, setBookMarkList] = useState([]);
@@ -30,10 +25,8 @@ export default function BookMark(props) {
   const queryParams = new URLSearchParams(location.search)
   const page = queryParams
 
-  const paginationButtons = [];
 
   useEffect(() => {
-    setLoading(true);
     tryFunc(fetchBookmarkList, onFetchBookmarklistSuccess, dispatch)();
   }, [location.search, location.pathname, book]);
 
@@ -58,7 +51,6 @@ export default function BookMark(props) {
 
   const onFetchBookmarklistSuccess = (data) => {
     bookmarkHandler(data);
-    setLoading(false);
   }
 
   const bookmarkHandler = (data) => {
@@ -73,10 +65,8 @@ export default function BookMark(props) {
     })
   }
 
-
   return (
     <>
-      {loading && <Loading />}
       <Noti>
         북마크된 프로젝트의 갯수는 {pageInfo}개 입니다.
       </Noti>

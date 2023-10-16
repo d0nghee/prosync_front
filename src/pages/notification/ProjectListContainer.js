@@ -77,6 +77,11 @@ const codeInformation = [
     code: "CHANGE_AUTHORITY",
     value: "권한변경",
   },
+  {
+    id: 14,
+    code: "TASK_CREATE",
+    value: "업무생성"
+  }
 ];
 
 const Loading = styled.div`

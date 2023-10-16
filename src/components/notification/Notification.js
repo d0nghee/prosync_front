@@ -23,6 +23,7 @@ const selectColor = (code) => {
     "blueviolet",
     "cadetblue",
     "darkgoldenrod",
+    "pink",
   ];
 
   return code === "TASK_REMOVE"
@@ -49,6 +50,8 @@ const selectColor = (code) => {
     ? array[10]
     : code === "CHANGE_AUTHORITY"
     ? array[11]
+    : code == "PROJECT_EXIT"
+    ? array[12]
     : null;
 };
 
