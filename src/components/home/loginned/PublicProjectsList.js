@@ -3,13 +3,13 @@ import { styled } from "styled-components";
 import { getApi } from "../../../util/api";
 import { useEffect } from "react";
 import { useState } from "react";
-import { setIsLoggedIn } from "../../../redux/reducers/member/loginSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { tryFunc } from "./../../../util/tryFunc";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import PublicProject from "./PublicProject";
 import ListLoadingSpinner from "../../common/ListLoadingSpinner";
+import { useDispatch } from "react-redux";
 
 
 const Container = styled.div`
@@ -69,6 +69,7 @@ const PublicProjectsList = () => {
   const [projectsList, setProjectsList] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
 
@@ -97,32 +98,14 @@ const PublicProjectsList = () => {
     console.log(data);
   };
 
-  const fetchPublicProjectListErrorHandler = {
-    401: (error) => {
-      console.log(error.response.status);
-      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
-      setIsLoggedIn(false);
-      navigate(
-        `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
-      );
-    },
-    500: (error) => {
-      console.error("Server Error:", error);
-      alert("서버에서 오류가 발생했습니다.");
-    },
 
-    default: (error) => {
-      console.error("Unknown error:", error);
-      alert("내 프로젝트 목록을 가져오는 중 오류가 발생하였습니다.");
-    },
-  };
 
   useEffect(() => {
     setIsLoading(true);
     tryFunc(
       fetchPublicProjectList,
       fetchPublicProjectListSuccess,
-      fetchPublicProjectListErrorHandler
+      dispatch
     )();
   }, [page, maxPage]);
 

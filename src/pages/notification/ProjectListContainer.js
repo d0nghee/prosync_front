@@ -151,6 +151,7 @@ const ProjectListContainer = () => {
         isPersonal={false}
         codeInformation={codeInformation}
         count={logPageInfo.totalElements}
+        projectId={projectId}
       />
       {!isLoading && (
         <>

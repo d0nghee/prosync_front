@@ -23,7 +23,7 @@ const Container = styled.div`
 `;
 
 const NoData = styled.div`
-  height: 45rem;
+  height: 60rem;
   text-align: center;
   font-size: 3rem;
   font-weight: 900;
