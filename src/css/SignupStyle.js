@@ -4,19 +4,22 @@ import Button from '../components/button/Button'
 export const Page = styled.div`
     display: flex;
     flex-direction: row;
-    margin-top: 5px;
-    height: 800px;
+    height: 1100px;
+    width: 80%;
+    margin-left: 6%;
 `
+
+
 
 export const SideImage = styled.div`
     height: 100%;
-    width: 50%;
+    width: 70%;
     margin-right: 5rem;
     text-align: center;
 `
 
 export const Image = styled.img`
-    height: 836px;
+    height: 100%;
     width: 100%;
     object-fit: cover;
 `
@@ -80,6 +83,8 @@ export const VerifyCodeContainer = styled.div`
     
 `;
 
+
+
 const fadeIn = keyframes`
     from {
         opacity: 0;
@@ -93,3 +98,4 @@ export const VerifyCodeButton = styled(Button)`
     margin-left: 1.5rem;
     animation : ${fadeIn} 0.3s ease-in-out;
 `
+

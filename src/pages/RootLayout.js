@@ -45,6 +45,7 @@ export default function RootLayout() {
       if (!refreshToken) {
         console.log('refresh Token 존재하지 않음');
         dispatch(setIsLoggedIn(false));
+        console.log('로그인 상태 아님 처리');
         return;
       }
     }

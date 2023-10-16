@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "../../util/cookies";
+import { removeUserCookie, setCookie } from "../../util/cookies";
 import { getApi, postFileApi } from "../../util/api";
 import { introValidate, nameValidate } from "../../util/regex";
 import IntroCheck from "../../components/signup/IntroCheck";
@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
 import MypageImg from '../../assets/icon/mypage_icon3.png'
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -57,7 +58,8 @@ export default function EditMember() {
           error.response.status === 404 &&
           error.response.data.resultCode === "USER_NOT_FOUND"
         ) {
-          alert("유저 정보를 찾지 못하였습니다.");
+          removeUserCookie();
+          dispatch(setIsLoggedIn(false));
         }
       });
   }, [location, image, dispatch]);

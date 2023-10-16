@@ -87,27 +87,7 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    const errorHandlers = {
-      401: (error) => {
-        console.log(error.response.status);
-        alert("일치하는 계정 정보가 없습니다. 이메일 혹은 비밀번호를 다시 입력하세요.");
-      },
-      404: (error) => {
-        console.log(error.response.status);
-        alert("회원 정보를 찾지 못하였습니다.");
-      },
-      422: (error) => {
-        console.log(error.response.status);
-        alert("이메일 형식이 잘못되었습니다.")
-      },
-
-      default: (error) => {
-        console.error("Unknown error:", error);
-        alert("Unknown Error");
-      },
-    };
-    
-
+  
     const onLoginSuccess = async () => {
       try {
         await fetchMemberInfo();

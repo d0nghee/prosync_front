@@ -9,11 +9,13 @@ export default function ProtectedLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
+  console.log('로그인 상태:');
+  console.log(isLoggedIn);
 
   useEffect(() => {
     console.log("protectedLayout의 useEffect 실행")
     if (!isLoggedIn) {
-      if (!(location.pathname === "/logout")) {
+      if (!(location.pathname === "/logout" || location.pathname === "/user/leave")) {
         setTimeout(() => {
           alert("로그인 하셔야 이용할 수 있습니다. 로그인 페이지로 이동합니다.");
           setIsLoading(false);

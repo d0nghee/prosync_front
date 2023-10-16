@@ -9,6 +9,8 @@ import { useLoaderData, useNavigate } from 'react-router-dom'
 import { tryFunc } from '../../util/tryFunc'
 import { useDispatch } from 'react-redux'
 import DeleteImg from '../../assets/icon/mypage_icon5.png'
+import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice'
+import { removeUserCookie } from './../../util/cookies';
 
 
 
@@ -35,9 +37,12 @@ export default function LeaveMember() {
   const handleLeaveMember = () => {
     if (inputMessage === "탈퇴합니다") {
       deleteApi("/members")
-        .then(() => {
+      .then(() => {
+          removeUserCookie();
           alert("탈퇴되었습니다.");
-          navi("/logout");
+          navi("/");
+          dispatch(setIsLoggedIn(false));
+          
         }).catch((res) => {
           
           if (res.response.status === 403) {

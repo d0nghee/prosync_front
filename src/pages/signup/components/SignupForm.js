@@ -17,7 +17,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setFormData, setIsConfirmModalOpen, setIsEmailValid, setIsPasswordMatch, setIsVerfied, setModalButtons, setModalMessage, setVerifiedPassword } from "../../../redux/reducers/member/signupSlice";
 import Popup from '../../../components/popup/Popup'
-import ConfrimButton from './ConfirmButton'
 import { axiosInstance } from '../../../util/axiosInstances'
 import { postApi } from "../../../util/api";
 import { emailValidate, nameValidate, passwordValidate } from "../../../util/regex";
@@ -26,6 +25,8 @@ import EmailCheck from "./EmailCheck";
 import VerifyCheck from "./VerifyCheck";
 import NameCheck from "./NameCheck";
 import PasswordCheck from "./PasswordCheck";
+import ConfirmButton from '../../../components/signup/ConfirmButton'
+
 
 
 
@@ -389,10 +390,10 @@ export default function SignupForm() {
               name="email"
               id="email"
             />
-            <ConfrimButton
+            <ConfirmButton
               onClick={handleIdCheckButtonClick}
               disabled={signup.isEmailValid}
-            >중복확인</ConfrimButton>
+            >중복확인</ConfirmButton>
             <EmailCheck/>
           </DivContainer>
 
