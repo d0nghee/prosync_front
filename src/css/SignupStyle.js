@@ -7,6 +7,8 @@ export const Page = styled.div`
   height: 800px;
 `;
 
+
+
 export const SideImage = styled.div`
   height: 100%;
   width: 50%;
@@ -85,6 +87,8 @@ export const VerifyCodeContainer = styled.div`
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
   transition: opacity 0.3s ease-in-out;
 `;
+
+
 
 const fadeIn = keyframes`
     from {

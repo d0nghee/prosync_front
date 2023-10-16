@@ -12,7 +12,7 @@ import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
 import axiosInstance from "../../util/axiosInstances";
 import { useNavigate } from "react-router-dom";
 import { removeUserCookie, setCookie } from "../../util/cookies";
-import { deleteFileApi, getApi, patchApi, postFileApi } from "../../util/api";
+import { getApi, postFileApi } from "../../util/api";
 import { introValidate, nameValidate } from "../../util/regex";
 import IntroCheck from "../../components/signup/IntroCheck";
 import NameCheck from "../../components/signup/NameCheck";
@@ -83,7 +83,6 @@ export default function EditMember() {
           error.response.status === 404 &&
           error.response.data.resultCode === "USER_NOT_FOUND"
         ) {
-          alert("유저 정보를 찾지 못하였습니다.");
           removeUserCookie();
           dispatch(setIsLoggedIn(false));
         }

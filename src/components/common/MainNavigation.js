@@ -42,6 +42,12 @@ const Header = styled.header`
   box-shadow: 0px 0px 4px 0.5px;
   height: 7rem;
 
+  & .signup-login-container {
+    display: flex;
+    width: 10%;
+    justify-content: space-around;
+  }
+
   & > nav {
     width: 100%;
     display: flex;
@@ -63,6 +69,7 @@ const Header = styled.header`
     font-weight: bolder;
     position: relative;
     width: 100%;
+    justify-content: space-evenly;
   }
 
   & .toggleIcon {
@@ -148,10 +155,19 @@ const Header = styled.header`
     font-weight: bolder;
     font-family: "Lato", sans-serif;
     font-family: "Lato", sans-serif;
+    font-size: 1.2rem;
 
     &:hover {
       color: rgb(158, 105, 194);
     }
+  }
+
+  & .login {
+    font-size: 1.3rem;
+  }
+
+  & .sign-up {
+    font-size: 1.3rem;
   }
 `;
 
@@ -165,7 +181,8 @@ const SideNavbar = styled.div.withConfig({
   z-index: 1500;
   height: 100vh;
   width: 13vw;
-  transform: ${(props) => props.show ? "translateX(0%)" : "translateX(-150%)"};
+  transform: ${(props) =>
+    props.show ? "translateX(0%)" : "translateX(-150%)"};
   transition: transform 0.5s ease-in-out;
   color: white;
 
@@ -362,7 +379,6 @@ const SearchBoxItem = styled.li.withConfig({
   padding-top: ${(props) => (!props.pointHover ? "4.5%" : null)};
   padding-left: ${(props) => (!props.pointHover ? "10%" : null)};
   height: ${(props) => (props.pointHover ? "8rem" : "4.5rem")};
- 
 
   &.no-project {
     color: gray;
@@ -506,8 +522,6 @@ export default function MainNavigation({ setMenuOpen }) {
   const [isMenuItemHovered, setIsMenuItemHovered] = useState(false);
   const [memberProfile, setMemberProfile] = useState({ show: false });
 
-
-
   const fetchNotificationCount = async () => {
     const response = await getApi("/notification/count");
     return response.data;
@@ -544,8 +558,7 @@ export default function MainNavigation({ setMenuOpen }) {
               );
             }
             dispatch(setIsLoggedIn(false));
-          } 
-
+          }
         }
       }
     };
@@ -604,9 +617,6 @@ export default function MainNavigation({ setMenuOpen }) {
           navigate(`${location.pathname}?${queryParams.toString()}`);
         })
         .catch((error) => {
-         
-        
-        
           if (error === undefined) {
             console.error("An undefined error occured!");
             alert("알 수 없는 오류가 발생했습니다.");
@@ -626,17 +636,12 @@ export default function MainNavigation({ setMenuOpen }) {
               );
             }
             dispatch(setIsLoggedIn(false));
-          } 
-
-        }
-        
-        
-        );
+          }
+        });
     } else {
       alert("알림 읽음 처리가 취소되었습니다.");
     }
   };
-
 
   const onNotificationDeleteHandler = (e) => {
     e.stopPropagation();
@@ -668,7 +673,7 @@ export default function MainNavigation({ setMenuOpen }) {
               );
             }
             dispatch(setIsLoggedIn(false));
-          } 
+          }
         });
     } else {
       alert("알림 삭제 처리가 취소되었습니다");
@@ -690,12 +695,20 @@ export default function MainNavigation({ setMenuOpen }) {
 
   useEffect(() => {
     // 멤버 관련 정보 소실 대비
-    if (!isLoggedIn) {
-      nullableCheck();
+    if (isLoggedIn) {
+      console.log("location");
+      console.log(location);
+      if (
+        !(
+          location.pathname === "/auth" &&
+          location.search.includes("?mode=login")
+        )
+      ) {
+        console.log("탄다");
+        nullableCheck();
+      }
     }
   }, [location, isLoggedIn]);
-
- 
 
   const onProjectFetchSuccessHandler = useCallback(
     (data) => {
@@ -719,8 +732,6 @@ export default function MainNavigation({ setMenuOpen }) {
           onProjectFetchSuccessHandler(response.data);
         })
         .catch((error) => {
-
-
           if (error === undefined) {
             console.error("An undefined error occured!");
             alert("알 수 없는 오류가 발생했습니다.");
@@ -744,8 +755,7 @@ export default function MainNavigation({ setMenuOpen }) {
             }
             dispatch(setIsLoggedIn(false));
             setShowBox(false);
-          } 
-
+          }
         });
     };
 
@@ -823,6 +833,7 @@ export default function MainNavigation({ setMenuOpen }) {
   const nullableCheck = useCallback(async () => {
     console.log("nullableCheck 중");
     console.log(getCookie("profile"));
+    console.log(isLoggedIn);
     if (
       isLoggedIn &&
       (!getCookie("profile") ||
@@ -838,7 +849,6 @@ export default function MainNavigation({ setMenuOpen }) {
     navigate("/logout");
   };
 
-
   const onfetchDataBasedOnInputSuccessHanlder = (data) => {
     console.log("fetDataBasedOnInputSucessHandler 실행");
     console.log(data.data);
@@ -847,8 +857,6 @@ export default function MainNavigation({ setMenuOpen }) {
     setPage(2);
   };
 
-
-
   const debouncedProjectFetch = debounce((inputValue) => {
     console.log("inputValue: ", inputValue);
     getApi(`/projects?search=${inputValue}&page=1&size=6`)
@@ -856,9 +864,6 @@ export default function MainNavigation({ setMenuOpen }) {
         onfetchDataBasedOnInputSuccessHanlder(response.data);
       })
       .catch((error) => {
-
-
-        
         if (error === undefined) {
           console.error("An undefined error occured!");
           alert("알 수 없는 오류가 발생했습니다.");
@@ -880,7 +885,7 @@ export default function MainNavigation({ setMenuOpen }) {
               `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
             );
           }
-        } 
+        }
       });
   }, 500);
 
@@ -1071,15 +1076,14 @@ export default function MainNavigation({ setMenuOpen }) {
             )}
             {/* 로그인 전 */}
             {!isLoggedIn && (
-              <li>
-                <NavLink to="/auth?mode=signup">signup</NavLink>
-              </li>
-            )}
-
-            {!isLoggedIn && (
-              <li>
-                <NavLink to="/auth?mode=login">login</NavLink>
-              </li>
+              <div className="signup-login-container">
+                <li className="sign-up">
+                  <NavLink to="/auth?mode=signup">signup</NavLink>
+                </li>
+                <li className="login">
+                  <NavLink to="/auth?mode=login">login</NavLink>
+                </li>
+              </div>
             )}
             {isLoggedIn && (
               <li className="addtiontab">
@@ -1103,7 +1107,6 @@ export default function MainNavigation({ setMenuOpen }) {
           show={showBox}
           ref={dropdownRefSearchBox}
         >
-          {console.log(searchList)}
           {searchList.length > 0 ? (
             searchList?.map((item) => {
               return (

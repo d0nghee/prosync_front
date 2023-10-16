@@ -15,6 +15,7 @@ export function removeCookie(name) {
 }
 
 export function removeUserCookie() {
+  console.log('쿠키삭제 ^^');
   removeCookie("accessToken");
   removeCookie("refreshToken");
   removeCookie("profile");
