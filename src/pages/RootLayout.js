@@ -49,6 +49,7 @@ export default function RootLayout() {
         return;
       }
     }
+    
 
     if (accessToken === 'EXPIRED') {
       alert('로그인이 만료되었습니다.');

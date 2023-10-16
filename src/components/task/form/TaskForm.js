@@ -16,21 +16,25 @@ import { taskStatusActions } from "../../../redux/reducers/task/taskStatus-slice
 import SimpleTaskMemberList from "../common/SimpleTaskMemberList";
 import NaviButton from "../../common/Button";
 import { requestApi } from "../../../redux/reducers/task/taskMembers-slice";
-import { postFileApi, getTaskStatusApi, postTaskApi } from "../../../util/api";
+import {
+  postFileApi,
+  getTaskStatusApi,
+  getProjectMembersApi,
+  postTaskApi,
+} from "../../../util/api";
 import FileList from "../../file/FileList";
 import SelectedFiles from "../../file/SelectedFiles";
 import { patchTask } from "../../../redux/reducers/task/taskList-slice";
 import useFormInput from "../../../hooks/use-form-input";
 import { tryFunc } from "../../../util/tryFunc";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
-import { getProjectMembersApi } from "../../../util/api";
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const [projectMembers, setProjectMembers] = useState();
+  const [projectMembers, setProjectMembers] = useState();
   const [showProjectMembers, setShowProjectMembers] = useState(false);
   const showStatusList = useSelector((state) => state.taskStatus.show);
   const [taskStatus, setTaskStatus] = useState();
@@ -43,20 +47,18 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     (state) => state.taskMembers.originalMembers
   );
 
-  const [projectMembers, setProjectMembers] = useState();
-
+  //TODO: 프로젝트쪽에서 프로젝트 회원 전역 관리하기
   useEffect(() => {
     tryFunc(
-      () => getProjectMembersApi(params.projectId, { size: 100 }),
-      (members) => setProjectMembers(members),
+      async () => await getProjectMembersApi(params.projectId, { size: 1000 }),
+      (projectMembers) => setProjectMembers(projectMembers),
       dispatch
     )();
-
     if (method === "POST") {
       dispatch(taskMembersAction.setTaskMembers([]));
       dispatch(calendarActions.resetDate());
     }
-  }, [params.projectId, dispatch, method]);
+  }, [params.projectId]);
 
   // FORM 유효성 검증
   const {
@@ -109,13 +111,14 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const saveHandler = (event) => {
     event.preventDefault();
 
-    if (method === "POST" && !taskStatus) {
+    if (
+      (method === "POST" && !taskStatus) ||
+      (taskStatus && taskStatus.error)
+    ) {
       setTaskStatus({ error: true });
       setShowErrorMessage(true);
       return;
     }
-    console.log("title", titleValue);
-    console.log(titleIsValid, classificationIsValid, detailIsValid, "test");
     if (!titleIsValid || !classificationIsValid || !detailIsValid) {
       setShowErrorMessage(true);
       return;
@@ -185,6 +188,12 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       classificationSetHandler(task.classification);
       titleSetHandler(task.title);
       detailSetHandler(task.detail);
+      //TODO
+      setTaskStatus({
+        taskStatusId: task.taskStatusId,
+        taskStatus: task.taskStatus,
+        color: task.color,
+      });
     }
   }, [task]);
 
@@ -208,10 +217,14 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
     <>
       {showCalendar && <t.BackDrop onClick={toggleCalendar} />}
       {showModal && (
-        <NewTaskStatus onClose={() => setShowModal((prv) => !prv)} />
+        <NewTaskStatus
+          onClose={() => setShowModal((prv) => !prv)}
+          updateStatusForForm={(value) => setTaskStatus(value)}
+          currentStatusId={taskStatus && taskStatus.taskStatusId}
+        />
       )}
       <form method={method} onSubmit={saveHandler}>
-        <t.TaskTotal>
+        <t.TaskTotal marginbtm={method === "POST" ? "15rem" : ""}>
           <t.DetailArea>
             {showErrorMessage && (
               <t.ErrorMessage>
@@ -440,11 +453,19 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                           <TaskStatusList
                             updateTaskStatus={updateTaskStatus}
                             showStatusModal={() => setShowModal((prv) => !prv)}
+                            currentStatusId={
+                              taskStatus ? taskStatus.taskStatusId : null
+                            }
                           />
                         </t.Wrapper>
                       </>
                     )}
                   </t.Container>
+                  {taskStatus && taskStatus.error && (
+                    <t.OneErrorMessage>
+                      업무 상태는 필수 입력 값입니다.
+                    </t.OneErrorMessage>
+                  )}
                 </div>
               </t.SideTask>
             </t.TaskArea>

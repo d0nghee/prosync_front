@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { debounce } from '../../util/debounce';
 
 export default function ProjectMemberSearchBar({ onSearch }) {
   const [query, setQuery] = useState('');
+  const debouncedSearch = debounce(onSearch, 300);
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
-    onSearch(e.target.value);
+    debouncedSearch(e.target.value);
   };
 
   return (
@@ -27,9 +29,7 @@ const SearchBarContainer = styled.div`
   align-items: center;
   width: 100%;
   margin-top: 50px;
-  max-width: 1100px;
-  margin-left: 300px;
-  margin-right: 300px;
+  max-width: 1150px;
 
   padding: 8px;
   border-radius: 8px;

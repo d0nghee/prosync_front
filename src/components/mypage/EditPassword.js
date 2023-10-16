@@ -1,5 +1,10 @@
 import React from "react";
-import { CustomDiv, Label, InputText, GridContainer } from "../../css/MyPageStyle";
+import {
+  CustomDiv,
+  Label,
+  InputText,
+  GridContainer,
+} from "../../css/MyPageStyle";
 import Button from "../button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
@@ -9,9 +14,9 @@ import { useState } from "react";
 import PasswordCheck from "../signup/PasswordCheck";
 import { passwordValidate } from "../../util/regex";
 import DoubleCheck from "../signup/DoubleCheck";
-import styled from 'styled-components'
+import styled from "styled-components";
 
-import PwImage from '../../assets/icon/mypage_icon4.png'
+import PwImage from "../../assets/icon/mypage_icon4.png";
 
 export default function EditPassword() {
   const dispatch = useDispatch();
@@ -37,8 +42,9 @@ export default function EditPassword() {
 
   const modifyPassword = () => {
     if (!passwordValidate(mypage.memberInfo.password)) {
-      alert("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요.");
-
+      alert(
+        "비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요."
+      );
 
       setIsPasswordNotCorrect(true);
       return;
@@ -58,7 +64,9 @@ export default function EditPassword() {
           error.response.data.resultCode === "INCORRECT_FORMAT_PASSWORD"
         ) {
           setIsPasswordNotCorrect(true);
-          alert("비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요.");
+          alert(
+            "비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요."
+          );
         }
       });
   };
@@ -68,12 +76,10 @@ export default function EditPassword() {
       <Banner>
         <PwImg src={PwImage} />
         <BannerElement>
-        <Word>
-          비밀번호 변경
-        </Word>
-        <DesciptionContent>
-          비밀번호는 특수문자를 포함한 8~15 글자로 입력하세요.
-        </DesciptionContent>
+          <Word>비밀번호 변경</Word>
+          <DesciptionContent>
+            비밀번호는 특수문자를 포함한 8~15 글자로 입력하세요.
+          </DesciptionContent>
         </BannerElement>
       </Banner>
 
@@ -90,12 +96,13 @@ export default function EditPassword() {
         <PasswordCheck isPasswordNotCorrect={isPasswordNotCorrect} />
       </FirstItem>
 
-
       <SecItem>
-        <PasswordLabel style={{marginLeft : "19px"}}> 비밀번호 재입력 :</PasswordLabel>
+        <PasswordLabel style={{ marginLeft: "19px" }}>
+          {" "}
+          비밀번호 재입력 :
+        </PasswordLabel>
         <InputText type="password" name="pw" id="pw" onChange={handleChange} />
-        <Div>
-        </Div>
+        <Div></Div>
         <PasswordCheck isPasswordNotCorrect={isPasswordNotCorrect} />
       </SecItem>
       <DivPw>
@@ -134,18 +141,18 @@ export default function EditPassword() {
 const PwImg = styled.img`
   width: 200px;
   height: 200px;
-`
+`;
 
 const BannerElement = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 const DesciptionContent = styled.div`
   font-weight: 320;
   font-size: 22px;
   margin-left: 20px;
-`
+`;
 
 const Banner = styled.div`
   margin-top: 100px;
@@ -153,45 +160,45 @@ const Banner = styled.div`
   display: flex;
   flex-direction: row;
   margin-left: 100px;
-`
+`;
 const Word = styled.h1`
   margin-top: 50px;
   text-align: left;
   margin-left: 30px;
-`
+`;
 
-const Div = styled.div`
-  
-`
+const Div = styled.div``;
 const DivPw = styled.div`
   grid-row: 3/3;
   grid-column: 6/6;
   margin-left: 50px;
   margin-top: 80px;
-`
+`;
 
 const ButtonContainer = styled.div`
-  grid-row : 4/4;
+  grid-row: 4/4;
   grid-column: 2/6;
-`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+`;
 
 const FirstItem = styled.div`
   margin-top: 220px;
 
   grid-row: 2/2;
   grid-column: 2/7;
-`
+`;
 
 const SecItem = styled.div`
   margin-top: 80px;
 
   grid-row: 3/3;
   grid-column: 2/7;
-  
-`
+`;
 const PasswordLabel = styled.label`
   font-size: 18px;
   font-weight: 500;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   margin-right: 20px;
-`
+`;

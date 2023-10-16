@@ -123,6 +123,7 @@ export const ChooseStatusComment = styled.div`
   text-align: center;
   line-height: 50px;
   max-width: 150px;
+  font-size: 0.8rem;
 `;
 
 export const BackDrop = styled.div`
@@ -149,6 +150,7 @@ export const TaskTotal = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  margin-bottom: ${({ marginbtm }) => marginbtm || "0"};
   width: 90%;
 
   & > div {

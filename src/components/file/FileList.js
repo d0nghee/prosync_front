@@ -13,11 +13,17 @@ export default function FileList({
 }) {
   const dispatch = useDispatch();
   const deleteHandler = (fileInfoId) => {
-    tryFunc(
-      async () => await deleteFileApi(fileInfoId),
-      (response) => deleteFile(fileInfoId),
-      dispatch
-    )();
+    const proceed = window.confirm("파일을 삭제하시겠습니까?");
+    if (proceed) {
+      tryFunc(
+        async () => await deleteFileApi(fileInfoId),
+        (response) => {
+          deleteFile(fileInfoId);
+          alert("삭제가 완료되었습니다.");
+        },
+        dispatch
+      )();
+    }
   };
   return (
     <List>
