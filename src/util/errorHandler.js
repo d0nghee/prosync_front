@@ -24,6 +24,9 @@ export const handleErrorCode = (
         case "NOTIFICATION_CANT_DELETE": // 알림 삭제 불가
           alert("해당 알림을 삭제하실 수 없습니다.");
           break;
+        case "MAX_FILE_SIZE_10MB":
+          alert("첨부 가능한 최대 파일 용량은 10MB입니다.");
+          break;
         default:
           navigate("/error");
           break;

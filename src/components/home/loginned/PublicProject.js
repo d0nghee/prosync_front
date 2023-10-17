@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import bookmark_off from "../../../assets/images/bookmark-off.png";
 import bookmark_on from "../../../assets/images/bookmark-on.png";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -12,10 +12,9 @@ const Container = styled.div`
   font-weight: 900;
   border-radius: 25px;
   box-shadow: 1px 1px 2px 2px white;
-  background-color: rgb(217,217,217);
+  background-color: rgb(217, 217, 217);
   max-height: 22rem;
   padding: 3% 2% 3% 2%;
-
 
   &:hover {
     box-shadow: 2px 2px 3px 4px #003350;
@@ -43,7 +42,7 @@ const Container = styled.div`
 
   & > img {
     align-self: center;
-    object-fit: contain;
+    object-fit: fill;
     width: 75%;
     height: 50%;
   }
