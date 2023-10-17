@@ -19,7 +19,7 @@ const footerItems = [
     id: 3,
     type: "link",
     text: "API명세서",
-    url: "https://observant-lancer-975.notion.site/6e27822d894c4192ae395ad5e600c241?pvs=25",
+    url: "http://13.209.219.235:8080/swagger-ui/index.html",
   },
   {
     id: 4,
