@@ -88,6 +88,7 @@ export default function Task({
                 </TaskInfos>
                 <div>
                   <TaskDetails
+                    className="view ql-editor"
                     dangerouslySetInnerHTML={{ __html: `${task.data.detail}` }}
                   />
                 </div>

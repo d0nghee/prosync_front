@@ -181,7 +181,10 @@ export default function Comment({ comment, memberId, onRemove }) {
               )}
             </SideInfo>
             {!activeComment ? (
-              <Content dangerouslySetInnerHTML={{ __html: commentValue }} />
+              <Content
+                className="view ql-editor"
+                dangerouslySetInnerHTML={{ __html: commentValue }}
+              />
             ) : (
               <CommentInput
                 theme="snow"
