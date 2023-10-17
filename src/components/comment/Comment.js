@@ -181,9 +181,7 @@ export default function Comment({ comment, memberId, onRemove }) {
               )}
             </SideInfo>
             {!activeComment ? (
-              <Content
-                dangerouslySetInnerHTML={{ __html: `${commentValue}` }}
-              />
+              <Content dangerouslySetInnerHTML={{ __html: commentValue }} />
             ) : (
               <CommentInput
                 theme="snow"
@@ -283,7 +281,7 @@ const Box = styled.div`
 const Content = styled.div`
   width: 100%;
   height: 130px;
-  padding: 0.3rem 1rem;
+  padding: 1rem 2rem;
   background-color: #f5f5f5;
   border-radius: 10px;
   border: none;
@@ -292,6 +290,9 @@ const Content = styled.div`
   font-size: 1rem;
   outline: none;
   resize: none;
+  & > ul {
+    list-style: disc;
+  }
 `;
 
 const Date = styled.div`

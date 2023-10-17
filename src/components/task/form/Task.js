@@ -173,6 +173,9 @@ const TaskDetails = styled.div`
   padding: 0 1rem;
   overflow: auto;
   border-radius: 0.2rem;
+  & > ul {
+    list-style: disc;
+  }
 `;
 
 const Text = styled.div`
