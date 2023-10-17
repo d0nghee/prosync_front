@@ -110,7 +110,8 @@ const Container = styled.div`
 `;
 
 const SearchBarContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  /* display: flex; */
+  /* justify-content: center; */
+  box-sizing: border-box; // 이 부분 추가
   width: 100%;
 `;

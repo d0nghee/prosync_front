@@ -61,6 +61,7 @@ export default function ProjectForm({ project = {}, method }) {
     hasError: introHasError,
   } = useFormInput((value) => value.trim() !== '' && value.length <= 500);
 
+  // 날짜 검증
   function validateDates(startDateStr, endDateStr) {
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
@@ -142,6 +143,7 @@ export default function ProjectForm({ project = {}, method }) {
 
         return;
       }
+
       // 이미지 있을때 생성
       else {
         const imgData = await postFileApi(img);
@@ -303,11 +305,13 @@ export default function ProjectForm({ project = {}, method }) {
     window.open(project.projectImage);
   };
 
+  // x버튼 누를때
   const handleImageDelete = () => {
     setImg(null);
     setNewImg(null);
     setImgName(null);
   };
+
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   if (isLoading) return <LoadingSpinner />; // 로딩 메시지
@@ -537,7 +541,7 @@ const TextArea = styled.textarea`
     a {
       text-decoration: underline;
     } */
-  }
+  /* } */
 `;
 
 const Label = styled.label`

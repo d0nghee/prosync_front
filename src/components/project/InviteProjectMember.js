@@ -12,6 +12,7 @@ export default function InviteProjectMember() {
   const params = useParams();
   const inviteCode = params.inviteCode;
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (inviteCode) {
       const postInvite = async () => {
