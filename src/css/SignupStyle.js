@@ -107,7 +107,7 @@ export const One = styled.div`
 `;
 
 export const CheckButton = styled.button`
-  width: 100px;
+  width: 110px;
   height: 2.2rem;
   background-color: ${({ valid }) => (!valid ? "rgb(123, 105, 183)" : "green")};
   color: rgb(255, 255, 255);
