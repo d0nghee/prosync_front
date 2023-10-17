@@ -43,7 +43,7 @@ const Container = styled.div`
 
   & > img {
     align-self: center;
-    object-fit: contain;
+    object-fit: fill;
     width: 75%;
     height: 50%;
   }
