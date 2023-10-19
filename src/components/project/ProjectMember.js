@@ -1,19 +1,19 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import Member from "./Member";
-import { deleteApi, patchApi, postApi } from "../../util/api";
-import InviteModal from "./InviteModal";
-import { useDispatch } from "react-redux";
-import { tryFunc } from "../../util/tryFunc";
-import LoadingSpinner from "../common/LoadingSpinner";
-import { useSelector } from "react-redux";
-import { selectMembers } from "../../redux/reducers/member/memberAuthoritySlice";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import Member from './Member';
+import { deleteApi, patchApi, postApi } from '../../util/api';
+import InviteModal from './InviteModal';
+import { useDispatch } from 'react-redux';
+import { tryFunc } from '../../util/tryFunc';
+import LoadingSpinner from '../common/LoadingSpinner';
+import { useSelector } from 'react-redux';
+import { selectMembers } from '../../redux/reducers/member/memberAuthoritySlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProjectMember({ members, projectId }) {
   const [checkMembers, setCheckMembers] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inviteLink, setInviteLink] = useState("");
+  const [inviteLink, setInviteLink] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [allChecked, setAllChecked] = useState(false);
@@ -23,10 +23,10 @@ export default function ProjectMember({ members, projectId }) {
 
   // ADMIN , QUIT 필터 처리
   useEffect(() => {
-    console.log("member filter 진입");
+    console.log('member filter 진입');
 
     const result = members.filter(
-      (member) => member.authority !== "ADMIN" && member.status !== "QUIT"
+      (member) => member.authority !== 'ADMIN' && member.status !== 'QUIT'
     );
     setFilteredMembers(result);
   }, [members]);
@@ -54,7 +54,7 @@ export default function ProjectMember({ members, projectId }) {
 
   // 멤버 권한 변경사항들 promise all로 patch 처리
   const submitHandler = async () => {
-    const isConfirmed = window.confirm("변경사항을 저장하시겠습니까?");
+    const isConfirmed = window.confirm('변경사항을 저장하시겠습니까?');
 
     if (!isConfirmed) return;
 
@@ -97,12 +97,12 @@ export default function ProjectMember({ members, projectId }) {
     );
 
     if (!noSelectMember) {
-      alert("멤버를 선택 해주세요");
+      alert('멤버를 선택 해주세요');
       return;
     }
 
     const isConfirmed = window.confirm(
-      "선택된 멤버를 정말로 삭제하시겠습니까?"
+      '선택된 멤버를 정말로 삭제하시겠습니까?'
     );
 
     if (!isConfirmed) return;
@@ -140,18 +140,16 @@ export default function ProjectMember({ members, projectId }) {
     setIsLoading(true);
     const invitePost = async () => {
       const response = await postApi(`/projects/${projectId}/invitation`);
-      console.log("invitePost", response);
+      console.log('invitePost', response);
 
       return response;
     };
 
     // 초대 코드 생성 성공
     const invitePostSuccess = (response) => {
-      console.log("invitePostSuccess");
+      console.log('invitePostSuccess');
       const inviteCode = response.data.data.inviteCode;
-      setInviteLink(
-        `http://prosyncfront.s3-website.ap-northeast-2.amazonaws.com/projects/invite/${inviteCode}`
-      );
+      setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
       setIsModalOpen(true);
       setIsLoading(false);
     };
@@ -213,19 +211,14 @@ export default function ProjectMember({ members, projectId }) {
   );
 }
 
-const Container = styled.div`
-  height: 800px;
-  padding: 20px;
-
-  background-color: #fff;
-`;
+const Container = styled.div``;
 
 const MembersContainer = styled.div`
-  margin-top: 40px;
+  margin-top: 10px;
   height: 800px;
   margin-left: 300px;
   margin-right: 300px;
-  overflow: scroll;
+  overflow: auto;
 `;
 
 const NoMembers = styled.div`
@@ -257,11 +250,12 @@ const StyledButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+  padding: 15px;
 
-  background-color: ${(props) => props.color || "#6672fb"};
+  background-color: ${(props) => props.color || '#6672fb'};
 
   &:hover {
-    background-color: ${(props) => props.hoverColor || "#5b67ca"};
+    background-color: ${(props) => props.hoverColor || '#5b67ca'};
   }
 
   &:first-child {

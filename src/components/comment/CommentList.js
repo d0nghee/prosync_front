@@ -1,24 +1,24 @@
-import { styled } from "styled-components";
-import Comment from "./Comment";
-import { postCommentApi, postFileApi } from "../../util/api";
-import { useParams } from "react-router-dom";
-import { getCookie } from "../../util/cookies";
-import { getCommentsApi } from "../../util/api";
-import { useState, useEffect, useRef } from "react";
-import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
-import * as t from "../task/form/TaskForm.style";
-import SelectedFiles from "../file/SelectedFiles";
-import { tryFunc } from "../../util/tryFunc";
-import ReactQuill from "react-quill";
-import useFormInput from "../../hooks/use-form-input";
-import { useDispatch } from "react-redux";
+import { styled } from 'styled-components';
+import Comment from './Comment';
+import { postCommentApi, postFileApi } from '../../util/api';
+import { useParams } from 'react-router-dom';
+import { getCookie } from '../../util/cookies';
+import { getCommentsApi } from '../../util/api';
+import { useState, useEffect, useRef } from 'react';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
+import * as t from '../task/form/TaskForm.style';
+import SelectedFiles from '../file/SelectedFiles';
+import { tryFunc } from '../../util/tryFunc';
+import ReactQuill from 'react-quill';
+import useFormInput from '../../hooks/use-form-input';
+import { useDispatch } from 'react-redux';
 
 export default function CommentList({ projectMember }) {
   const dispatch = useDispatch();
   const [comments, setComments] = useState();
   const params = useParams();
 
-  const cookieMemberId = getCookie("memberId");
+  const cookieMemberId = getCookie('memberId');
 
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +31,7 @@ export default function CommentList({ projectMember }) {
         { length: Math.ceil(comments.pageInfo.totalElements / size) },
         (_, index) => index + 1
       )
-    : "";
+    : '';
 
   const generatePages = () => {
     const pages = [];
@@ -121,12 +121,12 @@ export default function CommentList({ projectMember }) {
         () => postCommentApi(params.taskId, body),
         (commentId) => {
           setSelectedFiles([]);
-          const createdAt = new Date().toLocaleString("ko-KR", {
-            timeZone: "Asia/Seoul",
+          const createdAt = new Date().toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
           });
           const memberId = cookieMemberId;
-          const profileImage = getCookie("profile");
-          const name = getCookie("name");
+          const profileImage = getCookie('profile');
+          const name = getCookie('name');
 
           addComment({
             commentId,
@@ -141,7 +141,7 @@ export default function CommentList({ projectMember }) {
             fileList: selectedFiles,
           });
           setSelectedFiles([]);
-          event.target[0].value = "";
+          event.target[0].value = '';
         },
         dispatch
       )();
@@ -151,6 +151,8 @@ export default function CommentList({ projectMember }) {
   };
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  let fileInputRef = useRef(null);
+
   const handleFileChange = (event) => {
     const fileList = event.target.files;
 
@@ -158,7 +160,10 @@ export default function CommentList({ projectMember }) {
       // api 요청
       tryFunc(
         async () => await postFileApi(fileList),
-        (files) => setSelectedFiles((prv) => [...prv, ...files]),
+        (files) => {
+          setSelectedFiles((prv) => [...prv, ...files]);
+          fileInputRef.current.value = null;
+        },
         dispatch
       )();
     }
@@ -172,8 +177,8 @@ export default function CommentList({ projectMember }) {
     hasError: commentHasError,
   } = useFormInput(
     (value) =>
-      value.replace(/<[^>]*>/g, "").trim() !== "" &&
-      value.replace(/<[^>]*>/g, "").length <= 300
+      value.replace(/<[^>]*>/g, '').trim() !== '' &&
+      value.replace(/<[^>]*>/g, '').length <= 300
   );
 
   const quillRef = useRef();
@@ -190,9 +195,9 @@ export default function CommentList({ projectMember }) {
         <CommentTotal>
           <CommentTitle>{`${comments.pageInfo.totalElements} Comments`}</CommentTitle>
           {projectMember &&
-            projectMember.status === "ACTIVE" &&
-            (projectMember.authority === "ADMIN" ||
-              projectMember.authority === "WRITER") && (
+            projectMember.status === 'ACTIVE' &&
+            (projectMember.authority === 'ADMIN' ||
+              projectMember.authority === 'WRITER') && (
               <>
                 <form method="post" onSubmit={saveHandler}>
                   {/* 댓글 입력 */}
@@ -220,6 +225,7 @@ export default function CommentList({ projectMember }) {
                         type="file"
                         onChange={handleFileChange}
                         multiple
+                        ref={fileInputRef}
                       />
                     </FileInputContainer>
                     <button>등록</button>
@@ -296,6 +302,8 @@ const CommentInput = styled(ReactQuill)`
     a {
       text-decoration: underline;
     }
+  }
+  white-space: pre;
 `;
 
 const Total = styled.div`
@@ -365,7 +373,7 @@ const PageButton = styled.button`
   border-radius: 1rem;
   cursor: pointer;
   font-weight: bold;
-  border: ${(props) => (props.active ? "3px solid #c0c0c0" : "#333")};
+  border: ${(props) => (props.active ? '3px solid #c0c0c0' : '#333')};
   color: #c0c0c0;
   background-color: white;
 

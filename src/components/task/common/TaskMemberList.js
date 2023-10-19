@@ -153,7 +153,7 @@ export default function TaskMemberList({
 }
 
 const MemberBoxes = styled.div`
-  max-height: 500px;
+  max-height: 300px;
   width: 320px;
   border: 1px solid #dad7cd;
   padding: 1rem;
