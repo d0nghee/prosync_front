@@ -64,15 +64,15 @@ export const PostItem = styled.div`
   width: 270px;
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   border-radius: 10px;
   transition: all 0.3s ease;
   height: 350px;
   margin-right: 20px;
 
-  &:hover {
+  /* &:hover {
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
-  }
+  } */
 
   /* @media (max-width: 1200px) {
     width: calc(45% - 20px);

@@ -337,7 +337,7 @@ const FileContainer = styled.div`
 `;
 
 const InputContainer = styled.div`
-  margin-left: 230px;
+  margin-left: 255px;
   margin-top: 10px;
   display: flex;
   flex-direction: column;

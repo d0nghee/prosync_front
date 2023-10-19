@@ -88,6 +88,7 @@ export default function Task({
                 </TaskInfos>
                 <div>
                   <TaskDetails
+                    className="view ql-editor"
                     dangerouslySetInnerHTML={{ __html: `${task.data.detail}` }}
                   />
                 </div>
@@ -173,6 +174,9 @@ const TaskDetails = styled.div`
   padding: 0 1rem;
   overflow: auto;
   border-radius: 0.2rem;
+  & > ul {
+    list-style: disc;
+  }
 `;
 
 const Text = styled.div`
