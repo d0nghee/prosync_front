@@ -1,19 +1,19 @@
-import { styled } from "styled-components";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
-import { useEffect, useRef, useState } from "react";
-import { patchCommentApi, deleteCommentApi, postFileApi } from "../../util/api";
-import { useParams } from "react-router-dom";
-import { BsCheckCircleFill } from "react-icons/bs";
-import { GiCancel } from "react-icons/gi";
-import SimpleFileList from "../file/SimpleFileList";
-import { RiAttachment2 } from "react-icons/ri";
-import * as t from "../task/form/TaskForm.style";
-import SelectedFiles from "../file/SelectedFiles";
-import { tryFunc } from "../../util/tryFunc";
-import useFormInput from "../../hooks/use-form-input";
-import ReactQuill from "react-quill";
-import { useDispatch } from "react-redux";
-import MemberProfile from "../common/MemberProfile";
+import { styled } from 'styled-components';
+import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import { useEffect, useRef, useState } from 'react';
+import { patchCommentApi, deleteCommentApi, postFileApi } from '../../util/api';
+import { useParams } from 'react-router-dom';
+import { BsCheckCircleFill } from 'react-icons/bs';
+import { GiCancel } from 'react-icons/gi';
+import SimpleFileList from '../file/SimpleFileList';
+import { RiAttachment2 } from 'react-icons/ri';
+import * as t from '../task/form/TaskForm.style';
+import SelectedFiles from '../file/SelectedFiles';
+import { tryFunc } from '../../util/tryFunc';
+import useFormInput from '../../hooks/use-form-input';
+import ReactQuill from 'react-quill';
+import { useDispatch } from 'react-redux';
+import MemberProfile from '../common/MemberProfile';
 
 export default function Comment({ comment, memberId, onRemove }) {
   const [activeComment, setActiveComment] = useState(false);
@@ -30,20 +30,20 @@ export default function Comment({ comment, memberId, onRemove }) {
     isValid: commentIsValid,
   } = useFormInput(
     (value) =>
-      value.replace(/<[^>]*>/g, "").trim() !== "" &&
-      value.replace(/<[^>]*>/g, "").length <= 300
+      value.replace(/<[^>]*>/g, '').trim() !== '' &&
+      value.replace(/<[^>]*>/g, '').length <= 300
   );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    commentSetHandler(comment ? comment.content : "");
+    commentSetHandler(comment ? comment.content : '');
   }, []);
 
   const contentUpdateHandler = (event, commentId) => {
     event.preventDefault();
     if (!commentIsValid) {
-      alert("댓글은 1 ~ 300자 이내로 작성해주세요.");
+      alert('댓글은 1 ~ 300자 이내로 작성해주세요.');
       return;
     }
 
@@ -85,13 +85,13 @@ export default function Comment({ comment, memberId, onRemove }) {
   };
 
   const deleteHandler = async (commentId) => {
-    const proceed = window.confirm("정말 삭제하시겠습니까?");
+    const proceed = window.confirm('정말 삭제하시겠습니까?');
     if (proceed) {
       await tryFunc(
         () => deleteCommentApi(params.taskId, commentId),
         () => {
           onRemove(commentId);
-          window.alert("삭제가 완료되었습니다.");
+          window.alert('삭제가 완료되었습니다.');
         },
         dispatch
       )();
@@ -156,7 +156,7 @@ export default function Comment({ comment, memberId, onRemove }) {
                 <GiCancel size="26px" onClick={() => cancelHandler()} />
               </>
             ) : (
-              ""
+              ''
             )}
             <Date>최근 수정: {comment.modifiedAt}</Date>
           </Details>
@@ -172,7 +172,7 @@ export default function Comment({ comment, memberId, onRemove }) {
                   alt="작성자 이미지"
                 />
                 {!activeComment && (
-                  <Username quitUser={comment.memberInfo.status === "QUIT"}>
+                  <Username quitUser={comment.memberInfo.status === 'QUIT'}>
                     {comment.memberInfo.name}
                   </Username>
                 )}
@@ -236,6 +236,8 @@ const CommentInput = styled(ReactQuill)`
     a {
       text-decoration: underline;
     }
+  }
+  white-space: pre;
 `;
 
 const SideInfo = styled.div`
@@ -321,5 +323,5 @@ const FileInputContainer = styled.div`
 `;
 
 const Username = styled.div`
-  text-decoration: ${({ quitUser }) => (quitUser ? "line-through" : "none")};
+  text-decoration: ${({ quitUser }) => (quitUser ? 'line-through' : 'none')};
 `;

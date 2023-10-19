@@ -107,11 +107,11 @@ export async function loader({ params }) {
 }
 const Container = styled.div`
   height: 1000px;
+  margin-bottom: 6rem;
 `;
 
 const SearchBarContainer = styled.div`
-  /* display: flex; */
-  /* justify-content: center; */
-  box-sizing: border-box; // 이 부분 추가
-  width: 100%;
+  margin-left: 300px;
+  margin-right: 300px;
+  margin-bottom: 30px;
 `;

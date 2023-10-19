@@ -1,5 +1,5 @@
-import { styled } from "styled-components";
-import ReactQuill from "react-quill";
+import { styled } from 'styled-components';
+import ReactQuill from 'react-quill';
 
 export const TaskContents = styled.div`
   display: flex;
@@ -18,6 +18,7 @@ export const MarkdownInput = styled(ReactQuill)`
       text-decoration: underline;
     }
   }
+  white-space: pre;
 `;
 
 export const TaskTitle = styled.input`
@@ -101,8 +102,8 @@ export const Container = styled.div`
 export const Wrapper = styled.div`
   z-index: 1;
   position: absolute;
-  top: ${({ customtop }) => customtop || "0px"};
-  display: ${(props) => (props.show ? "block" : "none")};
+  top: ${({ customtop }) => customtop || '0px'};
+  display: ${(props) => (props.show ? 'block' : 'none')};
   height: 500px;
   width: 300px;
 `;
@@ -150,7 +151,7 @@ export const TaskTotal = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  margin-bottom: ${({ marginbtm }) => marginbtm || "0"};
+  margin-bottom: ${({ marginbtm }) => marginbtm || '0'};
   width: 90%;
 
   & > div {
