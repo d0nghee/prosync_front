@@ -12,7 +12,7 @@ import { setMemberInfo } from '../../redux/reducers/member/mypageSlice';
 import axiosInstance from '../../util/axiosInstances';
 import { useNavigate } from 'react-router-dom';
 import { removeUserCookie, setCookie } from '../../util/cookies';
-import { getApi, patchApi, postFileApi } from '../../util/api';
+import { getApi, postFileApi, patchApi } from '../../util/api';
 import { introValidate, nameValidate } from '../../util/regex';
 import IntroCheck from '../../components/signup/IntroCheck';
 import NameCheck from '../../components/signup/NameCheck';
@@ -285,6 +285,7 @@ const ProfileImage = styled.img`
 `;
 
 const CustomFileUpload = styled.label`
+  margin-left: 30px;
   width: 110px;
   border: 1px solid #ccc;
   padding: 6px 12px;
