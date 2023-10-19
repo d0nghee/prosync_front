@@ -193,17 +193,23 @@ export default function EditMember() {
       await tryFunc(
         () => postFileApi(files),
         async (file) => {
-          await axiosInstance.patch('/members/profile', {
-            ...mypage.memberInfo,
-            fileId: file[0].fileId,
-          });
-          setCookie('profile', file[0].path, {
-            path: '/',
-            maxAge: 60 * 60 * 24 * 30,
-          });
-          setImage(file[0].path);
-          alert('프로필 이미지가 변경되었습니다.');
-          window.location.reload();
+          tryFunc(
+            () =>
+              axiosInstance.patch('/members/profile', {
+                ...mypage.memberInfo,
+                fileId: file[0].fileId,
+              }),
+            () => {
+              setCookie('profile', file[0].path, {
+                path: '/',
+                maxAge: 60 * 60 * 24 * 30,
+              });
+              setImage(file[0].path);
+              alert('프로필 이미지가 변경되었습니다.');
+              window.location.reload();
+            },
+            dispatch
+          )();
         },
         dispatch
       )();

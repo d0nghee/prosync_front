@@ -151,6 +151,8 @@ export default function CommentList({ projectMember }) {
   };
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  let fileInputRef = useRef(null);
+
   const handleFileChange = (event) => {
     const fileList = event.target.files;
 
@@ -158,7 +160,10 @@ export default function CommentList({ projectMember }) {
       // api 요청
       tryFunc(
         async () => await postFileApi(fileList),
-        (files) => setSelectedFiles((prv) => [...prv, ...files]),
+        (files) => {
+          setSelectedFiles((prv) => [...prv, ...files]);
+          fileInputRef.current.value = null;
+        },
         dispatch
       )();
     }
@@ -220,6 +225,7 @@ export default function CommentList({ projectMember }) {
                         type="file"
                         onChange={handleFileChange}
                         multiple
+                        ref={fileInputRef}
                       />
                     </FileInputContainer>
                     <button>등록</button>
