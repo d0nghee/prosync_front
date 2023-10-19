@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import SearchBar from "./SearchBar";
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
@@ -14,23 +14,39 @@ const Container = styled.div.withConfig({
   justify-content: space-between;
   position: relative;
   margin-bottom: ${props => !props.isPersonal ? '1.5%':null };
+
+  & .project-link {
+    position: absolute;
+    left: 26%;
+    background-color: hsl(226, 100%, 65%);
+    padding: 20px;
+    border-radius: 9px;
+    color: #fff;
+    font-weight: bold;
+  }
+
+ 
+
+  & .project-link:hover {
+    opacity: 0.7;
+  }
 `;
 
 const Counter = styled.div`
   display: flex;
   flex-direction: row;
-  width: 40%;
+  width: 37%;
   align-items: center;
   position: relative;
   font-size: ${props => !props.isPersonal ? 'x-large':null };
 
   & > div:nth-child(1) {
-    width: 30%;
+    width: 40%;
     font-size: x-large;
   }
 
   & > div:nth-child(2) {
-    width: 20%;
+    width: 30%;
     font-size: large;
   }
 
@@ -47,6 +63,8 @@ const Counter = styled.div`
     text-decoration: underline;
     font-weight: 700;
   }
+
+  
 `;
 
 const Tooltip = styled.div.withConfig({
@@ -74,11 +92,13 @@ const UpperBar = ({
   codeInformation,
   count,
   notReadCount,
-  AllRead
+  AllRead,
+  projectId
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
 
 
   const handleMouseEnter = () => {
@@ -125,8 +145,10 @@ const UpperBar = ({
       !queryParams.get('size')) ? (
         <Counter>
           <div>전체 로그</div>{count} Logs</Counter>
+          
       ) : <Counter>
-      <div>검색 결과</div>{count} Logs</Counter>}
+      <div>검색 결과</div>{count} Logs </Counter>}
+      { isPersonal ? null : <div className="project-link" onClick={() => navigate(`/projects/${projectId}`)}>프로젝트 상세페이지</div>}
       <SearchBar
         isPersonal={isPersonal}
         codeInformation={codeInformation}

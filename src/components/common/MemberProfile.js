@@ -1,29 +1,107 @@
 import React from "react";
 import Modal from "../task/common/Modal";
 import { useEffect } from "react";
-import { tryFunc } from "../../util/tryFunc";
 import { getApi } from "../../util/api";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { styled } from "styled-components";
-import { style } from "@mui/system";
+import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { removeUserCookie } from "../../util/cookies";
 
 const MemberProfile = ({ onClose, memberInformation }) => {
   const [memberProfile, setMemberProfile] = useState({});
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchMemberProfile = async (memberInformation) => {
     console.log("memberInformation");
     console.log(memberInformation);
     if (!memberInformation.isOthers) {
-      const response = await getApi("/members");
-      return response.data;
+      getApi("/members")
+        .then((response) => {
+          fetchMemberProfileSuccessHandler(response.data);
+        })
+        .catch((error) => {
+          // 네트워크 에러 일 시 에러페이지로 이동
+
+          // 404나 401 에러일 시 로그아웃으로 가게 해야함
+
+          // 500 에러 시 에러페이지로 이동
+
+          if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            navigate("/error");
+          } else if (
+            error.response &&
+            (error.response.status === 401 || error.response.status === 404)
+          ) {
+           
+            console.log("멤버 프로필 로그인 실패");
+            alert("로그인이 만료되었습니다.");
+            navigate(
+              `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+            );
+            removeUserCookie();
+            onClose();
+          } else if (error.response && error.response.status === 500) {
+            alert("서버에 에러가 발생하였습니다. 잠시만 기다려주세요.");
+            navigate("/error");
+          }
+        });
     } else {
-      const response = await getApi(
+      getApi(
         `/members/${memberInformation.memberId}/projects/${memberInformation.projectId}`
-      );
-      return response.data;
+      )
+        .then((response) => {
+          fetchMemberProfileSuccessHandler(response.data);
+        })
+        .catch((error) => {
+          // 네트워크 에러 일 시 에러페이지로 이동
+
+          // 401 에러일 시 로그아웃으로 가게 해야함
+
+          // 404 에러일 시 새로고침으로 데이터 갱신 시켜야함
+
+          // 500 에러 시 에러페이지로 이동
+
+          if (error === undefined) {
+            console.error("An undefined error occured!");
+            alert("알 수 없는 오류가 발생했습니다.");
+            navigate("/error");
+          } else if (error.code === "ERR_NETWORK") {
+            console.error("네트워크 에러 발생:", error);
+            alert(
+              "서버에서 네트워크 지연 에러가 발생하였습니다. 잠시만 기다려주세요."
+            );
+            navigate("/error");
+          } else if (error.response && error.response.status === 401) {
+            alert("로그인이 만료되었습니다.");
+            onClose();
+            removeUserCookie();
+            dispatch(setIsLoggedIn(false));
+            navigate(
+              `/auth?mode=login&returnUrl=${location.pathname}${location.search}`
+            );
+          } else if (error.response.status === 404) {
+            alert("프로젝트에 탈퇴한 멤버입니다.");
+            window.location.reload();
+          } else if (error.response && error.response.status === 500) {
+            alert("서버에 에러가 발생하였습니다. 잠시만 기다려주세요.");
+
+            navigate("/error");
+          }
+
+        });
     }
   };
 
@@ -31,57 +109,51 @@ const MemberProfile = ({ onClose, memberInformation }) => {
     console.log("fetchMemberProfileSuccessHandler");
     console.log(data);
     const dateTimeString = data.createdAt;
-    setMemberProfile({...data,createdAt: dateTimeString.split(' ')[0]});
+    setMemberProfile({ ...data, createdAt: dateTimeString.split(" ")[0] });
     setLoading(false);
   };
 
   useEffect(() => {
-    setLoading(true); 
-    tryFunc(
-      fetchMemberProfile,
-      fetchMemberProfileSuccessHandler,
-      dispatch
-    )(memberInformation);
+    setLoading(true);
+    fetchMemberProfile(memberInformation);
   }, [memberInformation]);
 
   console.log(memberProfile);
 
-
-return (
-  <Modal onClose={onClose}>
-    {loading ? (
-      <Loading>Loading...</Loading>
-    ) : (
-      <Profile>
-      <div className="board" />
-      <Information>
-        <img src={memberProfile.profileImage} />
-        <TextLine>
-          <div className="nameEmail">
-            <div>사용자 :</div>
-            <div>{memberProfile.nameEmail}</div>
-          </div>
-          <div className="createdAt">
-            <div>생성날짜 :</div>
-            <div>{memberProfile.createdAt}</div>
-          </div>
-          {memberProfile.authority && (
-            <div className="authority">
-              <div>Authority: </div>
-              <div>{memberProfile.authority}</div>
-            </div>
-          )}
-        </TextLine>
-      </Information>
-      <Introduction>
-        <div>Intro</div>
-        <div>{memberProfile.intro}</div>
-      </Introduction>
-    </Profile>
-    )}
-   
-  </Modal>
-);
+  return (
+    <Modal onClose={onClose}>
+      {loading ? (
+        <Loading>Loading...</Loading>
+      ) : (
+        <Profile>
+          <div className="board" />
+          <Information>
+            <img src={memberProfile.profileImage} />
+            <TextLine>
+              <div className="nameEmail">
+                <div>사용자 :</div>
+                <div>{memberProfile.nameEmail}</div>
+              </div>
+              <div className="createdAt">
+                <div>생성날짜 :</div>
+                <div>{memberProfile.createdAt}</div>
+              </div>
+              {memberProfile.authority && (
+                <div className="authority">
+                  <div>프로젝트 권한: </div>
+                  <div>{memberProfile.authority}</div>
+                </div>
+              )}
+            </TextLine>
+          </Information>
+          <Introduction>
+            <div>Intro</div>
+            <div>{memberProfile.intro}</div>
+          </Introduction>
+        </Profile>
+      )}
+    </Modal>
+  );
 };
 
 export default MemberProfile;
@@ -188,7 +260,7 @@ const Introduction = styled.div`
 `;
 
 const Loading = styled.div`
-display: flex;
+  display: flex;
   flex-direction: column;
   position: relative;
   height: 47rem;
@@ -199,5 +271,4 @@ display: flex;
   padding-left: 27%;
   font-size: 4rem;
   font-weight: 800;
-
-`
+`;
