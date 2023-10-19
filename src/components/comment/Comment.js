@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { patchCommentApi, deleteCommentApi, postFileApi } from "../../util/api";
 import { useParams } from "react-router-dom";
 import { BsCheckCircleFill } from "react-icons/bs";
@@ -98,6 +98,7 @@ export default function Comment({ comment, memberId, onRemove }) {
     }
   };
 
+  let fileInputRef = useRef(null);
   // 댓글 파일
   const handleFileChange = (event) => {
     const fileList = event.target.files;
@@ -106,7 +107,10 @@ export default function Comment({ comment, memberId, onRemove }) {
       // api 요청
       tryFunc(
         async () => await postFileApi(fileList),
-        (files) => setSelectedFiles(files),
+        (files) => {
+          setSelectedFiles((prv) => [...prv, ...files]);
+          fileInputRef.current.value = null;
+        },
         dispatch
       )();
     }
@@ -140,6 +144,7 @@ export default function Comment({ comment, memberId, onRemove }) {
                   <t.StyledFileInput
                     type="file"
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                     multiple
                   />
                 </FileInputContainer>

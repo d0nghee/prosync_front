@@ -60,13 +60,14 @@ const taskListSlice = createSlice({
     },
 
     moveTask(state, action) {
-      const { task, taskStatusId } = action.payload;
+      let { task, taskStatusId } = action.payload;
       const findOriginalIndex = state.list.findIndex(
         (status) => status.taskStatusId === task.taskStatusId
       );
 
       // 기존 상태에서 해당 업무 제거
       if (findOriginalIndex !== -1) {
+        console.log(findOriginalIndex, "find index");
         let newList = state.list[findOriginalIndex].list;
         if (newList.length === 1) {
           state.list = state.list.filter(
@@ -84,6 +85,7 @@ const taskListSlice = createSlice({
       );
 
       if (findNewIndex !== -1) {
+        task = { ...task, taskStatusId: taskStatusId };
         const newList = state.list[findNewIndex].list;
         newList.push(task);
         state.list[findNewIndex].list = newList;
