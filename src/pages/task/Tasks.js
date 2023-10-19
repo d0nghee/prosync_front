@@ -95,6 +95,7 @@ export default function Tasks() {
         tryFunc(
           () => deleteApi(`/projects/${params.projectId}/members`),
           () => {
+            alert("프로젝트 나가기가 완료되었습니다.");
             navigate("/");
           },
           dispatch
