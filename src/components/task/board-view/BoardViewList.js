@@ -39,6 +39,7 @@ export default function BoardViewList({ projectMember, currentIndex }) {
 
   const handleDrop = async (event, seq) => {
     event.preventDefault();
+
     if (
       projectMember &&
       projectMember.status === "ACTIVE" &&
@@ -48,8 +49,6 @@ export default function BoardViewList({ projectMember, currentIndex }) {
       await dispatch(
         patchSequenceOfStatus(+taskStatusId, seq, params.projectId)
       );
-    } else {
-      alert("수정 권한이 없습니다.");
     }
   };
 
