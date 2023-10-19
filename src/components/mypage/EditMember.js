@@ -1,26 +1,26 @@
-import React from "react";
-import Button from "../button/Button";
-import { styled } from "styled-components";
+import React from 'react';
+import Button from '../button/Button';
+import { styled } from 'styled-components';
 import {
   CustomDiv,
   Label,
   InputText,
   InputTextArea,
-} from "../../css/MyPageStyle";
-import { useDispatch, useSelector } from "react-redux";
-import { setMemberInfo } from "../../redux/reducers/member/mypageSlice";
-import axiosInstance from "../../util/axiosInstances";
-import { useNavigate } from "react-router-dom";
-import { removeUserCookie, setCookie } from "../../util/cookies";
-import { getApi, postFileApi, patchApi } from "../../util/api";
-import { introValidate, nameValidate } from "../../util/regex";
-import IntroCheck from "../../components/signup/IntroCheck";
-import NameCheck from "../../components/signup/NameCheck";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { tryFunc } from "../../util/tryFunc";
-import MypageImg from "../../assets/icon/mypage_icon3.png";
-import { setIsLoggedIn } from "../../redux/reducers/member/loginSlice";
+} from '../../css/MyPageStyle';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMemberInfo } from '../../redux/reducers/member/mypageSlice';
+import axiosInstance from '../../util/axiosInstances';
+import { useNavigate } from 'react-router-dom';
+import { removeUserCookie, setCookie } from '../../util/cookies';
+import { getApi, postFileApi, patchApi } from '../../util/api';
+import { introValidate, nameValidate } from '../../util/regex';
+import IntroCheck from '../../components/signup/IntroCheck';
+import NameCheck from '../../components/signup/NameCheck';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { tryFunc } from '../../util/tryFunc';
+import MypageImg from '../../assets/icon/mypage_icon3.png';
+import { setIsLoggedIn } from '../../redux/reducers/member/loginSlice';
 
 export default function EditMember() {
   const dispatch = useDispatch();
@@ -30,35 +30,35 @@ export default function EditMember() {
   const location = useLocation();
   const [isNameNotCorrect, setIsNameNotCorrect] = useState(false);
   const [isIntroNotCorrect, setIsIntroNotCorrect] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
 
   const imageResetHandle = () => {
     if (
       mypage.memberInfo.profileImage !==
-      "https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png"
+      'https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png'
     ) {
-      patchApi("/members/profile", {
+      patchApi('/members/profile', {
         ...mypage.memberInfo,
         profileImage: null,
       }).then(() => {
         setCookie(
-          "profile",
-          "https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png",
+          'profile',
+          'https://prosync-image.s3.ap-northeast-2.amazonaws.com/basic_user_image.png',
           {
-            path: "/",
+            path: '/',
             maxAge: 60 * 60 * 24 * 30,
           }
         );
-        alert("프로필 이미지가 삭제되었습니다.");
+        alert('프로필 이미지가 삭제되었습니다.');
         window.location.reload();
       });
     } else {
-      alert("등록된 프로필 이미지가 없습니다.");
+      alert('등록된 프로필 이미지가 없습니다.');
     }
   };
 
   useEffect(() => {
-    getApi("/members")
+    getApi('/members')
       .then((response) => {
         console.log(response);
 
@@ -81,7 +81,7 @@ export default function EditMember() {
         console.log(error);
         if (
           error.response.status === 404 &&
-          error.response.data.resultCode === "USER_NOT_FOUND"
+          error.response.data.resultCode === 'USER_NOT_FOUND'
         ) {
           removeUserCookie();
           dispatch(setIsLoggedIn(false));
@@ -113,7 +113,7 @@ export default function EditMember() {
         setIsIntroNotCorrect(false);
       }
       alert(
-        "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
+        '이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.'
       );
       setIsNameNotCorrect(true);
       return;
@@ -123,7 +123,7 @@ export default function EditMember() {
 
     if (!introValidate(mypage.memberInfo.intro)) {
       alert(
-        "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
+        '소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.'
       );
       setIsIntroNotCorrect(true);
 
@@ -133,42 +133,42 @@ export default function EditMember() {
     setIsIntroNotCorrect(false);
 
     axiosInstance
-      .patch("/members/profile", mypage.memberInfo)
+      .patch('/members/profile', mypage.memberInfo)
       .then(() => {
-        getApi("/members").then(async (res) => {
-          setCookie("profile", res.data.profileImage, {
-            path: "/",
+        getApi('/members').then(async (res) => {
+          setCookie('profile', res.data.profileImage, {
+            path: '/',
             maxAge: 60 * 60 * 24 * 30,
           });
-          setCookie("name", res.data.name, {
-            path: "/",
+          setCookie('name', res.data.name, {
+            path: '/',
             maxAge: 60 * 60 * 24 * 30,
           });
-          alert("프로필을 수정하였습니다.");
+          alert('프로필을 수정하였습니다.');
           window.location.reload();
         });
       })
       .catch((error) => {
-        console.log("프로필 수정 실패");
+        console.log('프로필 수정 실패');
 
         if (
-          error.response.status === "422" &&
-          error.response.data.resultCode === "INCORRECT_FORMAT_NAME"
+          error.response.status === '422' &&
+          error.response.data.resultCode === 'INCORRECT_FORMAT_NAME'
         ) {
-          setIsIntroNotCorrect("true");
+          setIsIntroNotCorrect('true');
           alert(
-            "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
+            '이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요.'
           );
         } else if (
-          error.response.status === "422" &&
-          error.response.data.resultCode === "INCORRECT_FORMAT_INTRO"
+          error.response.status === '422' &&
+          error.response.data.resultCode === 'INCORRECT_FORMAT_INTRO'
         ) {
-          setIsNameNotCorrect("true");
+          setIsNameNotCorrect('true');
           alert(
-            "소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요."
+            '소개글 형식이 잘못되었습니다. 최소 20글자 최대 500글자로 입력하세요.'
           );
         } else {
-          alert("서버 오류로 인해 프로필 수정을 실패하였습니다.");
+          alert('서버 오류로 인해 프로필 수정을 실패하였습니다.');
 
           console.log(error);
         }
@@ -176,17 +176,17 @@ export default function EditMember() {
   };
 
   const handleCancel = () => {
-    const isConfirm = window.confirm("취소하시겠습니까?");
+    const isConfirm = window.confirm('취소하시겠습니까?');
     if (isConfirm) {
-      navi("/");
+      navi('/');
     }
   };
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    console.log("파일kkkk", files);
+    console.log('파일kkkk', files);
     if (files.length !== 1) {
-      alert("한건만 선택하세요.");
+      alert('한건만 선택하세요.');
       return;
     }
     (async () => {
@@ -195,17 +195,17 @@ export default function EditMember() {
         async (file) => {
           tryFunc(
             () =>
-              axiosInstance.patch("/members/profile", {
+              axiosInstance.patch('/members/profile', {
                 ...mypage.memberInfo,
                 fileId: file[0].fileId,
               }),
             () => {
-              setCookie("profile", file[0].path, {
-                path: "/",
+              setCookie('profile', file[0].path, {
+                path: '/',
                 maxAge: 60 * 60 * 24 * 30,
               });
               setImage(file[0].path);
-              alert("프로필 이미지가 변경되었습니다.");
+              alert('프로필 이미지가 변경되었습니다.');
               window.location.reload();
             },
             dispatch
@@ -259,9 +259,9 @@ export default function EditMember() {
         </CustomDiv>
       </DivContainer>
       <ButtonContainer>
-        <CustomDiv style={{ justifyContent: "center", gap: "1rem" }}>
+        <CustomDiv style={{ justifyContent: 'center', gap: '1rem' }}>
           <Button
-            backgroundColor={!hasChanges() ? "gray" : "#7B69B7"}
+            backgroundColor={!hasChanges() ? 'gray' : '#7B69B7'}
             width="30%"
             label="수정"
             color="#FFDAB9"

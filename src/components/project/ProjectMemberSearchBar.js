@@ -29,7 +29,7 @@ const SearchBarContainer = styled.div`
   align-items: center;
   width: 100%;
   margin-top: 50px;
-  max-width: 1150px;
+  /* max-width: 1150px; */
 
   padding: 8px;
   border-radius: 8px;
