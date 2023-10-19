@@ -67,7 +67,6 @@ const taskListSlice = createSlice({
 
       // 기존 상태에서 해당 업무 제거
       if (findOriginalIndex !== -1) {
-        console.log(findOriginalIndex, "find index");
         let newList = state.list[findOriginalIndex].list;
         if (newList.length === 1) {
           state.list = state.list.filter(
