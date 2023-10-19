@@ -23,7 +23,7 @@ export default function ProjectForm({ project = {}, method }) {
     intro: project.intro || '',
     startDate: project.startDate || '',
     endDate: project.endDate || '',
-    isPublic: project.isPublic || true,
+    isPublic: project.isPublic || '',
     projectImage: project.projectImage,
     fileId: project.fileId,
   });
@@ -33,6 +33,7 @@ export default function ProjectForm({ project = {}, method }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const [imgKey, setImgKey] = useState(Date.now());
 
   useEffect(() => {
     titleSetHandler(projectData.title);
@@ -59,7 +60,7 @@ export default function ProjectForm({ project = {}, method }) {
     changeHandler: introChangeHandler,
     blurHandler: introBlurHandler,
     hasError: introHasError,
-  } = useFormInput((value) => value.trim() !== '' && value.length <= 500);
+  } = useFormInput((value) => value.trim() !== '' && value.length <= 1000);
 
   // 날짜 검증
   function validateDates(startDateStr, endDateStr) {
@@ -146,7 +147,12 @@ export default function ProjectForm({ project = {}, method }) {
 
       // 이미지 있을때 생성
       else {
-        const imgData = await postFileApi(img);
+        let imgData;
+        await tryFunc(
+          () => postFileApi(img),
+          (response) => (imgData = response),
+          dispatch
+        )();
         const data = {
           ...projectData,
           intro: introValue,
@@ -221,9 +227,12 @@ export default function ProjectForm({ project = {}, method }) {
         return;
         // 이미지 변경후 수정
       } else {
-        console.log('탄다3');
-
-        const imgData = await postFileApi(img);
+        let imgData;
+        await tryFunc(
+          () => postFileApi(img),
+          (response) => (imgData = response),
+          dispatch
+        )();
         console.log('imgData', imgData);
         const test = await imgData[0].fileId;
 
@@ -289,8 +298,11 @@ export default function ProjectForm({ project = {}, method }) {
 
   // 프로젝트 삭제
   const deleteProjectHandler = async () => {
-    await deleteApi(`/projects/${project.projectId}`);
-    navigate('/projects');
+    tryFunc(
+      await deleteApi(`/projects/${project.projectId}`),
+      navigate('/projects'),
+      dispatch
+    )();
   };
 
   const modalOpenHandler = () => {
@@ -310,6 +322,7 @@ export default function ProjectForm({ project = {}, method }) {
     setImg(null);
     setNewImg(null);
     setImgName(null);
+    setImgKey(Date.now());
   };
 
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -407,7 +420,7 @@ export default function ProjectForm({ project = {}, method }) {
             </LabelContainer>
           </ImageInfoContainer>
 
-          <ImgInput type="file" onChange={handleImageChange} />
+          <ImgInput key={imgKey} type="file" onChange={handleImageChange} />
 
           <CheckboxContainer>
             <Label>
@@ -533,15 +546,6 @@ const TextArea = styled.textarea`
   height: 450px;
   resize: none;
   font-size: 18px;
-  /* .ql-editor {
-    font-size: 1.3rem;
-    line-height: 1.5;
-    height: 650px;
-
-    a {
-      text-decoration: underline;
-    } */
-  /* } */
 `;
 
 const Label = styled.label`

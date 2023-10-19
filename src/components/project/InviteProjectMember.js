@@ -20,11 +20,13 @@ export default function InviteProjectMember() {
         const response = await postApi(`/invitation/${inviteCode}`);
         return response;
       };
-      tryFunc(
-        postInvite,
-        (response) => navigate(`/projects/${response.data.data.projectId}`),
-        dispatch
-      )();
+
+      const postInvteSuccess = (response) => {
+        navigate(`/projects/${response.data.data.projectId}`);
+        alert('프로젝트의 멤버가 되었습니다 !');
+      };
+
+      tryFunc(postInvite, (response) => postInvteSuccess(response), dispatch)();
     }
   }, []);
 
