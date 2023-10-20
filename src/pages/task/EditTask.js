@@ -2,7 +2,7 @@ import TaskForm from "../../components/task/form/TaskForm";
 import { useDispatch } from "react-redux";
 import { taskMembersAction } from "../../redux/reducers/task/taskMembers-slice";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getTaskApi, getFileApi } from "../../util/api";
 import { styled } from "styled-components";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
@@ -13,6 +13,7 @@ export default function EditTask() {
   const [task, setTask] = useState();
   const params = useParams();
   const [taskFiles, setTaskFiles] = useState([]);
+  const navigate = useNavigate();
 
   const deleteFile = (fileInfoId) => {
     let originalFiles = taskFiles;
@@ -26,6 +27,10 @@ export default function EditTask() {
     tryFunc(
       async () => await getTaskApi(`${params.taskId}`),
       (response) => {
+        if (response.data.projectId !== +params.projectId) {
+          alert("접근 경로가 잘못되었습니다.");
+          navigate("/");
+        }
         setTask(response.data);
         dispatch(taskMembersAction.setTaskMembers(response.taskMembers));
       },

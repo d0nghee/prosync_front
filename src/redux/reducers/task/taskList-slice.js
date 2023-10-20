@@ -112,25 +112,33 @@ const taskListSlice = createSlice({
 
 export const postTask = (projectId, taskStatusId, task) => {
   return async (dispatch) => {
+    let id = null;
     await tryFunc(
       () => postTaskApi(projectId, taskStatusId, task),
       (taskId) => {
-        dispatch(taskListAction.addTask(...task, taskId));
+        let newTask = task;
+        newTask.taskId = taskId;
+        dispatch(taskListAction.addTask(newTask));
+        id = taskId;
       },
       dispatch
     )();
+    return id;
   };
 };
 
 export const patchTask = (taskId, task) => {
   return async (dispatch) => {
+    let success = false;
     await tryFunc(
       () => patchTaskApi(taskId, task),
       (response) => {
         dispatch(taskListAction.updateTask(task));
+        success = true;
       },
       dispatch
     )();
+    return success;
   };
 };
 
