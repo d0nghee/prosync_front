@@ -1,7 +1,6 @@
 import FileInfo from "./FileInfo";
 import { styled } from "styled-components";
 import { deleteFileApi } from "../../util/api";
-import { useNavigate } from "react-router-dom";
 import { tryFunc } from "../../util/tryFunc";
 import { useDispatch } from "react-redux";
 
@@ -31,7 +30,7 @@ export default function FileList({
         fileList.length !== 0 &&
         fileList.map((file) => (
           <Item key={file.fileId}>
-            <FileInfo file={file} />
+            <FileInfo file={file} downloadBtn={!deleteButton} />
             {deleteButton && (
               <button
                 type="button"
