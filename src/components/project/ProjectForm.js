@@ -23,16 +23,18 @@ export default function ProjectForm({ project = {}, method }) {
     intro: project.intro || '',
     startDate: project.startDate || '',
     endDate: project.endDate || '',
-    isPublic: project.isPublic || true,
+    isPublic: project.title ? project.isPublic : 'true',
     projectImage: project.projectImage,
     fileId: project.fileId,
   });
+  console.log(project && project.isPublic, 'isPUblic');
   const navigate = useNavigate();
   const [imgName, setImgName] = useState();
   const [newImg, setNewImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const [imgKey, setImgKey] = useState(Date.now());
 
   useEffect(() => {
     titleSetHandler(projectData.title);
@@ -56,11 +58,15 @@ export default function ProjectForm({ project = {}, method }) {
     value: introValue,
     isValid: introIsValid,
     setHandler: introSetHandler,
-    changeHandler: introChangeHandler,
     blurHandler: introBlurHandler,
     hasError: introHasError,
-  } = useFormInput((value) => value.trim() !== '' && value.length <= 500);
+  } = useFormInput(
+    (value) =>
+      value.replace(/<[^>]*>/g, '').trim() !== '' &&
+      value.replace(/<[^>]*>/g, '').length <= 1000
+  );
 
+  // 날짜 검증
   function validateDates(startDateStr, endDateStr) {
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
@@ -142,9 +148,15 @@ export default function ProjectForm({ project = {}, method }) {
 
         return;
       }
+
       // 이미지 있을때 생성
       else {
-        const imgData = await postFileApi(img);
+        let imgData;
+        await tryFunc(
+          () => postFileApi(img),
+          (response) => (imgData = response),
+          dispatch
+        )();
         const data = {
           ...projectData,
           intro: introValue,
@@ -219,9 +231,12 @@ export default function ProjectForm({ project = {}, method }) {
         return;
         // 이미지 변경후 수정
       } else {
-        console.log('탄다3');
-
-        const imgData = await postFileApi(img);
+        let imgData;
+        await tryFunc(
+          () => postFileApi(img),
+          (response) => (imgData = response),
+          dispatch
+        )();
         console.log('imgData', imgData);
         const test = await imgData[0].fileId;
 
@@ -231,8 +246,6 @@ export default function ProjectForm({ project = {}, method }) {
           title: titleValue,
           fileId: test,
         };
-
-        setIsLoading(true);
 
         await tryFunc(
           () => patchApi(`/projects/${project.projectId}`, updateData),
@@ -287,8 +300,11 @@ export default function ProjectForm({ project = {}, method }) {
 
   // 프로젝트 삭제
   const deleteProjectHandler = async () => {
-    await deleteApi(`/projects/${project.projectId}`);
-    navigate('/projects');
+    tryFunc(
+      await deleteApi(`/projects/${project.projectId}`),
+      navigate('/projects'),
+      dispatch
+    )();
   };
 
   const modalOpenHandler = () => {
@@ -303,11 +319,14 @@ export default function ProjectForm({ project = {}, method }) {
     window.open(project.projectImage);
   };
 
+  // x버튼 누를때
   const handleImageDelete = () => {
     setImg(null);
     setNewImg(null);
     setImgName(null);
+    setImgKey(Date.now());
   };
+
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   if (isLoading) return <LoadingSpinner />; // 로딩 메시지
@@ -342,19 +361,18 @@ export default function ProjectForm({ project = {}, method }) {
           )}
 
           <Label>프로젝트 소개</Label>
-
-          <TextArea
+          <IntroInput
             theme="snow"
             name="intro"
             value={introValue}
-            onChange={introChangeHandler}
+            onChange={introSetHandler}
             onBlur={introBlurHandler}
             isError={introHasError}
             placeholder="내용을 입력하세요"
           />
           {introHasError && (
             <ErrorMessage>
-              소개는 1자 이상 500자 이내로 입력해주세요.
+              소개는 1자 이상 1000자 이내로 입력해주세요.
             </ErrorMessage>
           )}
         </MainContentContainer>
@@ -403,7 +421,7 @@ export default function ProjectForm({ project = {}, method }) {
             </LabelContainer>
           </ImageInfoContainer>
 
-          <ImgInput type="file" onChange={handleImageChange} />
+          <ImgInput key={imgKey} type="file" onChange={handleImageChange} />
 
           <CheckboxContainer>
             <Label>
@@ -475,7 +493,7 @@ const MainContentContainer = styled.div`
 
 const SideContentContainer = styled.div`
   flex-basis: 250px;
-  height: 700px;
+  height: 840px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -517,27 +535,6 @@ const ImgInput = styled.input`
   height: 40px;
 
   border-bottom: 2px solid #5b67ca;
-`;
-
-const TextArea = styled.textarea`
-  padding: 8px;
-  margin-bottom: 10px;
-  border-top: none;
-  border-right: none;
-  border-left: none;
-  border: 2px solid #5b67ca;
-  height: 450px;
-  resize: none;
-  font-size: 18px;
-  /* .ql-editor {
-    font-size: 1.3rem;
-    line-height: 1.5;
-    height: 650px;
-
-    a {
-      text-decoration: underline;
-    } */
-  }
 `;
 
 const Label = styled.label`
@@ -605,4 +602,24 @@ const ErrorMessage = styled.div`
       transform: translateZ(0);
     }
   }
+`;
+
+const IntroInput = styled(ReactQuill)`
+  margin-bottom: 50px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  height: 650px;
+  resize: none;
+  font-size: 18px;
+  .ql-editor {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    height: 650px;
+
+    a {
+      text-decoration: underline;
+    }
+  }
+  white-space: pre;
 `;

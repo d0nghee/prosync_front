@@ -3,10 +3,13 @@ import clipboard from '../../assets/images/clipboard.png';
 
 function InviteModal({ isOpen, onClose, inviteLink }) {
   const handleCopy = () => {
-    navigator.clipboard.writeText(inviteLink);
+    const textarea = document.createElement('textarea');
+    textarea.value = inviteLink;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.body.removeChild(textarea);
     onClose();
   };
-
   if (!isOpen) return null;
 
   return (

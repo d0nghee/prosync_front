@@ -4,7 +4,7 @@ import { calendarActions } from "../../../redux/reducers/task/calendar-slice";
 import MyCalendar from "../../common/Calendar";
 import moment from "moment/moment";
 import * as t from "./TaskForm.style";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
 import TaskStatus from "../common/TaskStatus";
 import TaskStatusList from "../common/TaskStatusList";
@@ -220,12 +220,16 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       // api 요청
       tryFunc(
         () => postFileApi(fileList),
-        (files) => setSelectedFiles((prv) => [...prv, ...files]),
+        (files) => {
+          setSelectedFiles((prv) => [...prv, ...files]);
+          fileInputRef.current.value = null;
+        },
         dispatch
       )();
     }
   };
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  let fileInputRef = useRef(null);
 
   return (
     <>
@@ -307,6 +311,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
                   <t.FileInputContainer>
                     <t.StyledButton type="button">Choose a File</t.StyledButton>
                     <t.StyledFileInput
+                      ref={fileInputRef}
                       type="file"
                       onChange={handleFileChange}
                       multiple

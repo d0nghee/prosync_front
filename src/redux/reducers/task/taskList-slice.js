@@ -60,7 +60,7 @@ const taskListSlice = createSlice({
     },
 
     moveTask(state, action) {
-      const { task, taskStatusId } = action.payload;
+      let { task, taskStatusId } = action.payload;
       const findOriginalIndex = state.list.findIndex(
         (status) => status.taskStatusId === task.taskStatusId
       );
@@ -84,6 +84,7 @@ const taskListSlice = createSlice({
       );
 
       if (findNewIndex !== -1) {
+        task = { ...task, taskStatusId: taskStatusId };
         const newList = state.list[findNewIndex].list;
         newList.push(task);
         state.list[findNewIndex].list = newList;
