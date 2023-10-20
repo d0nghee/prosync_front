@@ -5,11 +5,10 @@ export default function FileInfo({ file }) {
     <Info>
       <a
         href={file.path}
-        download={file.fileNmae}
+        download={file.fileName}
         target="_blank"
         rel="noopener noreferrer"
       >
-        {file.fileNmae}
         <div>
           {file.fileName} ({(file.size / 1024).toFixed(2)}KB)
         </div>
@@ -23,3 +22,4 @@ const Info = styled.div`
   justify-content: space-between;
   font-weight: bold;
 `;
+
