@@ -6,35 +6,41 @@ export default function MypageFilterBar({
   onBookmarkFilter,
   onendDateSorting,
   onDefault,
+  currentMenu,
+  setCurrentMenu,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [menu, setMenu] = useState('정렬'); // 초기 상태 값을 설정
+
+  console.log("필터");
+
 
   const menuHandler = () => {
-    setIsOpen((pre) => !pre);
+    setIsOpen(prev => !prev);
+    console.log("이즈 오픈",isOpen)
   };
 
   const defaultFilter = () => {
-    setMenu('최신 순');
+    setCurrentMenu("최신 순")
+    console.log("isonpen", isOpen)
     setIsOpen(false);
     onDefault();
   };
 
   const bookmarkFilter = () => {
-    setMenu('내 북마크');
-    setIsOpen(false);
+    setCurrentMenu("북마크 순")
+    setIsOpen(true);
     onBookmarkFilter();
   };
 
   const endDateFilter = () => {
-    setMenu('마감일 임박 순');
-    setIsOpen(false);
+    setCurrentMenu("마감 임박 순")
+    setIsOpen(true);
     onendDateSorting();
   };
 
   return (
     <DropdownContainer>
-      <MenuButton onClick={menuHandler}>{menu}</MenuButton>
+      <MenuButton onClick={menuHandler}>{currentMenu}</MenuButton>
       {isOpen && (
         <MenuList>
           <MenuItem onClick={defaultFilter}>최신 순</MenuItem>
@@ -47,7 +53,8 @@ export default function MypageFilterBar({
 }
 
 const DropdownContainer = styled.div`
-  width: 200px;
+  position: relative;
+  width: 150px;
   display: inline-block;
 `;
 
