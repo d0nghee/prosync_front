@@ -4,7 +4,7 @@ import Button from "../components/button/Button";
 export const Page = styled.div`
   display: flex;
   flex-direction: row;
-  height: 800px;
+  height: 1400px;
 `;
 
 export const SideImage = styled.div`

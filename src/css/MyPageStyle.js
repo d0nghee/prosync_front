@@ -137,7 +137,7 @@ export const InputText = styled.input`
   margin-bottom: 10px;
 `;
 export const InputTextArea = styled.textarea`
-  width: 70%;
+  width: 600px;
   height: 15vh;
   border: 2px solid #7b69b7;
   border-radius: 5px;
