@@ -93,7 +93,10 @@ export default function ProjectInfo({ projectMembers }) {
               </SideInfo>
             </Detail>
             <h2>프로젝트 소개</h2>
-            <Intro>{data.data.intro}</Intro>
+            <Intro
+              className="view ql-editor"
+              dangerouslySetInnerHTML={{ __html: data.data.intro }}
+            />
           </ProjectInformation>
         </Total>
       </Section>

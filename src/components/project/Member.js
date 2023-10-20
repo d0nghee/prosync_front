@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { tryFunc } from '../../util/tryFunc';
 import { patchApi } from '../../util/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   addAuthority,
@@ -65,7 +65,7 @@ export default function Member({ member, isChecked, onCheckChange }) {
   const handleConfirm = () => {
     // 권한 변경
     const mandateAdmin = async () => {
-      const response = patchApi(
+      const response = await patchApi(
         `/project-members/${member.memberProjectId}`,
         adminData
       );
@@ -74,7 +74,7 @@ export default function Member({ member, isChecked, onCheckChange }) {
 
     tryFunc(
       mandateAdmin,
-      navigate(`/projects/${member.projectId}`),
+      (response) => (window.location.href = `/projects/${member.projectId}`),
       dispatch
     )();
   };

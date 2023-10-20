@@ -18,7 +18,7 @@ export default function TaskCard({ task, dragStart, isWriter }) {
             navigate(`/projects/${params.projectId}/tasks/${task.taskId}`)
           }
         >
-          {task.title}
+          {task.title.length > 20 ? task.title.substring(0, 20) + '...': task.title}
         </h3>
         <div>{`${task.startDate} - ${task.endDate}`}</div>
         {task.taskMembers.length !== 0 ? (
@@ -52,7 +52,6 @@ const Card = styled.div`
 
   h3 {
     cursor: pointer;
-    overflow: hidden;
     height: 20px;
   }
 `;
