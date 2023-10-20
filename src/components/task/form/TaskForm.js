@@ -150,6 +150,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
         );
         await dispatch(patchTask(params.taskId, requestData));
         dispatch(calendarActions.resetDate());
+        //TODO:성공할 경우에만 navigate
         navigate(`/projects/${projectId}/tasks/${params.taskId}`);
       } else if (method === "POST") {
         try {
@@ -159,6 +160,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
             requestData
           );
           await dispatch(requestApi(taskId, originalMembers, checkedMembers));
+          //TODO:성공할 경우에만 navigate
           navigate(`/projects/${projectId}/tasks/${taskId}`);
         } catch (error) {
           const status = error.response.status;
@@ -202,7 +204,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       classificationSetHandler(task.classification);
       titleSetHandler(task.title);
       detailSetHandler(task.detail);
-      //TODO
+
       setTaskStatus({
         taskStatusId: task.taskStatusId,
         taskStatus: task.taskStatus,

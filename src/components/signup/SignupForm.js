@@ -145,7 +145,7 @@ export default function SignupForm() {
     postApi("/signup", signup.formData)
       .then(() => {
         alert("회원가입에 성공하셨습니다!");
-        navi("/login");
+        navi("/auth?mode=login");
       })
       .catch((error) => {
         if (

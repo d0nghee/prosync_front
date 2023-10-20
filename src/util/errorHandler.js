@@ -77,6 +77,7 @@ export const handleErrorCode = (
           break;
         case "INAPPROPRIATE_PERMISSION": // 인증되지 않은 사용자(ADMIN이 아닌)
           alert("접근 권한이 없습니다.");
+          window.location.reload();
           break;
         default:
           navigate("/error");
