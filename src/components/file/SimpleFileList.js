@@ -52,7 +52,7 @@ export default function SimpleFileList({
                       onClick={() => deleteHandler(file.fileInfoId)}
                     />
                   )}
-                  <FileInfo file={file} />
+                  <FileInfo file={file} downloadBtn="true" commentFile="true" />
                 </One>
               ))}
             </Files>
