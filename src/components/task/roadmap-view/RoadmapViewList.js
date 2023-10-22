@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Timeline, DataSet } from 'vis-timeline/standalone';
 import styled from 'styled-components';
@@ -6,9 +5,6 @@ import { useSelector } from 'react-redux';
 import Guidance from '../../common/Guidance';
 import ListLoadingSpinner from '../../common/ListLoadingSpinner';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { getApi } from '../../../util/api';
-import {tryFunc} from '../../../util/tryFunc';
 
 export default function RoadmapViewList() {
   const timelineRef = useRef(); // 하나의 Timeline에 대한 ref를 저장할 변수
@@ -19,10 +15,8 @@ export default function RoadmapViewList() {
   const params = useParams();
   const view = searchParams.get('view');
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
-
     if (tasks.length !== 0 && tasks[0].startDate) {
       const timelineData = tasks.map((task) => {
         let endDate = task.endDate;
@@ -31,6 +25,7 @@ export default function RoadmapViewList() {
           end.setDate(end.getDate() + 1);
           endDate = end.toISOString().slice(0, 10);
         }
+
         return {
           id: task.taskId,
           content: task.title,
@@ -51,17 +46,15 @@ export default function RoadmapViewList() {
       };
 
       const timeline = new Timeline(timelineRef.current, items, null, options);
-      tryFunc(() => getApi(`/projects/${params.projectId}`), 
-       (response) => {
-        timeline.setWindow(response.data.startDate, response.data.endDate);
-      }, 
-      dispatch)();
 
-      timeline.on('select', function(properties) {
+      const currentDate = new Date();
+      timeline.setWindow(currentDate, currentDate);
+
+      timeline.on('select', function (properties) {
         if (properties.items.length > 0) {
           const selectedItemId = properties.items[0]; // 선택된 아이템의 ID를 가져옵니다.
           const selectedItem = items.get(selectedItemId); // ID를 사용하여 해당 아이템의 데이터를 가져옵니다.
-          console.log("Selected item:", selectedItem);
+          console.log('Selected item:', selectedItem);
           navigate(`/projects/${params.projectId}/tasks/${selectedItem.id}`);
         }
       });
@@ -79,8 +72,7 @@ export default function RoadmapViewList() {
       <StatusLegendContainer>
         {/* status 색 보여주는 화면 */}
         {taskStatusList &&
-          taskStatusList.map(({ taskStatusId, taskStatus, color, seq }) => (
-            seq !== 0 &&
+          taskStatusList.map(({ taskStatusId, taskStatus, color }) => (
             <StatusLegend key={taskStatusId} color={color}>
               {taskStatus}
             </StatusLegend>
@@ -127,10 +119,9 @@ const StatusLegendContainer = styled.div`
 const StatusLegend = styled.div`
   background-color: ${({ color }) => color};
   color: #fff;
-  padding: 10px 20px;
+  padding: 5px 10px;
   margin-right: 10px;
   margin-bottom: 10px;
-  border-radius: 5rem;
+  border-radius: 4px;
   font-size: 14px;
-  font-weight: bold;
 `;
