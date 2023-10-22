@@ -171,7 +171,7 @@ const TaskDetails = styled.div`
   line-height: 1.5;
   height: 850px;
   border: 1px solid #dad7cd;
-  padding: 0 1rem;
+  padding: 1rem;
   overflow: auto;
   border-radius: 0.2rem;
   & > ul {

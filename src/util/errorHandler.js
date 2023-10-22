@@ -77,6 +77,7 @@ export const handleErrorCode = (
           break;
         case "INAPPROPRIATE_PERMISSION": // 인증되지 않은 사용자(ADMIN이 아닌)
           alert("접근 권한이 없습니다.");
+          window.location.reload();
           break;
         default:
           navigate("/error");
@@ -179,6 +180,15 @@ export const handleErrorCode = (
           break;
       }
       break;
+
+    case 503:
+      switch (resultCode) {
+        case "FILE_STORAGE_ERROR":
+          alert("서버 저장소 장애가 발생하여 파일 저장에 실패하였습니다.");
+          break;
+        default:
+          break;
+      }
 
     case 500: // INTERNAL_SERVER_ERROR
       switch (resultCode) {

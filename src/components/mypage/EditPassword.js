@@ -93,7 +93,6 @@ export default function EditPassword() {
             onChange={handleChange}
           />
         </Div>
-        <PasswordCheck isPasswordNotCorrect={isPasswordNotCorrect} />
       </FirstItem>
 
       <SecItem>
@@ -185,7 +184,7 @@ const ButtonContainer = styled.div`
 
 const FirstItem = styled.div`
   margin-top: 220px;
-
+  
   grid-row: 2/2;
   grid-column: 2/7;
 `;

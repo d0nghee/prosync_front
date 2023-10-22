@@ -17,7 +17,10 @@ const passwordValidate = (password) => {
 }
 
 const introValidate = (intro) => {
-    return introRegex.test(intro)
+    console.log(intro);
+    const processedIntro = intro.replace(/\n/g, '');
+    console.log(processedIntro);
+    return introRegex.test(processedIntro)
 }
 
 export {emailValidate, nameValidate, passwordValidate, introValidate}
