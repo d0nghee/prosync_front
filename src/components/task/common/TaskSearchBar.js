@@ -1,10 +1,11 @@
-import React from "react";
 import styled from "styled-components";
 
 export default function TaskSearchBar({ updateSearch, onChangePage }) {
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       updateSearch(event.target.value);
+      const newSearch = `?search=${event.target.value}`;
+      window.history.pushState(null, "", newSearch);
       onChangePage(1);
     }
   };

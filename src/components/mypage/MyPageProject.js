@@ -42,6 +42,7 @@ export default function MyProject() {
   const [book, setBook] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const page = queryParams.get("page") || 1;
+  const [currentMenu, setCurrentMenu] = useState("최신순");
   const currentFilter = useRef({
     type: "",
     query: "",
@@ -100,6 +101,7 @@ export default function MyProject() {
 
   const endDateHandler = () => {
     navi(`/user/myprojects?sort=endDate&page=1`);
+    currentFilter.current = { bookmark : false, type : 'endDate', query : ''}
   };
 
   const searchHandler = (query) => {
@@ -121,7 +123,7 @@ export default function MyProject() {
     if (query) {
       newUrl += `&search=${query}`;
     } else if (currentFilter.current.query) {
-      newUrl += `&search=${currentFilter.current.query}`;
+      newUrl += `&search=${currentFilter.query}`;
     }
     return newUrl;
   };
@@ -147,6 +149,8 @@ export default function MyProject() {
           onDefault={defaultProjectListHandler}
           onBookmarkFilter={bookmarkFilterHandler}
           onendDateSorting={endDateHandler}
+          currentMenu={currentMenu}
+          setCurrentMenu={setCurrentMenu}
         />
       </FilterContainer>
 

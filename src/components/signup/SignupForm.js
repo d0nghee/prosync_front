@@ -127,6 +127,7 @@ export default function SignupForm() {
       alert(
         "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
       );
+      setIsNameNotCorrect(true);
       return;
     }
 
@@ -136,6 +137,7 @@ export default function SignupForm() {
       alert(
         "비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요."
       );
+      setIsPasswordNotCorrect(true);
 
       return;
     }
@@ -163,6 +165,7 @@ export default function SignupForm() {
           alert(
             "비밀번호 형식이 잘못되었습니다. 특수문자를 포함한 8~15 글자로 입력하세요."
           );
+          setIsPasswordNotCorrect(true);
           return;
         }
 
@@ -173,6 +176,7 @@ export default function SignupForm() {
           alert(
             "이름의 형식이 잘못되었습니다. 실명을 적어주시고 7글자 이하로 입력하세요."
           );
+          setIsNameNotCorrect(true);
         }
 
         alert("빈칸 없이 입력해주세요.");

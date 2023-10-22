@@ -3,7 +3,7 @@ import { getApi } from '../../util/api'
 import { useDispatch } from 'react-redux';
 import { Container, BookmarkListItem, PaginationContainer, PageButton, ProjectTitle, PostDate, ListItemContainer, PostListContainer, PostItem, ProjectImage, NullPost, BookmarkWrapper, PostDescription, PostName, PostsDate, ProjectContent, PaginationGridContainer } from '../../css/MyPageStyle'
 import PaginationButton from './PaginationButton';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { tryFunc } from '../../util/tryFunc';
 import styled from 'styled-components';
 import MyPageProjectProject from './MyPageProjectProject';
@@ -14,8 +14,7 @@ export default function BookMark(props) {
 
   const location = useLocation();
   const dispatch = useDispatch();
-
-
+  const navi = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [book, setBook] = useState(false);
@@ -23,7 +22,7 @@ export default function BookMark(props) {
   const [totalPages, setTotalPages] = useState();
   const [pageInfo, setPageInfo] = useState();
   const queryParams = new URLSearchParams(location.search)
-  const page = queryParams
+  const page = queryParams.get("page") || 1;
 
 
   useEffect(() => {
@@ -41,11 +40,17 @@ export default function BookMark(props) {
   }, [location.search])
 
   const handlePageChange = (nextPage) => {
-    setCurrentPage(nextPage);
+    let url = QueryParamHandler(nextPage);
+    navi(url);
   };
 
+  const QueryParamHandler = (page) => {
+    let newUrl = `/user/bookmark?page=${page}`
+    return newUrl;
+  }
+
   const fetchBookmarkList = async () => {
-    const res = getApi(`/bookmark-list`);
+    const res = getApi(`/bookmark-list?page=${page}`);
     return res;
   }
 
@@ -103,7 +108,7 @@ export default function BookMark(props) {
                 Prev
               </button>
               <PaginationButton
-                currentPage={Number(page)}
+                currentPage={Number(currentPage)}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
               />
