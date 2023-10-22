@@ -1,7 +1,7 @@
-import React from "react";
-import { styled } from "styled-components";
-import MyProjectsList from "./MyProjectsList";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { styled } from 'styled-components';
+import MyProjectsList from './MyProjectsList';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   max-height: 80rem;
@@ -31,7 +31,7 @@ const Container = styled.div`
       color: white;
       font-size: 1.2rem;
       text-align: center;
-      padding: 1% 1% 0% 1%;
+      padding: 1.1% 1% 0% 1%;
       font-weight: 900;
       cursor: pointer;
       transition: all 0.5s;
@@ -75,7 +75,7 @@ const MyProjects = () => {
         <div
           className="create-button"
           onClick={() => {
-            navigate("/projects/new");
+            navigate('/projects/new');
           }}
         >
           프로젝트 생성
@@ -84,7 +84,7 @@ const MyProjects = () => {
       <div
         className="more-button"
         onClick={() => {
-          navigate("/user/myprojects");
+          navigate('/user/myprojects');
         }}
       >{`더보기 >`}</div>
       <MyProjectsList />

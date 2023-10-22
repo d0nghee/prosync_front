@@ -3,13 +3,16 @@ import clipboard from '../../assets/images/clipboard.png';
 
 function InviteModal({ isOpen, onClose, inviteLink }) {
   const handleCopy = () => {
+    console.log('Button clicked!');
     const textarea = document.createElement('textarea');
     textarea.value = inviteLink;
     document.body.appendChild(textarea);
     textarea.select();
+    document.execCommand('copy');
     document.body.removeChild(textarea);
     onClose();
   };
+
   if (!isOpen) return null;
 
   return (
@@ -18,9 +21,7 @@ function InviteModal({ isOpen, onClose, inviteLink }) {
         <ModalHeader>
           <ModalLink>{inviteLink}</ModalLink>
           <ButtonGroup>
-            <CopyButton onClick={handleCopy}>
-              <img src={clipboard} alt="Clipboard" />
-            </CopyButton>
+            <CopyButton onClick={handleCopy}>복사</CopyButton>
             <CloseButton onClick={onClose}>닫기</CloseButton>
           </ButtonGroup>
         </ModalHeader>
@@ -39,7 +40,6 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 `;
 
 const ModalContent = styled.div`
@@ -68,11 +68,7 @@ const CopyButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-
-  img {
-    width: 30px;
-    height: 30px;
-  }
+  position: relative;
 `;
 
 const CloseButton = styled.button`
