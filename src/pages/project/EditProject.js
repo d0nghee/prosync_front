@@ -36,6 +36,10 @@ export async function loader({ params }) {
       //TODO: 에러페이지 잠깐 보이는 문제 처리 필요
       alert("해당 프로젝트 멤버가 아닙니다.");
       window.location.href = "/";
+    } else if (error.response && error.response.status === 401) {
+      //TODO: 에러페이지 잠깐 보이는 문제 처리 필요
+      alert("로그인 사용자만 이용가능합니다. 로그인 페이지로 이동합니다.");
+      window.location.href = "/auth?mode=login";
     }
   }
 }
