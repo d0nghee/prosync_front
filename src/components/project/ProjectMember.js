@@ -149,7 +149,8 @@ export default function ProjectMember({ members, projectId }) {
     const invitePostSuccess = (response) => {
       console.log('invitePostSuccess');
       const inviteCode = response.data.data.inviteCode;
-      setInviteLink(`http://13.209.219.235:8080/projects/invite/${inviteCode}`);
+      // setInviteLink(`http://13.209.219.235:8080/projects/invite/${inviteCode}`);
+      setInviteLink(`http://prosyncfront.s3-website.ap-northeast-2.amazonaws.com/projects/invite/${inviteCode}`);
       // setInviteLink(`http://localhost:3000/projects/invite/${inviteCode}`);
       setIsModalOpen(true);
       setIsLoading(false);
