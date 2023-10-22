@@ -181,6 +181,15 @@ export const handleErrorCode = (
       }
       break;
 
+    case 503:
+      switch (resultCode) {
+        case "FILE_STORAGE_ERROR":
+          alert("서버 저장소 장애가 발생하여 파일 저장에 실패하였습니다.");
+          break;
+        default:
+          break;
+      }
+
     case 500: // INTERNAL_SERVER_ERROR
       switch (resultCode) {
         case "INTERNAL_SERVER_ERROR": // 내부 서버 에러
