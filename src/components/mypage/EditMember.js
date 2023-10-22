@@ -237,7 +237,7 @@ export default function EditMember() {
       <ResetButton onClick={imageResetHandle}>X</ResetButton>
       <DivContainer>
         <CustomDiv>
-          <Label>이름 입력 : &nbsp;&nbsp;&nbsp;</Label>
+          <Label>이름 입력  &nbsp;&nbsp;&nbsp;</Label>
           <InputText
             type="text"
             name="name"
@@ -248,7 +248,7 @@ export default function EditMember() {
           <NameCheck isNameNotCorrect={isNameNotCorrect} />
         </CustomDiv>
         <CustomDiv>
-          <Label>소개글 입력 :&nbsp;</Label>
+          <Label>소개글 입력 &nbsp;</Label>
           <InputTextArea
             name="intro"
             id="intro"

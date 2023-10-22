@@ -1,4 +1,9 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import TasksList from "../../components/task/common/TasksList";
 import TaskNavigation from "../../components/task/common/TaskNavigation";
 import TaskSearchBar from "../../components/task/common/TaskSearchBar";
@@ -19,14 +24,13 @@ import { getCookie } from "../../util/cookies";
 
 export default function Tasks() {
   const dispatch = useDispatch();
-
   const params = useParams();
-  const [keyword, setKeyword] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
+  const location = useLocation();
 
   const [searchParams] = useSearchParams();
   const view = searchParams.get("view");
+  const [keyword, setKeyword] = useState(null);
 
   const [checkStatus, setCheckStatus] = useState(false);
   const navigate = useNavigate();
@@ -40,6 +44,11 @@ export default function Tasks() {
   };
 
   const [projectMember, setProjectMember] = useState();
+
+  useEffect(() => {
+    const search = new URLSearchParams(location.search).get("search");
+    setKeyword(search);
+  }, [location.search]);
 
   useEffect(() => {
     dispatch(getTaskStatus(params.projectId));
@@ -77,7 +86,7 @@ export default function Tasks() {
         isActive: true,
       })
     );
-  }, [dispatch, params.projectId, keyword, currentPage, view, checkStatus]);
+  }, [dispatch, params.projectId, currentPage, view, checkStatus, keyword]);
 
   // TABLE VIEW 체크박스 로직
   const [checkbox, setCheckbox] = useState([]);
