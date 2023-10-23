@@ -214,7 +214,7 @@ const Intro = styled.div`
   padding: 1rem;
   border-radius: 10px;
   width: 100%;
-  height: 400px;
+  height: 600px;
   font-size: 1.5rem;
 `;
 

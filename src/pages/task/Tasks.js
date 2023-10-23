@@ -21,6 +21,7 @@ import { deleteApi } from "../../util/api";
 import { tryFunc } from "../../util/tryFunc";
 import axiosInstance from "../../util/axiosInstances";
 import { getCookie } from "../../util/cookies";
+import DeleteProjectMemberModal from "../../components/task/common/DeleteProjectMemberModal";
 
 export default function Tasks() {
   const dispatch = useDispatch();
@@ -91,30 +92,28 @@ export default function Tasks() {
   // TABLE VIEW 체크박스 로직
   const [checkbox, setCheckbox] = useState([]);
 
-  const memberProjectExitHandler = () => {
-    const proceed = window.confirm(
-      "해당 프로젝트를 나갈 경우 복구가 불가합니다. 나가시겠습니까?"
-    );
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    if (proceed) {
-      const text = window.prompt(
-        "해당 프로젝트를 나가시려면 [나가기]를 입력하세요."
-      );
-      if (text === "나가기") {
-        tryFunc(
-          () => deleteApi(`/projects/${params.projectId}/members`),
-          () => {
-            alert("프로젝트 나가기가 완료되었습니다.");
-            navigate("/");
-          },
-          dispatch
-        )();
-      }
-    }
+  const memberProjectExitHandler = () => {
+    tryFunc(
+      () => deleteApi(`/projects/${params.projectId}/members`),
+      () => {
+        alert("프로젝트 나가기가 완료되었습니다.");
+        navigate("/");
+      },
+      dispatch
+    )();
   };
 
   return (
     <>
+      {showDeleteModal && (
+        <DeleteProjectMemberModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onDelete={memberProjectExitHandler}
+        />
+      )}
       <TaskView>
         <Top>
           <TopDiv
@@ -133,7 +132,7 @@ export default function Tasks() {
             {projectMember &&
               projectMember.status === "ACTIVE" &&
               projectMember.authority !== "ADMIN" && (
-                <TopDiv onClick={memberProjectExitHandler}>
+                <TopDiv onClick={() => setShowDeleteModal(true)}>
                   <BiExit size="20px" />
                   프로젝트 나가기
                 </TopDiv>

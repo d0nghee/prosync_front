@@ -28,7 +28,8 @@ export const handleErrorCode = (
           alert("첨부 가능한 최대 파일 용량은 10MB입니다.");
           break;
         default:
-          navigate("/error");
+          // navigate("/error");
+          alert("요청 값을 다시 확인해주세요.");
           break;
       }
       break;
