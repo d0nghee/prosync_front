@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Container = styled.div`
   background-color: pink;
@@ -29,22 +29,22 @@ const Container = styled.div`
     height: 20%;
     padding: 0% 3%;
     word-wrap: break-word;
-    white-space: pre-line; 
+    white-space: pre-line;
   }
 `;
 
 const Img = styled.img`
   width: ${(props) =>
-    props.imgSize === "long"
-      ? "50%"
-      : props.imgSize === "short"
-      ? "85%"
+    props.imgSize === 'long'
+      ? '73%'
+      : props.imgSize === 'short'
+      ? '85%'
       : null};
   height: ${(props) =>
-    props.imgSize === "long"
-      ? "65%"
-      : props.imgSize === "short"
-      ? "45%"
+    props.imgSize === 'long'
+      ? '60%'
+      : props.imgSize === 'short'
+      ? '45%'
       : null};
   object-fit: fill;
   margin-bottom: 4%;
