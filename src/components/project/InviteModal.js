@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import clipboard from '../../assets/images/clipboard.png';
 
 function InviteModal({ isOpen, onClose, inviteLink }) {
   const handleCopy = () => {
@@ -40,6 +39,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 `;
 
 const ModalContent = styled.div`
@@ -69,13 +69,20 @@ const CopyButton = styled.button`
   border: none;
   cursor: pointer;
   position: relative;
+  width: 40px;
+  background-color: #c3d8e8;
+  &:hover {
+    background-color: #becae8;
+  }
 `;
 
 const CloseButton = styled.button`
-  padding: 10px;
+  padding: 8px;
   background-color: #e0e0e0;
   border: none;
   border-radius: 4px;
+  width: 40px;
+
   cursor: pointer;
 
   &:hover {

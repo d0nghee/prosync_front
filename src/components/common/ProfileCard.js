@@ -1,13 +1,27 @@
-import { styled } from "styled-components";
-import { AiFillCaretDown } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { styled } from 'styled-components';
+import { AiFillCaretDown } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfileCard({ name, image, setMemberProfile }) {
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   return (
     <ProfileContainer>
-      {image && <ProfileImage src={image} alt={image} onClick={() => setMemberProfile({show:true})}/>}
-      {name && <div onClick={() => {navigate('/user/profile')}}>{name} 님 반갑습니다</div>}
+      {image && (
+        <ProfileImage
+          src={image}
+          alt={image}
+          onClick={() => setMemberProfile({ show: true })}
+        />
+      )}
+      {name && (
+        <div
+          onClick={() => {
+            navigate('/user/profile');
+          }}
+        >
+          {name}님 반갑습니다
+        </div>
+      )}
       <div className="profile-notification">프로필</div>
     </ProfileContainer>
   );
@@ -23,6 +37,11 @@ const ProfileContainer = styled.div`
   cursor: pointer;
   border-radius: 50%;
   position: relative;
+  font-size: 16px;
+
+  & > div:nth-child(2) {
+    width: 10rem;
+  }
 
   & > img:hover {
     background-color: rgb(192, 158, 216);
