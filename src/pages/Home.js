@@ -1,10 +1,10 @@
-import React from "react";
-import { styled } from "styled-components";
-import Introduction from "../components/home/introduction/Introduction";
-import Promotion from "../components/home/promotion/Promotion";
-import { useSelector } from "react-redux";
-import PublicProjects from "./../components/home/loginned/PublicProjects";
-import MyProjects from "../components/home/loginned/MyProjects";
+import React from 'react';
+import { styled } from 'styled-components';
+import Introduction from '../components/home/introduction/Introduction';
+import Promotion from '../components/home/promotion/Promotion';
+import { useSelector } from 'react-redux';
+import PublicProjects from './../components/home/loginned/PublicProjects';
+import MyProjects from '../components/home/loginned/MyProjects';
 
 const HomeContainer = styled.div`
   height: 220rem;
@@ -25,8 +25,6 @@ const LoginHomeContainer = styled.div`
     height: 50%;
     justify-content: center;
   }
-
-
 
   & > *:nth-child(2) {
     background-color: rgb(248, 240, 251);
@@ -50,8 +48,12 @@ const Home = () => {
         </HomeContainer>
       ) : (
         <LoginHomeContainer>
-          <div><MyProjects></MyProjects></div>
-          <div><PublicProjects></PublicProjects></div>
+          <div>
+            <MyProjects></MyProjects>
+          </div>
+          <div>
+            <PublicProjects></PublicProjects>
+          </div>
         </LoginHomeContainer>
       )}
     </>
