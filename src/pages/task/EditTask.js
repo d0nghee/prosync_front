@@ -15,11 +15,9 @@ export default function EditTask() {
   const [taskFiles, setTaskFiles] = useState([]);
   const navigate = useNavigate();
 
-  const deleteFile = (fileInfoId) => {
+  const deleteFile = (fileId) => {
     let originalFiles = taskFiles;
-    originalFiles = originalFiles.filter(
-      (file) => file.fileInfoId !== fileInfoId
-    );
+    originalFiles = originalFiles.filter((file) => file.fileId !== fileId);
     setTaskFiles(originalFiles);
   };
 

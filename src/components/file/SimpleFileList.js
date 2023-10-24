@@ -17,13 +17,13 @@ export default function SimpleFileList({
   const dispatch = useDispatch();
 
   const [showList, setShowList] = useState(false);
-  const deleteHandler = (fileInfoId) => {
+  const deleteHandler = (fileId) => {
     tryFunc(
-      async () => await deleteFileApi(fileInfoId),
+      async () => await deleteFileApi(fileId),
       (response) => {
         alert("파일 삭제가 완료되었습니다.");
         let newFiles = files;
-        newFiles = newFiles.filter((file) => file.fileInfoId !== fileInfoId);
+        newFiles = newFiles.filter((file) => file.fileId !== fileId);
         updateFiles(newFiles);
       },
       dispatch
@@ -49,10 +49,15 @@ export default function SimpleFileList({
                   {isAuthenticated && (
                     <MdOutlineCancelPresentation
                       size="25px"
-                      onClick={() => deleteHandler(file.fileInfoId)}
+                      onClick={() => deleteHandler(file.fileId)}
                     />
                   )}
-                  <FileInfo file={file} downloadBtn="true" commentFile="true" />
+                  <FileInfo
+                    file={file}
+                    downloadBtn="true"
+                    commentFile="true"
+                    newFile="true"
+                  />
                 </One>
               ))}
             </Files>

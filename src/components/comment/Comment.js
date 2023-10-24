@@ -26,6 +26,7 @@ export default function Comment({
   const params = useParams();
   const [commentFiles, setCommentFiles] = useState(comment.fileList);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  console.log(commentFiles, "test,,,");
 
   const {
     value: commentValue,
