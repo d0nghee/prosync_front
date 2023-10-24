@@ -2,6 +2,9 @@ import { styled } from "styled-components";
 import axios from "axios";
 
 export default function FileInfo({ file, downloadBtn, commentFile }) {
+  const isUpdated =
+    file.fileName.substring(file.fileName.lastIndexOf("_")).length !== 37;
+
   const handleDownload = () => {
     const s3Url = file.path;
 
@@ -15,7 +18,7 @@ export default function FileInfo({ file, downloadBtn, commentFile }) {
       link.href = url;
       link.setAttribute(
         "download",
-        commentFile
+        commentFile && !isUpdated
           ? file.fileName.substring(0, file.fileName.lastIndexOf("_"))
           : file.fileName
       );
@@ -29,7 +32,7 @@ export default function FileInfo({ file, downloadBtn, commentFile }) {
       <a
         href={file.path}
         download={
-          commentFile
+          commentFile && !isUpdated
             ? file.fileName.substring(0, file.fileName.lastIndexOf("_"))
             : file.fileName
         }
@@ -37,7 +40,7 @@ export default function FileInfo({ file, downloadBtn, commentFile }) {
         rel="noopener noreferrer"
       >
         <div>
-          {commentFile
+          {commentFile && !isUpdated
             ? file.fileName.substring(0, file.fileName.lastIndexOf("_"))
             : file.fileName}
           ({(file.size / 1024).toFixed(2)}KB)
@@ -66,4 +69,3 @@ const Down = styled.button`
   color: red;
   font-size: 1rem;
 `;
-

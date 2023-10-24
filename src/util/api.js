@@ -46,12 +46,11 @@ const deleteApi = async (url, data) => {
 
 // 파일
 const postFileApi = async (files) => {
-  
   const formData = new FormData();
   for (let i = 0; i < files.length; i++) {
     formData.append("files", files[i]);
   }
- 
+
   try {
     const response = await axiosInstance.post("/files", formData, {
       headers: {
@@ -68,7 +67,9 @@ const postFileApi = async (files) => {
 
 const getFileApi = async (tableKey, tableName) => {
   try {
-    const response = await getApi("/files", { params: { tableKey, tableName } });
+    const response = await getApi("/files", {
+      params: { tableKey, tableName },
+    });
 
     if (response.status === 200) {
       return await response.data.data;
@@ -78,12 +79,11 @@ const getFileApi = async (tableKey, tableName) => {
     console.error("getFileApi 지나감");
     throw error;
   }
-  
 };
 
-const deleteFileApi = async (fileInfoId) => {
+const deleteFileApi = async (fileId) => {
   try {
-    return await deleteApi(`/files/${fileInfoId}`);
+    return await deleteApi(`/files/${fileId}`);
   } catch (error) {
     console.error(error);
     console.error("deleteFileApi 지나감");
@@ -104,7 +104,7 @@ const postTaskStatusApi = async ({ taskStatus, color, seq }, projectId) => {
       `/projects/${projectId}/task-status`,
       postData
     );
-  
+
     if (response.status === 201) {
       return await response.data.data.taskStatusId;
     }
@@ -113,12 +113,9 @@ const postTaskStatusApi = async ({ taskStatus, color, seq }, projectId) => {
     console.error("postTaskStatusApi 지나감");
     throw error;
   }
-
-  
 };
 
 const getTaskStatusApi = async (projectId) => {
-
   try {
     const response = await getApi(`/projects/${projectId}/task-status`);
 
@@ -130,7 +127,6 @@ const getTaskStatusApi = async (projectId) => {
     console.error("getTaskStatusApi 지나감");
     throw error;
   }
-  
 };
 
 const deleteTaskStatusApi = async (taskStatusId) => {
@@ -156,7 +152,6 @@ const patchTaskStatusApi = async (taskStatusId, { color, seq, taskStatus }) => {
     console.error("patchTaskStatusApi 지나감");
     throw error;
   }
-  
 };
 
 const patchTaskStatusSeqApi = async (projectId, seqList) => {
@@ -165,7 +160,7 @@ const patchTaskStatusSeqApi = async (projectId, seqList) => {
       `/projects/${projectId}/task-status/sequence`,
       seqList
     );
-  
+
     if (response.status === 200) {
       return await response;
     }
@@ -174,7 +169,6 @@ const patchTaskStatusSeqApi = async (projectId, seqList) => {
     console.error("patchTaskStatusSeqApi 지나감");
     throw error;
   }
-  
 };
 
 // 프로젝트 회원
@@ -182,7 +176,7 @@ const getProjectMembersApi = async (projectId, params) => {
   try {
     console.log("getProjectMembersApi 시작");
     const response = await getApi(`/projects/${projectId}/members`, { params });
-    console.log("getApi 호출 후")
+    console.log("getApi 호출 후");
     if (response.status === 200) {
       return await response.data.data;
     }
@@ -192,7 +186,6 @@ const getProjectMembersApi = async (projectId, params) => {
     console.error("getProjectMembersApi 지나감");
     throw error;
   }
-  
 };
 
 // 업무 담당자
@@ -208,12 +201,14 @@ const getTaskMembersApi = async (taskId) => {
     console.error("getTaskMembersApi 지나감");
     throw error;
   }
-  
 };
 
 const postTaskMemberApi = async (taskId, projectMemberIds) => {
   try {
-    const response = await postApi(`/tasks/${taskId}/members`, projectMemberIds);
+    const response = await postApi(
+      `/tasks/${taskId}/members`,
+      projectMemberIds
+    );
     if (response.status === 201) {
       return await response.data.data;
     }
@@ -223,7 +218,6 @@ const postTaskMemberApi = async (taskId, projectMemberIds) => {
     console.error("postTaskMemberApi 지나감");
     throw error;
   }
-  
 };
 
 const deleteTaskMemberApi = async (taskId, projectMemberIds) => {
@@ -237,7 +231,6 @@ const deleteTaskMemberApi = async (taskId, projectMemberIds) => {
     console.error("deleteTaskMemberApi 지나감");
     throw error;
   }
-  
 };
 
 // 업무
@@ -256,7 +249,6 @@ const postTaskApi = async (projectId, taskStatusId, body) => {
     console.error("postTaskApi 지나감");
     throw error;
   }
-  
 };
 
 const patchTaskApi = async (taskId, body) => {
@@ -271,7 +263,6 @@ const patchTaskApi = async (taskId, body) => {
     console.error("patchTaskApi 지나감");
     throw error;
   }
-  
 };
 
 const getTaskApi = async (taskId, params) => {
@@ -287,7 +278,6 @@ const getTaskApi = async (taskId, params) => {
     console.error("getTaskApi 지나감");
     throw error;
   }
-  
 };
 
 const deleteTaskApi = async (taskId) => {
@@ -309,7 +299,6 @@ const getTasksApi = async (projectId, params) => {
     console.error("getTasksApi 지나감");
     throw error;
   }
-  
 };
 
 // 댓글
@@ -325,7 +314,6 @@ const getCommentsApi = async (taskId, params) => {
     console.error("getCommentsApi 지나감");
     throw error;
   }
-  
 };
 
 const postCommentApi = async (taskId, body) => {
@@ -340,7 +328,6 @@ const postCommentApi = async (taskId, body) => {
     console.error("postCommentApi 지나감");
     throw error;
   }
-  
 };
 
 const patchCommentApi = async (taskId, commentId, body) => {
@@ -358,7 +345,6 @@ const patchCommentApi = async (taskId, commentId, body) => {
     console.error("patchCommentApi 지나감");
     throw error;
   }
-  
 };
 
 const deleteCommentApi = async (taskId, commentId) => {
@@ -373,7 +359,6 @@ const deleteCommentApi = async (taskId, commentId) => {
     console.error("deleteCommentApi 지나감");
     throw error;
   }
-  
 };
 
 export { postApi, getApi, patchApi, deleteApi };

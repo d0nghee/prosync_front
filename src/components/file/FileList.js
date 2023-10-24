@@ -11,13 +11,13 @@ export default function FileList({
   deleteButton,
 }) {
   const dispatch = useDispatch();
-  const deleteHandler = (fileInfoId) => {
+  const deleteHandler = (fileId) => {
     const proceed = window.confirm("파일을 삭제하시겠습니까?");
     if (proceed) {
       tryFunc(
-        async () => await deleteFileApi(fileInfoId),
+        async () => await deleteFileApi(fileId),
         (response) => {
-          deleteFile(fileInfoId);
+          deleteFile(fileId);
           alert("삭제가 완료되었습니다.");
         },
         dispatch
@@ -32,10 +32,7 @@ export default function FileList({
           <Item key={file.fileId}>
             <FileInfo file={file} downloadBtn={!deleteButton} />
             {deleteButton && (
-              <button
-                type="button"
-                onClick={() => deleteHandler(file.fileInfoId)}
-              >
+              <button type="button" onClick={() => deleteHandler(file.fileId)}>
                 삭제
               </button>
             )}
