@@ -1,4 +1,4 @@
-import { redirect, useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { deleteApi, getFileApi, getTaskApi } from "../../util/api";
 import Task from "../../components/task/form/Task";
 import { useEffect, useState } from "react";
@@ -25,11 +25,19 @@ export default function TaskDetail() {
   const [projectMember, setProjectMember] = useState();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
     (async () => {
       await tryFunc(
         () => getTaskApi(`${params.taskId}`),
-        (task) => setTask(task),
+        (task) => {
+          if (task.data.projectId != +params.projectId) {
+            alert("접근 경로가 잘못되었습니다.");
+            navigate("/");
+          }
+          setTask(task);
+        },
         dispatch
       )();
       await tryFunc(
@@ -65,7 +73,7 @@ export default function TaskDetail() {
           updateTask={(value) => setTask(value)}
         />
         {/* 댓글 목록 */}
-        <CommentList projectMember={projectMember} />
+        {task && <CommentList projectMember={projectMember} />}
       </TaskSection>
     </>
   );
@@ -87,4 +95,3 @@ const TaskSection = styled.div`
   width: 70%;
   margin: 0 auto;
 `;
-

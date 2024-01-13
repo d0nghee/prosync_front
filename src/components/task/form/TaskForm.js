@@ -20,15 +20,16 @@ import {
   postFileApi,
   getTaskStatusApi,
   getProjectMembersApi,
-  postTaskApi,
 } from "../../../util/api";
 import FileList from "../../file/FileList";
 import SelectedFiles from "../../file/SelectedFiles";
-import { patchTask } from "../../../redux/reducers/task/taskList-slice";
+import {
+  patchTask,
+  postTask,
+} from "../../../redux/reducers/task/taskList-slice";
 import useFormInput from "../../../hooks/use-form-input";
 import { tryFunc } from "../../../util/tryFunc";
 import { taskMembersAction } from "../../../redux/reducers/task/taskMembers-slice";
-import { removeUserCookie } from "../../../util/cookies";
 
 export default function TaskForm({ method, task, taskFiles, deleteFile }) {
   const params = useParams();
@@ -148,30 +149,19 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
         await dispatch(
           requestApi(params.taskId, originalMembers, checkedMembers)
         );
-        await dispatch(patchTask(params.taskId, requestData));
+        const success = await dispatch(patchTask(params.taskId, requestData));
         dispatch(calendarActions.resetDate());
-        navigate(`/projects/${projectId}/tasks/${params.taskId}`);
+
+        if (success) {
+          navigate(`/projects/${projectId}/tasks/${params.taskId}`);
+        }
       } else if (method === "POST") {
-        try {
-          const taskId = await postTaskApi(
-            params.projectId,
-            taskStatus.taskStatusId,
-            requestData
-          );
+        const taskId = await dispatch(
+          postTask(params.projectId, taskStatus.taskStatusId, requestData)
+        );
+        if (taskId) {
           await dispatch(requestApi(taskId, originalMembers, checkedMembers));
           navigate(`/projects/${projectId}/tasks/${taskId}`);
-        } catch (error) {
-          const status = error.response.status;
-          if (status === 401) {
-            alert("로그인이 만료되었습니다.");
-            removeUserCookie();
-            navigate("/login");
-          } else if (status === 500) {
-            navigate("/error");
-          } else if (status === 403) {
-            alert("메뉴에 대한 권한이 없습니다.");
-            navigate("/");
-          }
         }
       }
     })();
@@ -202,7 +192,7 @@ export default function TaskForm({ method, task, taskFiles, deleteFile }) {
       classificationSetHandler(task.classification);
       titleSetHandler(task.title);
       detailSetHandler(task.detail);
-      //TODO
+
       setTaskStatus({
         taskStatusId: task.taskStatusId,
         taskStatus: task.taskStatus,
